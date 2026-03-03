@@ -173,7 +173,7 @@ const description = "Chat with boat owners and renters on BoatHaven.";
   import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged, signOut } from "firebase/auth";
   import {
-    collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs,
+    collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, getDoc, getDocs,
     serverTimestamp, increment, Timestamp
   } from "firebase/firestore";
 
@@ -599,6 +599,25 @@ const description = "Chat with boat owners and renters on BoatHaven.";
     window.history.replaceState({}, "", url.toString());
   });
 
+  // ---- Fetch other user's profile from Firestore ----
+  async function fetchUserProfile(uid: string) {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        return {
+          displayName: data.displayName || `${data.firstName || ""} ${data.lastName || ""}`.trim() || data.email || "User",
+          photoURL: data.photoURL || null,
+          firstName: data.firstName || "",
+          lastName: data.lastName || ""
+        };
+      }
+    } catch (err) {
+      console.error("[Messages] Error fetching user profile:", err);
+    }
+    return { displayName: "User", photoURL: null, firstName: "", lastName: "" };
+  }
+
   // ---- Find or create conversation ----
   async function findOrCreateConversation(otherUid: string, boatId: string | null, boatTitle: string | null) {
     if (!currentUser) return;
@@ -615,7 +634,6 @@ const description = "Chat with boat owners and renters on BoatHaven.";
     snap.docs.forEach(d => {
       const data = d.data();
       if (data.participants.includes(otherUid)) {
-        // If boatId specified, try to match; otherwise take first match
         if (boatId) {
           if (data.boatId === boatId) existingConv = { id: d.id, ...data };
         } else {
@@ -625,16 +643,20 @@ const description = "Chat with boat owners and renters on BoatHaven.";
     });
 
     if (existingConv) {
-      activeConversationId = existingConv.id;
+      // Inject into conversations array if not already there (listener may not have fired yet)
+      if (!conversations.find(c => c.id === existingConv.id)) {
+        conversations.unshift(existingConv);
+      }
       openConversation(existingConv.id);
       return;
     }
 
-    // Create new conversation
+    // Fetch the other user's profile for display
+    const otherProfile = await fetchUserProfile(otherUid);
     const displayName = currentUser.displayName || currentUser.email || "User";
     const nameParts = displayName.split(" ");
 
-    const newConv = {
+    const newConvData = {
       participants: [currentUser.uid, otherUid],
       participantDetails: {
         [currentUser.uid]: {
@@ -643,12 +665,7 @@ const description = "Chat with boat owners and renters on BoatHaven.";
           firstName: nameParts[0] || "",
           lastName: nameParts.slice(1).join(" ") || ""
         },
-        [otherUid]: {
-          displayName: "User",
-          photoURL: null,
-          firstName: "",
-          lastName: ""
-        }
+        [otherUid]: otherProfile
       },
       lastMessage: null,
       createdAt: serverTimestamp(),
@@ -659,9 +676,12 @@ const description = "Chat with boat owners and renters on BoatHaven.";
     };
 
     try {
-      const docRef = await addDoc(collection(db, "conversations"), newConv);
-      activeConversationId = docRef.id;
-      // The onSnapshot will pick it up and open it
+      const docRef = await addDoc(collection(db, "conversations"), newConvData);
+      // Inject directly into conversations array and open immediately
+      const localConv = { id: docRef.id, ...newConvData, createdAt: Timestamp.now(), updatedAt: Timestamp.now() };
+      conversations.unshift(localConv);
+      renderConversationList();
+      openConversation(docRef.id);
     } catch (err) {
       console.error("[Messages] Error creating conversation:", err);
     }
