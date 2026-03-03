@@ -1,0 +1,676 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Messages — BoatHaven";
+const description = "Chat with boat owners and renters on BoatHaven.";
+---
+
+<Layout title={title} description={description}>
+  <!-- Loading state -->
+  <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm text-text-muted">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Not logged in -->
+  <div id="auth-gate" class="hidden">
+    <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+      <div class="max-w-md w-full text-center">
+        <div class="mx-auto mb-6 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Log in to view your messages</h1>
+        <p class="text-text-muted mb-8 max-w-sm mx-auto">You need to be logged in to send and receive messages.</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="/login?redirect=/messages" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Log in</a>
+          <a href="/login?signup&redirect=/messages" class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors">Create account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages content -->
+  <div id="messages-content" class="hidden">
+    <div class="flex min-h-[calc(100vh-64px)]">
+
+      <!-- ===== Left Sidebar ===== -->
+      <aside class="hidden lg:flex flex-col w-72 bg-gray-800 text-white flex-shrink-0">
+        <div class="flex flex-col items-center pt-10 pb-6 px-6 border-b border-gray-700">
+          <div id="sidebar-avatar" class="h-24 w-24 rounded-full bg-gray-600 flex items-center justify-center text-2xl font-bold text-white mb-4 overflow-hidden">
+            <img id="sidebar-avatar-img" class="h-full w-full object-cover hidden" alt="" />
+            <span id="sidebar-avatar-initials"></span>
+          </div>
+          <h2 id="sidebar-name" class="text-lg font-bold text-center"></h2>
+        </div>
+        <nav class="flex-1 py-4 px-3 space-y-0.5">
+          <a href="/profile" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </a>
+          <a href="/profile" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            Profile
+          </a>
+          <a href="/messages" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-700 text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+            Messages
+          </a>
+          <a href="/profile" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+            My Offers
+          </a>
+          <a href="/profile" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            Bookings
+          </a>
+          <a href="/list-your-boat" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+            Listings
+          </a>
+          <a href="/profile" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+            Payment information
+          </a>
+          <a href="/profile" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+            Favourites
+          </a>
+          <div class="pt-2 mt-2 border-t border-gray-700">
+            <button id="sidebar-logout-btn" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors w-full">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+              Log out
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- ===== Main Content Area ===== -->
+      <main class="flex-1 flex bg-gray-50 overflow-hidden">
+
+        <!-- Conversation List Panel -->
+        <div id="conv-list-panel" class="w-full md:w-80 md:flex-shrink-0 flex flex-col border-r border-gray-200 bg-white">
+          <!-- Search bar -->
+          <div class="p-4 border-b border-gray-200">
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+              <input id="conv-search" type="text" placeholder="Search conversations..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+            </div>
+          </div>
+          <!-- Conversation items -->
+          <div id="conv-list" class="flex-1 overflow-y-auto">
+            <!-- Loading -->
+            <div id="conv-loading" class="flex items-center justify-center py-12">
+              <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <!-- Empty state -->
+            <div id="conv-empty" class="hidden px-6 py-12 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
+              <p class="text-sm text-text-muted">No conversations yet</p>
+              <p class="text-xs text-gray-400 mt-1">Start a conversation from a boat listing</p>
+            </div>
+            <!-- Items rendered here by JS -->
+            <div id="conv-items"></div>
+          </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div id="chat-panel" class="hidden md:flex flex-1 flex-col">
+          <!-- No conversation selected -->
+          <div id="chat-empty" class="flex-1 flex items-center justify-center">
+            <div class="text-center px-6">
+              <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/></svg>
+              <p class="text-text-muted font-medium">Select a conversation</p>
+              <p class="text-sm text-gray-400 mt-1">Choose a conversation from the list to start messaging</p>
+            </div>
+          </div>
+
+          <!-- Active chat -->
+          <div id="chat-active" class="hidden flex-1 flex flex-col">
+            <!-- Chat header -->
+            <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0">
+              <button id="chat-back-btn" class="md:hidden p-1 -ml-1 rounded-lg hover:bg-gray-100 transition-colors">
+                <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+              </button>
+              <div id="chat-header-avatar" class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
+                <img id="chat-header-avatar-img" class="h-full w-full object-cover hidden" alt="" />
+                <span id="chat-header-initials"></span>
+              </div>
+              <div class="min-w-0">
+                <h3 id="chat-header-name" class="text-sm font-semibold text-text truncate"></h3>
+                <p id="chat-header-boat" class="text-xs text-text-muted truncate hidden"></p>
+              </div>
+            </div>
+
+            <!-- Messages area -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+            </div>
+
+            <!-- Message input -->
+            <div class="border-t border-gray-200 bg-white p-4 flex-shrink-0">
+              <form id="msg-form" class="flex items-end gap-3">
+                <div class="flex-1 relative">
+                  <textarea id="msg-input" rows="1" placeholder="Type a message..." class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-h-32 overflow-y-auto"></textarea>
+                </div>
+                <button type="submit" id="msg-send-btn" class="flex-shrink-0 h-11 w-11 rounded-xl bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</Layout>
+
+<!-- Firebase auth, Firestore real-time messaging -->
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged, signOut } from "firebase/auth";
+  import {
+    collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs,
+    serverTimestamp, increment, Timestamp
+  } from "firebase/firestore";
+
+  // ---- Helpers ----
+  function getInitials(name: string | null): string {
+    if (!name) return "?";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function timeAgo(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "now";
+    if (mins < 60) return `${mins}m`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d`;
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  }
+
+  function formatTime(date: Date): string {
+    return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function formatDateSeparator(date: Date): string {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (date.toDateString() === today.toDateString()) return "Today";
+    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+    return date.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  }
+
+  // ---- State ----
+  let currentUser: any = null;
+  let activeConversationId: string | null = null;
+  let conversations: any[] = [];
+  let unsubConversations: (() => void) | null = null;
+  let unsubMessages: (() => void) | null = null;
+
+  // ---- DOM refs ----
+  const $ = (id: string) => document.getElementById(id);
+  const convListPanel = $("conv-list-panel")!;
+  const chatPanel = $("chat-panel")!;
+  const chatEmpty = $("chat-empty")!;
+  const chatActive = $("chat-active")!;
+  const convItems = $("conv-items")!;
+  const convLoading = $("conv-loading")!;
+  const convEmpty = $("conv-empty")!;
+  const convSearch = $("conv-search") as HTMLInputElement;
+  const chatMessages = $("chat-messages")!;
+  const chatHeaderName = $("chat-header-name")!;
+  const chatHeaderBoat = $("chat-header-boat")!;
+  const chatHeaderInitials = $("chat-header-initials")!;
+  const chatHeaderAvatarImg = $("chat-header-avatar-img") as HTMLImageElement;
+  const msgInput = $("msg-input") as HTMLTextAreaElement;
+  const msgSendBtn = $("msg-send-btn") as HTMLButtonElement;
+  const msgForm = $("msg-form")!;
+  const chatBackBtn = $("chat-back-btn")!;
+
+  // ---- Auth gate ----
+  let fallbackTimer = setTimeout(() => {
+    $("auth-loading")?.classList.add("hidden");
+    $("auth-gate")?.classList.remove("hidden");
+  }, 3000);
+
+  onAuthStateChanged(auth, async (user) => {
+    clearTimeout(fallbackTimer);
+    const loading = $("auth-loading");
+    const gate = $("auth-gate");
+    const content = $("messages-content");
+
+    if (!user) {
+      loading?.classList.add("hidden");
+      gate?.classList.remove("hidden");
+      content?.classList.add("hidden");
+      cleanup();
+      return;
+    }
+
+    currentUser = user;
+    loading?.classList.add("hidden");
+    gate?.classList.add("hidden");
+    content?.classList.remove("hidden");
+
+    // Sidebar info
+    const initials = getInitials(user.displayName);
+    const displayName = user.displayName || user.email || "User";
+    const sidebarName = $("sidebar-name");
+    const sidebarInitials = $("sidebar-avatar-initials");
+    const sidebarImg = $("sidebar-avatar-img") as HTMLImageElement;
+    if (sidebarName) sidebarName.textContent = displayName;
+    if (sidebarInitials) sidebarInitials.textContent = initials;
+    if (user.photoURL && sidebarImg) {
+      sidebarImg.src = user.photoURL;
+      sidebarImg.classList.remove("hidden");
+    }
+
+    // Start listening to conversations
+    listenConversations(user.uid);
+
+    // Handle URL params
+    const params = new URLSearchParams(window.location.search);
+    const withUserId = params.get("with");
+    const boatId = params.get("boatId");
+    const boatTitle = params.get("boatTitle");
+    const openConvId = params.get("id");
+
+    if (withUserId && withUserId !== user.uid) {
+      await findOrCreateConversation(withUserId, boatId, boatTitle);
+    } else if (openConvId) {
+      // Will open when conversations load
+      activeConversationId = openConvId;
+    }
+  });
+
+  function cleanup() {
+    if (unsubConversations) { unsubConversations(); unsubConversations = null; }
+    if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+    conversations = [];
+    activeConversationId = null;
+    currentUser = null;
+  }
+
+  // ---- Listen to conversations ----
+  function listenConversations(uid: string) {
+    if (unsubConversations) unsubConversations();
+
+    const q = query(
+      collection(db, "conversations"),
+      where("participants", "array-contains", uid),
+      orderBy("updatedAt", "desc")
+    );
+
+    unsubConversations = onSnapshot(q, (snap) => {
+      conversations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      convLoading.classList.add("hidden");
+      renderConversationList();
+
+      // Auto-open conversation if one was specified
+      if (activeConversationId) {
+        const exists = conversations.find(c => c.id === activeConversationId);
+        if (exists) openConversation(activeConversationId);
+      }
+    }, (err) => {
+      console.error("[Messages] Error listening to conversations:", err);
+      convLoading.classList.add("hidden");
+      convEmpty.classList.remove("hidden");
+    });
+  }
+
+  // ---- Render conversation list ----
+  function renderConversationList() {
+    const searchTerm = convSearch.value.toLowerCase().trim();
+    const filtered = searchTerm
+      ? conversations.filter(c => {
+          const other = getOtherParticipant(c);
+          const name = other?.displayName?.toLowerCase() || "";
+          const boat = (c.boatTitle || "").toLowerCase();
+          const lastMsg = (c.lastMessage?.text || "").toLowerCase();
+          return name.includes(searchTerm) || boat.includes(searchTerm) || lastMsg.includes(searchTerm);
+        })
+      : conversations;
+
+    if (filtered.length === 0) {
+      convItems.innerHTML = "";
+      convEmpty.classList.remove("hidden");
+      return;
+    }
+
+    convEmpty.classList.add("hidden");
+    convItems.innerHTML = filtered.map(c => {
+      const other = getOtherParticipant(c);
+      const otherName = other?.displayName || "Unknown";
+      const otherInitials = getInitials(otherName);
+      const otherPhoto = other?.photoURL;
+      const lastText = c.lastMessage?.text || "No messages yet";
+      const lastTime = c.lastMessage?.timestamp
+        ? timeAgo(c.lastMessage.timestamp.toDate ? c.lastMessage.timestamp.toDate() : new Date(c.lastMessage.timestamp))
+        : "";
+      const unread = currentUser ? (c.unreadCount?.[currentUser.uid] || 0) : 0;
+      const isActive = c.id === activeConversationId;
+
+      return `
+        <button data-conv-id="${c.id}" class="conv-item w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors border-b border-gray-100 ${isActive ? "bg-primary/5 border-l-2 border-l-primary" : ""}">
+          <div class="h-11 w-11 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
+            ${otherPhoto ? `<img src="${otherPhoto}" class="h-full w-full object-cover" alt="" />` : `<span>${otherInitials}</span>`}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold text-text truncate ${unread > 0 ? "text-text" : ""}">${otherName}</span>
+              <span class="text-xs text-gray-400 flex-shrink-0 ml-2">${lastTime}</span>
+            </div>
+            ${c.boatTitle ? `<p class="text-xs text-primary truncate">${c.boatTitle}</p>` : ""}
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-text-muted truncate ${unread > 0 ? "font-medium text-text" : ""}">${lastText}</p>
+              ${unread > 0 ? `<span class="ml-2 flex-shrink-0 h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">${unread}</span>` : ""}
+            </div>
+          </div>
+        </button>
+      `;
+    }).join("");
+
+    // Bind click handlers
+    convItems.querySelectorAll(".conv-item").forEach(el => {
+      el.addEventListener("click", () => {
+        const id = el.getAttribute("data-conv-id");
+        if (id) openConversation(id);
+      });
+    });
+  }
+
+  function getOtherParticipant(conv: any) {
+    if (!currentUser || !conv.participantDetails) return null;
+    const otherId = conv.participants.find((p: string) => p !== currentUser.uid);
+    return otherId ? conv.participantDetails[otherId] : null;
+  }
+
+  // ---- Open conversation ----
+  function openConversation(convId: string) {
+    activeConversationId = convId;
+    const conv = conversations.find(c => c.id === convId);
+    if (!conv) return;
+
+    // Update URL without reload
+    const url = new URL(window.location.href);
+    url.searchParams.delete("with");
+    url.searchParams.delete("boatId");
+    url.searchParams.delete("boatTitle");
+    url.searchParams.set("id", convId);
+    window.history.replaceState({}, "", url.toString());
+
+    // Set header
+    const other = getOtherParticipant(conv);
+    chatHeaderName.textContent = other?.displayName || "Unknown";
+    chatHeaderInitials.textContent = getInitials(other?.displayName || null);
+    if (other?.photoURL) {
+      chatHeaderAvatarImg.src = other.photoURL;
+      chatHeaderAvatarImg.classList.remove("hidden");
+    } else {
+      chatHeaderAvatarImg.classList.add("hidden");
+    }
+    if (conv.boatTitle) {
+      chatHeaderBoat.textContent = conv.boatTitle;
+      chatHeaderBoat.classList.remove("hidden");
+    } else {
+      chatHeaderBoat.classList.add("hidden");
+    }
+
+    // Show chat panel (mobile: hide list, show chat)
+    chatEmpty.classList.add("hidden");
+    chatActive.classList.remove("hidden");
+    chatPanel.classList.remove("hidden");
+    chatPanel.classList.add("flex");
+
+    // Mobile: hide conversation list, show chat
+    if (window.innerWidth < 768) {
+      convListPanel.classList.add("hidden");
+    }
+
+    // Re-render list to highlight active
+    renderConversationList();
+
+    // Clear unread count
+    if (currentUser && conv.unreadCount?.[currentUser.uid] > 0) {
+      updateDoc(doc(db, "conversations", convId), {
+        [`unreadCount.${currentUser.uid}`]: 0
+      }).catch(err => console.error("[Messages] Error clearing unread:", err));
+    }
+
+    // Listen to messages
+    listenMessages(convId);
+  }
+
+  // ---- Listen to messages ----
+  function listenMessages(convId: string) {
+    if (unsubMessages) unsubMessages();
+
+    const q = query(
+      collection(db, "conversations", convId, "messages"),
+      orderBy("timestamp", "asc")
+    );
+
+    unsubMessages = onSnapshot(q, (snap) => {
+      const messages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderMessages(messages);
+    }, (err) => {
+      console.error("[Messages] Error listening to messages:", err);
+    });
+  }
+
+  // ---- Render messages ----
+  function renderMessages(messages: any[]) {
+    if (messages.length === 0) {
+      chatMessages.innerHTML = `
+        <div class="flex items-center justify-center h-full">
+          <p class="text-sm text-gray-400">No messages yet. Say hello!</p>
+        </div>
+      `;
+      return;
+    }
+
+    let html = "";
+    let lastDateStr = "";
+
+    messages.forEach(msg => {
+      const ts = msg.timestamp?.toDate ? msg.timestamp.toDate() : (msg.timestamp ? new Date(msg.timestamp) : new Date());
+      const dateStr = ts.toDateString();
+
+      // Date separator
+      if (dateStr !== lastDateStr) {
+        lastDateStr = dateStr;
+        html += `
+          <div class="flex items-center gap-3 my-4">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-xs text-gray-400 font-medium">${formatDateSeparator(ts)}</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+        `;
+      }
+
+      const isMe = currentUser && msg.senderId === currentUser.uid;
+      const time = formatTime(ts);
+
+      html += `
+        <div class="flex ${isMe ? "justify-end" : "justify-start"} mb-1">
+          <div class="${isMe ? "bg-primary text-white" : "bg-white border border-gray-200 text-text"} rounded-2xl px-4 py-2 max-w-[75%] ${isMe ? "rounded-br-md" : "rounded-bl-md"}">
+            <p class="text-sm whitespace-pre-wrap break-words">${escapeHtml(msg.text)}</p>
+            <p class="text-[10px] ${isMe ? "text-white/70" : "text-gray-400"} mt-0.5 text-right">${time}</p>
+          </div>
+        </div>
+      `;
+    });
+
+    chatMessages.innerHTML = html;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ---- Send message ----
+  msgForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser || !activeConversationId) return;
+
+    const text = msgInput.value.trim();
+    if (!text) return;
+
+    msgInput.value = "";
+    msgInput.style.height = "auto";
+    msgSendBtn.disabled = true;
+
+    try {
+      const displayName = currentUser.displayName || currentUser.email || "User";
+
+      // Add message to subcollection
+      await addDoc(collection(db, "conversations", activeConversationId, "messages"), {
+        text,
+        senderId: currentUser.uid,
+        senderName: displayName,
+        timestamp: serverTimestamp(),
+        readBy: [currentUser.uid]
+      });
+
+      // Update conversation's lastMessage and recipient's unread count
+      const conv = conversations.find(c => c.id === activeConversationId);
+      if (conv) {
+        const otherId = conv.participants.find((p: string) => p !== currentUser.uid);
+        const updateData: any = {
+          lastMessage: { text, senderId: currentUser.uid, timestamp: Timestamp.now() },
+          updatedAt: serverTimestamp()
+        };
+        if (otherId) {
+          updateData[`unreadCount.${otherId}`] = increment(1);
+        }
+        await updateDoc(doc(db, "conversations", activeConversationId), updateData);
+      }
+    } catch (err) {
+      console.error("[Messages] Error sending message:", err);
+      msgInput.value = text; // Restore on error
+    }
+  });
+
+  // ---- Auto-resize textarea + enable/disable send ----
+  msgInput.addEventListener("input", () => {
+    msgInput.style.height = "auto";
+    msgInput.style.height = Math.min(msgInput.scrollHeight, 128) + "px";
+    msgSendBtn.disabled = !msgInput.value.trim();
+  });
+
+  // Enter to send, Shift+Enter for newline
+  msgInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (msgInput.value.trim()) {
+        msgForm.dispatchEvent(new Event("submit", { cancelable: true }));
+      }
+    }
+  });
+
+  // ---- Search filter ----
+  convSearch.addEventListener("input", () => {
+    renderConversationList();
+  });
+
+  // ---- Mobile back button ----
+  chatBackBtn.addEventListener("click", () => {
+    chatPanel.classList.add("hidden");
+    chatPanel.classList.remove("flex");
+    convListPanel.classList.remove("hidden");
+    activeConversationId = null;
+    renderConversationList();
+
+    // Clear URL param
+    const url = new URL(window.location.href);
+    url.searchParams.delete("id");
+    window.history.replaceState({}, "", url.toString());
+  });
+
+  // ---- Find or create conversation ----
+  async function findOrCreateConversation(otherUid: string, boatId: string | null, boatTitle: string | null) {
+    if (!currentUser) return;
+
+    // Check if conversation already exists
+    const q = query(
+      collection(db, "conversations"),
+      where("participants", "array-contains", currentUser.uid)
+    );
+
+    const snap = await getDocs(q);
+    let existingConv: any = null;
+
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if (data.participants.includes(otherUid)) {
+        // If boatId specified, try to match; otherwise take first match
+        if (boatId) {
+          if (data.boatId === boatId) existingConv = { id: d.id, ...data };
+        } else {
+          if (!existingConv) existingConv = { id: d.id, ...data };
+        }
+      }
+    });
+
+    if (existingConv) {
+      activeConversationId = existingConv.id;
+      openConversation(existingConv.id);
+      return;
+    }
+
+    // Create new conversation
+    const displayName = currentUser.displayName || currentUser.email || "User";
+    const nameParts = displayName.split(" ");
+
+    const newConv = {
+      participants: [currentUser.uid, otherUid],
+      participantDetails: {
+        [currentUser.uid]: {
+          displayName,
+          photoURL: currentUser.photoURL || null,
+          firstName: nameParts[0] || "",
+          lastName: nameParts.slice(1).join(" ") || ""
+        },
+        [otherUid]: {
+          displayName: "User",
+          photoURL: null,
+          firstName: "",
+          lastName: ""
+        }
+      },
+      lastMessage: null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      boatId: boatId || null,
+      boatTitle: boatTitle || null,
+      unreadCount: { [currentUser.uid]: 0, [otherUid]: 0 }
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, "conversations"), newConv);
+      activeConversationId = docRef.id;
+      // The onSnapshot will pick it up and open it
+    } catch (err) {
+      console.error("[Messages] Error creating conversation:", err);
+    }
+  }
+
+  // ---- Sidebar logout ----
+  $("sidebar-logout-btn")?.addEventListener("click", async () => {
+    cleanup();
+    await signOut(auth);
+    window.location.href = "/";
+  });
+</script>

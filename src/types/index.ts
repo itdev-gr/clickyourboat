@@ -54,6 +54,38 @@ export interface Subscriber {
   createdAt: Date;
 }
 
+export interface Conversation {
+  id: string;
+  participants: string[];
+  participantDetails: {
+    [uid: string]: {
+      displayName: string;
+      photoURL: string | null;
+      firstName: string;
+      lastName: string;
+    };
+  };
+  lastMessage: {
+    text: string;
+    senderId: string;
+    timestamp: Date;
+  } | null;
+  createdAt: Date;
+  updatedAt: Date;
+  boatId: string | null;
+  boatTitle: string | null;
+  unreadCount: { [uid: string]: number };
+}
+
+export interface Message {
+  id: string;
+  text: string;
+  senderId: string;
+  senderName: string;
+  timestamp: Date;
+  readBy: string[];
+}
+
 export type BoatType = Boat["type"] | "luxury" | "party";
 
 export interface SearchParams {
