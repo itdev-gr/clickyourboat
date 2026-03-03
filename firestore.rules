@@ -3,6 +3,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Users: owner read/write own doc, admin can read all
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId
+        && (!("type" in request.resource.data) || request.resource.data.type == resource.data.type);
+      allow read: if request.auth != null && request.auth.token.admin == true;
+    }
+
     // Boats: public read, owner write
     match /boats/{boatId} {
       allow read: if true;
