@@ -45,9 +45,51 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     </div>
   </div>
 
+  <!-- Logged in: User's existing listings -->
+  <div id="my-listings" class="hidden">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-bold text-text">My Listings</h1>
+        <button
+          type="button"
+          id="add-new-listing-btn"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Add New Listing
+        </button>
+      </div>
+
+      <!-- Loading spinner -->
+      <div id="listings-loading" class="flex items-center justify-center py-16">
+        <div class="text-center">
+          <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p class="text-sm text-text-muted">Loading your listings...</p>
+        </div>
+      </div>
+
+      <!-- Listings grid -->
+      <div id="listings-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+    </div>
+  </div>
+
   <!-- Logged in: Boat listing form -->
   <div id="listing-form" class="hidden">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+      <!-- Back link (hidden when user has no listings) -->
+      <button
+        type="button"
+        id="back-to-listings-btn"
+        class="hidden inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors mb-6"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+        Back to My Listings
+      </button>
 
       <!-- ============ SECTION: Your yacht ============ -->
       <section>
@@ -287,9 +329,14 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
           <div class="flex justify-end">
             <button
               type="submit"
-              class="inline-flex items-center px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-pink focus:ring-offset-2"
+              id="submit-btn"
+              class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-pink focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Save
+              <svg id="submit-spinner" class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <span id="submit-text">Save</span>
             </button>
           </div>
         </form>
@@ -337,6 +384,14 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
                 <span class="text-sm text-primary hover:text-primary-dark underline font-medium">Download from your device</span>
               </p>
             </div>
+          </div>
+
+          <!-- Success / Error banners -->
+          <div id="form-success" class="hidden rounded-xl bg-green-50 border border-green-200 p-4">
+            <p class="text-sm font-semibold text-green-800">Your boat has been listed successfully!</p>
+          </div>
+          <div id="form-error" class="hidden rounded-xl bg-red-50 border border-red-200 p-4">
+            <p class="text-sm font-semibold text-red-800" id="form-error-msg">Something went wrong. Please try again.</p>
           </div>
 
           <!-- Thumbnail placeholders -->
@@ -398,6 +453,9 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
       });
     }
 
+    // Track selected files in a mutable array (FileList is immutable)
+    window.__selectedFiles = [];
+
     // Photo preview on file select
     var previewGrid = document.getElementById("photo-previews");
     if (photoInput && previewGrid) {
@@ -408,12 +466,19 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
         // Clear placeholder slots
         previewGrid.innerHTML = "";
 
+        // Populate mutable files array
+        window.__selectedFiles = [];
+        for (var j = 0; j < files.length; j++) {
+          window.__selectedFiles.push(files[j]);
+        }
+
         for (var i = 0; i < files.length; i++) {
-          (function (file) {
+          (function (file, index) {
             var reader = new FileReader();
             reader.onload = function (e) {
               var div = document.createElement("div");
               div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
+              div.setAttribute("data-file-index", index);
               div.innerHTML =
                 '<img src="' + e.target.result + '" alt="Boat photo" class="h-full w-full object-cover" />' +
                 '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-photo">' +
@@ -422,11 +487,13 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
               previewGrid.appendChild(div);
 
               div.querySelector(".remove-photo").addEventListener("click", function () {
+                // Null out the file so it's excluded on submit
+                window.__selectedFiles[index] = null;
                 div.remove();
               });
             };
             reader.readAsDataURL(file);
-          })(files[i]);
+          })(files[i], i);
         }
       });
     }
@@ -450,23 +517,251 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   });
 </script>
 
-<!-- Firebase auth check — loaded separately so UI never breaks -->
+<!-- Firebase auth check + listings query -->
 <script>
-  import { auth } from "../lib/firebase";
+  import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
+  import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+  import { createBoatListing } from "../lib/api";
 
   const loading = document.getElementById("auth-loading");
   const gate = document.getElementById("auth-gate");
   const form = document.getElementById("listing-form");
+  const myListings = document.getElementById("my-listings");
+  const listingsGrid = document.getElementById("listings-grid");
+  const listingsLoading = document.getElementById("listings-loading");
+  const addNewBtn = document.getElementById("add-new-listing-btn");
+  const backBtn = document.getElementById("back-to-listings-btn");
 
-  onAuthStateChanged(auth, (user) => {
+  // Track whether this user has listings (to show/hide back button)
+  let userHasListings = false;
+
+  function hideAll() {
+    gate?.classList.add("hidden");
+    form?.classList.add("hidden");
+    myListings?.classList.add("hidden");
+  }
+
+  function showForm() {
+    hideAll();
+    form?.classList.remove("hidden");
+    if (userHasListings) {
+      backBtn?.classList.remove("hidden");
+    }
+  }
+
+  function showListings() {
+    hideAll();
+    myListings?.classList.remove("hidden");
+    backBtn?.classList.add("hidden");
+  }
+
+  // "Add New Listing" button
+  addNewBtn?.addEventListener("click", showForm);
+
+  // "Back to My Listings" link
+  backBtn?.addEventListener("click", showListings);
+
+  function renderListingCard(boat: { id: string; boatType?: string; type?: string; manufacturer?: string; model?: string; title?: string; city?: string; location?: { city?: string }; images?: string[]; createdAt?: any }) {
+    const card = document.createElement("a");
+    card.className = "group block rounded-2xl border border-gray-200 bg-white overflow-hidden hover:shadow-md transition-shadow";
+    card.href = "#"; // No detail page yet
+
+    const typeLabel = boat.boatType || boat.type || "Boat";
+    const name = boat.manufacturer && boat.model
+      ? `${boat.manufacturer} ${boat.model}`
+      : boat.title || "Untitled";
+    const city = boat.city || boat.location?.city || "—";
+    const createdDate = boat.createdAt?.toDate
+      ? boat.createdAt.toDate().toLocaleDateString()
+      : boat.createdAt instanceof Date
+        ? boat.createdAt.toLocaleDateString()
+        : "";
+    const firstImage = boat.images && boat.images.length > 0 ? boat.images[0] : null;
+
+    const imagePart = firstImage
+      ? `<img src="${firstImage}" alt="${name}" class="w-full h-40 object-cover" />`
+      : `<div class="w-full h-40 bg-gray-100 flex items-center justify-center">
+           <svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+             <path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/>
+             <path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>`;
+
+    card.innerHTML = `
+      ${imagePart}
+      <div class="p-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2 capitalize">${typeLabel}</span>
+        <h3 class="text-sm font-bold text-text truncate">${name}</h3>
+        <p class="text-xs text-text-muted mt-1">${city}</p>
+        ${createdDate ? `<p class="text-xs text-text-muted mt-1">${createdDate}</p>` : ""}
+      </div>
+    `;
+
+    return card;
+  }
+
+  // --- Form submit handler ---
+  const boatForm = document.getElementById("boat-form") as HTMLFormElement | null;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement | null;
+  const submitSpinner = document.getElementById("submit-spinner");
+  const submitText = document.getElementById("submit-text");
+  const formSuccess = document.getElementById("form-success");
+  const formError = document.getElementById("form-error");
+  const formErrorMsg = document.getElementById("form-error-msg");
+
+  boatForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Hide previous banners
+    formSuccess?.classList.add("hidden");
+    formError?.classList.add("hidden");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
+
+    // Validate boat type
+    const boatType = (document.getElementById("boat-type-input") as HTMLInputElement).value;
+    if (!boatType) {
+      formError?.classList.remove("hidden");
+      if (formErrorMsg) formErrorMsg.textContent = "Please select a boat type.";
+      return;
+    }
+
+    // Collect form values
+    const getValue = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLSelectElement)?.value || "";
+    const data = {
+      boatType: boatType as any,
+      city: getValue("city"),
+      harbour: getValue("harbour"),
+      professional: getValue("professional") as "yes" | "no",
+      manufacturer: getValue("manufacturer"),
+      model: getValue("model"),
+      skipper: getValue("skipper") as any,
+      capacity: Number(getValue("capacity")) || 0,
+      length: Number(getValue("length")) || 0,
+      company: getValue("company"),
+      website: getValue("website"),
+      ownerId: currentUser.uid,
+    };
+
+    // Get files (filter out nulls from removed photos)
+    const files: File[] = ((window as any).__selectedFiles || []).filter((f: any) => f != null);
+
+    // Loading state
+    if (submitBtn) submitBtn.disabled = true;
+    submitSpinner?.classList.remove("hidden");
+    if (submitText) submitText.textContent = "Saving...";
+
+    try {
+      await createBoatListing(data, files);
+
+      // Success
+      formSuccess?.classList.remove("hidden");
+      boatForm.reset();
+      (window as any).__selectedFiles = [];
+
+      // Reset boat type selection UI
+      document.querySelectorAll(".boat-type-btn").forEach((b) => {
+        b.classList.remove("border-primary", "bg-primary/5", "ring-2", "ring-primary");
+        b.classList.add("border-gray-200");
+      });
+      (document.getElementById("boat-type-input") as HTMLInputElement).value = "";
+
+      // Reset photo previews to placeholders
+      const previewGrid = document.getElementById("photo-previews");
+      if (previewGrid) {
+        const placeholder = `<div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
+          <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+            <rect x="10" y="10" width="28" height="28" rx="4" />
+            <circle cx="20" cy="22" r="4" />
+            <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>`;
+        previewGrid.innerHTML = placeholder + placeholder + placeholder;
+      }
+
+      // If user had existing listings, re-query and switch to listings view
+      if (userHasListings) {
+        setTimeout(async () => {
+          try {
+            const q = query(
+              collection(db, "boats"),
+              where("ownerId", "==", currentUser.uid),
+              orderBy("createdAt", "desc")
+            );
+            const snapshot = await getDocs(q);
+            listingsGrid!.innerHTML = "";
+            snapshot.docs.forEach((doc) => {
+              const cardData = doc.data();
+              const card = renderListingCard({ id: doc.id, ...cardData });
+              listingsGrid!.appendChild(card);
+            });
+            userHasListings = true;
+            showListings();
+          } catch (err) {
+            console.error("Failed to refresh listings:", err);
+          }
+        }, 1500);
+      } else {
+        // First listing — now they have listings
+        userHasListings = true;
+      }
+    } catch (err: any) {
+      console.error("Failed to save listing:", err);
+      formError?.classList.remove("hidden");
+      if (formErrorMsg) formErrorMsg.textContent = err?.message || "Something went wrong. Please try again.";
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+      submitSpinner?.classList.add("hidden");
+      if (submitText) submitText.textContent = "Save";
+    }
+  });
+
+  onAuthStateChanged(auth, async (user) => {
     loading?.classList.add("hidden");
-    if (user) {
-      gate?.classList.add("hidden");
-      form?.classList.remove("hidden");
-    } else {
+
+    if (!user) {
+      hideAll();
       gate?.classList.remove("hidden");
-      form?.classList.add("hidden");
+      return;
+    }
+
+    // User is logged in — query their boats
+    gate?.classList.add("hidden");
+
+    try {
+      const q = query(
+        collection(db, "boats"),
+        where("ownerId", "==", user.uid),
+        orderBy("createdAt", "desc")
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        // No listings — show the form directly
+        userHasListings = false;
+        showForm();
+        backBtn?.classList.add("hidden");
+      } else {
+        // Has listings — render cards
+        userHasListings = true;
+        listingsGrid!.innerHTML = "";
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          const card = renderListingCard({ id: doc.id, ...data });
+          listingsGrid!.appendChild(card);
+        });
+        listingsLoading?.classList.add("hidden");
+        listingsGrid?.classList.remove("hidden");
+        showListings();
+      }
+    } catch (err) {
+      console.error("Failed to fetch listings:", err);
+      // Fallback: show form on error
+      userHasListings = false;
+      showForm();
+      backBtn?.classList.add("hidden");
     }
   });
 </script>

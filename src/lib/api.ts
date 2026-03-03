@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
 import {
   collection,
   query,
@@ -7,10 +7,13 @@ import {
   limit,
   getDocs,
   addDoc,
+  doc,
+  setDoc,
   serverTimestamp,
   type WhereFilterOp,
 } from "firebase/firestore";
-import type { Boat, Destination, Review, Article, SearchParams } from "../types";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import type { Boat, BoatListing, Destination, Review, Article, SearchParams } from "../types";
 
 // --- Boats ---
 export async function searchBoats(params: SearchParams, maxResults = 20): Promise<Boat[]> {
@@ -121,4 +124,30 @@ export async function subscribeNewsletter(email: string): Promise<void> {
     email,
     createdAt: serverTimestamp(),
   });
+}
+
+// --- Boat Listings ---
+export async function uploadBoatPhotos(docId: string, files: File[]): Promise<string[]> {
+  const urls: string[] = [];
+  for (const file of files) {
+    const storageRef = ref(storage, `boats/${docId}/${Date.now()}-${file.name}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    urls.push(url);
+  }
+  return urls;
+}
+
+export async function createBoatListing(
+  data: Omit<BoatListing, "images" | "createdAt">,
+  files: File[]
+): Promise<string> {
+  const docRef = doc(collection(db, "boats"));
+  const imageUrls = files.length > 0 ? await uploadBoatPhotos(docRef.id, files) : [];
+  await setDoc(docRef, {
+    ...data,
+    images: imageUrls,
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
 }

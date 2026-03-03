@@ -18,6 +18,26 @@ export interface Boat {
   createdAt: Date;
 }
 
+export type BoatListingType = "motorboat" | "sailboat" | "rib" | "catamaran" | "houseboat" | "jetski" | "gulet" | "without-licence" | "yacht";
+export type SkipperOption = "with-skipper" | "without-skipper" | "both";
+
+export interface BoatListing {
+  boatType: BoatListingType;
+  city: string;
+  harbour: string;
+  professional: "yes" | "no";
+  manufacturer: string;
+  model: string;
+  skipper: SkipperOption;
+  capacity: number;
+  length: number;
+  company: string;
+  website: string;
+  images: string[];       // Firebase Storage download URLs
+  ownerId: string;
+  createdAt: any;         // serverTimestamp()
+}
+
 export interface Destination {
   id: string;
   name: string;
