@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 
 const title = "Charter Types — Choose Your Perfect Charter | BoatHaven";
 const description =
-  "Explore our charter types: Without Licence boats, Fishing Charters, and Luxury Charters. Find the ideal charter experience for your next trip on the water.";
+  "Explore our charter types: Without Licence boats and Luxury Charters. Find the ideal charter experience for your next trip on the water.";
 
 const charterTypes = [
   {
@@ -16,17 +16,6 @@ const charterTypes = [
     image: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=800&q=80&auto=format",
     specs: { capacity: "2–8 guests", length: "4–7 m", speed: "5–15 knots", experience: "No experience needed" },
     priceFrom: 80,
-  },
-  {
-    name: "Fishing Charter",
-    slug: "fishing-charter",
-    headline: "Cast your line in the world's best fishing waters",
-    description:
-      "Whether you're a seasoned angler or trying fishing for the first time, our fishing charters offer an unforgettable experience. Join an expert captain who knows the local waters, the best spots, and the right techniques. All fishing equipment is provided — just bring your sense of adventure and get ready to reel in the catch of the day.",
-    features: ["Expert fishing captain included", "All equipment provided", "Local knowledge of best spots", "Suitable for all skill levels", "Half-day & full-day options", "Deep sea & coastal fishing"],
-    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80&auto=format",
-    specs: { capacity: "4–10 guests", length: "7–15 m", duration: "4–8 hours", experience: "All levels welcome" },
-    priceFrom: 300,
   },
   {
     name: "Luxury Charter",
@@ -182,13 +171,11 @@ const charterTypes = [
             <tr>
               <td class="px-5 py-3.5 font-medium text-text">Duration</td>
               <td class="text-center px-6 py-3.5 text-text-muted">Day trips</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">4–8 hours</td>
               <td class="text-center px-6 py-3.5 text-text-muted">Day to multi-week</td>
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text">Skipper</td>
               <td class="text-center px-6 py-3.5 text-text-muted">Not required</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Included</td>
               <td class="text-center px-6 py-3.5 text-text-muted">Full crew included</td>
             </tr>
             <tr>
@@ -202,7 +189,6 @@ const charterTypes = [
             <tr>
               <td class="px-5 py-3.5 font-medium text-text">Best for</td>
               <td class="text-center px-6 py-3.5 text-text-muted">Beginners & casual trips</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Anglers & group fishing</td>
               <td class="text-center px-6 py-3.5 text-text-muted">VIP events & celebrations</td>
             </tr>
             <tr>

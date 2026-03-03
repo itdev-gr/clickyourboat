@@ -13,5 +13,8 @@
     "astro": "^5.17.1",
     "firebase": "^12.10.0",
     "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.8.0"
   }
 }

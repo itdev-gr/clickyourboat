@@ -315,7 +315,17 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     GoogleAuthProvider,
     FacebookAuthProvider,
     signInWithPopup,
+    onAuthStateChanged,
   } from "firebase/auth";
+
+  // Redirect destination: ?redirect=/list-your-boat or default "/"
+  const params = new URLSearchParams(window.location.search);
+  const redirectTo = params.get("redirect") || "/";
+
+  // If already logged in, redirect away
+  onAuthStateChanged(auth, (user) => {
+    if (user) window.location.href = redirectTo;
+  });
 
   const loginForm = document.getElementById("login-form") as HTMLFormElement;
   const loginError = document.getElementById("login-error") as HTMLParagraphElement;
@@ -327,16 +337,31 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     el.classList.remove("hidden");
   }
 
+  function setLoading(btn: HTMLButtonElement, loading: boolean) {
+    btn.disabled = loading;
+    if (loading) {
+      btn.dataset.originalText = btn.textContent || "";
+      btn.textContent = "Please wait...";
+      btn.classList.add("opacity-70", "cursor-not-allowed");
+    } else {
+      btn.textContent = btn.dataset.originalText || "";
+      btn.classList.remove("opacity-70", "cursor-not-allowed");
+    }
+  }
+
   // Login
   loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     loginError.classList.add("hidden");
+    const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+    setLoading(submitBtn, true);
     const email = (loginForm.elements.namedItem("email") as HTMLInputElement).value;
     const password = (loginForm.elements.namedItem("password") as HTMLInputElement).value;
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = "/";
+      window.location.href = redirectTo;
     } catch (err: any) {
+      setLoading(submitBtn, false);
       showError(loginError, err.code === "auth/invalid-credential"
         ? "Invalid email or password. Please try again."
         : "Something went wrong. Please try again.");
@@ -347,6 +372,8 @@ const description = "Log in or create your BoatHaven account to rent boats, save
   signupForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     signupError.classList.add("hidden");
+    const submitBtn = signupForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+    setLoading(submitBtn, true);
     const firstName = (signupForm.elements.namedItem("firstName") as HTMLInputElement).value;
     const lastName = (signupForm.elements.namedItem("lastName") as HTMLInputElement).value;
     const email = (signupForm.elements.namedItem("email") as HTMLInputElement).value;
@@ -354,8 +381,9 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-      window.location.href = "/";
+      window.location.href = redirectTo;
     } catch (err: any) {
+      setLoading(submitBtn, false);
       if (err.code === "auth/email-already-in-use") {
         showError(signupError, "This email is already registered. Try logging in instead.");
       } else if (err.code === "auth/weak-password") {
@@ -366,21 +394,18 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     }
   });
 
-  // Social auth
-  document.getElementById("google-login-btn")?.addEventListener("click", async () => {
-    try { await signInWithPopup(auth, new GoogleAuthProvider()); window.location.href = "/"; }
-    catch { showError(loginError, "Google sign-in failed. Please try again."); }
-  });
-  document.getElementById("facebook-login-btn")?.addEventListener("click", async () => {
-    try { await signInWithPopup(auth, new FacebookAuthProvider()); window.location.href = "/"; }
-    catch { showError(loginError, "Facebook sign-in failed. Please try again."); }
-  });
-  document.getElementById("google-signup-btn")?.addEventListener("click", async () => {
-    try { await signInWithPopup(auth, new GoogleAuthProvider()); window.location.href = "/"; }
-    catch { showError(signupError, "Google sign-up failed. Please try again."); }
-  });
-  document.getElementById("facebook-signup-btn")?.addEventListener("click", async () => {
-    try { await signInWithPopup(auth, new FacebookAuthProvider()); window.location.href = "/"; }
-    catch { showError(signupError, "Facebook sign-up failed. Please try again."); }
-  });
+  // Social auth helper
+  async function socialAuth(provider: any, errorEl: HTMLElement) {
+    try {
+      await signInWithPopup(auth, provider);
+      window.location.href = redirectTo;
+    } catch {
+      showError(errorEl, "Sign-in failed. Please try again.");
+    }
+  }
+
+  document.getElementById("google-login-btn")?.addEventListener("click", () => socialAuth(new GoogleAuthProvider(), loginError));
+  document.getElementById("facebook-login-btn")?.addEventListener("click", () => socialAuth(new FacebookAuthProvider(), loginError));
+  document.getElementById("google-signup-btn")?.addEventListener("click", () => socialAuth(new GoogleAuthProvider(), signupError));
+  document.getElementById("facebook-signup-btn")?.addEventListener("click", () => socialAuth(new FacebookAuthProvider(), signupError));
 </script>
