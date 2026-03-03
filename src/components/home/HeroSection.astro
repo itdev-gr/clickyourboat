@@ -1,0 +1,33 @@
+---
+import SearchForm from "../search/SearchForm.astro";
+---
+
+<section class="relative min-h-[600px] lg:min-h-[700px] flex items-center" aria-label="Hero">
+  <!-- Background Image -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=1920&q=80&auto=format"
+      alt=""
+      class="h-full w-full object-cover"
+      loading="eager"
+      decoding="async"
+    />
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full py-20">
+    <div class="max-w-3xl">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
+        Find your perfect<br />boat experience
+      </h1>
+      <p class="text-lg sm:text-xl text-white/85 mb-10 max-w-xl">
+        Choose from thousands of boats worldwide. Set sail on your next unforgettable adventure.
+      </p>
+    </div>
+
+    <!-- Search Form (Hydrated Island) -->
+    <SearchForm />
+  </div>
+</section>

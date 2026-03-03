@@ -1,0 +1,386 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Log In or Sign Up — BoatHaven";
+const description = "Log in or create your BoatHaven account to rent boats, save favourites, and start your next adventure.";
+---
+
+<Layout title={title} description={description}>
+  <div class="min-h-[calc(100vh-64px)] flex">
+    <!-- Left: Image panel (hidden on mobile) -->
+    <div class="hidden lg:block lg:w-1/2 relative">
+      <img
+        src="https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=1200&q=80&auto=format"
+        alt="Sailing at sunset"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-black/20"></div>
+      <div class="relative z-10 flex flex-col justify-end h-full p-12">
+        <div class="max-w-sm mb-10">
+          <h2 class="text-2xl font-bold text-white mb-3">Your next adventure starts here</h2>
+          <p class="text-white/70 text-sm leading-relaxed mb-6">
+            Join BoatHaven and get access to over 50,000 boats in 600+ destinations worldwide.
+          </p>
+          <div class="flex items-center gap-6">
+            <div>
+              <p class="text-2xl font-extrabold text-white">50K+</p>
+              <p class="text-xs text-white/60">Boats</p>
+            </div>
+            <div class="h-8 w-px bg-white/20"></div>
+            <div>
+              <p class="text-2xl font-extrabold text-white">600+</p>
+              <p class="text-xs text-white/60">Destinations</p>
+            </div>
+            <div class="h-8 w-px bg-white/20"></div>
+            <div>
+              <p class="text-2xl font-extrabold text-white">12K+</p>
+              <p class="text-xs text-white/60">Reviews</p>
+            </div>
+          </div>
+        </div>
+        <blockquote class="max-w-md border-t border-white/15 pt-6">
+          <p class="text-base text-white/90 font-medium leading-relaxed mb-3">
+            "BoatHaven made our family holiday unforgettable. The booking was seamless and the boat was perfect."
+          </p>
+          <footer class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">MS</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Maria Santos</p>
+              <p class="text-white/50 text-xs">Sailed in Santorini</p>
+            </div>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+
+    <!-- Right: Form panel -->
+    <div class="flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-16">
+      <div class="w-full max-w-md">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2 text-primary font-bold text-xl mb-8">
+          <svg class="h-8 w-8" viewBox="0 0 32 32" fill="none"><path d="M4 22C4 22 8 18 16 18C24 18 28 22 28 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M16 18V6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M16 6L24 14H16" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/></svg>
+          BoatHaven
+        </a>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 mb-8">
+          <button
+            id="tab-login"
+            class="auth-tab pb-3 px-1 mr-6 text-sm font-bold border-b-2 border-primary text-primary transition-colors"
+            data-tab="login"
+          >
+            Log in
+          </button>
+          <button
+            id="tab-signup"
+            class="auth-tab pb-3 px-1 text-sm font-bold border-b-2 border-transparent text-text-muted hover:text-text transition-colors"
+            data-tab="signup"
+          >
+            Create account
+          </button>
+        </div>
+
+        <!-- ============ LOGIN PANEL ============ -->
+        <div id="panel-login">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-2">Welcome back</h1>
+          <p class="text-text-muted mb-6">Log in to your account to continue</p>
+
+          <!-- Social -->
+          <div class="space-y-3 mb-5">
+            <button
+              id="google-login-btn"
+              class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-text hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Continue with Google
+            </button>
+            <button
+              id="facebook-login-btn"
+              class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-text hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <svg class="h-5 w-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Continue with Facebook
+            </button>
+          </div>
+
+          <div class="flex items-center gap-4 mb-5">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-xs text-text-muted font-medium">or</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+
+          <form id="login-form" class="space-y-4">
+            <div>
+              <label for="login-email" class="block text-sm font-medium text-text mb-1.5">Email address</label>
+              <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="you@example.com" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="login-password" class="block text-sm font-medium text-text">Password</label>
+                <a href="/forgot-password" class="text-xs text-primary hover:text-primary-dark transition-colors font-medium">Forgot password?</a>
+              </div>
+              <div class="relative">
+                <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="Enter your password" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors" aria-label="Show password">
+                  <svg class="h-5 w-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <svg class="h-5 w-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+                </button>
+              </div>
+            </div>
+            <p id="login-error" class="text-sm text-red-500 hidden"></p>
+            <button type="submit" class="w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+              Log in
+            </button>
+          </form>
+
+          <p class="mt-6 text-center text-sm text-text-muted">
+            Don't have an account?
+            <button class="font-semibold text-primary hover:text-primary-dark transition-colors switch-to-signup">Sign up</button>
+          </p>
+        </div>
+
+        <!-- ============ SIGNUP PANEL ============ -->
+        <div id="panel-signup" class="hidden">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-2">Create your account</h1>
+          <p class="text-text-muted mb-6">Join thousands of boaters around the world</p>
+
+          <!-- Social -->
+          <div class="space-y-3 mb-5">
+            <button
+              id="google-signup-btn"
+              class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-text hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Continue with Google
+            </button>
+            <button
+              id="facebook-signup-btn"
+              class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-text hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <svg class="h-5 w-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Continue with Facebook
+            </button>
+          </div>
+
+          <div class="flex items-center gap-4 mb-5">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-xs text-text-muted font-medium">or</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+
+          <form id="signup-form" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="signup-first" class="block text-sm font-medium text-text mb-1.5">First name</label>
+                <input type="text" id="signup-first" name="firstName" required autocomplete="given-name" placeholder="John" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+              <div>
+                <label for="signup-last" class="block text-sm font-medium text-text mb-1.5">Last name</label>
+                <input type="text" id="signup-last" name="lastName" required autocomplete="family-name" placeholder="Doe" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+            </div>
+            <div>
+              <label for="signup-email" class="block text-sm font-medium text-text mb-1.5">Email address</label>
+              <input type="email" id="signup-email" name="email" required autocomplete="email" placeholder="you@example.com" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+            </div>
+            <div>
+              <label for="signup-password" class="block text-sm font-medium text-text mb-1.5">Password</label>
+              <div class="relative">
+                <input type="password" id="signup-password" name="password" required minlength={8} autocomplete="new-password" placeholder="Min. 8 characters" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors" aria-label="Show password">
+                  <svg class="h-5 w-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <svg class="h-5 w-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+                </button>
+              </div>
+              <!-- Strength bars -->
+              <div class="mt-2 flex gap-1.5" id="strength-bars">
+                <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors"></div>
+                <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors"></div>
+                <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors"></div>
+                <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors"></div>
+              </div>
+              <p id="strength-text" class="text-xs text-text-muted mt-1"></p>
+            </div>
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="signup-terms" name="terms" required class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary mt-0.5" />
+              <span class="text-xs text-text-muted leading-relaxed">
+                I agree to the <a href="/terms" class="text-primary hover:underline">Terms of Service</a> and <a href="/privacy" class="text-primary hover:underline">Privacy Policy</a>
+              </span>
+            </label>
+            <p id="signup-error" class="text-sm text-red-500 hidden"></p>
+            <button type="submit" class="w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+              Create account
+            </button>
+          </form>
+
+          <p class="mt-6 text-center text-sm text-text-muted">
+            Already have an account?
+            <button class="font-semibold text-primary hover:text-primary-dark transition-colors switch-to-login">Log in</button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- UI logic — no dependencies, always works -->
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    var tabLogin = document.getElementById("tab-login");
+    var tabSignup = document.getElementById("tab-signup");
+    var panelLogin = document.getElementById("panel-login");
+    var panelSignup = document.getElementById("panel-signup");
+
+    function showLogin() {
+      panelLogin.classList.remove("hidden");
+      panelSignup.classList.add("hidden");
+      tabLogin.classList.add("border-primary", "text-primary");
+      tabLogin.classList.remove("border-transparent", "text-text-muted");
+      tabSignup.classList.remove("border-primary", "text-primary");
+      tabSignup.classList.add("border-transparent", "text-text-muted");
+    }
+
+    function showSignup() {
+      panelSignup.classList.remove("hidden");
+      panelLogin.classList.add("hidden");
+      tabSignup.classList.add("border-primary", "text-primary");
+      tabSignup.classList.remove("border-transparent", "text-text-muted");
+      tabLogin.classList.remove("border-primary", "text-primary");
+      tabLogin.classList.add("border-transparent", "text-text-muted");
+    }
+
+    tabLogin.addEventListener("click", showLogin);
+    tabSignup.addEventListener("click", showSignup);
+
+    document.querySelectorAll(".switch-to-signup").forEach(function (el) {
+      el.addEventListener("click", showSignup);
+    });
+    document.querySelectorAll(".switch-to-login").forEach(function (el) {
+      el.addEventListener("click", showLogin);
+    });
+
+    // Show signup tab if URL has ?signup
+    if (window.location.search.indexOf("signup") !== -1) showSignup();
+
+    // Password toggles
+    document.querySelectorAll(".toggle-pw").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var input = btn.parentElement.querySelector("input");
+        var isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        btn.querySelector(".eye-open").classList.toggle("hidden");
+        btn.querySelector(".eye-closed").classList.toggle("hidden");
+      });
+    });
+
+    // Password strength meter
+    var signupPw = document.getElementById("signup-password");
+    var strengthBars = document.querySelectorAll("#strength-bars div");
+    var strengthText = document.getElementById("strength-text");
+
+    if (signupPw) {
+      signupPw.addEventListener("input", function () {
+        var val = signupPw.value;
+        var score = 0;
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        var colors = ["bg-red-400", "bg-orange-400", "bg-yellow-400", "bg-green-400"];
+        var labels = ["Weak", "Fair", "Good", "Strong"];
+        var textColors = ["text-red-500", "text-orange-500", "text-yellow-600", "text-green-600"];
+
+        strengthBars.forEach(function (bar, i) {
+          bar.className = "h-1 flex-1 rounded-full transition-colors";
+          bar.classList.add(i < score ? colors[score - 1] : "bg-gray-200");
+        });
+
+        strengthText.textContent = val.length > 0 ? (labels[score - 1] || "") : "";
+        strengthText.className = "text-xs mt-1";
+        if (score > 0) strengthText.classList.add(textColors[score - 1]);
+      });
+    }
+  });
+</script>
+
+<!-- Firebase auth — loaded separately so UI never breaks -->
+<script>
+  import { auth } from "../lib/firebase";
+  import {
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    updateProfile,
+    GoogleAuthProvider,
+    FacebookAuthProvider,
+    signInWithPopup,
+  } from "firebase/auth";
+
+  const loginForm = document.getElementById("login-form") as HTMLFormElement;
+  const loginError = document.getElementById("login-error") as HTMLParagraphElement;
+  const signupForm = document.getElementById("signup-form") as HTMLFormElement;
+  const signupError = document.getElementById("signup-error") as HTMLParagraphElement;
+
+  function showError(el: HTMLElement, msg: string) {
+    el.textContent = msg;
+    el.classList.remove("hidden");
+  }
+
+  // Login
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.classList.add("hidden");
+    const email = (loginForm.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (loginForm.elements.namedItem("password") as HTMLInputElement).value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "/";
+    } catch (err: any) {
+      showError(loginError, err.code === "auth/invalid-credential"
+        ? "Invalid email or password. Please try again."
+        : "Something went wrong. Please try again.");
+    }
+  });
+
+  // Signup
+  signupForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    signupError.classList.add("hidden");
+    const firstName = (signupForm.elements.namedItem("firstName") as HTMLInputElement).value;
+    const lastName = (signupForm.elements.namedItem("lastName") as HTMLInputElement).value;
+    const email = (signupForm.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (signupForm.elements.namedItem("password") as HTMLInputElement).value;
+    try {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+      window.location.href = "/";
+    } catch (err: any) {
+      if (err.code === "auth/email-already-in-use") {
+        showError(signupError, "This email is already registered. Try logging in instead.");
+      } else if (err.code === "auth/weak-password") {
+        showError(signupError, "Password is too weak. Use at least 8 characters.");
+      } else {
+        showError(signupError, "Something went wrong. Please try again.");
+      }
+    }
+  });
+
+  // Social auth
+  document.getElementById("google-login-btn")?.addEventListener("click", async () => {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); window.location.href = "/"; }
+    catch { showError(loginError, "Google sign-in failed. Please try again."); }
+  });
+  document.getElementById("facebook-login-btn")?.addEventListener("click", async () => {
+    try { await signInWithPopup(auth, new FacebookAuthProvider()); window.location.href = "/"; }
+    catch { showError(loginError, "Facebook sign-in failed. Please try again."); }
+  });
+  document.getElementById("google-signup-btn")?.addEventListener("click", async () => {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); window.location.href = "/"; }
+    catch { showError(signupError, "Google sign-up failed. Please try again."); }
+  });
+  document.getElementById("facebook-signup-btn")?.addEventListener("click", async () => {
+    try { await signInWithPopup(auth, new FacebookAuthProvider()); window.location.href = "/"; }
+    catch { showError(signupError, "Facebook sign-up failed. Please try again."); }
+  });
+</script>

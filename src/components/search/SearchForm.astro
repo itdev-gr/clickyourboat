@@ -1,0 +1,168 @@
+---
+// This wraps the interactive search island
+---
+
+<div id="search-form-container">
+  <form
+    id="search-form"
+    action="/search"
+    method="get"
+    class="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end max-w-5xl"
+    role="search"
+    aria-label="Search boats"
+  >
+    <!-- Location -->
+    <div class="lg:col-span-2 relative">
+      <label for="search-location" class="block text-sm font-medium text-text mb-1.5">Location</label>
+      <input
+        type="text"
+        id="search-location"
+        name="location"
+        placeholder="Where do you want to sail?"
+        autocomplete="off"
+        class="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      />
+      <!-- Autocomplete dropdown -->
+      <ul
+        id="location-suggestions"
+        class="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-border z-20 hidden max-h-48 overflow-y-auto"
+        role="listbox"
+        aria-label="Destination suggestions"
+      ></ul>
+    </div>
+
+    <!-- Start Date -->
+    <div>
+      <label for="search-start-date" class="block text-sm font-medium text-text mb-1.5">Start date</label>
+      <input
+        type="date"
+        id="search-start-date"
+        name="startDate"
+        class="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      />
+    </div>
+
+    <!-- End Date -->
+    <div>
+      <label for="search-end-date" class="block text-sm font-medium text-text mb-1.5">End date</label>
+      <input
+        type="date"
+        id="search-end-date"
+        name="endDate"
+        class="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      />
+    </div>
+
+    <!-- Boat Type -->
+    <div>
+      <label for="search-type" class="block text-sm font-medium text-text mb-1.5">Boat type</label>
+      <select
+        id="search-type"
+        name="type"
+        class="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none"
+      >
+        <option value="">All types</option>
+        <option value="sailing">Sailing</option>
+        <option value="motor">Motor</option>
+        <option value="catamaran">Catamaran</option>
+        <option value="yacht">Yacht</option>
+      </select>
+    </div>
+
+    <!-- Search Button + Skipper Toggle -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="search-skipper"
+          name="skipper"
+          value="true"
+          class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+        />
+        <label for="search-skipper" class="text-sm text-text-muted">With skipper</label>
+      </div>
+      <button
+        type="submit"
+        class="w-full rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      >
+        Search Boats
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  import { searchDestinations } from "../../lib/api";
+  import { debounce } from "../../lib/utils";
+
+  const input = document.getElementById("search-location") as HTMLInputElement;
+  const suggestions = document.getElementById("location-suggestions") as HTMLUListElement;
+
+  const fetchSuggestions = debounce(async (...args: unknown[]) => {
+    const value = args[0] as string;
+    if (!value || value.length < 2) {
+      suggestions.classList.add("hidden");
+      return;
+    }
+
+    try {
+      const destinations = await searchDestinations(value);
+      if (destinations.length === 0) {
+        suggestions.classList.add("hidden");
+        return;
+      }
+
+      suggestions.innerHTML = destinations
+        .map(
+          (d) =>
+            `<li role="option" class="px-4 py-2.5 text-sm cursor-pointer hover:bg-surface transition-colors" data-value="${d.name}">${d.name} <span class="text-text-muted">(${d.boatCount} boats)</span></li>`
+        )
+        .join("");
+      suggestions.classList.remove("hidden");
+    } catch {
+      suggestions.classList.add("hidden");
+    }
+  }, 300);
+
+  input?.addEventListener("input", () => {
+    fetchSuggestions(input.value);
+  });
+
+  suggestions?.addEventListener("click", (e) => {
+    const target = (e.target as HTMLElement).closest("li");
+    if (target) {
+      input.value = target.dataset.value || "";
+      suggestions.classList.add("hidden");
+    }
+  });
+
+  // Close suggestions on outside click
+  document.addEventListener("click", (e) => {
+    if (!input?.contains(e.target as Node) && !suggestions?.contains(e.target as Node)) {
+      suggestions?.classList.add("hidden");
+    }
+  });
+
+  // Keyboard navigation
+  input?.addEventListener("keydown", (e) => {
+    const items = suggestions.querySelectorAll("li");
+    const active = suggestions.querySelector("li.bg-surface-alt");
+    let idx = Array.from(items).indexOf(active as HTMLLIElement);
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      active?.classList.remove("bg-surface-alt");
+      idx = (idx + 1) % items.length;
+      items[idx]?.classList.add("bg-surface-alt");
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      active?.classList.remove("bg-surface-alt");
+      idx = idx <= 0 ? items.length - 1 : idx - 1;
+      items[idx]?.classList.add("bg-surface-alt");
+    } else if (e.key === "Enter" && active) {
+      e.preventDefault();
+      input.value = (active as HTMLLIElement).dataset.value || "";
+      suggestions.classList.add("hidden");
+    }
+  });
+</script>

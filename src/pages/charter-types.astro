@@ -1,0 +1,251 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Charter Types — Choose Your Perfect Charter | BoatHaven";
+const description =
+  "Explore our charter types: Without Licence boats, Fishing Charters, and Luxury Charters. Find the ideal charter experience for your next trip on the water.";
+
+const charterTypes = [
+  {
+    name: "Without Licence",
+    slug: "without-licence",
+    headline: "No licence? No problem. Just hop on and go.",
+    description:
+      "Our without-licence boats are perfect for beginners and casual boaters who want to enjoy the water without the hassle of certifications. These easy-to-operate boats are available in many destinations and come with everything you need for a safe and fun day on the sea. Simply pick your boat, get a quick briefing, and set off on your own adventure.",
+    features: ["No boating licence required", "Easy to operate", "Quick safety briefing included", "Perfect for beginners", "Available in 400+ locations", "Ideal for day trips & coastal exploring"],
+    image: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=800&q=80&auto=format",
+    specs: { capacity: "2–8 guests", length: "4–7 m", speed: "5–15 knots", experience: "No experience needed" },
+    priceFrom: 80,
+  },
+  {
+    name: "Fishing Charter",
+    slug: "fishing-charter",
+    headline: "Cast your line in the world's best fishing waters",
+    description:
+      "Whether you're a seasoned angler or trying fishing for the first time, our fishing charters offer an unforgettable experience. Join an expert captain who knows the local waters, the best spots, and the right techniques. All fishing equipment is provided — just bring your sense of adventure and get ready to reel in the catch of the day.",
+    features: ["Expert fishing captain included", "All equipment provided", "Local knowledge of best spots", "Suitable for all skill levels", "Half-day & full-day options", "Deep sea & coastal fishing"],
+    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80&auto=format",
+    specs: { capacity: "4–10 guests", length: "7–15 m", duration: "4–8 hours", experience: "All levels welcome" },
+    priceFrom: 300,
+  },
+  {
+    name: "Luxury Charter",
+    slug: "luxury-charter",
+    headline: "The ultimate VIP experience on the water",
+    description:
+      "Indulge in the finest boats, professional crews, and first-class service with our luxury charters. From sleek motor yachts to elegant sailing vessels, every detail is taken care of. Enjoy gourmet catering, premium amenities, and personalised itineraries. Whether it's a celebration, corporate event, or simply a desire for the extraordinary — luxury charters deliver an experience like no other.",
+    features: ["Professional crew & captain", "Gourmet catering available", "Premium amenities & comfort", "Personalised itineraries", "Perfect for celebrations & events", "Top-of-the-line vessels"],
+    image: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80&auto=format",
+    specs: { capacity: "6–30 guests", length: "12–40 m", duration: "Day trips to multi-week", experience: "Crew handles everything" },
+    priceFrom: 1500,
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: "Charter Types",
+      description,
+      url: "https://boathaven.com/charter-types",
+      publisher: { "@type": "Organization", name: "BoatHaven" },
+    })} />
+  </Fragment>
+
+  <!-- Hero -->
+  <section class="relative h-[360px] sm:h-[420px] overflow-hidden">
+    <img
+      src="https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=1920&q=80&auto=format"
+      alt="Luxury charter on open water"
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/65"></div>
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4">
+        Charter Types
+      </h1>
+      <p class="text-lg sm:text-xl text-white/85 max-w-2xl">
+        From licence-free fun to luxury getaways — choose the charter that fits your style
+      </p>
+    </div>
+  </section>
+
+  <!-- Quick nav pills -->
+  <div class="sticky top-16 z-30 bg-white border-b border-border">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav class="flex gap-2 py-3 overflow-x-auto scrollbar-hide" aria-label="Charter types">
+        {charterTypes.map((ct) => (
+          <a
+            href={`#${ct.slug}`}
+            class="flex-shrink-0 px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-text-muted hover:border-primary hover:text-primary transition-colors"
+          >
+            {ct.name}
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
+
+  <!-- Charter type sections -->
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+    {charterTypes.map((ct, i) => (
+      <section id={ct.slug} class="scroll-mt-32" aria-labelledby={`${ct.slug}-heading`}>
+        <div class:list={["grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center", i % 2 !== 0 && "lg:direction-rtl"]}>
+          <!-- Image -->
+          <div class:list={["relative rounded-2xl overflow-hidden aspect-[4/3]", i % 2 !== 0 && "lg:order-2"]}>
+            <img
+              src={ct.image}
+              alt={ct.name}
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <!-- Price badge -->
+            <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+              <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium">From</p>
+              <p class="text-xl font-extrabold text-text">€{ct.priceFrom}<span class="text-sm font-medium text-text-muted"> / day</span></p>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class:list={[i % 2 !== 0 && "lg:order-1"]}>
+            <h2 id={`${ct.slug}-heading`} class="text-3xl sm:text-4xl font-extrabold text-text mb-3">
+              {ct.name}
+            </h2>
+            <p class="text-lg text-primary font-medium mb-4">{ct.headline}</p>
+            <p class="text-text-muted leading-relaxed mb-6">{ct.description}</p>
+
+            <!-- Specs grid -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+              {Object.entries(ct.specs).map(([key, value]) => (
+                <div class="bg-surface rounded-xl p-3.5">
+                  <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+                  <p class="text-sm font-bold text-text">{value}</p>
+                </div>
+              ))}
+            </div>
+
+            <!-- Features -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-8">
+              {ct.features.map((f) => (
+                <div class="flex items-center gap-2">
+                  <svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                  <span class="text-sm text-text-muted">{f}</span>
+                </div>
+              ))}
+            </div>
+
+            <!-- CTA -->
+            <a
+              href={`/boat-rental?charter=${ct.slug}`}
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              Browse {ct.name} Charters
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <!-- Comparison table -->
+  <section class="bg-surface py-16 sm:py-20" aria-labelledby="compare-charters-heading">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 id="compare-charters-heading" class="text-2xl sm:text-3xl font-bold text-text">Compare charter types</h2>
+        <p class="mt-2 text-text-muted">See which charter experience is right for you</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full bg-white rounded-2xl border border-gray-200 overflow-hidden text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50">
+              <th class="text-left px-5 py-4 font-semibold text-text-muted"></th>
+              {charterTypes.map((ct) => (
+                <th class="text-center px-6 py-4 font-bold text-text whitespace-nowrap">{ct.name}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">Capacity</td>
+              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{ct.specs.capacity}</td>)}
+            </tr>
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">Boat length</td>
+              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{"length" in ct.specs ? ct.specs.length : "—"}</td>)}
+            </tr>
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">Duration</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Day trips</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">4–8 hours</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Day to multi-week</td>
+            </tr>
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">Skipper</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Not required</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Included</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Full crew included</td>
+            </tr>
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">Experience needed</td>
+              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{ct.specs.experience}</td>)}
+            </tr>
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">From price</td>
+              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 font-bold text-text">€{ct.priceFrom}/day</td>)}
+            </tr>
+            <tr>
+              <td class="px-5 py-3.5 font-medium text-text">Best for</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Beginners & casual trips</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">Anglers & group fishing</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">VIP events & celebrations</td>
+            </tr>
+            <tr>
+              <td class="px-5 py-4"></td>
+              {charterTypes.map((ct) => (
+                <td class="text-center px-6 py-4">
+                  <a href={`/boat-rental?charter=${ct.slug}`} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors">
+                    Browse
+                  </a>
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="py-16 bg-primary">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Need help choosing a charter?</h2>
+      <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+        Our team can help you find the perfect charter for your group, budget, and experience level.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors">
+          Browse all boats
+        </a>
+        <a href="/contact" class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors">
+          Contact us for advice
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>

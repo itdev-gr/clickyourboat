@@ -1,0 +1,484 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "List Your Boat — BoatHaven";
+const description = "List your boat on BoatHaven and start earning. Reach thousands of renters in 600+ destinations worldwide.";
+---
+
+<Layout title={title} description={description}>
+  <!-- Loading state -->
+  <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm text-text-muted">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Not logged in: Login prompt -->
+  <div id="auth-gate" class="hidden">
+    <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+      <div class="max-w-md w-full text-center">
+        <div class="mx-auto mb-6 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Log in to list your boat</h1>
+        <p class="text-text-muted mb-8 max-w-sm mx-auto">
+          You need to be logged in to list your boat on BoatHaven. Sign in or create an account to get started.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href="/login"
+            class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            Log in
+          </a>
+          <a
+            href="/login?signup"
+            class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-bold text-text hover:bg-gray-50 transition-colors"
+          >
+            Create account
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logged in: Boat listing form -->
+  <div id="listing-form" class="hidden">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+      <!-- ============ SECTION: Your yacht ============ -->
+      <section>
+        <h1 class="text-2xl font-bold text-text">Your yacht</h1>
+        <hr class="mt-3 mb-8 border-border" />
+
+        <form id="boat-form" class="space-y-8">
+          <!-- Boat Type -->
+          <div>
+            <label class="block text-sm font-semibold text-text mb-4">Type</label>
+            <div class="flex flex-wrap gap-3" id="boat-type-grid">
+              <button type="button" data-type="motorboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/>
+                  <path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Motorboat</span>
+              </button>
+              <button type="button" data-type="sailboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M24 8v24" stroke-linecap="round"/>
+                  <path d="M24 8L14 30h20L24 8z" stroke-linejoin="round"/>
+                  <path d="M8 34c0 0 6-4 16-4s16 4 16 4" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Sailboat</span>
+              </button>
+              <button type="button" data-type="rib" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 28c2-4 8-6 18-6s16 2 18 6" stroke-linecap="round"/>
+                  <path d="M16 22l4-6h8l4 6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 32h32" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">RIB</span>
+              </button>
+              <button type="button" data-type="catamaran" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M10 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M30 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 28h32" stroke-linecap="round"/>
+                  <path d="M12 32h24" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Catamaran</span>
+              </button>
+              <button type="button" data-type="houseboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <rect x="10" y="18" width="28" height="12" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M14 18v-6h20v6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M20 18v-6M28 18v-6" stroke-linecap="round"/>
+                  <path d="M6 34c2-2 6-4 18-4s16 2 18 4" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Houseboat</span>
+              </button>
+              <button type="button" data-type="jetski" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M10 28c2-3 8-5 14-5" stroke-linecap="round"/>
+                  <path d="M24 23l6-6 4 2-2 9" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 32c4-2 12-4 20-4s12 2 14 4" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Jet ski</span>
+              </button>
+              <button type="button" data-type="gulet" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/>
+                  <path d="M16 24v-10M24 24v-12M32 24v-10" stroke-linecap="round"/>
+                  <path d="M16 14l8-2 8 2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M10 34h28" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Gulet</span>
+              </button>
+              <button type="button" data-type="without-licence" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/>
+                  <path d="M18 24l4-8h4l4 8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M10 34h28" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text leading-tight text-center">Boat without<br/>licence</span>
+              </button>
+              <button type="button" data-type="yacht" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 32c2-6 10-10 18-10s14 4 18 10" stroke-linecap="round"/>
+                  <path d="M24 22V10" stroke-linecap="round"/>
+                  <path d="M24 10l10 8H24" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 36h32" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xs font-medium text-text">Yacht</span>
+              </button>
+            </div>
+            <input type="hidden" name="boatType" id="boat-type-input" required />
+          </div>
+
+          <!-- City + Harbour -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label for="city" class="block text-sm font-semibold text-text mb-2">City</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label for="harbour" class="block text-sm font-semibold text-text mb-2">Harbour</label>
+              <div class="relative">
+                <select
+                  id="harbour"
+                  name="harbour"
+                  class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"
+                >
+                  <option value="">Select...</option>
+                  <option value="marina-a">Marina A</option>
+                  <option value="marina-b">Marina B</option>
+                  <option value="port-c">Port C</option>
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional + Warning -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+            <div>
+              <label for="professional" class="block text-sm font-semibold text-text mb-2">Are you a professional?</label>
+              <div class="relative">
+                <select
+                  id="professional"
+                  name="professional"
+                  class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+            <div class="bg-amber-50 border border-amber-200/60 rounded-xl p-4">
+              <p class="text-sm text-amber-900">
+                <strong>Attention:</strong> Your status must be accurately indicated. Presenting yourself as a "non-professional" when that is not the case constitutes a misleading commercial practice and may result in penalties.
+              </p>
+            </div>
+          </div>
+
+          <!-- Manufacturer + Model -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label for="manufacturer" class="block text-sm font-semibold text-text mb-2">Manufacturer</label>
+              <input
+                type="text"
+                id="manufacturer"
+                name="manufacturer"
+                placeholder="Manufacturer"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label for="model" class="block text-sm font-semibold text-text mb-2">Model</label>
+              <input
+                type="text"
+                id="model"
+                name="model"
+                placeholder="Model"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <!-- Skipper + Capacity -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label for="skipper" class="block text-sm font-semibold text-text mb-2">Is your boat rented with a skipper?</label>
+              <div class="relative">
+                <select
+                  id="skipper"
+                  name="skipper"
+                  class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"
+                >
+                  <option value="">Select...</option>
+                  <option value="with-skipper">With skipper</option>
+                  <option value="without-skipper">Without skipper</option>
+                  <option value="both">Both options</option>
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+            <div>
+              <label for="capacity" class="block text-sm font-semibold text-text mb-2">Capacity (authorised)</label>
+              <input
+                type="number"
+                id="capacity"
+                name="capacity"
+                min="1"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <!-- Length -->
+          <div>
+            <label for="length" class="block text-sm font-semibold text-text mb-2">Length</label>
+            <div class="flex items-center max-w-[160px]">
+              <input
+                type="number"
+                id="length"
+                name="length"
+                min="1"
+                step="0.1"
+                class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <span class="inline-flex items-center justify-center h-[50px] px-4 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span>
+            </div>
+          </div>
+
+          <!-- Company's name -->
+          <div class="max-w-md">
+            <label for="company" class="block text-sm font-semibold text-text mb-2">Company's name</label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+
+          <!-- Website -->
+          <div class="max-w-md">
+            <label for="website" class="block text-sm font-semibold text-text mb-2">Website</label>
+            <input
+              type="url"
+              id="website"
+              name="website"
+              placeholder="https://"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+
+          <!-- Save button -->
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="inline-flex items-center px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-pink focus:ring-offset-2"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ SECTION: Photos ============ -->
+      <section class="mt-12">
+        <h2 class="text-2xl font-bold text-text">Photos</h2>
+        <hr class="mt-3 mb-8 border-border" />
+
+        <div class="space-y-4">
+          <div>
+            <p class="text-base font-bold text-text">
+              Drag and drop or <button type="button" id="upload-click-trigger" class="text-primary hover:text-primary-dark underline font-bold">click here</button> to upload your photos
+            </p>
+            <p class="text-sm text-text-muted mt-1">
+              For the cover, choose a photo that shows the whole boat. Then add more photos of the details and the interior.
+            </p>
+          </div>
+
+          <p class="text-sm text-text-muted">Drag the photos to change the order they appear in</p>
+
+          <!-- Main upload zone -->
+          <div
+            id="upload-zone"
+            class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
+          >
+            <input
+              type="file"
+              id="photo-input"
+              accept="image/jpeg,image/png,image/gif"
+              multiple
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            <div class="pointer-events-none">
+              <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                <rect x="10" y="10" width="28" height="28" rx="4" />
+                <circle cx="20" cy="22" r="4" />
+                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <p class="text-sm font-semibold text-text mb-1">Post your photos here</p>
+              <p class="text-xs text-text-muted">Minimum size: 400x400px</p>
+              <p class="text-xs text-text-muted">Format: jpeg, png, gif</p>
+              <p class="mt-3">
+                <span class="text-sm text-primary hover:text-primary-dark underline font-medium">Download from your device</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Thumbnail placeholders -->
+          <div class="grid grid-cols-3 gap-4" id="photo-previews">
+            <div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
+              <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                <rect x="10" y="10" width="28" height="28" rx="4" />
+                <circle cx="20" cy="22" r="4" />
+                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
+              <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                <rect x="10" y="10" width="28" height="28" rx="4" />
+                <circle cx="20" cy="22" r="4" />
+                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
+              <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
+                <rect x="10" y="10" width="28" height="28" rx="4" />
+                <circle cx="20" cy="22" r="4" />
+                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</Layout>
+
+<!-- UI logic — no dependencies, always works -->
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Boat type selection
+    var typeBtns = document.querySelectorAll(".boat-type-btn");
+    var typeInput = document.getElementById("boat-type-input");
+
+    typeBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        typeBtns.forEach(function (b) {
+          b.classList.remove("border-primary", "bg-primary/5", "ring-2", "ring-primary");
+          b.classList.add("border-gray-200");
+        });
+        btn.classList.remove("border-gray-200");
+        btn.classList.add("border-primary", "bg-primary/5", "ring-2", "ring-primary");
+        typeInput.value = btn.getAttribute("data-type");
+      });
+    });
+
+    // Upload zone click trigger
+    var uploadTrigger = document.getElementById("upload-click-trigger");
+    var photoInput = document.getElementById("photo-input");
+    if (uploadTrigger && photoInput) {
+      uploadTrigger.addEventListener("click", function () {
+        photoInput.click();
+      });
+    }
+
+    // Photo preview on file select
+    var previewGrid = document.getElementById("photo-previews");
+    if (photoInput && previewGrid) {
+      photoInput.addEventListener("change", function () {
+        var files = photoInput.files;
+        if (!files || files.length === 0) return;
+
+        // Clear placeholder slots
+        previewGrid.innerHTML = "";
+
+        for (var i = 0; i < files.length; i++) {
+          (function (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var div = document.createElement("div");
+              div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
+              div.innerHTML =
+                '<img src="' + e.target.result + '" alt="Boat photo" class="h-full w-full object-cover" />' +
+                '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-photo">' +
+                '<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+                '</button>';
+              previewGrid.appendChild(div);
+
+              div.querySelector(".remove-photo").addEventListener("click", function () {
+                div.remove();
+              });
+            };
+            reader.readAsDataURL(file);
+          })(files[i]);
+        }
+      });
+    }
+
+    // Drag & drop highlight
+    var uploadZone = document.getElementById("upload-zone");
+    if (uploadZone) {
+      ["dragenter", "dragover"].forEach(function (evt) {
+        uploadZone.addEventListener(evt, function (e) {
+          e.preventDefault();
+          uploadZone.classList.add("border-primary", "bg-primary/5");
+        });
+      });
+      ["dragleave", "drop"].forEach(function (evt) {
+        uploadZone.addEventListener(evt, function (e) {
+          e.preventDefault();
+          uploadZone.classList.remove("border-primary", "bg-primary/5");
+        });
+      });
+    }
+  });
+</script>
+
+<!-- Firebase auth check — loaded separately so UI never breaks -->
+<script>
+  import { auth } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+
+  const loading = document.getElementById("auth-loading");
+  const gate = document.getElementById("auth-gate");
+  const form = document.getElementById("listing-form");
+
+  onAuthStateChanged(auth, (user) => {
+    loading?.classList.add("hidden");
+    if (user) {
+      gate?.classList.add("hidden");
+      form?.classList.remove("hidden");
+    } else {
+      gate?.classList.remove("hidden");
+      form?.classList.add("hidden");
+    }
+  });
+</script>
+
+<!-- Fallback: if Firebase fails to load, show auth gate after timeout -->
+<script is:inline>
+  setTimeout(function () {
+    var loading = document.getElementById("auth-loading");
+    var gate = document.getElementById("auth-gate");
+    if (loading && !loading.classList.contains("hidden")) {
+      loading.classList.add("hidden");
+      gate.classList.remove("hidden");
+    }
+  }, 3000);
+</script>

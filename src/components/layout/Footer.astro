@@ -1,0 +1,147 @@
+---
+const currentYear = new Date().getFullYear();
+
+const columns = [
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Careers", href: "/careers" },
+      { label: "Press", href: "/press" },
+      { label: "Blog", href: "/blog" },
+    ],
+  },
+  {
+    title: "Explore",
+    links: [
+      { label: "Destinations", href: "#destinations" },
+      { label: "Boat Types", href: "#categories" },
+      { label: "Top Rated", href: "/top-rated" },
+      { label: "Last Minute", href: "/last-minute" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "Help Center", href: "/help" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Safety", href: "/safety" },
+      { label: "Accessibility", href: "/accessibility" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Cookie Policy", href: "/cookies" },
+      { label: "Sitemap", href: "/sitemap" },
+    ],
+  },
+];
+---
+
+<footer class="bg-text text-white" role="contentinfo">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+      <!-- Brand + Newsletter -->
+      <div class="col-span-2 md:col-span-4 lg:col-span-1">
+        <a href="/" class="flex items-center gap-2 text-white font-bold text-xl mb-4">
+          <svg class="h-7 w-7" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 22C4 22 8 18 16 18C24 18 28 22 28 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M16 18V6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M16 6L24 14H16" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/>
+          </svg>
+          BoatHaven
+        </a>
+        <p class="text-sm text-slate-400 mb-6">
+          Find your perfect boat experience. Thousands of boats worldwide, ready for your next adventure.
+        </p>
+
+        <!-- Newsletter -->
+        <form id="newsletter-form" class="space-y-3">
+          <label for="newsletter-email" class="text-sm font-medium">Stay updated</label>
+          <div class="flex gap-2">
+            <input
+              type="email"
+              id="newsletter-email"
+              name="email"
+              required
+              placeholder="your@email.com"
+              class="flex-1 rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-light"
+            />
+            <button
+              type="submit"
+              class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-light transition-colors focus:outline-none focus:ring-2 focus:ring-primary-light"
+            >
+              Subscribe
+            </button>
+          </div>
+          <p id="newsletter-msg" class="text-xs text-slate-400 hidden"></p>
+        </form>
+      </div>
+
+      <!-- Link Columns -->
+      {columns.map((col) => (
+        <div>
+          <h3 class="text-sm font-semibold text-white mb-4">{col.title}</h3>
+          <ul class="space-y-3">
+            {col.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-slate-400 hover:text-white transition-colors"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-slate-500">
+        &copy; {currentYear} BoatHaven. All rights reserved.
+      </p>
+      <div class="flex items-center gap-4">
+        <a href="#" aria-label="Facebook" class="text-slate-500 hover:text-white transition-colors">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram" class="text-slate-500 hover:text-white transition-colors">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+        <a href="#" aria-label="Twitter" class="text-slate-500 hover:text-white transition-colors">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  import { subscribeNewsletter } from "../../lib/api";
+
+  const form = document.getElementById("newsletter-form") as HTMLFormElement;
+  const msg = document.getElementById("newsletter-msg") as HTMLParagraphElement;
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const email = formData.get("email") as string;
+
+    try {
+      await subscribeNewsletter(email);
+      msg.textContent = "Thanks for subscribing!";
+      msg.classList.remove("hidden", "text-red-400");
+      msg.classList.add("text-green-400");
+      form.reset();
+    } catch {
+      msg.textContent = "Something went wrong. Please try again.";
+      msg.classList.remove("hidden", "text-green-400");
+      msg.classList.add("text-red-400");
+    }
+  });
+</script>

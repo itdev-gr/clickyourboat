@@ -1,0 +1,86 @@
+---
+// Blog articles section — matches Click&Boat "Get inspiration" layout
+const articles = [
+  {
+    title: "Top 10 Sailing Destinations in the Mediterranean for 2026",
+    image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=600&q=80&auto=format",
+    summary: "Discover the most breathtaking Mediterranean sailing routes, from hidden Greek coves to the stunning Croatian coastline.",
+    date: "Feb 20, 2026",
+    slug: "top-10-sailing-destinations-mediterranean-2026",
+  },
+  {
+    title: "First-Time Boat Renter? Everything You Need to Know",
+    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80&auto=format",
+    summary: "A comprehensive guide covering licenses, insurance, what to pack, and how to choose the right boat for your experience level.",
+    date: "Feb 10, 2026",
+    slug: "first-time-boat-renter-guide",
+  },
+  {
+    title: "Catamaran vs Sailboat: Which One Should You Rent?",
+    image: "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&q=80&auto=format",
+    summary: "We break down the pros and cons of each to help you choose the perfect vessel for your next sailing adventure.",
+    date: "Jan 28, 2026",
+    slug: "catamaran-vs-sailboat-comparison",
+  },
+];
+---
+
+<section class="py-16 sm:py-20 bg-surface" aria-labelledby="blog-heading">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <h2 id="blog-heading" class="text-2xl sm:text-3xl font-bold text-text">
+          Get inspiration for your next trip
+        </h2>
+        <p class="mt-2 text-text-muted text-base">
+          Tips, guides, and stories from the sea
+        </p>
+      </div>
+      <a
+        href="/blog"
+        class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
+      >
+        View all
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {articles.map((article) => (
+        <a href={`/blog/${article.slug}`} class="group block">
+          <article class="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+            <div class="aspect-[16/9] overflow-hidden">
+              <img
+                src={article.image}
+                alt={article.title}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="p-5 flex flex-col flex-1">
+              <time class="text-xs text-text-muted font-medium">{article.date}</time>
+              <h3 class="mt-2 text-base font-bold text-text group-hover:text-primary transition-colors line-clamp-2">
+                {article.title}
+              </h3>
+              <p class="mt-2 text-sm text-text-muted leading-relaxed line-clamp-2 flex-1">
+                {article.summary}
+              </p>
+              <div class="mt-4 flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
+                Read more
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+              </div>
+            </div>
+          </article>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-8 text-center sm:hidden">
+      <a href="/blog" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-dark transition-colors">
+        View all articles
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+  </div>
+</section>

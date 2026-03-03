@@ -1,0 +1,87 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HeroSection from "../components/home/HeroSection.astro";
+import SocialProofSection from "../components/home/SocialProofSection.astro";
+import DestinationsSection from "../components/home/DestinationsSection.astro";
+import CategoriesSection from "../components/home/CategoriesSection.astro";
+import OwnerCtaSection from "../components/home/OwnerCtaSection.astro";
+import ArticlesSection from "../components/home/ArticlesSection.astro";
+import TrustSection from "../components/home/TrustSection.astro";
+import FaqSection from "../components/home/FaqSection.astro";
+
+// Import mock data (replace with Firestore fetches when connected)
+import { mockDestinations, mockReviews, mockArticles } from "../lib/mock-data";
+
+// When Firebase is configured, uncomment these:
+// import { getTopDestinations, getTopReviews, getLatestArticles } from "../lib/api";
+// const destinations = await getTopDestinations(8);
+// const reviews = await getTopReviews(6);
+// const articles = await getLatestArticles(3);
+
+const destinations = mockDestinations;
+const reviews = mockReviews;
+const articles = mockArticles;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "BoatHaven",
+      url: "https://boathaven.com",
+      logo: "https://boathaven.com/logo.svg",
+      description:
+        "Boat rental marketplace with thousands of boats worldwide.",
+      sameAs: [
+        "https://facebook.com/boathaven",
+        "https://instagram.com/boathaven",
+        "https://twitter.com/boathaven",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      name: "BoatHaven",
+      url: "https://boathaven.com",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://boathaven.com/search?location={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
+    },
+    ...reviews.map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.userName },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating,
+        bestRating: 5,
+      },
+      reviewBody: r.comment,
+      itemReviewed: { "@type": "Product", name: r.boatName },
+    })),
+    ...articles.map((a) => ({
+      "@type": "Article",
+      headline: a.title,
+      image: a.image,
+      description: a.summary,
+      datePublished: a.createdAt?.toISOString?.() ?? "",
+      publisher: { "@type": "Organization", name: "BoatHaven" },
+    })),
+  ],
+};
+---
+
+<Layout>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <HeroSection />
+  <SocialProofSection reviews={reviews} />
+  <DestinationsSection destinations={destinations} />
+  <CategoriesSection />
+  <OwnerCtaSection />
+  <ArticlesSection articles={articles} />
+  <TrustSection />
+  <FaqSection />
+</Layout>

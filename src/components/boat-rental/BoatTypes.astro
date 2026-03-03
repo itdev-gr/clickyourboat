@@ -1,0 +1,91 @@
+---
+// Boat type cards — matches Click&Boat's 3-card layout
+const boatTypes = [
+  {
+    name: "Motorboats",
+    description: "Speed and comfort for day trips or longer getaways. Ideal for families and groups.",
+    image: "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&q=80&auto=format",
+    count: 24500,
+    href: "/search?type=motorboat",
+  },
+  {
+    name: "Sailboats",
+    description: "Experience the wind and waves. Perfect for adventurous sailors and coastal exploration.",
+    image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=600&q=80&auto=format",
+    count: 12800,
+    href: "/search?type=sailboat",
+  },
+  {
+    name: "Catamarans",
+    description: "Stability and space for the ultimate luxury experience. Great for multi-day charters.",
+    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80&auto=format",
+    count: 8400,
+    href: "/search?type=catamaran",
+  },
+];
+
+const moreTypes = [
+  { name: "Yachts", count: 5200, href: "/search?type=yacht" },
+  { name: "RIBs", count: 6100, href: "/search?type=rib" },
+  { name: "Houseboats", count: 1800, href: "/search?type=houseboat" },
+  { name: "Jet Skis", count: 3400, href: "/search?type=jet-ski" },
+  { name: "Gulets", count: 920, href: "/search?type=gulet" },
+  { name: "No license boats", count: 7600, href: "/search?type=no-license" },
+];
+---
+
+<section class="py-16 sm:py-20 bg-surface" aria-labelledby="boat-types-heading">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mb-10">
+      <h2 id="boat-types-heading" class="text-2xl sm:text-3xl font-bold text-text">
+        Rent a boat by type
+      </h2>
+      <p class="mt-2 text-text-muted text-base">
+        Choose from a wide range of boat types for every kind of experience
+      </p>
+    </div>
+
+    <!-- Main 3 cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {boatTypes.map((boat) => (
+        <a href={boat.href} class="group block">
+          <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <div class="aspect-[16/10] overflow-hidden">
+              <img
+                src={boat.image}
+                alt={boat.name}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-bold text-text group-hover:text-primary transition-colors">
+                  {boat.name}
+                </h3>
+                <svg class="h-5 w-5 text-text-muted group-hover:text-primary group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+              </div>
+              <p class="text-sm text-text-muted leading-relaxed mb-3">{boat.description}</p>
+              <p class="text-xs font-semibold text-primary">{boat.count.toLocaleString()} boats available</p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- More types — pill links -->
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-sm font-medium text-text-muted">More types:</span>
+      {moreTypes.map((type) => (
+        <a
+          href={type.href}
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-text hover:border-primary hover:text-primary transition-colors"
+        >
+          {type.name}
+          <span class="text-text-muted text-xs">({type.count.toLocaleString()})</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

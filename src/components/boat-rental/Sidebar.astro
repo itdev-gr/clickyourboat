@@ -1,0 +1,260 @@
+---
+// Left sidebar filters — matches Click&Boat's filter panel exactly
+---
+
+<aside class="w-full lg:w-[280px] flex-shrink-0" aria-label="Filters">
+  <div class="sticky top-20 space-y-6">
+    <!-- Tabs: Boat Rentals / Daily experiences -->
+    <div class="border border-gray-200 rounded-xl overflow-hidden">
+      <div class="grid grid-cols-2">
+        <button class="sidebar-tab px-4 py-3 text-left border-b-2 border-pink bg-white" data-tab="rentals">
+          <span class="block text-sm font-bold text-pink">Boat Rentals</span>
+          <span class="block text-xs text-text-muted">All boat rentals</span>
+        </button>
+        <button class="sidebar-tab px-4 py-3 text-left border-b-2 border-transparent bg-gray-50 hover:bg-white transition-colors" data-tab="experiences">
+          <span class="block text-sm font-bold text-text">Daily experiences</span>
+          <span class="block text-xs text-text-muted">Activities with captain</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Where / Dates / Rental type -->
+    <div class="border border-gray-200 rounded-xl divide-y divide-gray-200">
+      <!-- Where -->
+      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
+        <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-text">Where</p>
+          <p class="text-xs text-text-muted">City of departure</p>
+        </div>
+      </div>
+      <!-- Dates -->
+      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
+        <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-text">Dates</p>
+          <p class="text-xs text-text-muted">Add your dates</p>
+        </div>
+      </div>
+      <!-- Rental type -->
+      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
+        <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-text">Rental type</p>
+          <p class="text-xs text-text-muted">With or without a skipper</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boat type -->
+    <div>
+      <h3 class="text-sm font-bold text-text mb-3">Boat type</h3>
+      <div class="space-y-2.5">
+        {["Motor", "Sail"].map((type) => (
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text">{type}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <!-- Price per day -->
+    <div>
+      <h3 class="text-sm font-bold text-text mb-3">Price per day</h3>
+      <div class="px-1">
+        <input
+          type="range"
+          min="0"
+          max="1200"
+          value="1200"
+          class="w-full accent-pink h-1"
+        />
+        <div class="flex items-center gap-2 mt-3">
+          <div class="flex items-center border border-gray-200 rounded-lg px-3 py-1.5 flex-1">
+            <span class="text-xs text-text-muted mr-1">Minimum</span>
+          </div>
+          <span class="text-text-muted text-xs">-</span>
+          <div class="flex items-center border border-gray-200 rounded-lg px-3 py-1.5 flex-1">
+            <span class="text-xs text-text-muted mr-1">Maximum</span>
+          </div>
+        </div>
+        <div class="flex justify-between mt-1">
+          <span class="text-xs text-text-muted">€ 0</span>
+          <span class="text-xs text-text-muted">€ 1200+</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Number steppers -->
+    {[
+      { label: "Number of people", value: 1 },
+      { label: "Number of cabins", value: 0 },
+      { label: "Number of berths", value: 0 },
+    ].map((item) => (
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-bold text-text">{item.label}</span>
+        <div class="flex items-center gap-2">
+          <button class="h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-text-muted hover:border-gray-400 transition-colors" aria-label={`Decrease ${item.label}`}>
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M5 12h14"/></svg>
+          </button>
+          <span class="text-sm font-semibold text-text w-5 text-center">{item.value}</span>
+          <button class="h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-text-muted hover:border-gray-400 transition-colors" aria-label={`Increase ${item.label}`}>
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 5v14m-7-7h14"/></svg>
+          </button>
+        </div>
+      </div>
+    ))}
+
+    <!-- Boat length -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-text">Boat length</h3>
+        <span class="text-xs text-text-muted">0 - 15+ m</span>
+      </div>
+      <input type="range" min="0" max="15" value="15" class="w-full accent-pink h-1" />
+    </div>
+
+    <!-- Engine power -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-text">Engine power</h3>
+        <span class="text-xs text-text-muted">0 - 400+ hp</span>
+      </div>
+      <input type="range" min="0" max="400" value="400" class="w-full accent-pink h-1" />
+    </div>
+
+    <!-- Toggles -->
+    <div class="space-y-4">
+      <!-- Super Owners -->
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-sm font-bold text-text">Super Owners</p>
+          <p class="text-xs text-text-muted">Rent from well-reputed boat owners</p>
+        </div>
+        <button class="relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false">
+          <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
+        </button>
+      </div>
+
+      <!-- Instant booking -->
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-sm font-bold text-text">Instant booking</p>
+          <p class="text-xs text-text-muted">Book without waiting for owner's confirmation</p>
+        </div>
+        <button class="relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false">
+          <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
+        </button>
+      </div>
+    </div>
+
+    <hr class="border-gray-200" />
+
+    <!-- Ideal for -->
+    <div>
+      <h3 class="text-sm font-bold text-text mb-3">Ideal for</h3>
+      <div class="space-y-2.5">
+        {["Wakeboard and water skis", "Water-based activities", "Unique experience", "Fishing", "Events"].map((item) => (
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text">{item}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <!-- Equipment -->
+    <div>
+      <h3 class="text-sm font-bold text-text mb-3">Equipment</h3>
+      <div class="space-y-2.5">
+        {["Wakeboard", "Towable Tube", "Watermaker", "Generator", "Air Conditioning", "External speakers", "Paddle board"].map((item) => (
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text">{item}</span>
+          </label>
+        ))}
+      </div>
+      <button class="mt-2 text-sm text-text-muted hover:text-text flex items-center gap-1 transition-colors">
+        View more
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+    </div>
+
+    <hr class="border-gray-200" />
+
+    <!-- Free cancellation -->
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold text-text">Free cancellation</p>
+        <p class="text-xs text-text-muted">Refunds possible up to 24 hours before departure</p>
+      </div>
+      <button class="relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false">
+        <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
+      </button>
+    </div>
+
+    <!-- Best rated -->
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold text-text flex items-center gap-1">
+          Best rated
+          <svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </p>
+        <p class="text-xs text-text-muted">Only display boats with a rating over 4 stars</p>
+      </div>
+      <button class="relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false">
+        <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
+      </button>
+    </div>
+
+    <!-- Year of manufacture -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-text">Year of manufacture</h3>
+        <span class="text-xs text-text-muted">2006 - 2026</span>
+      </div>
+      <input type="range" min="2006" max="2026" value="2026" class="w-full accent-pink h-1" />
+    </div>
+  </div>
+</aside>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll(".sidebar-tab");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => {
+        t.classList.remove("border-pink", "bg-white");
+        t.classList.add("border-transparent", "bg-gray-50");
+        const label = t.querySelector("span:first-child")!;
+        label.classList.remove("text-pink");
+        label.classList.add("text-text");
+      });
+      tab.classList.add("border-pink", "bg-white");
+      tab.classList.remove("border-transparent", "bg-gray-50");
+      const label = tab.querySelector("span:first-child")!;
+      label.classList.add("text-pink");
+      label.classList.remove("text-text");
+    });
+  });
+
+  // Toggle switches
+  const toggles = document.querySelectorAll("[role='switch']");
+  toggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const checked = toggle.getAttribute("aria-checked") === "true";
+      toggle.setAttribute("aria-checked", String(!checked));
+      const knob = toggle.querySelector("span")!;
+      if (!checked) {
+        toggle.classList.remove("bg-gray-200");
+        toggle.classList.add("bg-pink");
+        knob.classList.add("translate-x-5");
+      } else {
+        toggle.classList.add("bg-gray-200");
+        toggle.classList.remove("bg-pink");
+        knob.classList.remove("translate-x-5");
+      }
+    });
+  });
+</script>
