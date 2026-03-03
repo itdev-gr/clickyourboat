@@ -349,32 +349,53 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     GoogleAuthProvider,
     FacebookAuthProvider,
     signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     onAuthStateChanged,
   } from "firebase/auth";
-  import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+  import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
-  // Create user document in Firestore if it doesn't exist
+  console.log("[Auth] Firebase module loaded");
+  console.log("[Auth] Firebase auth instance:", auth?.app?.options?.projectId || "NOT INITIALIZED");
+  console.log("[Auth] Firestore instance:", db?.app?.options?.projectId || "NOT INITIALIZED");
+
+  // Create user document in Firestore (on registration)
   async function createUserDoc(user: any, extra: { firstName?: string; lastName?: string } = {}) {
+    console.log("[Firestore] Creating user doc for uid:", user.uid);
     const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-    if (!snap.exists()) {
-      await setDoc(userRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || `${extra.firstName || ""} ${extra.lastName || ""}`.trim() || null,
-        firstName: extra.firstName || user.displayName?.split(" ")[0] || null,
-        lastName: extra.lastName || user.displayName?.split(" ").slice(1).join(" ") || null,
-        photoURL: user.photoURL || null,
-        type: "user",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName || `${extra.firstName || ""} ${extra.lastName || ""}`.trim() || null,
+      firstName: extra.firstName || user.displayName?.split(" ")[0] || null,
+      lastName: extra.lastName || user.displayName?.split(" ").slice(1).join(" ") || null,
+      photoURL: user.photoURL || null,
+      type: "user",
+      createdAt: serverTimestamp(),
+      lastLoginAt: serverTimestamp(),
+    };
+    console.log("[Firestore] Writing data:", JSON.stringify({ ...data, createdAt: "serverTimestamp()", lastLoginAt: "serverTimestamp()" }));
+    await setDoc(userRef, data, { merge: true });
+    console.log("[Firestore] User doc created successfully");
   }
 
-  // Redirect destination: ?redirect=/list-your-boat or default "/"
+  // Update lastLoginAt timestamp (on login)
+  async function updateLastLogin(uid: string, email: string | null) {
+    console.log("[Firestore] Updating lastLoginAt for uid:", uid);
+    const userRef = doc(db, "users", uid);
+    // Use setDoc with merge so it works even if the doc doesn't exist yet
+    await setDoc(userRef, {
+      uid,
+      email,
+      lastLoginAt: serverTimestamp(),
+    }, { merge: true });
+    console.log("[Firestore] lastLoginAt updated successfully");
+  }
+
+  // Redirect destination: ?redirect=/list-your-boat or default home page
   const params = new URLSearchParams(window.location.search);
-  const redirectTo = params.get("redirect") || "/";
+  const redirectParam = params.get("redirect");
+  const redirectTo = redirectParam && redirectParam.startsWith("/") ? redirectParam : "/";
 
   // Track whether a signup/login action is in progress
   // to prevent onAuthStateChanged from redirecting too early
@@ -382,6 +403,7 @@ const description = "Log in or create your BoatHaven account to rent boats, save
 
   // If already logged in (page load), redirect away
   onAuthStateChanged(auth, (user) => {
+    console.log("[Auth] onAuthStateChanged fired. User:", user?.uid || "null", "actionInProgress:", authActionInProgress);
     if (user && !authActionInProgress) window.location.href = redirectTo;
   });
 
@@ -413,16 +435,30 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     loginError.classList.add("hidden");
     const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     setLoading(submitBtn, true);
+    authActionInProgress = true;
     const email = (loginForm.elements.namedItem("email") as HTMLInputElement).value;
     const password = (loginForm.elements.namedItem("password") as HTMLInputElement).value;
+    console.log("[Login] Attempting login for:", email);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = redirectTo;
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log("[Login] Success. User uid:", result.user.uid);
+      updateLastLogin(result.user.uid, result.user.email).catch((err) => {
+        console.error("[Login] lastLoginAt update error:", err);
+      });
+      window.location.href = "/";
     } catch (err: any) {
+      console.error("[Login] Error:", err.code, err.message, err);
+      authActionInProgress = false;
       setLoading(submitBtn, false);
-      showError(loginError, err.code === "auth/invalid-credential"
-        ? "Invalid email or password. Please try again."
-        : "Something went wrong. Please try again.");
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+        showError(loginError, "Invalid email or password. Please try again.");
+      } else if (err.code === "auth/too-many-requests") {
+        showError(loginError, "Too many failed attempts. Please try again later.");
+      } else if (err.code === "auth/invalid-email") {
+        showError(loginError, "Please enter a valid email address.");
+      } else {
+        showError(loginError, "Something went wrong (" + (err.code || "unknown") + "). Please try again.");
+      }
     }
   });
 
@@ -444,12 +480,16 @@ const description = "Log in or create your BoatHaven account to rent boats, save
 
     setLoading(submitBtn, true);
     authActionInProgress = true;
+
+    // Step 1: Create the auth account
+    console.log("[Signup] Attempting signup for:", email);
+    let user;
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-      await createUserDoc(user, { firstName, lastName });
-      window.location.href = redirectTo;
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      user = result.user;
+      console.log("[Signup] Auth account created. UID:", user.uid);
     } catch (err: any) {
+      console.error("[Signup] Auth error:", err.code, err.message, err);
       authActionInProgress = false;
       setLoading(submitBtn, false);
       if (err.code === "auth/email-already-in-use") {
@@ -459,19 +499,71 @@ const description = "Log in or create your BoatHaven account to rent boats, save
       } else {
         showError(signupError, "Something went wrong. Please try again.");
       }
+      return;
     }
+
+    // Step 2: Update profile (with timeout)
+    try {
+      console.log("[Signup] Updating profile with name:", firstName, lastName);
+      await Promise.race([
+        updateProfile(user, { displayName: `${firstName} ${lastName}` }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Profile update timed out")), 5000))
+      ]);
+      console.log("[Signup] Profile updated successfully");
+    } catch (err) {
+      console.error("[Signup] Profile update error:", err);
+    }
+
+    // Step 3: Create Firestore doc (fire and forget — don't block redirect)
+    createUserDoc(user, { firstName, lastName }).catch((err) => {
+      console.error("[Signup] Firestore user doc error:", err);
+    });
+
+    console.log("[Signup] Redirecting to /");
+    window.location.href = "/";
   });
 
-  // Social auth helper
+  // Handle redirect result (when user returns from Google/Facebook redirect)
+  getRedirectResult(auth).then((result) => {
+    if (result?.user) {
+      console.log("[Social] Redirect result received. User:", result.user.uid);
+      createUserDoc(result.user).catch((err) => {
+        console.error("[Social] Firestore user doc error:", err);
+      });
+      window.location.href = "/";
+    }
+  }).catch((err) => {
+    console.error("[Social] Redirect result error:", err);
+  });
+
+  // Social auth helper — tries popup first, falls back to redirect
   async function socialAuth(provider: any, errorEl: HTMLElement) {
     authActionInProgress = true;
     try {
-      const { user } = await signInWithPopup(auth, provider);
-      await createUserDoc(user);
-      window.location.href = redirectTo;
-    } catch {
-      authActionInProgress = false;
-      showError(errorEl, "Sign-in failed. Please try again.");
+      const result = await signInWithPopup(auth, provider);
+      console.log("[Social] Popup sign-in success. User:", result.user.uid);
+      createUserDoc(result.user).catch((err) => {
+        console.error("[Social] Firestore user doc error:", err);
+      });
+      window.location.href = "/";
+    } catch (err: any) {
+      console.error("[Social] Popup error:", err.code, err.message);
+      // If popup blocked or iframe error, fall back to redirect
+      if (err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || err.message?.includes("Illegal url")) {
+        console.log("[Social] Falling back to redirect...");
+        try {
+          await signInWithRedirect(auth, provider);
+        } catch (redirectErr) {
+          authActionInProgress = false;
+          console.error("[Social] Redirect error:", redirectErr);
+          showError(errorEl, "Sign-in failed. Please try again.");
+        }
+      } else if (err.code === "auth/cancelled-popup-request") {
+        authActionInProgress = false;
+      } else {
+        authActionInProgress = false;
+        showError(errorEl, "Sign-in failed. Please try again.");
+      }
     }
   }
 

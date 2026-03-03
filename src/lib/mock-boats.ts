@@ -1,5 +1,6 @@
 export interface BoatListing {
   id: string;
+  type: "motor" | "sailing" | "catamaran" | "yacht" | "luxury" | "party";
   location: string;
   rating: number;
   reviewCount: number;
@@ -18,6 +19,7 @@ export interface BoatListing {
 export const trendingBoats: BoatListing[] = [
   {
     id: "t1",
+    type: "motor",
     location: "Agios Sostis Harbour, Zakynthos",
     rating: 4.9,
     reviewCount: 163,
@@ -42,6 +44,7 @@ export const trendingBoats: BoatListing[] = [
   },
   {
     id: "t2",
+    type: "motor",
     location: "Agios Sostis Harbour, Zakynthos",
     rating: 4.8,
     reviewCount: 113,
@@ -66,6 +69,7 @@ export const trendingBoats: BoatListing[] = [
   },
   {
     id: "t3",
+    type: "motor",
     location: "Six-Fours-les-Plages",
     rating: 4.9,
     reviewCount: 4,
@@ -93,6 +97,7 @@ export const trendingBoats: BoatListing[] = [
 export const allBoats: BoatListing[] = [
   {
     id: "b1",
+    type: "motor",
     location: "Port Cogolin",
     rating: 4.9,
     reviewCount: 5,
@@ -117,6 +122,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b2",
+    type: "motor",
     location: "Laganas",
     rating: 5.0,
     reviewCount: 16,
@@ -141,6 +147,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b3",
+    type: "yacht",
     location: "Portisco",
     rating: 5.0,
     reviewCount: 3,
@@ -165,6 +172,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b4",
+    type: "motor",
     location: "Taormina",
     rating: 4.9,
     reviewCount: 15,
@@ -188,6 +196,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b5",
+    type: "motor",
     location: "Ghiffa",
     rating: 5.0,
     reviewCount: 39,
@@ -211,6 +220,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b6",
+    type: "catamaran",
     location: "Ta' Xbiex",
     rating: 4.9,
     reviewCount: 16,
@@ -235,6 +245,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b7",
+    type: "luxury",
     location: "Porto Piccolo, Syracuse, Italy",
     rating: 5.0,
     reviewCount: 16,
@@ -259,6 +270,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b8",
+    type: "catamaran",
     location: "Tigné Seafront, Sliema, Malta",
     rating: 5.0,
     reviewCount: 32,
@@ -283,6 +295,7 @@ export const allBoats: BoatListing[] = [
   },
   {
     id: "b9",
+    type: "motor",
     location: "Porto Pollo",
     rating: 0,
     reviewCount: 0,
@@ -304,5 +317,129 @@ export const allBoats: BoatListing[] = [
     instantBooking: true,
     discountOffer: false,
     isNew: true,
+  },
+  {
+    id: "b10",
+    type: "sailing",
+    location: "Lefkada Marina, Greece",
+    rating: 4.8,
+    reviewCount: 27,
+    title: "Bavaria Cruiser 46 (2019)",
+    images: [
+      "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=500&q=80&auto=format",
+    ],
+    tags: [
+      { label: "Without skipper", icon: "no-skipper" },
+      { label: "Sailboat", icon: "boat-type" },
+    ],
+    specs: "10 people · 4 cabins · 8 berths · 14 m",
+    perks: ["flexible-cancel"],
+    price: 450,
+    priceUnit: "/ day",
+    instantBooking: true,
+    discountOffer: false,
+    isNew: false,
+  },
+  {
+    id: "b11",
+    type: "sailing",
+    location: "Alimos Marina, Athens",
+    rating: 4.7,
+    reviewCount: 42,
+    title: "Jeanneau Sun Odyssey 440 (2021)",
+    images: [
+      "https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=500&q=80&auto=format",
+    ],
+    tags: [
+      { label: "Skipper optional", icon: "skipper" },
+      { label: "Sailboat", icon: "boat-type" },
+      { label: "Super owner", icon: "super-owner" },
+    ],
+    specs: "8 people · 3 cabins · 6 berths · 13.4 m",
+    perks: ["flexible-cancel", "fuel"],
+    price: 520,
+    priceUnit: "/ day",
+    instantBooking: true,
+    discountOffer: false,
+    isNew: false,
+  },
+  {
+    id: "b12",
+    type: "yacht",
+    location: "Marina di Portisco, Sardinia",
+    rating: 5.0,
+    reviewCount: 8,
+    title: "Azimut 55 Fly (2020)",
+    images: [
+      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&q=80&auto=format",
+    ],
+    tags: [
+      { label: "Skipper mandatory", icon: "skipper" },
+      { label: "Yacht", icon: "boat-type" },
+      { label: "Super owner", icon: "super-owner" },
+    ],
+    specs: "12 people · 3 cabins · 6 berths · 17 m",
+    perks: ["fuel", "flexible-cancel"],
+    price: 2800,
+    priceUnit: "/ day",
+    instantBooking: false,
+    discountOffer: false,
+    isNew: false,
+  },
+  {
+    id: "b13",
+    type: "party",
+    location: "Ibiza Port, Spain",
+    rating: 4.9,
+    reviewCount: 54,
+    title: "Party Catamaran – Sunset Cruise with DJ",
+    images: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=500&q=80&auto=format",
+    ],
+    tags: [
+      { label: "Skipper included", icon: "skipper" },
+      { label: "Catamaran", icon: "boat-type" },
+      { label: "Super owner", icon: "super-owner" },
+    ],
+    specs: "4 hours · For groups of up to 30 people",
+    perks: ["fuel", "free-cancel"],
+    price: 1200,
+    priceUnit: "",
+    instantBooking: true,
+    discountOffer: true,
+    isNew: false,
+  },
+  {
+    id: "b14",
+    type: "party",
+    location: "Mykonos Old Port, Greece",
+    rating: 4.8,
+    reviewCount: 31,
+    title: "VIP Party Boat – Full Day Mykonos Experience",
+    images: [
+      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=500&q=80&auto=format",
+      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=500&q=80&auto=format",
+    ],
+    tags: [
+      { label: "Skipper included", icon: "skipper" },
+      { label: "Motorboat", icon: "boat-type" },
+      { label: "Super owner", icon: "super-owner" },
+    ],
+    specs: "8 hours · For groups of up to 15 people",
+    perks: ["fuel"],
+    price: 1800,
+    priceUnit: "",
+    instantBooking: true,
+    discountOffer: false,
+    isNew: false,
   },
 ];
