@@ -442,10 +442,12 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       console.log("[Login] Success. User uid:", result.user.uid);
-      updateLastLogin(result.user.uid, result.user.email).catch((err) => {
+      try {
+        await updateLastLogin(result.user.uid, result.user.email);
+      } catch (err) {
         console.error("[Login] lastLoginAt update error:", err);
-      });
-      window.location.href = "/";
+      }
+      window.location.href = redirectTo;
     } catch (err: any) {
       console.error("[Login] Error:", err.code, err.message, err);
       authActionInProgress = false;
@@ -514,23 +516,27 @@ const description = "Log in or create your BoatHaven account to rent boats, save
       console.error("[Signup] Profile update error:", err);
     }
 
-    // Step 3: Create Firestore doc (fire and forget — don't block redirect)
-    createUserDoc(user, { firstName, lastName }).catch((err) => {
+    // Step 3: Create Firestore doc (await before redirect)
+    try {
+      await createUserDoc(user, { firstName, lastName });
+    } catch (err) {
       console.error("[Signup] Firestore user doc error:", err);
-    });
+    }
 
-    console.log("[Signup] Redirecting to /");
-    window.location.href = "/";
+    console.log("[Signup] Redirecting to", redirectTo);
+    window.location.href = redirectTo;
   });
 
   // Handle redirect result (when user returns from Google/Facebook redirect)
-  getRedirectResult(auth).then((result) => {
+  getRedirectResult(auth).then(async (result) => {
     if (result?.user) {
       console.log("[Social] Redirect result received. User:", result.user.uid);
-      createUserDoc(result.user).catch((err) => {
+      try {
+        await createUserDoc(result.user);
+      } catch (err) {
         console.error("[Social] Firestore user doc error:", err);
-      });
-      window.location.href = "/";
+      }
+      window.location.href = redirectTo;
     }
   }).catch((err) => {
     console.error("[Social] Redirect result error:", err);
@@ -542,10 +548,12 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("[Social] Popup sign-in success. User:", result.user.uid);
-      createUserDoc(result.user).catch((err) => {
+      try {
+        await createUserDoc(result.user);
+      } catch (err) {
         console.error("[Social] Firestore user doc error:", err);
-      });
-      window.location.href = "/";
+      }
+      window.location.href = redirectTo;
     } catch (err: any) {
       console.error("[Social] Popup error:", err.code, err.message);
       // If popup blocked or iframe error, fall back to redirect
