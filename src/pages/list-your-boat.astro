@@ -562,39 +562,101 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   // "Back to My Listings" link
   backBtn?.addEventListener("click", showListings);
 
-  function renderListingCard(boat: { id: string; boatType?: string; type?: string; manufacturer?: string; model?: string; title?: string; city?: string; location?: { city?: string }; images?: string[]; createdAt?: any }) {
-    const card = document.createElement("a");
-    card.className = "group block rounded-2xl border border-gray-200 bg-white overflow-hidden hover:shadow-md transition-shadow";
-    card.href = "#"; // No detail page yet
+  function renderListingCard(boat: { id: string; boatType?: string; type?: string; manufacturer?: string; model?: string; title?: string; city?: string; harbour?: string; location?: { city?: string }; images?: string[]; createdAt?: any; skipper?: string; capacity?: number; length?: number }) {
+    const card = document.createElement("article");
+    card.className = "boat-card bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group";
+    card.setAttribute("data-boat-type", boat.boatType || boat.type || "");
 
-    const typeLabel = boat.boatType || boat.type || "Boat";
     const name = boat.manufacturer && boat.model
       ? `${boat.manufacturer} ${boat.model}`
       : boat.title || "Untitled";
-    const city = boat.city || boat.location?.city || "—";
-    const createdDate = boat.createdAt?.toDate
-      ? boat.createdAt.toDate().toLocaleDateString()
-      : boat.createdAt instanceof Date
-        ? boat.createdAt.toLocaleDateString()
-        : "";
-    const firstImage = boat.images && boat.images.length > 0 ? boat.images[0] : null;
+    const city = boat.city || boat.location?.city || "";
+    const harbour = boat.harbour || "";
+    const location = harbour && city ? `${city}, ${harbour}` : city || "—";
+    const boatType = boat.boatType || boat.type || "";
+    const boatTypeLabel = boatType ? boatType.charAt(0).toUpperCase() + boatType.slice(1) : "";
+    const images = boat.images || [];
+    const firstImage = images.length > 0 ? images[0] : null;
 
+    // Check if "New" (created within last 7 days)
+    let isNew = false;
+    if (boat.createdAt) {
+      const created = boat.createdAt?.toDate ? boat.createdAt.toDate() : (boat.createdAt instanceof Date ? boat.createdAt : null);
+      if (created) {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        isNew = created > sevenDaysAgo;
+      }
+    }
+
+    // Image or placeholder
     const imagePart = firstImage
-      ? `<img src="${firstImage}" alt="${name}" class="w-full h-40 object-cover" />`
-      : `<div class="w-full h-40 bg-gray-100 flex items-center justify-center">
+      ? `<img src="${firstImage}" alt="${name}" class="h-full w-full object-cover" loading="lazy" decoding="async" />`
+      : `<div class="h-full w-full flex items-center justify-center">
            <svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
              <path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/>
              <path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/>
            </svg>
          </div>`;
 
+    // Carousel dots
+    const dots = images.length > 1
+      ? `<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+          ${images.map((_, i) => `<span class="h-2 w-2 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/50'}"></span>`).join("")}
+         </div>`
+      : "";
+
+    // New badge
+    const newBadge = isNew
+      ? `<div class="absolute top-3 left-3 flex items-center gap-1 text-xs font-semibold text-gray-700">
+           <svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+           New
+         </div>`
+      : "";
+
+    // Skipper tag
+    const skipperTag = boat.skipper === "yes"
+      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">
+           <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
+           Skipper included
+         </span>`
+      : boat.skipper === "no"
+        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">
+             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
+             Without skipper
+           </span>`
+        : "";
+
+    // Boat type tag
+    const boatTypeTag = boatTypeLabel
+      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">
+           <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 17h18M5 17l2-7h10l2 7"/></svg>
+           ${boatTypeLabel}
+         </span>`
+      : "";
+
+    // Specs line
+    const specParts: string[] = [];
+    if (boat.capacity && boat.capacity > 0) specParts.push(`Up to ${boat.capacity} people`);
+    if (boat.length && boat.length > 0) specParts.push(`${boat.length} m`);
+    const specsLine = specParts.length > 0 ? specParts.join(" · ") : "";
+
     card.innerHTML = `
-      ${imagePart}
+      <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+        ${imagePart}
+        ${dots}
+        ${newBadge}
+        <button class="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors" aria-label="Save to favorites">
+          <svg class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+        </button>
+      </div>
       <div class="p-4">
-        <span class="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2 capitalize">${typeLabel}</span>
-        <h3 class="text-sm font-bold text-text truncate">${name}</h3>
-        <p class="text-xs text-text-muted mt-1">${city}</p>
-        ${createdDate ? `<p class="text-xs text-text-muted mt-1">${createdDate}</p>` : ""}
+        <div class="flex items-start justify-between gap-2 mb-1">
+          <h3 class="text-sm font-semibold text-text truncate">${location}</h3>
+        </div>
+        <p class="text-xs text-text-muted truncate mb-2.5">${name}</p>
+        ${(skipperTag || boatTypeTag) ? `<div class="flex flex-wrap gap-1.5 mb-2.5">${skipperTag}${boatTypeTag}</div>` : ""}
+        ${specsLine ? `<p class="text-xs text-text-muted mb-3">${specsLine}</p>` : ""}
       </div>
     `;
 
