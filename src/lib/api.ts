@@ -9,6 +9,7 @@ import {
   addDoc,
   doc,
   setDoc,
+  updateDoc,
   serverTimestamp,
   type WhereFilterOp,
 } from "firebase/firestore";
@@ -139,7 +140,7 @@ export async function uploadBoatPhotos(docId: string, files: File[]): Promise<st
 }
 
 export async function createBoatListing(
-  data: Omit<BoatListing, "images" | "createdAt">,
+  data: Omit<BoatListing, "images" | "createdAt" | "updatedAt">,
   files: File[]
 ): Promise<string> {
   const docRef = doc(collection(db, "boats"));
@@ -148,6 +149,23 @@ export async function createBoatListing(
     ...data,
     images: imageUrls,
     createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   });
   return docRef.id;
+}
+
+export async function updateBoatListing(
+  boatId: string,
+  data: Partial<Omit<BoatListing, "images" | "createdAt" | "updatedAt">>,
+  newFiles: File[],
+  existingImageUrls: string[]
+): Promise<void> {
+  const docRef = doc(db, "boats", boatId);
+  const newImageUrls = newFiles.length > 0 ? await uploadBoatPhotos(boatId, newFiles) : [];
+  const allImages = [...existingImageUrls, ...newImageUrls];
+  await updateDoc(docRef, {
+    ...data,
+    images: allImages,
+    updatedAt: serverTimestamp(),
+  });
 }

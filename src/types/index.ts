@@ -36,6 +36,8 @@ export interface BoatListing {
   images: string[];       // Firebase Storage download URLs
   ownerId: string;
   createdAt: any;         // serverTimestamp()
+  status: "draft" | "published";
+  updatedAt: any;         // serverTimestamp()
 }
 
 export interface Destination {
