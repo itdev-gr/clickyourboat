@@ -10,6 +10,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  deleteDoc,
   serverTimestamp,
   type WhereFilterOp,
 } from "firebase/firestore";
@@ -168,4 +169,9 @@ export async function updateBoatListing(
     images: allImages,
     updatedAt: serverTimestamp(),
   });
+}
+
+export async function deleteBoatListing(boatId: string): Promise<void> {
+  const docRef = doc(db, "boats", boatId);
+  await deleteDoc(docRef);
 }

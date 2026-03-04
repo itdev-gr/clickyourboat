@@ -62,12 +62,28 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
         </button>
       </div>
 
+      <!-- Filter tabs -->
+      <div id="listings-tabs" class="hidden flex gap-2 mb-6">
+        <button type="button" data-tab="all" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-primary text-white">All <span class="tab-count">(0)</span></button>
+        <button type="button" data-tab="published" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Published <span class="tab-count">(0)</span></button>
+        <button type="button" data-tab="drafts" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Drafts <span class="tab-count">(0)</span></button>
+      </div>
+
       <!-- Loading spinner -->
       <div id="listings-loading" class="flex items-center justify-center py-16">
         <div class="text-center">
           <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p class="text-sm text-text-muted">Loading your listings...</p>
         </div>
+      </div>
+
+      <!-- Error banner -->
+      <div id="listings-error" class="hidden rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+        <p class="text-sm text-red-700 mb-3">Failed to load your listings. Please try again.</p>
+        <button type="button" id="listings-retry-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+          Retry
+        </button>
       </div>
 
       <!-- Listings grid -->
@@ -533,7 +549,7 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
-  import { createBoatListing, updateBoatListing } from "../lib/api";
+  import { createBoatListing, updateBoatListing, deleteBoatListing } from "../lib/api";
 
   const loading = document.getElementById("auth-loading");
   const gate = document.getElementById("auth-gate");
@@ -543,6 +559,9 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   const listingsLoading = document.getElementById("listings-loading");
   const addNewBtn = document.getElementById("add-new-listing-btn");
   const backBtn = document.getElementById("back-to-listings-btn");
+  const listingsError = document.getElementById("listings-error");
+  const listingsRetryBtn = document.getElementById("listings-retry-btn");
+  const listingsTabs = document.getElementById("listings-tabs");
 
   // Track whether this user has listings (to show/hide back button)
   let userHasListings = false;
@@ -550,6 +569,10 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   // Draft support state
   let editingBoatId: string | null = null;
   let existingImageUrls: string[] = [];
+
+  // Track cards with their status for filtering
+  let allListingCards: { el: HTMLElement; status: string }[] = [];
+  let activeTab = "all";
 
   function hideAll() {
     gate?.classList.add("hidden");
@@ -571,6 +594,48 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     backBtn?.classList.add("hidden");
   }
 
+  // --- Tab filtering ---
+  function updateTabCounts() {
+    const total = allListingCards.length;
+    const published = allListingCards.filter(c => c.status !== "draft").length;
+    const drafts = allListingCards.filter(c => c.status === "draft").length;
+    const tabs = document.querySelectorAll(".listings-tab");
+    tabs.forEach(tab => {
+      const key = tab.getAttribute("data-tab");
+      const countEl = tab.querySelector(".tab-count");
+      if (!countEl) return;
+      if (key === "all") countEl.textContent = `(${total})`;
+      else if (key === "published") countEl.textContent = `(${published})`;
+      else if (key === "drafts") countEl.textContent = `(${drafts})`;
+    });
+  }
+
+  function filterByTab(tab: string) {
+    activeTab = tab;
+    allListingCards.forEach(({ el, status }) => {
+      if (tab === "all") el.style.display = "";
+      else if (tab === "published") el.style.display = status !== "draft" ? "" : "none";
+      else if (tab === "drafts") el.style.display = status === "draft" ? "" : "none";
+    });
+    // Update active tab styling
+    document.querySelectorAll(".listings-tab").forEach(btn => {
+      if (btn.getAttribute("data-tab") === tab) {
+        btn.classList.remove("bg-white", "text-gray-600", "border", "border-gray-300", "hover:bg-gray-50");
+        btn.classList.add("bg-primary", "text-white");
+      } else {
+        btn.classList.remove("bg-primary", "text-white");
+        btn.classList.add("bg-white", "text-gray-600", "border", "border-gray-300", "hover:bg-gray-50");
+      }
+    });
+  }
+
+  // Tab click handlers
+  document.querySelectorAll(".listings-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      filterByTab(btn.getAttribute("data-tab") || "all");
+    });
+  });
+
   // "Add New Listing" button — resets form then shows it
   addNewBtn?.addEventListener("click", () => {
     resetForm();
@@ -579,6 +644,48 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
 
   // "Back to My Listings" link
   backBtn?.addEventListener("click", showListings);
+
+  // Retry button for listings load error
+  listingsRetryBtn?.addEventListener("click", () => {
+    listingsError?.classList.add("hidden");
+    listingsLoading?.classList.remove("hidden");
+    const user = auth.currentUser;
+    if (!user) return;
+    (async () => {
+      try {
+        const q = query(
+          collection(db, "boats"),
+          where("ownerId", "==", user.uid),
+          orderBy("createdAt", "desc")
+        );
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+          userHasListings = false;
+          showForm();
+          backBtn?.classList.add("hidden");
+        } else {
+          userHasListings = true;
+          listingsGrid!.innerHTML = "";
+          allListingCards = [];
+          snapshot.docs.forEach((d) => {
+            const data = d.data();
+            const card = renderListingCard({ id: d.id, ...data });
+            listingsGrid!.appendChild(card);
+            allListingCards.push({ el: card, status: data.status || "published" });
+          });
+          updateTabCounts();
+          listingsTabs?.classList.remove("hidden");
+          listingsLoading?.classList.add("hidden");
+          listingsGrid?.classList.remove("hidden");
+          filterByTab("all");
+        }
+      } catch (retryErr) {
+        console.error("Retry failed:", retryErr);
+        listingsLoading?.classList.add("hidden");
+        listingsError?.classList.remove("hidden");
+      }
+    })();
+  });
 
   function renderListingCard(boat: { id: string; boatType?: string; type?: string; manufacturer?: string; model?: string; title?: string; city?: string; harbour?: string; location?: { city?: string }; images?: string[]; createdAt?: any; skipper?: string; capacity?: number; length?: number; status?: string; professional?: string; company?: string; website?: string }) {
     const card = document.createElement("article");
@@ -669,9 +776,13 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     const specsLine = specParts.length > 0 ? specParts.join(" · ") : "";
 
     if (isDraft) {
-      card.classList.add("cursor-pointer");
       card.style.opacity = "0.85";
     }
+
+    // Status badge for footer
+    const footerBadge = isDraft
+      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-[11px] font-semibold text-amber-800">Draft</span>`
+      : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-[11px] font-semibold text-green-800">Published</span>`;
 
     card.innerHTML = `
       <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
@@ -689,17 +800,47 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
         <p class="text-xs text-text-muted truncate mb-2.5">${name}</p>
         ${(skipperTag || boatTypeTag) ? `<div class="flex flex-wrap gap-1.5 mb-2.5">${skipperTag}${boatTypeTag}</div>` : ""}
         ${specsLine ? `<p class="text-xs text-text-muted mb-3">${specsLine}</p>` : ""}
+        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+          ${footerBadge}
+          <div class="flex items-center gap-1">
+            <button type="button" class="card-edit-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-primary hover:bg-primary/5 transition-colors" aria-label="Edit listing" title="Edit">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+            <button type="button" class="card-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" aria-label="Delete listing" title="Delete">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
     `;
 
-    // Click draft card to edit
-    if (isDraft) {
-      card.addEventListener("click", (e) => {
-        // Don't trigger if clicking the favorite button
-        if ((e.target as HTMLElement).closest("button")) return;
-        loadBoatIntoForm(boat.id, boat);
-      });
-    }
+    // Edit button — works for all statuses
+    card.querySelector(".card-edit-btn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      loadBoatIntoForm(boat.id, boat);
+    });
+
+    // Delete button
+    card.querySelector(".card-delete-btn")?.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) return;
+      try {
+        await deleteBoatListing(boat.id);
+        // Remove from tracking array
+        allListingCards = allListingCards.filter(c => c.el !== card);
+        card.remove();
+        updateTabCounts();
+        // If no listings left, show form
+        if (allListingCards.length === 0) {
+          userHasListings = false;
+          showForm();
+          backBtn?.classList.add("hidden");
+        }
+      } catch (err) {
+        console.error("Failed to delete listing:", err);
+        alert("Failed to delete listing. Please try again.");
+      }
+    });
 
     return card;
   }
@@ -894,13 +1035,18 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
           );
           const snapshot = await getDocs(q);
           listingsGrid!.innerHTML = "";
+          allListingCards = [];
           snapshot.docs.forEach((doc) => {
             const cardData = doc.data();
             const card = renderListingCard({ id: doc.id, ...cardData });
             listingsGrid!.appendChild(card);
+            allListingCards.push({ el: card, status: cardData.status || "published" });
           });
+          updateTabCounts();
+          listingsTabs?.classList.remove("hidden");
           listingsLoading?.classList.add("hidden");
           listingsGrid?.classList.remove("hidden");
+          filterByTab(activeTab);
           showListings();
         } catch (err) {
           console.error("Failed to refresh listings:", err);
@@ -958,21 +1104,25 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
         // Has listings — render cards
         userHasListings = true;
         listingsGrid!.innerHTML = "";
+        allListingCards = [];
         snapshot.docs.forEach((doc) => {
           const data = doc.data();
           const card = renderListingCard({ id: doc.id, ...data });
           listingsGrid!.appendChild(card);
+          allListingCards.push({ el: card, status: data.status || "published" });
         });
+        updateTabCounts();
+        listingsTabs?.classList.remove("hidden");
         listingsLoading?.classList.add("hidden");
         listingsGrid?.classList.remove("hidden");
+        filterByTab("all");
         showListings();
       }
     } catch (err) {
       console.error("Failed to fetch listings:", err);
-      // Fallback: show form on error
-      userHasListings = false;
-      showForm();
-      backBtn?.classList.add("hidden");
+      listingsLoading?.classList.add("hidden");
+      listingsError?.classList.remove("hidden");
+      showListings();
     }
   });
 </script>
