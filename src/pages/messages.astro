@@ -34,13 +34,8 @@ const description = "Chat with boat owners and renters on BoatHaven.";
   </div>
 
   <!-- Messages content -->
-  <style is:global>
-    /* Hide footer on messages page so chat fills the viewport */
-    body:has(#messages-content:not(.hidden)) footer { display: none !important; }
-    body:has(#messages-content:not(.hidden)) > main { overflow: hidden; }
-  </style>
   <div id="messages-content" class="hidden">
-    <div class="flex h-[calc(100vh-64px)] overflow-hidden">
+    <div class="flex h-[calc(100vh-64px)]">
 
       <!-- ===== Left Sidebar ===== -->
       <aside class="hidden lg:flex flex-col w-72 bg-gray-800 text-white flex-shrink-0">
