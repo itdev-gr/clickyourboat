@@ -7,14 +7,12 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
-  noFooter?: boolean;
 }
 
 const {
   title = "BoatHaven — Find Your Perfect Boat Experience",
   description = "Choose from thousands of boats worldwide. Sailing, motor, catamaran, and yacht rentals with or without skipper.",
   image = "/og-image.jpg",
-  noFooter = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathaven.com");
@@ -60,9 +58,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathave
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />
-    <main class:list={["flex-1", noFooter && "overflow-hidden"]}>
+    <main class="flex-1">
       <slot />
     </main>
-    {!noFooter && <Footer />}
+    <Footer />
   </body>
 </html>
