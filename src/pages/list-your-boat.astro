@@ -317,10 +317,10 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
           <div class="max-w-md">
             <label for="website" class="block text-sm font-semibold text-text mb-2">Website</label>
             <input
-              type="url"
+              type="text"
               id="website"
               name="website"
-              placeholder="https://"
+              placeholder="www.example.com"
               class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
@@ -703,7 +703,11 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
       capacity: Number(getValue("capacity")) || 0,
       length: Number(getValue("length")) || 0,
       company: getValue("company"),
-      website: getValue("website"),
+      website: (() => {
+        const raw = getValue("website").trim();
+        if (!raw) return "";
+        return raw.match(/^https?:\/\//) ? raw : "https://" + raw;
+      })(),
       ownerId: currentUser.uid,
     };
 

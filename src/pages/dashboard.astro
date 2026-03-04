@@ -1,0 +1,293 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Dashboard — BoatHaven";
+const description = "Your BoatHaven dashboard — view recent messages and your boat listings at a glance.";
+---
+
+<Layout title={title} description={description}>
+  <!-- Loading state -->
+  <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm text-text-muted">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Not logged in -->
+  <div id="auth-gate" class="hidden">
+    <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+      <div class="max-w-md w-full text-center">
+        <div class="mx-auto mb-6 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Log in to view your dashboard</h1>
+        <p class="text-text-muted mb-8 max-w-sm mx-auto">You need to be logged in to see your dashboard.</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="/login?redirect=/dashboard" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Log in</a>
+          <a href="/login?signup&redirect=/dashboard" class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors">Create account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard content -->
+  <div id="dashboard-content" class="hidden">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-8">Dashboard</h1>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Recent Messages -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-text">Recent Messages</h2>
+            <a href="/messages" class="text-sm font-medium text-primary hover:text-primary-dark transition-colors">View all</a>
+          </div>
+
+          <!-- Loading -->
+          <div id="messages-loading" class="flex items-center justify-center py-12">
+            <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="messages-empty" class="hidden px-6 py-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+            <p class="text-sm text-text-muted">No conversations yet</p>
+            <p class="text-xs text-gray-400 mt-1">Start a conversation from a boat listing</p>
+          </div>
+
+          <!-- Message rows -->
+          <div id="messages-list" class="divide-y divide-gray-100"></div>
+        </div>
+
+        <!-- Your Listings -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-text">Your Listings</h2>
+            <a href="/list-your-boat" class="text-sm font-medium text-primary hover:text-primary-dark transition-colors">List a new boat</a>
+          </div>
+
+          <!-- Loading -->
+          <div id="listings-loading" class="flex items-center justify-center py-12">
+            <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="listings-empty" class="hidden px-6 py-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+            </svg>
+            <p class="text-sm text-text-muted">No listings yet</p>
+            <p class="text-xs text-gray-400 mt-1">List your first boat to start earning</p>
+          </div>
+
+          <!-- Listing rows -->
+          <div id="listings-list" class="divide-y divide-gray-100"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import {
+    collection, query, where, orderBy, limit, getDocs
+  } from "firebase/firestore";
+
+  // ---- Helpers ----
+  function getInitials(name: string | null): string {
+    if (!name) return "?";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function timeAgo(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "now";
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function truncate(text: string, maxLen: number): string {
+    if (text.length <= maxLen) return text;
+    return text.slice(0, maxLen).trimEnd() + "…";
+  }
+
+  // ---- DOM refs ----
+  const $ = (id: string) => document.getElementById(id);
+
+  // ---- Auth gate ----
+  let fallbackTimer = setTimeout(() => {
+    $("auth-loading")?.classList.add("hidden");
+    $("auth-gate")?.classList.remove("hidden");
+  }, 3000);
+
+  onAuthStateChanged(auth, async (user) => {
+    clearTimeout(fallbackTimer);
+    const loading = $("auth-loading");
+    const gate = $("auth-gate");
+    const content = $("dashboard-content");
+
+    if (!user) {
+      loading?.classList.add("hidden");
+      gate?.classList.remove("hidden");
+      content?.classList.add("hidden");
+      return;
+    }
+
+    loading?.classList.add("hidden");
+    gate?.classList.add("hidden");
+    content?.classList.remove("hidden");
+
+    // Load both sections in parallel
+    loadRecentMessages(user.uid);
+    loadYourListings(user.uid);
+  });
+
+  // ---- Recent Messages ----
+  async function loadRecentMessages(uid: string) {
+    const loadingEl = $("messages-loading");
+    const emptyEl = $("messages-empty");
+    const listEl = $("messages-list");
+
+    try {
+      const q = query(
+        collection(db, "conversations"),
+        where("participants", "array-contains", uid),
+        orderBy("updatedAt", "desc"),
+        limit(5)
+      );
+
+      const snap = await getDocs(q);
+
+      loadingEl?.classList.add("hidden");
+
+      if (snap.empty) {
+        emptyEl?.classList.remove("hidden");
+        return;
+      }
+
+      let html = "";
+      snap.docs.forEach(doc => {
+        const conv = doc.data();
+        const convId = doc.id;
+
+        // Get other participant
+        const otherId = conv.participants?.find((p: string) => p !== uid);
+        const other = otherId && conv.participantDetails ? conv.participantDetails[otherId] : null;
+        const otherName = other?.displayName || "Unknown";
+        const otherInitials = getInitials(otherName);
+        const otherPhoto = other?.photoURL;
+
+        // Last message
+        const lastText = conv.lastMessage?.text ? truncate(conv.lastMessage.text, 50) : "No messages yet";
+        const lastTime = conv.lastMessage?.timestamp
+          ? timeAgo(conv.lastMessage.timestamp.toDate ? conv.lastMessage.timestamp.toDate() : new Date(conv.lastMessage.timestamp))
+          : "";
+
+        // Unread badge
+        const unread = conv.unreadCount?.[uid] || 0;
+
+        html += `
+          <a href="/messages?id=${convId}" class="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
+              ${otherPhoto ? `<img src="${escapeHtml(otherPhoto)}" class="h-full w-full object-cover" alt="" />` : `<span>${escapeHtml(otherInitials)}</span>`}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-text truncate">${escapeHtml(otherName)}</span>
+                <span class="text-xs text-gray-400 flex-shrink-0 ml-2">${lastTime}</span>
+              </div>
+              <p class="text-xs text-text-muted truncate ${unread > 0 ? "font-medium text-text" : ""}">${escapeHtml(lastText)}</p>
+            </div>
+            ${unread > 0 ? `<span class="flex-shrink-0 h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">${unread}</span>` : ""}
+          </a>
+        `;
+      });
+
+      if (listEl) listEl.innerHTML = html;
+    } catch (err) {
+      console.error("[Dashboard] Error loading messages:", err);
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+  }
+
+  // ---- Your Listings ----
+  async function loadYourListings(uid: string) {
+    const loadingEl = $("listings-loading");
+    const emptyEl = $("listings-empty");
+    const listEl = $("listings-list");
+
+    try {
+      const q = query(
+        collection(db, "boats"),
+        where("ownerId", "==", uid),
+        orderBy("createdAt", "desc"),
+        limit(5)
+      );
+
+      const snap = await getDocs(q);
+
+      loadingEl?.classList.add("hidden");
+
+      if (snap.empty) {
+        emptyEl?.classList.remove("hidden");
+        return;
+      }
+
+      let html = "";
+      snap.docs.forEach(doc => {
+        const boat = doc.data();
+
+        // Thumbnail
+        const thumb = boat.images?.[0];
+        const manufacturer = boat.manufacturer || "";
+        const model = boat.model || "";
+        const boatTitle = [manufacturer, model].filter(Boolean).join(" ") || "Untitled Boat";
+        const location = [boat.city, boat.harbour].filter(Boolean).join(" — ") || "";
+        const createdDate = boat.createdAt?.toDate
+          ? boat.createdAt.toDate().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+          : "";
+
+        html += `
+          <div class="flex items-center gap-4 px-6 py-4">
+            <div class="h-14 w-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
+              ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<svg class="h-full w-full p-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25z" /></svg>`}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-text truncate">${escapeHtml(boatTitle)}</p>
+              ${location ? `<p class="text-xs text-text-muted truncate">${escapeHtml(location)}</p>` : ""}
+              ${createdDate ? `<p class="text-xs text-gray-400 mt-0.5">${createdDate}</p>` : ""}
+            </div>
+          </div>
+        `;
+      });
+
+      if (listEl) listEl.innerHTML = html;
+    } catch (err) {
+      console.error("[Dashboard] Error loading listings:", err);
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+  }
+</script>
