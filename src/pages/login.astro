@@ -544,11 +544,14 @@ const description = "Log in or create your BoatHaven account to rent boats, save
       console.error("[Signup] Step 2 FAILED — Profile update error:", err);
     }
 
-    // Step 3: Create Firestore doc (fire and forget — don't block redirect)
-    console.log("[Signup] Step 3: Firing createUserDoc (non-blocking) for UID:", user.uid);
-    createUserDoc(user, { firstName, lastName }).catch((err) => {
-      console.error("[Signup] Firestore user doc error:", err);
-    });
+    // Step 3: Create Firestore doc (must complete before redirect)
+    console.log("[Signup] Step 3: Creating Firestore user doc for UID:", user.uid);
+    try {
+      await createUserDoc(user, { firstName, lastName });
+      console.log("[Signup] Step 3 SUCCESS — Firestore user doc created");
+    } catch (err) {
+      console.error("[Signup] Step 3 FAILED — Firestore user doc error:", err);
+    }
 
     console.log("[Signup] All steps done. Redirecting to:", redirectTo);
     window.location.href = redirectTo;
@@ -564,10 +567,12 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     console.log("[Social] getRedirectResult resolved. Has user:", !!result?.user);
     if (result?.user) {
       console.log("[Social] Redirect result — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName, "provider:", result.providerId);
-      console.log("[Social] Firing createUserDoc (non-blocking)...");
-      createUserDoc(result.user).catch((err) => {
+      try {
+        await createUserDoc(result.user);
+        console.log("[Social] Firestore user doc created");
+      } catch (err) {
         console.error("[Social] Firestore user doc FAILED:", err);
-      });
+      }
       console.log("[Social] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
     } else {
@@ -585,10 +590,12 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("[Social] signInWithPopup SUCCESS — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
-      console.log("[Social] Firing createUserDoc (non-blocking)...");
-      createUserDoc(result.user).catch((err) => {
+      try {
+        await createUserDoc(result.user);
+        console.log("[Social] Firestore user doc created");
+      } catch (err) {
         console.error("[Social] Firestore user doc FAILED:", err);
-      });
+      }
       console.log("[Social] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
     } catch (err: any) {
