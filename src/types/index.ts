@@ -20,8 +20,37 @@ export interface Boat {
 
 export type BoatListingType = "motorboat" | "sailboat" | "rib" | "catamaran" | "houseboat" | "jetski" | "gulet" | "without-licence" | "yacht";
 export type SkipperOption = "with-skipper" | "without-skipper" | "both";
+export type EngineType = "inboard" | "outboard" | "electric" | "none";
+export type BookingMode = "instant" | "confirmation";
+export type FuelCost = "included" | "not-included" | "by-arrangement";
+
+export interface PricePeriod {
+  startDate: string;
+  endDate: string;
+  pricePerDay: number;
+}
+
+export interface UnavailabilityPeriod {
+  startDate: string;
+  endDate: string;
+  reason: string;
+}
+
+export interface Discount {
+  type: "first-booking" | "early-bird" | "last-minute" | "length-of-stay" | "custom";
+  percentage: number;
+  label?: string;
+  minDays?: number;
+}
+
+export interface Extra {
+  name: string;
+  pricePerDay: number;
+  mandatory: boolean;
+}
 
 export interface BoatListing {
+  // Existing fields
   boatType: BoatListingType;
   city: string;
   harbour: string;
@@ -33,11 +62,77 @@ export interface BoatListing {
   length: number;
   company: string;
   website: string;
-  images: string[];       // Firebase Storage download URLs
+  images: string[];
   ownerId: string;
-  createdAt: any;         // serverTimestamp()
+  createdAt: any;
   status: "draft" | "published";
-  updatedAt: any;         // serverTimestamp()
+  updatedAt: any;
+
+  // General
+  boatName?: string;
+
+  // Description
+  languages?: string[];
+  listingTitle?: string;
+  description?: string;
+
+  // Photos
+  boatPlanImages?: string[];
+
+  // Price
+  pricePerDay?: number;
+  currency?: string;
+  pricePeriods?: PricePeriod[];
+  reservationMinDays?: number;
+  reservationMaxDays?: number;
+
+  // Booking
+  bookingMode?: BookingMode;
+  checkInTime?: string;
+  checkOutTime?: string;
+  checkInTimeDayRental?: string;
+  checkOutTimeDayRental?: string;
+  downpaymentPercentage?: number;
+  daysBeforeBalancePayment?: number;
+  fuelCost?: FuelCost;
+  licenceRequired?: "yes" | "no";
+
+  // Documents
+  securityDeposit?: number;
+  insuranceCertificateUrl?: string;
+  ownershipCertificateUrl?: string;
+  yachtInsured?: "yes" | "no";
+
+  // Calendar
+  unavailabilityPeriods?: UnavailabilityPeriod[];
+
+  // Equipment
+  equipment?: string[];
+
+  // Extras
+  extras?: Extra[];
+
+  // Other / Technical
+  engineType?: EngineType;
+  horsepower?: number;
+  width?: number;
+  draft?: number;
+  equippedOffshore?: "yes" | "no";
+  crewMembers?: number;
+  tenderHorsepower?: number;
+  yearOfConstruction?: number;
+  renovated?: "yes" | "no";
+  fuel?: number;
+  speed?: number;
+  cabins?: number;
+  berths?: number;
+  bathrooms?: number;
+
+  // Discounts
+  discounts?: Discount[];
+
+  // Meta
+  completedSections?: string[];
 }
 
 export interface Destination {

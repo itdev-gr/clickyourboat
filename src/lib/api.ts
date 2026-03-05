@@ -6,6 +6,7 @@ import {
   orderBy,
   limit,
   getDocs,
+  getDoc,
   addDoc,
   doc,
   setDoc,
@@ -174,4 +175,45 @@ export async function updateBoatListing(
 export async function deleteBoatListing(boatId: string): Promise<void> {
   const docRef = doc(db, "boats", boatId);
   await deleteDoc(docRef);
+}
+
+// --- Wizard draft/section helpers ---
+
+export async function createEmptyDraft(ownerId: string): Promise<string> {
+  const docRef = doc(collection(db, "boats"));
+  await setDoc(docRef, {
+    ownerId,
+    status: "draft",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function updateBoatSection(
+  boatId: string,
+  sectionData: Record<string, any>
+): Promise<void> {
+  const docRef = doc(db, "boats", boatId);
+  await updateDoc(docRef, {
+    ...sectionData,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function uploadBoatDocument(
+  boatId: string,
+  file: File,
+  docType: string
+): Promise<string> {
+  const storageRef = ref(storage, `boats/${boatId}/documents/${docType}-${Date.now()}-${file.name}`);
+  await uploadBytes(storageRef, file);
+  return getDownloadURL(storageRef);
+}
+
+export async function getBoatListing(boatId: string): Promise<any | null> {
+  const docRef = doc(db, "boats", boatId);
+  const snap = await getDoc(docRef);
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() };
 }

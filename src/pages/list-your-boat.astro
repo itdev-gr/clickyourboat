@@ -91,465 +91,918 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     </div>
   </div>
 
-  <!-- Logged in: Boat listing form -->
+  <!-- Logged in: Boat listing form (Wizard) -->
   <div id="listing-form" class="hidden">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-
-      <!-- Back link (hidden when user has no listings) -->
-      <button
-        type="button"
-        id="back-to-listings-btn"
-        class="hidden inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors mb-6"
-      >
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
-        Back to My Listings
-      </button>
-
-      <!-- ============ SECTION: Your yacht ============ -->
-      <section>
-        <h1 class="text-2xl font-bold text-text">Your yacht</h1>
-        <hr class="mt-3 mb-8 border-border" />
-
-        <form id="boat-form" class="space-y-8">
-          <!-- Boat Type -->
-          <div>
-            <label class="block text-sm font-semibold text-text mb-4">Type</label>
-            <div class="flex flex-wrap gap-3" id="boat-type-grid">
-              <button type="button" data-type="motorboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/>
-                  <path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Motorboat</span>
-              </button>
-              <button type="button" data-type="sailboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M24 8v24" stroke-linecap="round"/>
-                  <path d="M24 8L14 30h20L24 8z" stroke-linejoin="round"/>
-                  <path d="M8 34c0 0 6-4 16-4s16 4 16 4" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Sailboat</span>
-              </button>
-              <button type="button" data-type="rib" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M6 28c2-4 8-6 18-6s16 2 18 6" stroke-linecap="round"/>
-                  <path d="M16 22l4-6h8l4 6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8 32h32" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">RIB</span>
-              </button>
-              <button type="button" data-type="catamaran" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M10 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M30 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8 28h32" stroke-linecap="round"/>
-                  <path d="M12 32h24" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Catamaran</span>
-              </button>
-              <button type="button" data-type="houseboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <rect x="10" y="18" width="28" height="12" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M14 18v-6h20v6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M20 18v-6M28 18v-6" stroke-linecap="round"/>
-                  <path d="M6 34c2-2 6-4 18-4s16 2 18 4" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Houseboat</span>
-              </button>
-              <button type="button" data-type="jetski" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M10 28c2-3 8-5 14-5" stroke-linecap="round"/>
-                  <path d="M24 23l6-6 4 2-2 9" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8 32c4-2 12-4 20-4s12 2 14 4" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Jet ski</span>
-              </button>
-              <button type="button" data-type="gulet" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/>
-                  <path d="M16 24v-10M24 24v-12M32 24v-10" stroke-linecap="round"/>
-                  <path d="M16 14l8-2 8 2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M10 34h28" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Gulet</span>
-              </button>
-              <button type="button" data-type="without-licence" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/>
-                  <path d="M18 24l4-8h4l4 8" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M10 34h28" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text leading-tight text-center">Boat without<br/>licence</span>
-              </button>
-              <button type="button" data-type="yacht" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-                <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                  <path d="M6 32c2-6 10-10 18-10s14 4 18 10" stroke-linecap="round"/>
-                  <path d="M24 22V10" stroke-linecap="round"/>
-                  <path d="M24 10l10 8H24" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8 36h32" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium text-text">Yacht</span>
-              </button>
-            </div>
-            <input type="hidden" name="boatType" id="boat-type-input" required />
+    <div class="flex min-h-[calc(100vh-64px)]">
+      <!-- Sidebar -->
+      <aside id="wizard-sidebar" class="hidden lg:flex flex-col w-[280px] bg-white border-r border-gray-200 shrink-0">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-lg font-bold text-pink">Ahoy there Captain!</h2>
+          <p class="text-sm text-text-muted mt-1">Complete all sections to publish your listing</p>
+          <div class="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div id="wizard-progress" class="h-full bg-pink rounded-full transition-all" style="width:0%"></div>
           </div>
+          <p id="wizard-progress-text" class="text-xs text-text-muted mt-1">0 of 11 sections completed</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-2" id="wizard-nav"></nav>
+        <div class="p-6 border-t border-gray-200">
+          <p class="text-xs text-text-muted">Need some help?</p>
+          <p class="text-sm font-semibold text-text mt-1">+30 210 1234567</p>
+        </div>
+      </aside>
 
-          <!-- City + Harbour -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label for="city" class="block text-sm font-semibold text-text mb-2">City</label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
+      <!-- Mobile section selector -->
+      <div id="mobile-section-nav" class="lg:hidden sticky top-0 z-20 bg-white border-b border-gray-200">
+        <button type="button" id="mobile-nav-toggle" class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-text">
+          <span id="mobile-nav-label">General</span>
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="mobile-nav-drawer" class="hidden border-t border-gray-100 bg-white max-h-[60vh] overflow-y-auto" id="mobile-nav-list"></div>
+      </div>
+
+      <!-- Main content -->
+      <main class="flex-1 bg-gray-50 overflow-y-auto">
+        <!-- Top bar -->
+        <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
+          <button type="button" id="wizard-back-btn" class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+            Back
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" id="wizard-preview-btn" class="px-4 py-2 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors">Preview</button>
+            <button type="button" id="wizard-publish-btn" class="px-4 py-2 rounded-lg bg-pink text-white text-sm font-medium hover:opacity-90 transition-opacity">Publish</button>
+          </div>
+        </div>
+
+        <!-- Content area -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+
+          <!-- ===== Section 1: General ===== -->
+          <div id="wizard-section-general" class="wizard-section">
+            <h2 class="text-xl font-bold text-text mb-6">General Information</h2>
+            <div class="mb-8">
+              <label class="block text-sm font-semibold text-text mb-4">Type</label>
+              <div class="flex flex-wrap gap-3" id="boat-type-grid">
+                <button type="button" data-type="motorboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/><path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span class="text-xs font-medium text-text">Motorboat</span>
+                </button>
+                <button type="button" data-type="sailboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M24 8v24" stroke-linecap="round"/><path d="M24 8L14 30h20L24 8z" stroke-linejoin="round"/><path d="M8 34c0 0 6-4 16-4s16 4 16 4" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">Sailboat</span>
+                </button>
+                <button type="button" data-type="rib" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 28c2-4 8-6 18-6s16 2 18 6" stroke-linecap="round"/><path d="M16 22l4-6h8l4 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 32h32" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">RIB</span>
+                </button>
+                <button type="button" data-type="catamaran" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M10 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 28h32" stroke-linecap="round"/><path d="M12 32h24" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">Catamaran</span>
+                </button>
+                <button type="button" data-type="houseboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><rect x="10" y="18" width="28" height="12" rx="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 18v-6h20v6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 18v-6M28 18v-6" stroke-linecap="round"/><path d="M6 34c2-2 6-4 18-4s16 2 18 4" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">Houseboat</span>
+                </button>
+                <button type="button" data-type="jetski" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M10 28c2-3 8-5 14-5" stroke-linecap="round"/><path d="M24 23l6-6 4 2-2 9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 32c4-2 12-4 20-4s12 2 14 4" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">Jet ski</span>
+                </button>
+                <button type="button" data-type="gulet" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/><path d="M16 24v-10M24 24v-12M32 24v-10" stroke-linecap="round"/><path d="M16 14l8-2 8 2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 34h28" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">Gulet</span>
+                </button>
+                <button type="button" data-type="without-licence" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/><path d="M18 24l4-8h4l4 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 34h28" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text leading-tight text-center">Boat without<br/>licence</span>
+                </button>
+                <button type="button" data-type="yacht" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 32c2-6 10-10 18-10s14 4 18 10" stroke-linecap="round"/><path d="M24 22V10" stroke-linecap="round"/><path d="M24 10l10 8H24" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 36h32" stroke-linecap="round"/></svg>
+                  <span class="text-xs font-medium text-text">Yacht</span>
+                </button>
+              </div>
+              <input type="hidden" name="boatType" id="boat-type-input" />
             </div>
-            <div>
-              <label for="harbour" class="block text-sm font-semibold text-text mb-2">Harbour</label>
-              <div class="relative">
-                <select
-                  id="harbour"
-                  name="harbour"
-                  class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"
-                >
-                  <option value="">Select...</option>
-                  <option value="marina-a">Marina A</option>
-                  <option value="marina-b">Marina B</option>
-                  <option value="port-c">Port C</option>
-                </select>
-                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="city" class="block text-sm font-semibold text-text mb-2">City</label>
+                <input type="text" id="city" name="city" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+              <div>
+                <label for="harbour" class="block text-sm font-semibold text-text mb-2">Harbour</label>
+                <div class="relative">
+                  <select id="harbour" name="harbour" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                    <option value="">Select...</option><option value="marina-a">Marina A</option><option value="marina-b">Marina B</option><option value="port-c">Port C</option>
+                  </select>
+                  <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Professional + Warning -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-            <div>
-              <label for="professional" class="block text-sm font-semibold text-text mb-2">Are you a professional?</label>
-              <div class="relative">
-                <select
-                  id="professional"
-                  name="professional"
-                  class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"
-                >
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
-                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start mb-6">
+              <div>
+                <label for="professional" class="block text-sm font-semibold text-text mb-2">Are you a professional?</label>
+                <div class="relative">
+                  <select id="professional" name="professional" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                    <option value="yes">Yes</option><option value="no">No</option>
+                  </select>
+                  <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div class="bg-amber-50 border border-amber-200/60 rounded-xl p-4">
+                <p class="text-sm text-amber-900"><strong>Attention:</strong> Your status must be accurately indicated. Presenting yourself as a "non-professional" when that is not the case constitutes a misleading commercial practice.</p>
               </div>
             </div>
-            <div class="bg-amber-50 border border-amber-200/60 rounded-xl p-4">
-              <p class="text-sm text-amber-900">
-                <strong>Attention:</strong> Your status must be accurately indicated. Presenting yourself as a "non-professional" when that is not the case constitutes a misleading commercial practice and may result in penalties.
-              </p>
-            </div>
-          </div>
-
-          <!-- Manufacturer + Model -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label for="manufacturer" class="block text-sm font-semibold text-text mb-2">Manufacturer</label>
-              <input
-                type="text"
-                id="manufacturer"
-                name="manufacturer"
-                placeholder="Manufacturer"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label for="model" class="block text-sm font-semibold text-text mb-2">Model</label>
-              <input
-                type="text"
-                id="model"
-                name="model"
-                placeholder="Model"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <!-- Skipper + Capacity -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label for="skipper" class="block text-sm font-semibold text-text mb-2">Is your boat rented with a skipper?</label>
-              <div class="relative">
-                <select
-                  id="skipper"
-                  name="skipper"
-                  class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"
-                >
-                  <option value="">Select...</option>
-                  <option value="with-skipper">With skipper</option>
-                  <option value="without-skipper">Without skipper</option>
-                  <option value="both">Both options</option>
-                </select>
-                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="manufacturer" class="block text-sm font-semibold text-text mb-2">Manufacturer</label>
+                <input type="text" id="manufacturer" name="manufacturer" placeholder="Manufacturer" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+              <div>
+                <label for="model" class="block text-sm font-semibold text-text mb-2">Model</label>
+                <input type="text" id="model" name="model" placeholder="Model" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
-            <div>
-              <label for="capacity" class="block text-sm font-semibold text-text mb-2">Capacity (authorised)</label>
-              <input
-                type="number"
-                id="capacity"
-                name="capacity"
-                min="1"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
+            <div class="mb-6">
+              <label for="boatName" class="block text-sm font-semibold text-text mb-2">Boat name</label>
+              <input type="text" id="boatName" name="boatName" placeholder="Give your boat a name" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-md" />
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="general">Save</button>
             </div>
           </div>
 
-          <!-- Length -->
-          <div>
-            <label for="length" class="block text-sm font-semibold text-text mb-2">Length</label>
-            <div class="flex items-center max-w-[160px]">
-              <input
-                type="number"
-                id="length"
-                name="length"
-                min="1"
-                step="0.1"
-                class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <span class="inline-flex items-center justify-center h-[50px] px-4 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span>
+          <!-- ===== Section 2: Description ===== -->
+          <div id="wizard-section-description" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Description</h2>
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-text mb-3">Languages of the listing</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="language-grid">
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="en" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" checked /><span class="text-sm text-text">English</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="el" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Greek</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="fr" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">French</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="es" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Spanish</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="it" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Italian</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="de" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Deutsch</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="nl" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Nederlands</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="pl" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Polski</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="ru" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Russian</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="pt" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Portuguese</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="sv" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Svenska</span></label>
+              </div>
+            </div>
+            <div class="mb-6">
+              <label for="listingTitle" class="block text-sm font-semibold text-text mb-2">Title of the listing</label>
+              <input type="text" id="listingTitle" name="listingTitle" placeholder="e.g. Beautiful sailing yacht in Athens" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <div class="lg:col-span-2">
+                <label for="description" class="block text-sm font-semibold text-text mb-2">Description</label>
+                <textarea id="description" name="description" rows="8" placeholder="Describe your boat, the experience you offer, what makes it special..." class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"></textarea>
+              </div>
+              <div class="bg-blue-50 border border-blue-200/60 rounded-xl p-4 h-fit">
+                <h3 class="text-sm font-bold text-blue-900 mb-2">Writing tips</h3>
+                <ul class="text-xs text-blue-800 space-y-1.5">
+                  <li>Highlight unique features of your boat</li>
+                  <li>Mention included equipment and amenities</li>
+                  <li>Describe the sailing area and best destinations</li>
+                  <li>Include practical info (boarding, parking)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="description">Save</button>
             </div>
           </div>
 
-          <!-- Company's name -->
-          <div class="max-w-md">
-            <label for="company" class="block text-sm font-semibold text-text mb-2">Company's name</label>
-            <input
-              type="text"
-              id="company"
-              name="company"
-              class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+          <!-- ===== Section 3: Photos ===== -->
+          <div id="wizard-section-photos" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Photos</h2>
+            <div class="mb-8">
+              <p class="text-sm font-semibold text-text mb-1">Main photos</p>
+              <p class="text-xs text-text-muted mb-4">For the cover, choose a photo that shows the whole boat. Drag photos to reorder.</p>
+              <div id="upload-zone" class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer">
+                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <div class="pointer-events-none">
+                  <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><rect x="10" y="10" width="28" height="28" rx="4" /><circle cx="20" cy="22" r="4" /><path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  <p class="text-sm font-semibold text-text mb-1">Post your photos here</p>
+                  <p class="text-xs text-text-muted">Min 400x400px &middot; jpeg, png, gif</p>
+                  <p class="mt-3"><span class="text-sm text-primary hover:text-primary-dark underline font-medium cursor-pointer" id="upload-click-trigger">Download from your device</span></p>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4" id="photo-previews"></div>
+            </div>
+            <div class="mb-6">
+              <p class="text-sm font-semibold text-text mb-1">Boat plan</p>
+              <p class="text-xs text-text-muted mb-4">Upload a plan/layout image of your boat (optional)</p>
+              <div id="plan-upload-zone" class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer max-w-sm">
+                <input type="file" id="plan-photo-input" accept="image/jpeg,image/png,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <div class="pointer-events-none">
+                  <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-4l-2-2H7L5 7H5a2 2 0 00-2 2z"/></svg>
+                  <p class="text-xs text-text-muted">Upload boat plan</p>
+                </div>
+              </div>
+              <div id="plan-preview" class="mt-3"></div>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="photos">Save</button>
+            </div>
           </div>
 
-          <!-- Website -->
-          <div class="max-w-md">
-            <label for="website" class="block text-sm font-semibold text-text mb-2">Website</label>
-            <input
-              type="text"
-              id="website"
-              name="website"
-              placeholder="www.example.com"
-              class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+          <!-- ===== Section 4: Price ===== -->
+          <div id="wizard-section-price" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Price</h2>
+            <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+              <h3 class="text-sm font-bold text-text mb-4">Price and options</h3>
+              <div class="flex items-center gap-3 mb-4 max-w-xs">
+                <label for="pricePerDay" class="text-sm font-semibold text-text whitespace-nowrap">Price / day</label>
+                <div class="flex items-center flex-1">
+                  <input type="number" id="pricePerDay" name="pricePerDay" min="0" step="1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                  <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
+                </div>
+              </div>
+              <details class="mb-4">
+                <summary class="text-sm font-medium text-primary cursor-pointer hover:text-primary-dark">Advanced pricing options</summary>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label for="reservationMinDays" class="block text-xs font-semibold text-text mb-1">Min. rental days</label>
+                    <input type="number" id="reservationMinDays" name="reservationMinDays" min="1" value="1" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                  </div>
+                  <div>
+                    <label for="reservationMaxDays" class="block text-xs font-semibold text-text mb-1">Max. rental days</label>
+                    <input type="number" id="reservationMaxDays" name="reservationMaxDays" min="1" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                  </div>
+                </div>
+              </details>
+              <div>
+                <h4 class="text-sm font-semibold text-text mb-2">Price periods</h4>
+                <div id="price-periods-list" class="space-y-3 mb-3"></div>
+                <button type="button" id="add-price-period-btn" class="inline-flex items-center gap-1.5 text-sm font-medium text-pink hover:text-pink-light transition-colors">
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                  Create a new price period
+                </button>
+              </div>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="price">Save</button>
+            </div>
           </div>
 
-          <!-- Action buttons -->
-          <div class="flex justify-end gap-3">
-            <button
-              type="button"
-              id="draft-btn"
-              class="inline-flex items-center gap-2 px-8 py-3 rounded-full border-2 border-pink text-pink text-sm font-bold hover:bg-pink/5 transition-colors focus:outline-none focus:ring-2 focus:ring-pink focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg id="draft-spinner" class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-              </svg>
-              <span id="draft-text">Save as Draft</span>
+          <!-- ===== Section 5: Booking ===== -->
+          <div id="wizard-section-booking" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Booking</h2>
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-text mb-3">Booking mode</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="booking-mode-card flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-pink transition-colors" data-mode="instant">
+                  <input type="radio" name="bookingMode" value="instant" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" />
+                  <div><p class="text-sm font-semibold text-text">Instant Booking</p><p class="text-xs text-text-muted mt-0.5">Renters can book immediately without approval</p></div>
+                </label>
+                <label class="booking-mode-card flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-pink transition-colors" data-mode="confirmation">
+                  <input type="radio" name="bookingMode" value="confirmation" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" checked />
+                  <div><p class="text-sm font-semibold text-text">Confirmation Required</p><p class="text-xs text-text-muted mt-0.5">You review and approve each booking request</p></div>
+                </label>
+              </div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+              <p class="text-sm text-text-muted"><strong>Skipper:</strong> To add skipper as an option, go to the <span class="text-pink font-medium cursor-pointer" onclick="showWizardSection('extras')">Extras</span> section.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="checkInTime" class="block text-sm font-semibold text-text mb-2">Check-in time</label>
+                <div class="relative"><select id="checkInTime" name="checkInTime" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10" id="checkInTime"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="checkOutTime" class="block text-sm font-semibold text-text mb-2">Check-out time</label>
+                <div class="relative"><select id="checkOutTime" name="checkOutTime" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="checkInTimeDayRental" class="block text-sm font-semibold text-text mb-2">Check-in (day rental)</label>
+                <div class="relative"><select id="checkInTimeDayRental" name="checkInTimeDayRental" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="checkOutTimeDayRental" class="block text-sm font-semibold text-text mb-2">Check-out (day rental)</label>
+                <div class="relative"><select id="checkOutTimeDayRental" name="checkOutTimeDayRental" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="downpaymentPercentage" class="block text-sm font-semibold text-text mb-2">Downpayment %</label>
+                <div class="relative"><select id="downpaymentPercentage" name="downpaymentPercentage" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="25">25%</option><option value="50" selected>50%</option><option value="75">75%</option><option value="100">100%</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="daysBeforeBalancePayment" class="block text-sm font-semibold text-text mb-2">Days before balance payment</label>
+                <div class="relative"><select id="daysBeforeBalancePayment" name="daysBeforeBalancePayment" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="7">7 days</option><option value="14">14 days</option><option value="21">21 days</option><option value="30" selected>30 days</option><option value="45">45 days</option><option value="60">60 days</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="fuelCost" class="block text-sm font-semibold text-text mb-2">Fuel cost</label>
+                <div class="relative"><select id="fuelCost" name="fuelCost" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="included">Included</option><option value="not-included" selected>Not included</option><option value="by-arrangement">By arrangement</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="licenceRequired" class="block text-sm font-semibold text-text mb-2">Licence required</label>
+                <div class="relative"><select id="licenceRequired" name="licenceRequired" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="yes">Yes</option><option value="no">No</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="booking">Save</button>
+            </div>
+          </div>
+
+          <!-- ===== Section 6: Documents ===== -->
+          <div id="wizard-section-documents" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Documents &amp; Insurance</h2>
+            <div class="space-y-6">
+              <div class="max-w-xs">
+                <label for="securityDeposit" class="block text-sm font-semibold text-text mb-2">Security deposit</label>
+                <div class="flex items-center">
+                  <input type="number" id="securityDeposit" name="securityDeposit" min="0" step="1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                  <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-text mb-2">Certificate of insurance</label>
+                <div class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-primary/50 transition-colors cursor-pointer max-w-sm">
+                  <input type="file" id="insurance-cert-input" accept="image/*,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <p class="text-sm text-text-muted">Upload insurance certificate (image or PDF)</p>
+                </div>
+                <div id="insurance-cert-preview" class="mt-2 text-sm text-green-700"></div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-text mb-2">Certificate of ownership</label>
+                <div class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-primary/50 transition-colors cursor-pointer max-w-sm">
+                  <input type="file" id="ownership-cert-input" accept="image/*,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <p class="text-sm text-text-muted">Upload ownership certificate (image or PDF)</p>
+                </div>
+                <div id="ownership-cert-preview" class="mt-2 text-sm text-green-700"></div>
+              </div>
+              <div class="max-w-xs">
+                <label for="yachtInsured" class="block text-sm font-semibold text-text mb-2">Is the yacht insured?</label>
+                <div class="relative"><select id="yachtInsured" name="yachtInsured" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="yes">Yes</option><option value="no">No</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="documents">Save</button>
+            </div>
+          </div>
+
+          <!-- ===== Section 7: Calendar ===== -->
+          <div id="wizard-section-calendar" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">My Calendar</h2>
+            <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+              <h3 class="text-sm font-bold text-text mb-3">Add unavailability period</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+                <div><label class="block text-xs font-semibold text-text mb-1">From</label><input type="date" id="unavail-from" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /></div>
+                <div><label class="block text-xs font-semibold text-text mb-1">To</label><input type="date" id="unavail-to" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /></div>
+                <div><label class="block text-xs font-semibold text-text mb-1">Reason</label>
+                  <div class="relative"><select id="unavail-reason" class="w-full appearance-none rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-8"><option value="personal">Personal</option><option value="maintenance">Maintenance</option><option value="booked-elsewhere">Booked elsewhere</option><option value="other">Other</option></select><svg class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+                </div>
+                <button type="button" id="add-unavail-btn" class="px-4 py-2.5 rounded-xl bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity">Add</button>
+              </div>
+            </div>
+            <div id="unavail-periods-list" class="space-y-2 mb-6"></div>
+            <h3 class="text-sm font-bold text-text mb-3">Calendar View</h3>
+            <div id="calendar-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6"></div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="calendar">Save</button>
+            </div>
+          </div>
+
+          <!-- ===== Section 8: Equipment ===== -->
+          <div id="wizard-section-equipment" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Equipment</h2>
+            <div id="equipment-grid" class="space-y-6"></div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="equipment">Save</button>
+            </div>
+          </div>
+
+          <!-- ===== Section 9: Extras ===== -->
+          <div id="wizard-section-extras" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Extras</h2>
+            <p class="text-sm text-text-muted mb-4">Add optional extras that renters can add to their booking.</p>
+            <div id="extras-list" class="space-y-3 mb-4"></div>
+            <button type="button" id="add-extra-btn" class="inline-flex items-center gap-1.5 text-sm font-medium text-pink hover:text-pink-light transition-colors">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Add extra
             </button>
-            <button
-              type="submit"
-              id="submit-btn"
-              class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-pink focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg id="submit-spinner" class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-              </svg>
-              <span id="submit-text">Publish</span>
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ============ SECTION: Photos ============ -->
-      <section class="mt-12">
-        <h2 class="text-2xl font-bold text-text">Photos</h2>
-        <hr class="mt-3 mb-8 border-border" />
-
-        <div class="space-y-4">
-          <div>
-            <p class="text-base font-bold text-text">
-              Drag and drop or <button type="button" id="upload-click-trigger" class="text-primary hover:text-primary-dark underline font-bold">click here</button> to upload your photos
-            </p>
-            <p class="text-sm text-text-muted mt-1">
-              For the cover, choose a photo that shows the whole boat. Then add more photos of the details and the interior.
-            </p>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="extras">Save</button>
+            </div>
           </div>
 
-          <p class="text-sm text-text-muted">Drag the photos to change the order they appear in</p>
+          <!-- ===== Section 10: Other ===== -->
+          <div id="wizard-section-other" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Other / Technical Details</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="engineType" class="block text-sm font-semibold text-text mb-2">Engine type</label>
+                <div class="relative"><select id="engineType" name="engineType" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="">Select...</option><option value="inboard">Inboard</option><option value="outboard">Outboard</option><option value="electric">Electric</option><option value="none">None</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="horsepower" class="block text-sm font-semibold text-text mb-2">Horsepower</label>
+                <div class="flex items-center max-w-[180px]"><input type="number" id="horsepower" name="horsepower" min="0" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">hp</span></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="width" class="block text-sm font-semibold text-text mb-2">Width</label>
+                <div class="flex items-center max-w-[180px]"><input type="number" id="width" name="width" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
+              </div>
+              <div>
+                <label for="boatDraft" class="block text-sm font-semibold text-text mb-2">Draft</label>
+                <div class="flex items-center max-w-[180px]"><input type="number" id="boatDraft" name="draft" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="equippedOffshore" class="block text-sm font-semibold text-text mb-2">Equipped offshore</label>
+                <div class="relative"><select id="equippedOffshore" name="equippedOffshore" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="yes">Yes</option><option value="no">No</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="crewMembers" class="block text-sm font-semibold text-text mb-2">Crew members</label>
+                <input type="number" id="crewMembers" name="crewMembers" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="tenderHorsepower" class="block text-sm font-semibold text-text mb-2">Tender horsepower</label>
+                <input type="number" id="tenderHorsepower" name="tenderHorsepower" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+              <div>
+                <label for="yearOfConstruction" class="block text-sm font-semibold text-text mb-2">Year of construction</label>
+                <input type="number" id="yearOfConstruction" name="yearOfConstruction" min="1900" max="2030" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="renovated" class="block text-sm font-semibold text-text mb-2">Renovated</label>
+                <div class="relative"><select id="renovated" name="renovated" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
+                  <option value="yes">Yes</option><option value="no" selected>No</option>
+                </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+              </div>
+              <div>
+                <label for="fuelConsumption" class="block text-sm font-semibold text-text mb-2">Fuel consumption</label>
+                <div class="flex items-center max-w-[180px]"><input type="number" id="fuelConsumption" name="fuel" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">L/h</span></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="speed" class="block text-sm font-semibold text-text mb-2">Speed</label>
+                <div class="flex items-center max-w-[180px]"><input type="number" id="speed" name="speed" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">Kn</span></div>
+              </div>
+              <div>
+                <label for="capacity" class="block text-sm font-semibold text-text mb-2">Onboard capacity</label>
+                <input type="number" id="capacity" name="capacity" min="1" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="length" class="block text-sm font-semibold text-text mb-2">Length</label>
+                <div class="flex items-center max-w-[180px]"><input type="number" id="length" name="length" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
+              </div>
+              <div>
+                <label for="cabins" class="block text-sm font-semibold text-text mb-2">Cabins</label>
+                <input type="number" id="cabins" name="cabins" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="berths" class="block text-sm font-semibold text-text mb-2">Berths</label>
+                <input type="number" id="berths" name="berths" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+              <div>
+                <label for="bathrooms" class="block text-sm font-semibold text-text mb-2">Bathrooms</label>
+                <input type="number" id="bathrooms" name="bathrooms" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="other">Save</button>
+            </div>
+          </div>
 
-          <!-- Main upload zone -->
-          <div
-            id="upload-zone"
-            class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
-          >
-            <input
-              type="file"
-              id="photo-input"
-              accept="image/jpeg,image/png,image/gif"
-              multiple
-              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <div class="pointer-events-none">
-              <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                <rect x="10" y="10" width="28" height="28" rx="4" />
-                <circle cx="20" cy="22" r="4" />
-                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <p class="text-sm font-semibold text-text mb-1">Post your photos here</p>
-              <p class="text-xs text-text-muted">Minimum size: 400x400px</p>
-              <p class="text-xs text-text-muted">Format: jpeg, png, gif</p>
-              <p class="mt-3">
-                <span class="text-sm text-primary hover:text-primary-dark underline font-medium">Download from your device</span>
-              </p>
+          <!-- ===== Section 11: Discounts ===== -->
+          <div id="wizard-section-discounts" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6">Discounts</h2>
+            <div class="mb-8">
+              <h3 class="text-sm font-bold text-text mb-3">Standard discounts</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="standard-discounts">
+                <div class="bg-white rounded-xl border border-gray-200 p-4">
+                  <h4 class="text-sm font-semibold text-text mb-1">First booking</h4>
+                  <p class="text-xs text-text-muted mb-3">Offer a discount to attract your first customer</p>
+                  <button type="button" class="add-std-discount-btn text-sm font-medium text-pink hover:text-pink-light transition-colors" data-type="first-booking">+ Add</button>
+                  <div class="discount-config hidden mt-3"><label class="text-xs font-semibold text-text">Discount %</label><input type="number" class="std-discount-pct w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm" min="1" max="100" value="10" data-type="first-booking" /></div>
+                </div>
+                <div class="bg-white rounded-xl border border-gray-200 p-4">
+                  <h4 class="text-sm font-semibold text-text mb-1">Early-bird</h4>
+                  <p class="text-xs text-text-muted mb-3">Reward customers who book in advance</p>
+                  <button type="button" class="add-std-discount-btn text-sm font-medium text-pink hover:text-pink-light transition-colors" data-type="early-bird">+ Add</button>
+                  <div class="discount-config hidden mt-3"><label class="text-xs font-semibold text-text">Discount %</label><input type="number" class="std-discount-pct w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm" min="1" max="100" value="10" data-type="early-bird" /></div>
+                </div>
+                <div class="bg-white rounded-xl border border-gray-200 p-4">
+                  <h4 class="text-sm font-semibold text-text mb-1">Last-minute</h4>
+                  <p class="text-xs text-text-muted mb-3">Fill empty slots with last-minute deals</p>
+                  <button type="button" class="add-std-discount-btn text-sm font-medium text-pink hover:text-pink-light transition-colors" data-type="last-minute">+ Add</button>
+                  <div class="discount-config hidden mt-3"><label class="text-xs font-semibold text-text">Discount %</label><input type="number" class="std-discount-pct w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm" min="1" max="100" value="15" data-type="last-minute" /></div>
+                </div>
+              </div>
+            </div>
+            <div class="mb-6">
+              <h3 class="text-sm font-bold text-text mb-3">Length-of-stay discounts</h3>
+              <div id="length-discounts-list" class="space-y-2 mb-3"></div>
+              <button type="button" id="add-length-discount-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-pink text-pink text-sm font-medium hover:bg-pink/5 transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                Add
+              </button>
+            </div>
+            <div class="mb-6">
+              <h3 class="text-sm font-bold text-text mb-3">Custom discounts</h3>
+              <div id="custom-discounts-list" class="space-y-2 mb-3"></div>
+              <button type="button" id="add-custom-discount-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-pink text-pink text-sm font-medium hover:bg-pink/5 transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                Add
+              </button>
+            </div>
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="discounts">Save</button>
             </div>
           </div>
 
           <!-- Success / Error banners -->
-          <div id="form-success" class="hidden rounded-xl bg-green-50 border border-green-200 p-4">
-            <p class="text-sm font-semibold text-green-800">Your boat has been listed successfully!</p>
+          <div id="form-success" class="hidden rounded-xl bg-green-50 border border-green-200 p-4 mt-6">
+            <p class="text-sm font-semibold text-green-800">Saved successfully!</p>
           </div>
-          <div id="form-error" class="hidden rounded-xl bg-red-50 border border-red-200 p-4">
+          <div id="form-error" class="hidden rounded-xl bg-red-50 border border-red-200 p-4 mt-6">
             <p class="text-sm font-semibold text-red-800" id="form-error-msg">Something went wrong. Please try again.</p>
           </div>
 
-          <!-- Thumbnail placeholders -->
-          <div class="grid grid-cols-3 gap-4" id="photo-previews">
-            <div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
-              <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                <rect x="10" y="10" width="28" height="28" rx="4" />
-                <circle cx="20" cy="22" r="4" />
-                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-            <div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
-              <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                <rect x="10" y="10" width="28" height="28" rx="4" />
-                <circle cx="20" cy="22" r="4" />
-                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-            <div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
-              <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-                <rect x="10" y="10" width="28" height="28" rx="4" />
-                <circle cx="20" cy="22" r="4" />
-                <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-          </div>
         </div>
-      </section>
-
+      </main>
     </div>
   </div>
+
 </Layout>
 
 <!-- UI logic — no dependencies, always works -->
 <script is:inline>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Boat type selection
-    var typeBtns = document.querySelectorAll(".boat-type-btn");
-    var typeInput = document.getElementById("boat-type-input");
+document.addEventListener("DOMContentLoaded", function () {
+  // ---- Equipment catalog (static data) ----
+  var EQUIPMENT_CATALOG = {
+    "Outdoor equipment": ["Bimini","Outdoor shower","External table","External speakers","Teak deck","Bow sundeck","Aft sundeck","Bathing Platform","Bathing ladder"],
+    "Extra Comforts": ["Hot water","Watermaker","Air Conditioning","Fans","Heating","Electric toilet","Bed linen","Bath towels","Beach towels","Wi-Fi","USB socket","TV"],
+    "Navigation equipment": ["Dinghy","Dinghy's motor","Bow thruster","Electric windlass","Autopilot","GPS","Depth sounder","VHF","Satellite phone"],
+    "Kitchen": ["Fridge","Freezer","Oven/stovetop","BBQ grill","Microwave","Coffee machine","Ice machine","Ice box"],
+    "Leisure activities": ["Paddle board","Kayak","Snorkelling equipment","Fishing equipment","Diving equipment","Seabob","Bike","Electric scooter","Drone","Video camera"],
+    "Onboard energy": ["Generator","Power inverter","220V power outlet"],
+    "Water sports": ["Water skis","Monoski","Wakeboard","Towable Tube","Inflatable banana","Kneeboard"]
+  };
 
-    typeBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        typeBtns.forEach(function (b) {
-          b.classList.remove("border-primary", "bg-primary/5", "ring-2", "ring-primary");
-          b.classList.add("border-gray-200");
-        });
-        btn.classList.remove("border-gray-200");
-        btn.classList.add("border-primary", "bg-primary/5", "ring-2", "ring-primary");
-        typeInput.value = btn.getAttribute("data-type");
-      });
+  // ---- Wizard nav sections config ----
+  var SECTIONS = [
+    { id: "general", label: "General", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" },
+    { id: "description", label: "Description", icon: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" },
+    { id: "photos", label: "Photos", icon: "M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z M15 12.75a3 3 0 11-6 0 3 3 0 016 0z" },
+    { id: "price", label: "Price", icon: "M14.25 7.756a4.5 4.5 0 100 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { id: "booking", label: "Booking", icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" },
+    { id: "documents", label: "Documents", icon: "M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" },
+    { id: "calendar", label: "My Calendar", icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" },
+    { id: "equipment", label: "Equipment", icon: "M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.653-4.655M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653M18.36 5.64a5.068 5.068 0 00-7.16 0l-.318.318a.9.9 0 000 1.272l4.889 4.889a.9.9 0 001.272 0l.318-.318a5.068 5.068 0 000-7.16z" },
+    { id: "extras", label: "Extras", icon: "M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { id: "other", label: "Other", icon: "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+    { id: "discounts", label: "Discounts", icon: "M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" }
+  ];
+
+  // ---- Render sidebar nav ----
+  var wizNav = document.getElementById("wizard-nav");
+  var mobileDrawer = document.getElementById("mobile-nav-drawer");
+  if (wizNav) {
+    SECTIONS.forEach(function (s) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "wizard-nav-btn w-full flex items-center gap-3 px-6 py-3 text-sm text-text hover:bg-gray-50 transition-colors text-left";
+      btn.setAttribute("data-section", s.id);
+      btn.innerHTML = '<svg class="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="' + s.icon + '"/></svg>' +
+        '<span class="flex-1">' + s.label + '</span>' +
+        '<svg class="h-4 w-4 text-green-500 hidden section-check" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+      btn.addEventListener("click", function () { showWizardSection(s.id); });
+      wizNav.appendChild(btn);
     });
-
-    // Upload zone click trigger
-    var uploadTrigger = document.getElementById("upload-click-trigger");
-    var photoInput = document.getElementById("photo-input");
-    if (uploadTrigger && photoInput) {
-      uploadTrigger.addEventListener("click", function () {
-        photoInput.click();
+  }
+  // Render mobile drawer nav items
+  if (mobileDrawer) {
+    SECTIONS.forEach(function (s) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mobile-nav-btn w-full flex items-center gap-3 px-4 py-3 text-sm text-text hover:bg-gray-50 transition-colors text-left border-b border-gray-50";
+      btn.setAttribute("data-section", s.id);
+      btn.textContent = s.label;
+      btn.addEventListener("click", function () {
+        showWizardSection(s.id);
+        mobileDrawer.classList.add("hidden");
       });
+      mobileDrawer.appendChild(btn);
+    });
+  }
+
+  // ---- Show wizard section ----
+  window.showWizardSection = function (name) {
+    document.querySelectorAll(".wizard-section").forEach(function (s) { s.classList.add("hidden"); });
+    var target = document.getElementById("wizard-section-" + name);
+    if (target) target.classList.remove("hidden");
+    // Update sidebar active state
+    document.querySelectorAll(".wizard-nav-btn").forEach(function (b) {
+      b.classList.remove("bg-pink/10", "text-pink", "font-semibold");
+      if (b.getAttribute("data-section") === name) {
+        b.classList.add("bg-pink/10", "text-pink", "font-semibold");
+      }
+    });
+    // Update mobile label
+    var mobileLabel = document.getElementById("mobile-nav-label");
+    if (mobileLabel) {
+      var found = SECTIONS.find(function (s) { return s.id === name; });
+      if (found) mobileLabel.textContent = found.label;
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  // Set initial active
+  showWizardSection("general");
 
-    // Track selected files in a mutable array (FileList is immutable)
-    window.__selectedFiles = [];
+  // ---- Mobile drawer toggle ----
+  var mobileToggle = document.getElementById("mobile-nav-toggle");
+  var mobileDrawerEl = document.getElementById("mobile-nav-drawer");
+  if (mobileToggle && mobileDrawerEl) {
+    mobileToggle.addEventListener("click", function () {
+      mobileDrawerEl.classList.toggle("hidden");
+    });
+  }
 
-    // Photo preview on file select
-    var previewGrid = document.getElementById("photo-previews");
-    if (photoInput && previewGrid) {
-      photoInput.addEventListener("change", function () {
-        var files = photoInput.files;
-        if (!files || files.length === 0) return;
-
-        // Clear placeholder slots
-        previewGrid.innerHTML = "";
-
-        // Populate mutable files array
-        window.__selectedFiles = [];
-        for (var j = 0; j < files.length; j++) {
-          window.__selectedFiles.push(files[j]);
-        }
-
-        for (var i = 0; i < files.length; i++) {
-          (function (file, index) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-              var div = document.createElement("div");
-              div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
-              div.setAttribute("data-file-index", index);
-              div.innerHTML =
-                '<img src="' + e.target.result + '" alt="Boat photo" class="h-full w-full object-cover" />' +
-                '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-photo">' +
-                '<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
-                '</button>';
-              previewGrid.appendChild(div);
-
-              div.querySelector(".remove-photo").addEventListener("click", function () {
-                // Null out the file so it's excluded on submit
-                window.__selectedFiles[index] = null;
-                div.remove();
-              });
-            };
-            reader.readAsDataURL(file);
-          })(files[i], i);
-        }
+  // ---- Boat type selection ----
+  var typeBtns = document.querySelectorAll(".boat-type-btn");
+  var typeInput = document.getElementById("boat-type-input");
+  typeBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      typeBtns.forEach(function (b) {
+        b.classList.remove("border-primary", "bg-primary/5", "ring-2", "ring-primary");
+        b.classList.add("border-gray-200");
       });
-    }
+      btn.classList.remove("border-gray-200");
+      btn.classList.add("border-primary", "bg-primary/5", "ring-2", "ring-primary");
+      typeInput.value = btn.getAttribute("data-type");
+    });
+  });
 
-    // Drag & drop highlight
-    var uploadZone = document.getElementById("upload-zone");
-    if (uploadZone) {
-      ["dragenter", "dragover"].forEach(function (evt) {
-        uploadZone.addEventListener(evt, function (e) {
-          e.preventDefault();
-          uploadZone.classList.add("border-primary", "bg-primary/5");
-        });
-      });
-      ["dragleave", "drop"].forEach(function (evt) {
-        uploadZone.addEventListener(evt, function (e) {
-          e.preventDefault();
-          uploadZone.classList.remove("border-primary", "bg-primary/5");
-        });
+  // ---- Booking mode card highlight ----
+  document.querySelectorAll('.booking-mode-card').forEach(function (card) {
+    var radio = card.querySelector('input[type="radio"]');
+    if (radio) {
+      radio.addEventListener("change", function () {
+        document.querySelectorAll('.booking-mode-card').forEach(function (c) { c.classList.remove("border-pink"); c.classList.add("border-gray-200"); });
+        if (radio.checked) { card.classList.remove("border-gray-200"); card.classList.add("border-pink"); }
       });
     }
   });
+
+  // ---- Populate time selects ----
+  ["checkInTime", "checkOutTime", "checkInTimeDayRental", "checkOutTimeDayRental"].forEach(function (id) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    for (var h = 6; h <= 23; h++) {
+      var val = (h < 10 ? "0" : "") + h + ":00";
+      var opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = val;
+      sel.appendChild(opt);
+    }
+  });
+
+  // ---- Equipment rendering ----
+  var eqGrid = document.getElementById("equipment-grid");
+  if (eqGrid) {
+    Object.keys(EQUIPMENT_CATALOG).forEach(function (category) {
+      var section = document.createElement("div");
+      section.innerHTML = '<h3 class="text-sm font-bold text-text mb-3">' + category + '</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>';
+      var grid = section.querySelector("div");
+      EQUIPMENT_CATALOG[category].forEach(function (item) {
+        var itemId = item.toLowerCase().replace(/[^a-z0-9]/g, "-");
+        var label = document.createElement("label");
+        label.className = "flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer";
+        label.innerHTML = '<input type="checkbox" name="equipment" value="' + itemId + '" class="equip-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">' + item + '</span>';
+        grid.appendChild(label);
+      });
+      eqGrid.appendChild(section);
+    });
+  }
+
+  // ---- Photo upload previews ----
+  window.__selectedFiles = [];
+  window.__planFile = null;
+  var photoInput = document.getElementById("photo-input");
+  var previewGrid = document.getElementById("photo-previews");
+  var uploadTrigger = document.getElementById("upload-click-trigger");
+  if (uploadTrigger && photoInput) {
+    uploadTrigger.addEventListener("click", function () { photoInput.click(); });
+  }
+  if (photoInput && previewGrid) {
+    photoInput.addEventListener("change", function () {
+      var files = photoInput.files;
+      if (!files || files.length === 0) return;
+      window.__selectedFiles = [];
+      previewGrid.innerHTML = "";
+      for (var j = 0; j < files.length; j++) { window.__selectedFiles.push(files[j]); }
+      for (var i = 0; i < files.length; i++) {
+        (function (file, index) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var div = document.createElement("div");
+            div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
+            div.innerHTML = '<img src="' + e.target.result + '" alt="Boat photo" class="h-full w-full object-cover" />' +
+              '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-photo">' +
+              '<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+            previewGrid.appendChild(div);
+            div.querySelector(".remove-photo").addEventListener("click", function () { window.__selectedFiles[index] = null; div.remove(); });
+          };
+          reader.readAsDataURL(file);
+        })(files[i], i);
+      }
+    });
+  }
+  // Plan photo upload
+  var planInput = document.getElementById("plan-photo-input");
+  var planPreview = document.getElementById("plan-preview");
+  if (planInput && planPreview) {
+    planInput.addEventListener("change", function () {
+      if (planInput.files && planInput.files[0]) {
+        window.__planFile = planInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          planPreview.innerHTML = '<div class="relative inline-block"><img src="' + e.target.result + '" class="h-24 rounded-lg border" /><button type="button" class="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs" onclick="this.parentElement.remove(); window.__planFile=null;">x</button></div>';
+        };
+        reader.readAsDataURL(planInput.files[0]);
+      }
+    });
+  }
+
+  // ---- Drag & drop highlight ----
+  var uploadZone = document.getElementById("upload-zone");
+  if (uploadZone) {
+    ["dragenter", "dragover"].forEach(function (evt) {
+      uploadZone.addEventListener(evt, function (e) { e.preventDefault(); uploadZone.classList.add("border-primary", "bg-primary/5"); });
+    });
+    ["dragleave", "drop"].forEach(function (evt) {
+      uploadZone.addEventListener(evt, function (e) { e.preventDefault(); uploadZone.classList.remove("border-primary", "bg-primary/5"); });
+    });
+  }
+
+  // ---- Dynamic price periods ----
+  var ppList = document.getElementById("price-periods-list");
+  var ppBtn = document.getElementById("add-price-period-btn");
+  if (ppBtn && ppList) {
+    ppBtn.addEventListener("click", function () {
+      var row = document.createElement("div");
+      row.className = "flex flex-wrap items-end gap-2 bg-white rounded-lg border border-gray-200 p-3";
+      row.innerHTML = '<div><label class="text-xs font-semibold text-text">From</label><input type="date" class="pp-start w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" /></div>' +
+        '<div><label class="text-xs font-semibold text-text">To</label><input type="date" class="pp-end w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" /></div>' +
+        '<div><label class="text-xs font-semibold text-text">Price/day</label><input type="number" class="pp-price w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="0" /></div>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm font-medium" onclick="this.parentElement.remove()">Remove</button>';
+      ppList.appendChild(row);
+    });
+  }
+
+  // ---- Dynamic unavailability periods ----
+  window.__unavailPeriods = [];
+  var unavailBtn = document.getElementById("add-unavail-btn");
+  var unavailList = document.getElementById("unavail-periods-list");
+  if (unavailBtn && unavailList) {
+    unavailBtn.addEventListener("click", function () {
+      var from = document.getElementById("unavail-from").value;
+      var to = document.getElementById("unavail-to").value;
+      var reason = document.getElementById("unavail-reason").value;
+      if (!from || !to) return;
+      window.__unavailPeriods.push({ startDate: from, endDate: to, reason: reason });
+      renderUnavailPeriods();
+    });
+  }
+  window.renderUnavailPeriods = function () {
+    if (!unavailList) return;
+    unavailList.innerHTML = "";
+    window.__unavailPeriods.forEach(function (p, i) {
+      var row = document.createElement("div");
+      row.className = "flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-2";
+      row.innerHTML = '<span class="text-sm text-text">' + p.startDate + ' to ' + p.endDate + ' (' + p.reason + ')</span>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-xs font-medium">Remove</button>';
+      row.querySelector("button").addEventListener("click", function () { window.__unavailPeriods.splice(i, 1); renderUnavailPeriods(); });
+      unavailList.appendChild(row);
+    });
+  };
+
+  // ---- Calendar grid (simple two-month view) ----
+  window.renderCalendarGrid = function () {
+    var container = document.getElementById("calendar-grid");
+    if (!container) return;
+    container.innerHTML = "";
+    var today = new Date();
+    for (var m = 0; m < 2; m++) {
+      var month = new Date(today.getFullYear(), today.getMonth() + m, 1);
+      var monthName = month.toLocaleString("en", { month: "long", year: "numeric" });
+      var daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+      var firstDay = month.getDay() || 7; // Mon=1
+      var html = '<div class="bg-white rounded-xl border border-gray-200 p-4"><h4 class="text-sm font-bold text-text mb-3 text-center">' + monthName + '</h4>';
+      html += '<div class="grid grid-cols-7 gap-1 text-center text-xs text-text-muted mb-1"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>';
+      html += '<div class="grid grid-cols-7 gap-1 text-center text-xs">';
+      for (var e = 1; e < firstDay; e++) html += '<span></span>';
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dateStr = month.getFullYear() + '-' + String(month.getMonth() + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+        var isToday = (d === today.getDate() && month.getMonth() === today.getMonth() && month.getFullYear() === today.getFullYear());
+        var isUnavail = (window.__unavailPeriods || []).some(function (p) { return dateStr >= p.startDate && dateStr <= p.endDate; });
+        var cls = "py-1 rounded";
+        if (isToday) cls += " bg-pink text-white font-bold";
+        else if (isUnavail) cls += " bg-red-100 text-red-600 line-through";
+        else cls += " text-text hover:bg-gray-50";
+        html += '<span class="' + cls + '">' + d + '</span>';
+      }
+      html += '</div></div>';
+      container.insertAdjacentHTML("beforeend", html);
+    }
+  };
+  renderCalendarGrid();
+
+  // ---- Dynamic extras ----
+  var extrasList = document.getElementById("extras-list");
+  var addExtraBtn = document.getElementById("add-extra-btn");
+  if (addExtraBtn && extrasList) {
+    addExtraBtn.addEventListener("click", function () {
+      var row = document.createElement("div");
+      row.className = "flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 p-3";
+      row.innerHTML = '<input type="text" placeholder="Extra name" class="extra-name flex-1 min-w-[120px] rounded-lg border border-gray-200 px-3 py-2 text-sm" />' +
+        '<div class="flex items-center"><input type="number" placeholder="0" class="extra-price w-20 rounded-l-lg border border-r-0 border-gray-200 px-3 py-2 text-sm" min="0" /><span class="inline-flex items-center h-[38px] px-2 border border-gray-200 rounded-r-lg bg-gray-50 text-xs text-text-muted">EUR/day</span></div>' +
+        '<label class="flex items-center gap-1.5 text-sm text-text"><input type="checkbox" class="extra-mandatory h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />Mandatory</label>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">Remove</button>';
+      extrasList.appendChild(row);
+    });
+  }
+
+  // ---- Standard discount toggles ----
+  document.querySelectorAll(".add-std-discount-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var config = btn.nextElementSibling;
+      if (config) {
+        config.classList.toggle("hidden");
+        btn.textContent = config.classList.contains("hidden") ? "+ Add" : "- Remove";
+      }
+    });
+  });
+
+  // ---- Length-of-stay discounts ----
+  var lenDiscList = document.getElementById("length-discounts-list");
+  var addLenBtn = document.getElementById("add-length-discount-btn");
+  if (addLenBtn && lenDiscList) {
+    addLenBtn.addEventListener("click", function () {
+      var row = document.createElement("div");
+      row.className = "flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 p-3";
+      row.innerHTML = '<div class="flex items-center gap-1"><label class="text-xs text-text">Min days</label><input type="number" class="len-disc-days w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="2" value="7" /></div>' +
+        '<div class="flex items-center gap-1"><label class="text-xs text-text">Discount %</label><input type="number" class="len-disc-pct w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="1" max="100" value="10" /></div>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">Remove</button>';
+      lenDiscList.appendChild(row);
+    });
+  }
+
+  // ---- Custom discounts ----
+  var customDiscList = document.getElementById("custom-discounts-list");
+  var addCustomBtn = document.getElementById("add-custom-discount-btn");
+  if (addCustomBtn && customDiscList) {
+    addCustomBtn.addEventListener("click", function () {
+      var row = document.createElement("div");
+      row.className = "flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 p-3";
+      row.innerHTML = '<input type="text" placeholder="Discount name" class="custom-disc-label flex-1 min-w-[120px] rounded-lg border border-gray-200 px-3 py-2 text-sm" />' +
+        '<div class="flex items-center gap-1"><label class="text-xs text-text">%</label><input type="number" class="custom-disc-pct w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="1" max="100" value="10" /></div>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">Remove</button>';
+      customDiscList.appendChild(row);
+    });
+  }
+});
 </script>
 
-<!-- Firebase auth check + listings query -->
+
 <script>
   import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
-  import { createBoatListing, updateBoatListing, deleteBoatListing } from "../lib/api";
+  import { createBoatListing, updateBoatListing, deleteBoatListing, createEmptyDraft, updateBoatSection, uploadBoatDocument, uploadBoatPhotos, getBoatListing } from "../lib/api";
 
   const loading = document.getElementById("auth-loading");
   const gate = document.getElementById("auth-gate");
@@ -558,19 +1011,18 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   const listingsGrid = document.getElementById("listings-grid");
   const listingsLoading = document.getElementById("listings-loading");
   const addNewBtn = document.getElementById("add-new-listing-btn");
-  const backBtn = document.getElementById("back-to-listings-btn");
+  const wizardBackBtn = document.getElementById("wizard-back-btn");
   const listingsError = document.getElementById("listings-error");
   const listingsRetryBtn = document.getElementById("listings-retry-btn");
   const listingsTabs = document.getElementById("listings-tabs");
+  const formSuccess = document.getElementById("form-success");
+  const formError = document.getElementById("form-error");
+  const formErrorMsg = document.getElementById("form-error-msg");
+  const publishBtn = document.getElementById("wizard-publish-btn");
 
-  // Track whether this user has listings (to show/hide back button)
   let userHasListings = false;
-
-  // Draft support state
   let editingBoatId: string | null = null;
   let existingImageUrls: string[] = [];
-
-  // Track cards with their status for filtering
   let allListingCards: { el: HTMLElement; status: string }[] = [];
   let activeTab = "all";
 
@@ -583,15 +1035,11 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
   function showForm() {
     hideAll();
     form?.classList.remove("hidden");
-    if (userHasListings) {
-      backBtn?.classList.remove("hidden");
-    }
   }
 
   function showListings() {
     hideAll();
     myListings?.classList.remove("hidden");
-    backBtn?.classList.add("hidden");
   }
 
   // --- Tab filtering ---
@@ -599,8 +1047,7 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     const total = allListingCards.length;
     const published = allListingCards.filter(c => c.status !== "draft").length;
     const drafts = allListingCards.filter(c => c.status === "draft").length;
-    const tabs = document.querySelectorAll(".listings-tab");
-    tabs.forEach(tab => {
+    document.querySelectorAll(".listings-tab").forEach(tab => {
       const key = tab.getAttribute("data-tab");
       const countEl = tab.querySelector(".tab-count");
       if (!countEl) return;
@@ -617,7 +1064,6 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
       else if (tab === "published") el.style.display = status !== "draft" ? "" : "none";
       else if (tab === "drafts") el.style.display = status === "draft" ? "" : "none";
     });
-    // Update active tab styling
     document.querySelectorAll(".listings-tab").forEach(btn => {
       if (btn.getAttribute("data-tab") === tab) {
         btn.classList.remove("bg-white", "text-gray-600", "border", "border-gray-300", "hover:bg-gray-50");
@@ -629,72 +1075,51 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     });
   }
 
-  // Tab click handlers
   document.querySelectorAll(".listings-tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      filterByTab(btn.getAttribute("data-tab") || "all");
-    });
+    btn.addEventListener("click", () => { filterByTab(btn.getAttribute("data-tab") || "all"); });
   });
 
-  // "Add New Listing" button — resets form then shows it
-  addNewBtn?.addEventListener("click", () => {
-    resetForm();
-    showForm();
+  // --- "Add New Listing" → create draft then open wizard ---
+  addNewBtn?.addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      addNewBtn.textContent = "Creating...";
+      (addNewBtn as HTMLButtonElement).disabled = true;
+      const boatId = await createEmptyDraft(user.uid);
+      editingBoatId = boatId;
+      existingImageUrls = [];
+      resetWizardForm();
+      showForm();
+      (window as any).showWizardSection("general");
+    } catch (err) {
+      console.error("Failed to create draft:", err);
+      alert("Failed to create draft. Please try again.");
+    } finally {
+      addNewBtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg> Add New Listing';
+      (addNewBtn as HTMLButtonElement).disabled = false;
+    }
   });
 
-  // "Back to My Listings" link
-  backBtn?.addEventListener("click", showListings);
+  // --- "Back" button in wizard ---
+  wizardBackBtn?.addEventListener("click", () => {
+    if (userHasListings) showListings();
+    else showForm();
+  });
 
-  // Retry button for listings load error
+  // Retry button
   listingsRetryBtn?.addEventListener("click", () => {
     listingsError?.classList.add("hidden");
     listingsLoading?.classList.remove("hidden");
     const user = auth.currentUser;
-    if (!user) return;
-    (async () => {
-      try {
-        const q = query(
-          collection(db, "boats"),
-          where("ownerId", "==", user.uid),
-          orderBy("createdAt", "desc")
-        );
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          userHasListings = false;
-          showForm();
-          backBtn?.classList.add("hidden");
-        } else {
-          userHasListings = true;
-          listingsGrid!.innerHTML = "";
-          allListingCards = [];
-          snapshot.docs.forEach((d) => {
-            const data = d.data();
-            const card = renderListingCard({ id: d.id, ...data });
-            listingsGrid!.appendChild(card);
-            allListingCards.push({ el: card, status: data.status || "published" });
-          });
-          updateTabCounts();
-          listingsTabs?.classList.remove("hidden");
-          listingsLoading?.classList.add("hidden");
-          listingsGrid?.classList.remove("hidden");
-          filterByTab("all");
-        }
-      } catch (retryErr) {
-        console.error("Retry failed:", retryErr);
-        listingsLoading?.classList.add("hidden");
-        listingsError?.classList.remove("hidden");
-      }
-    })();
+    if (user) loadUserListings(user.uid);
   });
 
-  function renderListingCard(boat: { id: string; boatType?: string; type?: string; manufacturer?: string; model?: string; title?: string; city?: string; harbour?: string; location?: { city?: string }; images?: string[]; createdAt?: any; skipper?: string; capacity?: number; length?: number; status?: string; professional?: string; company?: string; website?: string }) {
+  // --- Render listing card ---
+  function renderListingCard(boat: any) {
     const card = document.createElement("article");
     card.className = "boat-card bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group";
-    card.setAttribute("data-boat-type", boat.boatType || boat.type || "");
-
-    const name = boat.manufacturer && boat.model
-      ? `${boat.manufacturer} ${boat.model}`
-      : boat.title || "Untitled";
+    const name = boat.manufacturer && boat.model ? `${boat.manufacturer} ${boat.model}` : boat.boatName || boat.listingTitle || boat.title || "Untitled";
     const city = boat.city || boat.location?.city || "";
     const harbour = boat.harbour || "";
     const location = harbour && city ? `${city}, ${harbour}` : city || "—";
@@ -702,412 +1127,342 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     const boatTypeLabel = boatType ? boatType.charAt(0).toUpperCase() + boatType.slice(1) : "";
     const images = boat.images || [];
     const firstImage = images.length > 0 ? images[0] : null;
-
-    // Status: backward compat — missing status treated as published
     const boatStatus = boat.status || "published";
     const isDraft = boatStatus === "draft";
-
-    // Check if "New" (created within last 7 days) — only for published
     let isNew = false;
     if (!isDraft && boat.createdAt) {
       const created = boat.createdAt?.toDate ? boat.createdAt.toDate() : (boat.createdAt instanceof Date ? boat.createdAt : null);
-      if (created) {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        isNew = created > sevenDaysAgo;
-      }
+      if (created) { const d = new Date(); d.setDate(d.getDate() - 7); isNew = created > d; }
     }
-
-    // Image or placeholder
     const imagePart = firstImage
-      ? `<img src="${firstImage}" alt="${name}" class="h-full w-full object-cover" loading="lazy" decoding="async" />`
-      : `<div class="h-full w-full flex items-center justify-center">
-           <svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-             <path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/>
-             <path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/>
-           </svg>
-         </div>`;
-
-    // Carousel dots
-    const dots = images.length > 1
-      ? `<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-          ${images.map((_, i) => `<span class="h-2 w-2 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/50'}"></span>`).join("")}
-         </div>`
-      : "";
-
-    // Badge: Draft (amber) or New (star)
+      ? `<img src="${firstImage}" alt="${name}" class="h-full w-full object-cover" loading="lazy" />`
+      : `<div class="h-full w-full flex items-center justify-center"><svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/><path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
     const statusBadge = isDraft
-      ? `<div class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-xs font-semibold text-amber-800">
-           <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-           Draft
-         </div>`
-      : isNew
-        ? `<div class="absolute top-3 left-3 flex items-center gap-1 text-xs font-semibold text-gray-700">
-             <svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-             New
-           </div>`
-        : "";
-
-    // Skipper tag
-    const skipperTag = boat.skipper === "yes"
-      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">
-           <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
-           Skipper included
-         </span>`
-      : boat.skipper === "no"
-        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">
-             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
-             Without skipper
-           </span>`
-        : "";
-
-    // Boat type tag
-    const boatTypeTag = boatTypeLabel
-      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">
-           <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 17h18M5 17l2-7h10l2 7"/></svg>
-           ${boatTypeLabel}
-         </span>`
-      : "";
-
-    // Specs line
-    const specParts: string[] = [];
-    if (boat.capacity && boat.capacity > 0) specParts.push(`Up to ${boat.capacity} people`);
-    if (boat.length && boat.length > 0) specParts.push(`${boat.length} m`);
-    const specsLine = specParts.length > 0 ? specParts.join(" · ") : "";
-
-    if (isDraft) {
-      card.style.opacity = "0.85";
-    }
-
-    // Status badge for footer
+      ? `<div class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-xs font-semibold text-amber-800">Draft</div>`
+      : isNew ? `<div class="absolute top-3 left-3 flex items-center gap-1 text-xs font-semibold text-gray-700"><svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>New</div>` : "";
     const footerBadge = isDraft
       ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-[11px] font-semibold text-amber-800">Draft</span>`
       : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-[11px] font-semibold text-green-800">Published</span>`;
-
+    const boatTypeTag = boatTypeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">${boatTypeLabel}</span>` : "";
+    if (isDraft) card.style.opacity = "0.85";
     card.innerHTML = `
-      <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
-        ${imagePart}
-        ${dots}
-        ${statusBadge}
-        <button class="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors" aria-label="Save to favorites">
-          <svg class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
-        </button>
-      </div>
+      <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">${imagePart}${statusBadge}</div>
       <div class="p-4">
-        <div class="flex items-start justify-between gap-2 mb-1">
-          <h3 class="text-sm font-semibold text-text truncate">${location}</h3>
-        </div>
+        <h3 class="text-sm font-semibold text-text truncate mb-1">${location}</h3>
         <p class="text-xs text-text-muted truncate mb-2.5">${name}</p>
-        ${(skipperTag || boatTypeTag) ? `<div class="flex flex-wrap gap-1.5 mb-2.5">${skipperTag}${boatTypeTag}</div>` : ""}
-        ${specsLine ? `<p class="text-xs text-text-muted mb-3">${specsLine}</p>` : ""}
+        ${boatTypeTag ? `<div class="flex flex-wrap gap-1.5 mb-2.5">${boatTypeTag}</div>` : ""}
         <div class="flex items-center justify-between pt-2 border-t border-gray-100">
           ${footerBadge}
           <div class="flex items-center gap-1">
-            <button type="button" class="card-edit-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-primary hover:bg-primary/5 transition-colors" aria-label="Edit listing" title="Edit">
+            <button type="button" class="card-edit-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-primary hover:bg-primary/5 transition-colors" title="Edit">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
             </button>
-            <button type="button" class="card-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" aria-label="Delete listing" title="Delete">
+            <button type="button" class="card-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Delete">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
             </button>
           </div>
         </div>
-      </div>
-    `;
-
-    // Edit button — works for all statuses
+      </div>`;
     card.querySelector(".card-edit-btn")?.addEventListener("click", (e) => {
       e.stopPropagation();
-      loadBoatIntoForm(boat.id, boat);
+      loadBoatIntoWizard(boat.id);
     });
-
-    // Delete button
     card.querySelector(".card-delete-btn")?.addEventListener("click", async (e) => {
       e.stopPropagation();
-      if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) return;
+      if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
       try {
         await deleteBoatListing(boat.id);
-        // Remove from tracking array
         allListingCards = allListingCards.filter(c => c.el !== card);
         card.remove();
         updateTabCounts();
-        // If no listings left, show form
-        if (allListingCards.length === 0) {
-          userHasListings = false;
-          showForm();
-          backBtn?.classList.add("hidden");
-        }
-      } catch (err) {
-        console.error("Failed to delete listing:", err);
-        alert("Failed to delete listing. Please try again.");
-      }
+        if (allListingCards.length === 0) { userHasListings = false; showForm(); }
+      } catch (err) { console.error("Delete failed:", err); alert("Failed to delete."); }
     });
-
     return card;
   }
 
-  // --- Form elements ---
-  const boatForm = document.getElementById("boat-form") as HTMLFormElement | null;
-  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement | null;
-  const submitSpinner = document.getElementById("submit-spinner");
-  const submitText = document.getElementById("submit-text");
-  const draftBtn = document.getElementById("draft-btn") as HTMLButtonElement | null;
-  const draftSpinner = document.getElementById("draft-spinner");
-  const draftText = document.getElementById("draft-text");
-  const formSuccess = document.getElementById("form-success");
-  const formError = document.getElementById("form-error");
-  const formErrorMsg = document.getElementById("form-error-msg");
-
-  const photoPlaceholder = `<div class="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-white flex items-center justify-center">
-    <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5">
-      <rect x="10" y="10" width="28" height="28" rx="4" />
-      <circle cx="20" cy="22" r="4" />
-      <path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-  </div>`;
-
-  // --- Reset form ---
-  function resetForm() {
-    editingBoatId = null;
+  // --- Reset wizard form ---
+  function resetWizardForm() {
     existingImageUrls = [];
-    boatForm?.reset();
     (window as any).__selectedFiles = [];
-
-    // Reset boat type selection UI
-    document.querySelectorAll(".boat-type-btn").forEach((b) => {
-      b.classList.remove("border-primary", "bg-primary/5", "ring-2", "ring-primary");
-      b.classList.add("border-gray-200");
-    });
+    (window as any).__planFile = null;
+    (window as any).__unavailPeriods = [];
+    // Reset all inputs
+    document.querySelectorAll("#listing-form input[type=text], #listing-form input[type=number], #listing-form textarea").forEach((el: any) => { el.value = ""; });
+    document.querySelectorAll("#listing-form select").forEach((el: any) => { el.selectedIndex = 0; });
+    document.querySelectorAll("#listing-form input[type=checkbox]").forEach((el: any) => { el.checked = false; });
+    document.querySelectorAll("#listing-form input[type=radio]").forEach((el: any) => { el.checked = false; });
+    // Reset boat type
+    document.querySelectorAll(".boat-type-btn").forEach(b => { b.classList.remove("border-primary", "bg-primary/5", "ring-2", "ring-primary"); b.classList.add("border-gray-200"); });
     (document.getElementById("boat-type-input") as HTMLInputElement).value = "";
-
-    // Reset photo previews to placeholders
-    const previewGrid = document.getElementById("photo-previews");
-    if (previewGrid) {
-      previewGrid.innerHTML = photoPlaceholder + photoPlaceholder + photoPlaceholder;
-    }
-
+    // Reset dynamic lists
+    const ppList = document.getElementById("price-periods-list"); if (ppList) ppList.innerHTML = "";
+    const unavailList = document.getElementById("unavail-periods-list"); if (unavailList) unavailList.innerHTML = "";
+    const extrasList = document.getElementById("extras-list"); if (extrasList) extrasList.innerHTML = "";
+    const lenDisc = document.getElementById("length-discounts-list"); if (lenDisc) lenDisc.innerHTML = "";
+    const customDisc = document.getElementById("custom-discounts-list"); if (customDisc) customDisc.innerHTML = "";
+    const photoPreview = document.getElementById("photo-previews"); if (photoPreview) photoPreview.innerHTML = "";
+    const planPreview = document.getElementById("plan-preview"); if (planPreview) planPreview.innerHTML = "";
+    // Reset discount toggles
+    document.querySelectorAll(".discount-config").forEach(c => c.classList.add("hidden"));
+    document.querySelectorAll(".add-std-discount-btn").forEach((b: any) => { b.textContent = "+ Add"; });
+    // Reset section checkmarks
+    document.querySelectorAll(".section-check").forEach(c => c.classList.add("hidden"));
+    // Reset progress
+    updateProgress([]);
     // Hide banners
     formSuccess?.classList.add("hidden");
     formError?.classList.add("hidden");
   }
 
-  // --- Load existing boat into form for editing ---
-  function loadBoatIntoForm(boatId: string, boatData: any) {
-    resetForm();
-    editingBoatId = boatId;
-
-    // Set form field values
-    const setValue = (id: string, val: any) => {
-      const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
-      if (el) el.value = val ?? "";
-    };
-    setValue("city", boatData.city);
-    setValue("harbour", boatData.harbour);
-    setValue("professional", boatData.professional);
-    setValue("manufacturer", boatData.manufacturer);
-    setValue("model", boatData.model);
-    setValue("skipper", boatData.skipper);
-    setValue("capacity", boatData.capacity || "");
-    setValue("length", boatData.length || "");
-    setValue("company", boatData.company);
-    setValue("website", boatData.website);
-
-    // Set boat type
-    if (boatData.boatType) {
-      (document.getElementById("boat-type-input") as HTMLInputElement).value = boatData.boatType;
-      document.querySelectorAll(".boat-type-btn").forEach((b) => {
-        if (b.getAttribute("data-type") === boatData.boatType) {
-          b.classList.remove("border-gray-200");
-          b.classList.add("border-primary", "bg-primary/5", "ring-2", "ring-primary");
-        }
-      });
-    }
-
-    // Render existing images as previews
-    existingImageUrls = boatData.images || [];
-    const previewGrid = document.getElementById("photo-previews");
-    if (previewGrid && existingImageUrls.length > 0) {
-      previewGrid.innerHTML = "";
-      existingImageUrls.forEach((url: string, idx: number) => {
-        const div = document.createElement("div");
-        div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
-        div.innerHTML =
-          `<img src="${url}" alt="Boat photo" class="h-full w-full object-cover" />` +
-          `<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-existing-photo">` +
-          `<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>` +
-          `</button>`;
-        previewGrid.appendChild(div);
-
-        div.querySelector(".remove-existing-photo")?.addEventListener("click", () => {
-          existingImageUrls = existingImageUrls.filter((_, i) => i !== idx);
-          div.remove();
+  // --- Load existing boat into wizard ---
+  async function loadBoatIntoWizard(boatId: string) {
+    try {
+      const data = await getBoatListing(boatId);
+      if (!data) { alert("Boat not found"); return; }
+      editingBoatId = boatId;
+      resetWizardForm();
+      const setValue = (id: string, val: any) => { const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null; if (el && val != null) el.value = String(val); };
+      // General
+      if (data.boatType) {
+        (document.getElementById("boat-type-input") as HTMLInputElement).value = data.boatType;
+        document.querySelectorAll(".boat-type-btn").forEach(b => {
+          if (b.getAttribute("data-type") === data.boatType) { b.classList.remove("border-gray-200"); b.classList.add("border-primary", "bg-primary/5", "ring-2", "ring-primary"); }
         });
-      });
-    }
-
-    // Switch to form view
-    showForm();
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      setValue("city", data.city); setValue("harbour", data.harbour); setValue("professional", data.professional);
+      setValue("manufacturer", data.manufacturer); setValue("model", data.model); setValue("boatName", data.boatName);
+      // Description
+      if (data.languages) { data.languages.forEach((l: string) => { const cb = document.querySelector(`input.lang-cb[value="${l}"]`) as HTMLInputElement; if (cb) cb.checked = true; }); }
+      setValue("listingTitle", data.listingTitle); setValue("description", data.description);
+      // Price
+      setValue("pricePerDay", data.pricePerDay); setValue("reservationMinDays", data.reservationMinDays); setValue("reservationMaxDays", data.reservationMaxDays);
+      // Booking
+      if (data.bookingMode) { const radio = document.querySelector(`input[name="bookingMode"][value="${data.bookingMode}"]`) as HTMLInputElement; if (radio) { radio.checked = true; radio.dispatchEvent(new Event("change")); } }
+      setValue("checkInTime", data.checkInTime); setValue("checkOutTime", data.checkOutTime);
+      setValue("checkInTimeDayRental", data.checkInTimeDayRental); setValue("checkOutTimeDayRental", data.checkOutTimeDayRental);
+      setValue("downpaymentPercentage", data.downpaymentPercentage); setValue("daysBeforeBalancePayment", data.daysBeforeBalancePayment);
+      setValue("fuelCost", data.fuelCost); setValue("licenceRequired", data.licenceRequired);
+      // Documents
+      setValue("securityDeposit", data.securityDeposit); setValue("yachtInsured", data.yachtInsured);
+      // Other
+      setValue("engineType", data.engineType); setValue("horsepower", data.horsepower); setValue("width", data.width);
+      setValue("boatDraft", data.draft); setValue("equippedOffshore", data.equippedOffshore); setValue("crewMembers", data.crewMembers);
+      setValue("tenderHorsepower", data.tenderHorsepower); setValue("yearOfConstruction", data.yearOfConstruction);
+      setValue("renovated", data.renovated); setValue("fuelConsumption", data.fuel); setValue("speed", data.speed);
+      setValue("capacity", data.capacity); setValue("length", data.length); setValue("cabins", data.cabins);
+      setValue("berths", data.berths); setValue("bathrooms", data.bathrooms);
+      // Equipment
+      if (data.equipment) { data.equipment.forEach((eq: string) => { const cb = document.querySelector(`input.equip-cb[value="${eq}"]`) as HTMLInputElement; if (cb) cb.checked = true; }); }
+      // Unavailability periods
+      if (data.unavailabilityPeriods) { (window as any).__unavailPeriods = [...data.unavailabilityPeriods]; (window as any).renderUnavailPeriods(); (window as any).renderCalendarGrid(); }
+      // Images
+      existingImageUrls = data.images || [];
+      const photoPreview = document.getElementById("photo-previews");
+      if (photoPreview && existingImageUrls.length > 0) {
+        existingImageUrls.forEach((url: string, idx: number) => {
+          const div = document.createElement("div");
+          div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
+          div.innerHTML = `<img src="${url}" alt="Photo" class="h-full w-full object-cover" /><button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-existing-photo"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
+          photoPreview.appendChild(div);
+          div.querySelector(".remove-existing-photo")?.addEventListener("click", () => { existingImageUrls = existingImageUrls.filter((_, i) => i !== idx); div.remove(); });
+        });
+      }
+      // Section completion
+      if (data.completedSections) { updateProgress(data.completedSections); }
+      showForm();
+      (window as any).showWizardSection("general");
+    } catch (err) { console.error("Failed to load boat:", err); alert("Failed to load boat data."); }
   }
 
-  // --- Shared save function ---
-  async function saveBoat(status: "draft" | "published") {
-    // Hide previous banners
-    formSuccess?.classList.add("hidden");
-    formError?.classList.add("hidden");
-
-    const currentUser = auth.currentUser;
-    if (!currentUser) return;
-
-    // Validate boat type only for publish
-    const boatType = (document.getElementById("boat-type-input") as HTMLInputElement).value;
-    if (status === "published" && !boatType) {
-      formError?.classList.remove("hidden");
-      if (formErrorMsg) formErrorMsg.textContent = "Please select a boat type.";
-      return;
+  // --- Collect section data ---
+  function collectSectionData(section: string): Record<string, any> {
+    const gv = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLSelectElement)?.value || "";
+    const gn = (id: string) => { const v = Number(gv(id)); return isNaN(v) ? 0 : v; };
+    switch (section) {
+      case "general": return { boatType: gv("boat-type-input"), city: gv("city"), harbour: gv("harbour"), professional: gv("professional"), manufacturer: gv("manufacturer"), model: gv("model"), boatName: gv("boatName") };
+      case "description": {
+        const langs: string[] = []; document.querySelectorAll("input.lang-cb:checked").forEach((cb: any) => langs.push(cb.value));
+        return { languages: langs, listingTitle: gv("listingTitle"), description: gv("description") };
+      }
+      case "photos": return {}; // handled separately with file uploads
+      case "price": {
+        const periods: any[] = [];
+        document.querySelectorAll("#price-periods-list > div").forEach(row => {
+          const s = (row.querySelector(".pp-start") as HTMLInputElement)?.value;
+          const e = (row.querySelector(".pp-end") as HTMLInputElement)?.value;
+          const p = Number((row.querySelector(".pp-price") as HTMLInputElement)?.value) || 0;
+          if (s && e) periods.push({ startDate: s, endDate: e, pricePerDay: p });
+        });
+        return { pricePerDay: gn("pricePerDay"), currency: "EUR", pricePeriods: periods, reservationMinDays: gn("reservationMinDays"), reservationMaxDays: gn("reservationMaxDays") };
+      }
+      case "booking": return { bookingMode: gv("bookingMode") || "confirmation", checkInTime: gv("checkInTime"), checkOutTime: gv("checkOutTime"), checkInTimeDayRental: gv("checkInTimeDayRental"), checkOutTimeDayRental: gv("checkOutTimeDayRental"), downpaymentPercentage: gn("downpaymentPercentage"), daysBeforeBalancePayment: gn("daysBeforeBalancePayment"), fuelCost: gv("fuelCost"), licenceRequired: gv("licenceRequired") };
+      case "documents": return { securityDeposit: gn("securityDeposit"), yachtInsured: gv("yachtInsured") };
+      case "calendar": return { unavailabilityPeriods: (window as any).__unavailPeriods || [] };
+      case "equipment": {
+        const eq: string[] = []; document.querySelectorAll("input.equip-cb:checked").forEach((cb: any) => eq.push(cb.value));
+        return { equipment: eq };
+      }
+      case "extras": {
+        const extras: any[] = [];
+        document.querySelectorAll("#extras-list > div").forEach(row => {
+          const n = (row.querySelector(".extra-name") as HTMLInputElement)?.value;
+          const p = Number((row.querySelector(".extra-price") as HTMLInputElement)?.value) || 0;
+          const m = (row.querySelector(".extra-mandatory") as HTMLInputElement)?.checked || false;
+          if (n) extras.push({ name: n, pricePerDay: p, mandatory: m });
+        });
+        return { extras };
+      }
+      case "other": return { engineType: gv("engineType"), horsepower: gn("horsepower"), width: gn("width"), draft: gn("boatDraft"), equippedOffshore: gv("equippedOffshore"), crewMembers: gn("crewMembers"), tenderHorsepower: gn("tenderHorsepower"), yearOfConstruction: gn("yearOfConstruction"), renovated: gv("renovated"), fuel: gn("fuelConsumption"), speed: gn("speed"), capacity: gn("capacity"), length: gn("length"), cabins: gn("cabins"), berths: gn("berths"), bathrooms: gn("bathrooms") };
+      case "discounts": {
+        const discounts: any[] = [];
+        document.querySelectorAll(".std-discount-pct").forEach((inp: any) => {
+          if (!inp.closest(".discount-config")?.classList.contains("hidden")) {
+            discounts.push({ type: inp.getAttribute("data-type"), percentage: Number(inp.value) || 0 });
+          }
+        });
+        document.querySelectorAll("#length-discounts-list > div").forEach(row => {
+          const days = Number((row.querySelector(".len-disc-days") as HTMLInputElement)?.value) || 0;
+          const pct = Number((row.querySelector(".len-disc-pct") as HTMLInputElement)?.value) || 0;
+          if (days && pct) discounts.push({ type: "length-of-stay", percentage: pct, minDays: days });
+        });
+        document.querySelectorAll("#custom-discounts-list > div").forEach(row => {
+          const label = (row.querySelector(".custom-disc-label") as HTMLInputElement)?.value;
+          const pct = Number((row.querySelector(".custom-disc-pct") as HTMLInputElement)?.value) || 0;
+          if (label && pct) discounts.push({ type: "custom", percentage: pct, label });
+        });
+        return { discounts };
+      }
+      default: return {};
     }
+  }
 
-    // Collect form values
-    const getValue = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLSelectElement)?.value || "";
-    const data = {
-      boatType: (boatType || "") as any,
-      city: getValue("city"),
-      harbour: getValue("harbour"),
-      professional: getValue("professional") as "yes" | "no",
-      manufacturer: getValue("manufacturer"),
-      model: getValue("model"),
-      skipper: getValue("skipper") as any,
-      capacity: Number(getValue("capacity")) || 0,
-      length: Number(getValue("length")) || 0,
-      company: getValue("company"),
-      website: (() => {
-        const raw = getValue("website").trim();
-        if (!raw) return "";
-        return raw.match(/^https?:\/\//) ? raw : "https://" + raw;
-      })(),
-      ownerId: currentUser.uid,
-      status,
-    };
+  // --- Progress tracking ---
+  function updateProgress(completedSections: string[]) {
+    const total = 11;
+    const done = completedSections.length;
+    const pct = Math.round((done / total) * 100);
+    const bar = document.getElementById("wizard-progress");
+    const text = document.getElementById("wizard-progress-text");
+    if (bar) bar.style.width = pct + "%";
+    if (text) text.textContent = `${done} of ${total} sections completed`;
+    // Update checkmarks
+    document.querySelectorAll(".wizard-nav-btn").forEach(btn => {
+      const sec = btn.getAttribute("data-section");
+      const check = btn.querySelector(".section-check");
+      if (check) { if (sec && completedSections.includes(sec)) check.classList.remove("hidden"); else check.classList.add("hidden"); }
+    });
+  }
 
-    // Get new files (filter out nulls from removed photos)
-    const files: File[] = ((window as any).__selectedFiles || []).filter((f: any) => f != null);
-
-    // Determine which button to show loading state on
-    const isPublish = status === "published";
-    const activeBtn = isPublish ? submitBtn : draftBtn;
-    const activeSpinner = isPublish ? submitSpinner : draftSpinner;
-    const activeText = isPublish ? submitText : draftText;
-    const originalText = isPublish ? "Publish" : "Save as Draft";
-
-    // Loading state
-    if (activeBtn) activeBtn.disabled = true;
-    if (submitBtn && !isPublish) submitBtn.disabled = true;
-    if (draftBtn && isPublish) draftBtn.disabled = true;
-    activeSpinner?.classList.remove("hidden");
-    if (activeText) activeText.textContent = "Saving...";
-
-    try {
-      if (editingBoatId) {
-        await updateBoatListing(editingBoatId, data, files, existingImageUrls);
-      } else {
-        await createBoatListing(data, files);
-      }
-
-      // Success
-      formSuccess?.classList.remove("hidden");
-      if (formSuccess) {
-        const msgEl = formSuccess.querySelector("p");
-        if (msgEl) msgEl.textContent = status === "draft"
-          ? "Draft saved successfully!"
-          : "Your boat has been published!";
-      }
-
-      resetForm();
-
-      // Re-query and switch to listings view
-      userHasListings = true;
-      setTimeout(async () => {
-        try {
-          const q = query(
-            collection(db, "boats"),
-            where("ownerId", "==", currentUser.uid),
-            orderBy("createdAt", "desc")
-          );
-          const snapshot = await getDocs(q);
-          listingsGrid!.innerHTML = "";
-          allListingCards = [];
-          snapshot.docs.forEach((doc) => {
-            const cardData = doc.data();
-            const card = renderListingCard({ id: doc.id, ...cardData });
-            listingsGrid!.appendChild(card);
-            allListingCards.push({ el: card, status: cardData.status || "published" });
-          });
-          updateTabCounts();
-          listingsTabs?.classList.remove("hidden");
-          listingsLoading?.classList.add("hidden");
-          listingsGrid?.classList.remove("hidden");
-          filterByTab(activeTab);
-          showListings();
-        } catch (err) {
-          console.error("Failed to refresh listings:", err);
+  // --- Per-section save handlers ---
+  let completedSectionsSet = new Set<string>();
+  document.querySelectorAll(".section-save-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!editingBoatId) { alert("No active draft. Please create a new listing first."); return; }
+      const section = btn.getAttribute("data-section");
+      if (!section) return;
+      const btnEl = btn as HTMLButtonElement;
+      const origText = btnEl.textContent;
+      btnEl.textContent = "Saving...";
+      btnEl.disabled = true;
+      formSuccess?.classList.add("hidden");
+      formError?.classList.add("hidden");
+      try {
+        if (section === "photos") {
+          // Upload new photos
+          const newFiles: File[] = ((window as any).__selectedFiles || []).filter((f: any) => f != null);
+          if (newFiles.length > 0) {
+            const newUrls = await uploadBoatPhotos(editingBoatId, newFiles);
+            existingImageUrls = [...existingImageUrls, ...newUrls];
+          }
+          // Upload plan photo
+          if ((window as any).__planFile) {
+            const planUrl = await uploadBoatDocument(editingBoatId, (window as any).__planFile, "boat-plan");
+            await updateBoatSection(editingBoatId, { images: existingImageUrls, boatPlanImages: [planUrl] });
+          } else {
+            await updateBoatSection(editingBoatId, { images: existingImageUrls });
+          }
+        } else if (section === "documents") {
+          const data = collectSectionData(section);
+          // Upload insurance cert
+          const insuranceInput = document.getElementById("insurance-cert-input") as HTMLInputElement;
+          if (insuranceInput?.files?.[0]) {
+            data.insuranceCertificateUrl = await uploadBoatDocument(editingBoatId, insuranceInput.files[0], "insurance");
+          }
+          // Upload ownership cert
+          const ownershipInput = document.getElementById("ownership-cert-input") as HTMLInputElement;
+          if (ownershipInput?.files?.[0]) {
+            data.ownershipCertificateUrl = await uploadBoatDocument(editingBoatId, ownershipInput.files[0], "ownership");
+          }
+          await updateBoatSection(editingBoatId, data);
+        } else {
+          const data = collectSectionData(section);
+          await updateBoatSection(editingBoatId, data);
         }
-      }, 1500);
-    } catch (err: any) {
-      console.error("Failed to save listing:", err);
-      formError?.classList.remove("hidden");
-      if (formErrorMsg) formErrorMsg.textContent = err?.message || "Something went wrong. Please try again.";
-    } finally {
-      if (submitBtn) submitBtn.disabled = false;
-      if (draftBtn) draftBtn.disabled = false;
-      activeSpinner?.classList.add("hidden");
-      if (activeText) activeText.textContent = originalText;
-    }
-  }
-
-  // --- Form submit (Publish) ---
-  boatForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await saveBoat("published");
+        completedSectionsSet.add(section);
+        const completed = Array.from(completedSectionsSet);
+        await updateBoatSection(editingBoatId, { completedSections: completed });
+        updateProgress(completed);
+        formSuccess?.classList.remove("hidden");
+        const successMsg = formSuccess?.querySelector("p");
+        if (successMsg) successMsg.textContent = "Section saved successfully!";
+      } catch (err: any) {
+        console.error("Save failed:", err);
+        formError?.classList.remove("hidden");
+        if (formErrorMsg) formErrorMsg.textContent = err?.message || "Failed to save. Please try again.";
+      } finally {
+        btnEl.textContent = origText;
+        btnEl.disabled = false;
+      }
+    });
   });
 
-  // --- Draft button ---
-  draftBtn?.addEventListener("click", async () => {
-    await saveBoat("draft");
-  });
-
-  onAuthStateChanged(auth, async (user) => {
-    loading?.classList.add("hidden");
-
-    if (!user) {
-      hideAll();
-      gate?.classList.remove("hidden");
+  // --- Publish button ---
+  publishBtn?.addEventListener("click", async () => {
+    if (!editingBoatId) return;
+    const requiredSections = ["general", "photos", "price"];
+    const missing = requiredSections.filter(s => !completedSectionsSet.has(s));
+    if (missing.length > 0) {
+      alert(`Please complete these sections before publishing: ${missing.join(", ")}`);
       return;
     }
-
-    // User is logged in — query their boats
-    gate?.classList.add("hidden");
-
     try {
-      const q = query(
-        collection(db, "boats"),
-        where("ownerId", "==", user.uid),
-        orderBy("createdAt", "desc")
-      );
-      const snapshot = await getDocs(q);
+      (publishBtn as HTMLButtonElement).disabled = true;
+      publishBtn.textContent = "Publishing...";
+      await updateBoatSection(editingBoatId, { status: "published" });
+      alert("Your boat has been published!");
+      userHasListings = true;
+      const user = auth.currentUser;
+      if (user) { await loadUserListings(user.uid); showListings(); }
+    } catch (err) {
+      console.error("Publish failed:", err);
+      alert("Failed to publish. Please try again.");
+    } finally {
+      (publishBtn as HTMLButtonElement).disabled = false;
+      publishBtn.textContent = "Publish";
+    }
+  });
 
+  // --- Load user listings ---
+  async function loadUserListings(uid: string) {
+    try {
+      const q = query(collection(db, "boats"), where("ownerId", "==", uid), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
       if (snapshot.empty) {
-        // No listings — show the form directly
         userHasListings = false;
+        listingsLoading?.classList.add("hidden");
         showForm();
-        backBtn?.classList.add("hidden");
+        // Auto-create draft for first-time users
+        editingBoatId = await createEmptyDraft(uid);
+        resetWizardForm();
+        (window as any).showWizardSection("general");
       } else {
-        // Has listings — render cards
         userHasListings = true;
         listingsGrid!.innerHTML = "";
         allListingCards = [];
-        snapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          const card = renderListingCard({ id: doc.id, ...data });
+        snapshot.docs.forEach(d => {
+          const data = d.data();
+          const card = renderListingCard({ id: d.id, ...data });
           listingsGrid!.appendChild(card);
           allListingCards.push({ el: card, status: data.status || "published" });
         });
@@ -1124,10 +1479,18 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
       listingsError?.classList.remove("hidden");
       showListings();
     }
+  }
+
+  // --- Auth state ---
+  onAuthStateChanged(auth, async (user) => {
+    loading?.classList.add("hidden");
+    if (!user) { hideAll(); gate?.classList.remove("hidden"); return; }
+    gate?.classList.add("hidden");
+    await loadUserListings(user.uid);
   });
 </script>
 
-<!-- Fallback: if Firebase fails to load, show auth gate after timeout -->
+
 <script is:inline>
   setTimeout(function () {
     var loading = document.getElementById("auth-loading");
