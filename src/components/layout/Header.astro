@@ -137,6 +137,13 @@ const boatTypes = [
         </div>
 
         <a
+          id="admin-nav-btn"
+          href="/admin"
+          class="hidden items-center px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+        >
+          Admin Panel
+        </a>
+        <a
           href="/list-your-boat"
           class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
@@ -263,7 +270,14 @@ const boatTypes = [
           Log out
         </button>
       </div>
-      <div class="pt-2">
+      <div class="pt-2 space-y-2">
+        <a
+          id="mobile-admin-nav-btn"
+          href="/admin"
+          class="hidden w-full text-center px-4 py-3 rounded-lg bg-gray-900 text-white font-semibold hover:bg-gray-700 transition-colors"
+        >
+          Admin Panel
+        </a>
         <a
           href="/list-your-boat"
           class="block w-full text-center px-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition-colors"
@@ -427,6 +441,10 @@ const boatTypes = [
           document.getElementById("admin-panel-link")?.classList.remove("hidden");
           document.getElementById("admin-panel-link")?.classList.add("block");
           document.getElementById("mobile-admin-panel-link")?.classList.remove("hidden");
+          document.getElementById("admin-nav-btn")?.classList.remove("hidden");
+          document.getElementById("admin-nav-btn")?.classList.add("inline-flex");
+          document.getElementById("mobile-admin-nav-btn")?.classList.remove("hidden");
+          document.getElementById("mobile-admin-nav-btn")?.classList.add("block");
         }
       } catch (e) {
         // silently ignore — user just won't see admin link
@@ -438,6 +456,10 @@ const boatTypes = [
       mobileLoggedIn?.classList.add("hidden");
       document.getElementById("admin-panel-link")?.classList.add("hidden");
       document.getElementById("mobile-admin-panel-link")?.classList.add("hidden");
+      document.getElementById("admin-nav-btn")?.classList.add("hidden");
+      document.getElementById("admin-nav-btn")?.classList.remove("inline-flex");
+      document.getElementById("mobile-admin-nav-btn")?.classList.add("hidden");
+      document.getElementById("mobile-admin-nav-btn")?.classList.remove("block");
     }
   });
 
