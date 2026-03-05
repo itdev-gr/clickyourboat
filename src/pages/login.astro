@@ -388,7 +388,6 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     await setDoc(userRef, {
       uid,
       email,
-      type: "user",
       lastLoginAt: serverTimestamp(),
     }, { merge: true });
     console.log("[Firestore] lastLoginAt updated successfully");
