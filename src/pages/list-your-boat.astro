@@ -656,6 +656,95 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
     </div>
   </div>
 
+  <!-- Preview Modal Overlay -->
+  <div id="preview-modal" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="preview-backdrop"></div>
+    <div class="absolute inset-0 overflow-y-auto">
+      <div class="min-h-full flex items-start justify-center py-8 px-4">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl">
+          <!-- Header -->
+          <div class="sticky top-0 z-10 bg-white rounded-t-2xl border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-text">Listing Preview</h2>
+            <button type="button" id="preview-close-btn" class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+              <svg class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <!-- Preview content -->
+          <div class="p-6">
+            <!-- Photo gallery -->
+            <div id="preview-gallery" class="mb-6">
+              <div id="preview-main-image" class="aspect-[16/9] rounded-xl overflow-hidden bg-gray-100 mb-3 flex items-center justify-center">
+                <p class="text-sm text-text-muted">No photos uploaded yet</p>
+              </div>
+              <div id="preview-thumbs" class="flex gap-2 overflow-x-auto pb-1"></div>
+            </div>
+
+            <!-- Two-column info -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Left: Details -->
+              <div class="lg:col-span-2 space-y-6">
+                <!-- Title + location -->
+                <div>
+                  <h1 id="preview-title" class="text-2xl font-bold text-text mb-1">Untitled Listing</h1>
+                  <p id="preview-location" class="text-sm text-text-muted flex items-center gap-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z"/></svg>
+                    <span>—</span>
+                  </p>
+                </div>
+
+                <!-- Tags row -->
+                <div id="preview-tags" class="flex flex-wrap gap-2"></div>
+
+                <!-- Specs grid -->
+                <div id="preview-specs" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+
+                <!-- Description -->
+                <div id="preview-description-block" class="hidden">
+                  <h3 class="text-sm font-bold text-text mb-2">Description</h3>
+                  <p id="preview-description" class="text-sm text-text-muted leading-relaxed whitespace-pre-line"></p>
+                </div>
+
+                <!-- Equipment -->
+                <div id="preview-equipment-block" class="hidden">
+                  <h3 class="text-sm font-bold text-text mb-2">Equipment</h3>
+                  <div id="preview-equipment" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Extras -->
+                <div id="preview-extras-block" class="hidden">
+                  <h3 class="text-sm font-bold text-text mb-2">Extras</h3>
+                  <div id="preview-extras" class="space-y-1"></div>
+                </div>
+              </div>
+
+              <!-- Right: Price card -->
+              <div>
+                <div class="bg-white rounded-xl border border-gray-200 p-5 sticky top-24">
+                  <div class="mb-4">
+                    <span class="text-xs text-text-muted">From</span>
+                    <div class="flex items-baseline gap-1">
+                      <span id="preview-price" class="text-2xl font-bold text-text">—</span>
+                      <span class="text-sm text-text-muted">/ day</span>
+                    </div>
+                  </div>
+                  <div id="preview-booking-mode" class="mb-4"></div>
+                  <div id="preview-details-list" class="space-y-2 text-sm border-t border-gray-100 pt-4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="border-t border-gray-200 px-6 py-4 flex items-center justify-between rounded-b-2xl bg-gray-50">
+            <p class="text-xs text-text-muted">This is how renters will see your listing</p>
+            <button type="button" id="preview-close-btn-2" class="px-5 py-2.5 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors">Close Preview</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </Layout>
 
 <!-- UI logic — no dependencies, always works -->
@@ -994,6 +1083,223 @@ document.addEventListener("DOMContentLoaded", function () {
       customDiscList.appendChild(row);
     });
   }
+
+  // ---- Preview functionality ----
+  var previewModal = document.getElementById("preview-modal");
+  var previewBtn = document.getElementById("wizard-preview-btn");
+  var previewCloseBtn = document.getElementById("preview-close-btn");
+  var previewCloseBtn2 = document.getElementById("preview-close-btn-2");
+  var previewBackdrop = document.getElementById("preview-backdrop");
+
+  function openPreview() {
+    if (!previewModal) return;
+    var gv = function (id) { var el = document.getElementById(id); return el ? el.value || "" : ""; };
+
+    // --- Title ---
+    var titleEl = document.getElementById("preview-title");
+    var listingTitle = gv("listingTitle");
+    var mfr = gv("manufacturer");
+    var mdl = gv("model");
+    var bName = gv("boatName");
+    if (titleEl) titleEl.textContent = listingTitle || (mfr && mdl ? mfr + " " + mdl : "") || bName || "Untitled Listing";
+
+    // --- Location ---
+    var locEl = document.getElementById("preview-location");
+    if (locEl) {
+      var city = gv("city");
+      var harbour = gv("harbour");
+      var loc = harbour && city ? city + ", " + harbour : city || "Location not set";
+      locEl.querySelector("span").textContent = loc;
+    }
+
+    // --- Tags ---
+    var tagsEl = document.getElementById("preview-tags");
+    if (tagsEl) {
+      tagsEl.innerHTML = "";
+      var boatType = gv("boat-type-input");
+      if (boatType) {
+        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-text-muted"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 17h18M5 17l2-7h10l2 7"/></svg>' + boatType.charAt(0).toUpperCase() + boatType.slice(1) + '</span>';
+      }
+      var bookingMode = document.querySelector('input[name="bookingMode"]:checked');
+      if (bookingMode && bookingMode.value === "instant") {
+        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>Instant booking</span>';
+      }
+      var fuelVal = gv("fuelCost");
+      if (fuelVal === "included") {
+        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-xs text-green-700"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Fuel included</span>';
+      }
+      var licence = gv("licenceRequired");
+      if (licence === "no") {
+        tagsEl.innerHTML += '<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-text-muted">No licence needed</span>';
+      }
+    }
+
+    // --- Specs grid ---
+    var specsEl = document.getElementById("preview-specs");
+    if (specsEl) {
+      specsEl.innerHTML = "";
+      var specItems = [
+        { label: "Capacity", val: gv("capacity"), unit: " people" },
+        { label: "Length", val: gv("length"), unit: " m" },
+        { label: "Width", val: gv("width"), unit: " m" },
+        { label: "Cabins", val: gv("cabins"), unit: "" },
+        { label: "Berths", val: gv("berths"), unit: "" },
+        { label: "Bathrooms", val: gv("bathrooms"), unit: "" },
+        { label: "Horsepower", val: gv("horsepower"), unit: " hp" },
+        { label: "Speed", val: gv("speed"), unit: " kn" }
+      ];
+      specItems.forEach(function (s) {
+        if (s.val && s.val !== "0") {
+          specsEl.innerHTML += '<div class="bg-gray-50 rounded-lg p-3 text-center"><p class="text-lg font-bold text-text">' + s.val + '<span class="text-xs font-normal text-text-muted">' + s.unit + '</span></p><p class="text-xs text-text-muted">' + s.label + '</p></div>';
+        }
+      });
+    }
+
+    // --- Description ---
+    var descBlock = document.getElementById("preview-description-block");
+    var descEl = document.getElementById("preview-description");
+    var descVal = gv("description");
+    if (descBlock && descEl) {
+      if (descVal) { descBlock.classList.remove("hidden"); descEl.textContent = descVal; }
+      else { descBlock.classList.add("hidden"); }
+    }
+
+    // --- Equipment ---
+    var eqBlock = document.getElementById("preview-equipment-block");
+    var eqEl = document.getElementById("preview-equipment");
+    if (eqBlock && eqEl) {
+      var checked = document.querySelectorAll("input.equip-cb:checked");
+      if (checked.length > 0) {
+        eqBlock.classList.remove("hidden");
+        eqEl.innerHTML = "";
+        checked.forEach(function (cb) {
+          // Find the label text next to this checkbox
+          var labelText = cb.parentElement ? cb.parentElement.querySelector("span") : null;
+          var name = labelText ? labelText.textContent : cb.value;
+          eqEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/5 border border-primary/20 text-xs text-primary font-medium"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' + name + '</span>';
+        });
+      } else { eqBlock.classList.add("hidden"); }
+    }
+
+    // --- Extras ---
+    var extrasBlock = document.getElementById("preview-extras-block");
+    var extrasEl = document.getElementById("preview-extras");
+    if (extrasBlock && extrasEl) {
+      var extraRows = document.querySelectorAll("#extras-list > div");
+      if (extraRows.length > 0) {
+        extrasBlock.classList.remove("hidden");
+        extrasEl.innerHTML = "";
+        extraRows.forEach(function (row) {
+          var n = row.querySelector(".extra-name");
+          var p = row.querySelector(".extra-price");
+          var m = row.querySelector(".extra-mandatory");
+          if (n && n.value) {
+            var mLabel = m && m.checked ? '<span class="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">Mandatory</span>' : '<span class="text-[10px] text-text-muted">Optional</span>';
+            extrasEl.innerHTML += '<div class="flex items-center justify-between py-1"><span class="text-sm text-text">' + n.value + '</span><div class="flex items-center gap-2">' + mLabel + '<span class="text-sm font-semibold text-text">' + (p && p.value ? "€" + p.value + "/day" : "Free") + '</span></div></div>';
+          }
+        });
+      } else { extrasBlock.classList.add("hidden"); }
+    }
+
+    // --- Price card ---
+    var priceEl = document.getElementById("preview-price");
+    var priceVal = gv("pricePerDay");
+    if (priceEl) priceEl.textContent = priceVal ? "€" + Number(priceVal).toLocaleString() : "—";
+
+    var bookingModeEl = document.getElementById("preview-booking-mode");
+    if (bookingModeEl) {
+      var bm = document.querySelector('input[name="bookingMode"]:checked');
+      if (bm && bm.value === "instant") {
+        bookingModeEl.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>Instant booking</span>';
+      } else {
+        bookingModeEl.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs text-text-muted">Confirmation required</span>';
+      }
+    }
+
+    var detailsList = document.getElementById("preview-details-list");
+    if (detailsList) {
+      detailsList.innerHTML = "";
+      var details = [
+        { label: "Check-in", val: gv("checkInTime") },
+        { label: "Check-out", val: gv("checkOutTime") },
+        { label: "Fuel", val: gv("fuelCost") ? gv("fuelCost").replace(/-/g, " ").replace(/^\w/, function (c) { return c.toUpperCase(); }) : "" },
+        { label: "Licence", val: gv("licenceRequired") === "yes" ? "Required" : gv("licenceRequired") === "no" ? "Not required" : "" },
+        { label: "Deposit", val: gv("securityDeposit") ? "€" + gv("securityDeposit") : "" },
+        { label: "Downpayment", val: gv("downpaymentPercentage") ? gv("downpaymentPercentage") + "%" : "" },
+        { label: "Min. days", val: gv("reservationMinDays") && gv("reservationMinDays") !== "0" ? gv("reservationMinDays") : "" },
+        { label: "Engine", val: gv("engineType") ? gv("engineType").charAt(0).toUpperCase() + gv("engineType").slice(1) : "" },
+        { label: "Year", val: gv("yearOfConstruction") && gv("yearOfConstruction") !== "0" ? gv("yearOfConstruction") : "" }
+      ];
+      details.forEach(function (d) {
+        if (d.val) {
+          detailsList.innerHTML += '<div class="flex items-center justify-between"><span class="text-text-muted">' + d.label + '</span><span class="font-medium text-text">' + d.val + '</span></div>';
+        }
+      });
+    }
+
+    // --- Photos ---
+    var mainImgEl = document.getElementById("preview-main-image");
+    var thumbsEl = document.getElementById("preview-thumbs");
+    if (mainImgEl && thumbsEl) {
+      // Collect all image sources: existing URLs + newly selected files
+      var allImages = [];
+      // Existing uploaded images
+      (window.__existingPreviewUrls || []).forEach(function (url) { allImages.push({ type: "url", src: url }); });
+      // From photo previews in the form
+      var previewImgs = document.querySelectorAll("#photo-previews img");
+      previewImgs.forEach(function (img) { allImages.push({ type: "url", src: img.src }); });
+
+      // Deduplicate
+      var seen = {};
+      allImages = allImages.filter(function (item) {
+        if (seen[item.src]) return false;
+        seen[item.src] = true;
+        return true;
+      });
+
+      if (allImages.length > 0) {
+        mainImgEl.innerHTML = '<img src="' + allImages[0].src + '" alt="Boat" class="h-full w-full object-cover" />';
+        thumbsEl.innerHTML = "";
+        allImages.forEach(function (img, i) {
+          var thumb = document.createElement("button");
+          thumb.type = "button";
+          thumb.className = "shrink-0 h-16 w-20 rounded-lg overflow-hidden border-2 transition-colors " + (i === 0 ? "border-pink" : "border-transparent hover:border-gray-300");
+          thumb.innerHTML = '<img src="' + img.src + '" alt="" class="h-full w-full object-cover" />';
+          thumb.addEventListener("click", function () {
+            mainImgEl.innerHTML = '<img src="' + img.src + '" alt="Boat" class="h-full w-full object-cover" />';
+            thumbsEl.querySelectorAll("button").forEach(function (b) { b.classList.remove("border-pink"); b.classList.add("border-transparent"); });
+            thumb.classList.remove("border-transparent");
+            thumb.classList.add("border-pink");
+          });
+          thumbsEl.appendChild(thumb);
+        });
+      } else {
+        mainImgEl.innerHTML = '<p class="text-sm text-text-muted">No photos uploaded yet</p>';
+        thumbsEl.innerHTML = "";
+      }
+    }
+
+    // Show modal
+    previewModal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePreview() {
+    if (previewModal) previewModal.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  if (previewBtn) previewBtn.addEventListener("click", openPreview);
+  if (previewCloseBtn) previewCloseBtn.addEventListener("click", closePreview);
+  if (previewCloseBtn2) previewCloseBtn2.addEventListener("click", closePreview);
+  if (previewBackdrop) previewBackdrop.addEventListener("click", closePreview);
+
+  // Close on Escape key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && previewModal && !previewModal.classList.contains("hidden")) {
+      closePreview();
+    }
+  });
 });
 </script>
 
@@ -1187,6 +1493,7 @@ document.addEventListener("DOMContentLoaded", function () {
     (window as any).__selectedFiles = [];
     (window as any).__planFile = null;
     (window as any).__unavailPeriods = [];
+    (window as any).__existingPreviewUrls = [];
     // Reset all inputs
     document.querySelectorAll("#listing-form input[type=text], #listing-form input[type=number], #listing-form textarea").forEach((el: any) => { el.value = ""; });
     document.querySelectorAll("#listing-form select").forEach((el: any) => { el.selectedIndex = 0; });
@@ -1258,6 +1565,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (data.unavailabilityPeriods) { (window as any).__unavailPeriods = [...data.unavailabilityPeriods]; (window as any).renderUnavailPeriods(); (window as any).renderCalendarGrid(); }
       // Images
       existingImageUrls = data.images || [];
+      (window as any).__existingPreviewUrls = [...existingImageUrls];
       const photoPreview = document.getElementById("photo-previews");
       if (photoPreview && existingImageUrls.length > 0) {
         existingImageUrls.forEach((url: string, idx: number) => {
