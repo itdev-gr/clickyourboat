@@ -16,7 +16,7 @@ import {
   type WhereFilterOp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import type { Boat, BoatListing, Destination, Review, Article, SearchParams } from "../types";
+import type { Boat, BoatListing, Destination, Review, Article, SearchParams, UserProfile } from "../types";
 
 // --- Boats ---
 export async function searchBoats(params: SearchParams, maxResults = 20): Promise<Boat[]> {
@@ -216,4 +216,54 @@ export async function getBoatListing(boatId: string): Promise<any | null> {
   const snap = await getDoc(docRef);
   if (!snap.exists()) return null;
   return { id: snap.id, ...snap.data() };
+}
+
+// --- Admin functions ---
+
+export async function isUserAdmin(uid: string): Promise<boolean> {
+  const snap = await getDoc(doc(db, "users", uid));
+  return snap.exists() && snap.data()?.type === "admin";
+}
+
+export async function getAllUsers(): Promise<UserProfile[]> {
+  const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    uid: d.id,
+    ...d.data(),
+  })) as UserProfile[];
+}
+
+export async function getAllListings(): Promise<(BoatListing & { id: string })[]> {
+  const q = query(collection(db, "boats"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+  })) as (BoatListing & { id: string })[];
+}
+
+export async function getListingsByStatus(status: string): Promise<(BoatListing & { id: string })[]> {
+  const q = query(
+    collection(db, "boats"),
+    where("status", "==", status),
+    orderBy("createdAt", "desc")
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+  })) as (BoatListing & { id: string })[];
+}
+
+export async function updateListingStatus(boatId: string, status: string): Promise<void> {
+  await updateDoc(doc(db, "boats", boatId), { status, updatedAt: serverTimestamp() });
+}
+
+export async function updateUserType(uid: string, type: "user" | "admin"): Promise<void> {
+  await updateDoc(doc(db, "users", uid), { type });
+}
+
+export async function adminDeleteUser(uid: string): Promise<void> {
+  await deleteDoc(doc(db, "users", uid));
 }

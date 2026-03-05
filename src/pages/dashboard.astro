@@ -346,6 +346,10 @@ const description = "Your BoatHaven dashboard — view recent messages and your 
         const boatStatus = boat.status || "published";
         const statusBadge = boatStatus === "draft"
           ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-[11px] font-semibold text-amber-800">Draft</span>`
+          : boatStatus === "pending"
+          ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-100 text-[11px] font-semibold text-blue-800">Pending</span>`
+          : boatStatus === "rejected"
+          ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-red-100 text-[11px] font-semibold text-red-800">Rejected</span>`
           : `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-green-100 text-[11px] font-semibold text-green-800">Published</span>`;
 
         html += `

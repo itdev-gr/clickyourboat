@@ -65,7 +65,7 @@ export interface BoatListing {
   images: string[];
   ownerId: string;
   createdAt: any;
-  status: "draft" | "published";
+  status: "draft" | "pending" | "published" | "rejected";
   updatedAt: any;
 
   // General
@@ -201,6 +201,32 @@ export interface Message {
   senderName: string;
   timestamp: Date;
   readBy: string[];
+}
+
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  photoURL: string | null;
+  type: "user" | "admin";
+  createdAt: any;
+  lastLoginAt: any;
+}
+
+export interface Order {
+  id: string;
+  boatId: string;
+  boatTitle: string;
+  renterId: string;
+  renterName: string;
+  ownerId: string;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  createdAt: any;
 }
 
 export type BoatType = Boat["type"] | "luxury" | "party";

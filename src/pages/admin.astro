@@ -1,0 +1,738 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Admin Dashboard — BoatHaven";
+const description = "BoatHaven admin dashboard — manage listings, users, and orders.";
+---
+
+<Layout title={title} description={description}>
+  <!-- Loading state -->
+  <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm text-text-muted">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Not logged in -->
+  <div id="auth-gate" class="hidden">
+    <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+      <div class="max-w-md w-full text-center">
+        <div class="mx-auto mb-6 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Log in to access admin</h1>
+        <p class="text-text-muted mb-8 max-w-sm mx-auto">You need to be logged in to access the admin dashboard.</p>
+        <a href="/login?redirect=/admin" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Log in</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access denied (not admin) -->
+  <div id="access-denied" class="hidden">
+    <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+      <div class="max-w-md w-full text-center">
+        <div class="mx-auto mb-6 h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+          <svg class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+          </svg>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Access Denied</h1>
+        <p class="text-text-muted mb-8 max-w-sm mx-auto">You do not have admin privileges. Contact the site administrator if you believe this is an error.</p>
+        <a href="/dashboard" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Go to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin content -->
+  <div id="admin-content" class="hidden">
+    <div class="flex min-h-[calc(100vh-64px)]">
+
+      <!-- ===== Left Sidebar ===== -->
+      <aside class="hidden lg:flex flex-col w-72 bg-gray-800 text-white flex-shrink-0">
+        <div class="flex flex-col items-center pt-10 pb-6 px-6 border-b border-gray-700">
+          <div id="sidebar-avatar" class="h-24 w-24 rounded-full bg-gray-600 flex items-center justify-center text-2xl font-bold text-white mb-4 overflow-hidden">
+            <img id="sidebar-avatar-img" class="h-full w-full object-cover hidden" alt="" />
+            <span id="sidebar-avatar-initials"></span>
+          </div>
+          <h2 id="sidebar-name" class="text-lg font-bold text-center"></h2>
+          <span class="text-xs text-gray-400 mt-1">Administrator</span>
+        </div>
+        <nav class="flex-1 py-4 px-3 space-y-0.5">
+          <a href="/dashboard" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </a>
+          <a href="/admin" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-700 text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Admin Panel
+          </a>
+          <a href="/account" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            Profile
+          </a>
+          <a href="/messages" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+            Messages
+          </a>
+          <a href="/list-your-boat" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+            Listings
+          </a>
+          <div class="pt-2 mt-2 border-t border-gray-700">
+            <button id="sidebar-logout-btn" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors w-full">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+              Log out
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- ===== Main Content ===== -->
+      <main class="flex-1 bg-gray-50 overflow-y-auto">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+          <h1 class="text-2xl font-bold text-text mb-6">Admin Dashboard</h1>
+
+          <!-- Tab Navigation -->
+          <div class="flex gap-2 mb-6 flex-wrap">
+            <button type="button" data-admin-tab="pending" class="admin-tab px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-white">
+              Pending Listings <span id="pending-count" class="ml-1 bg-white/20 px-1.5 py-0.5 rounded-full text-xs"></span>
+            </button>
+            <button type="button" data-admin-tab="listings" class="admin-tab px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">
+              All Listings
+            </button>
+            <button type="button" data-admin-tab="users" class="admin-tab px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">
+              All Users
+            </button>
+            <button type="button" data-admin-tab="orders" class="admin-tab px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">
+              Orders
+            </button>
+          </div>
+
+          <!-- Tab: Pending Listings -->
+          <div id="tab-pending" class="admin-tab-content">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-text">Pending Listings</h2>
+                <input type="text" id="pending-search" placeholder="Search by name or city..." class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64" />
+              </div>
+              <div id="pending-loading" class="flex items-center justify-center py-12">
+                <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <div id="pending-empty" class="hidden px-6 py-12 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm text-text-muted">No pending listings</p>
+                <p class="text-xs text-gray-400 mt-1">All listings have been reviewed</p>
+              </div>
+              <div id="pending-table-wrap" class="hidden overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Boat</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Owner</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">City</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Submitted</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pending-tbody" class="divide-y divide-gray-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: All Listings -->
+          <div id="tab-listings" class="admin-tab-content hidden">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
+                <h2 class="text-lg font-bold text-text">All Listings</h2>
+                <div class="flex items-center gap-3">
+                  <select id="listings-status-filter" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="all">All statuses</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending</option>
+                    <option value="published">Published</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                  <input type="text" id="listings-search" placeholder="Search..." class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-48" />
+                </div>
+              </div>
+              <div id="listings-loading" class="flex items-center justify-center py-12">
+                <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <div id="listings-empty" class="hidden px-6 py-12 text-center">
+                <p class="text-sm text-text-muted">No listings found</p>
+              </div>
+              <div id="listings-table-wrap" class="hidden overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Boat</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Owner</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">City</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Status</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Created</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="listings-tbody" class="divide-y divide-gray-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: All Users -->
+          <div id="tab-users" class="admin-tab-content hidden">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-text">All Users</h2>
+                <input type="text" id="users-search" placeholder="Search by name or email..." class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64" />
+              </div>
+              <div id="users-loading" class="flex items-center justify-center py-12">
+                <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <div id="users-empty" class="hidden px-6 py-12 text-center">
+                <p class="text-sm text-text-muted">No users found</p>
+              </div>
+              <div id="users-table-wrap" class="hidden overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-6 py-3 font-semibold text-gray-600">User</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Email</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Type</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Joined</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-tbody" class="divide-y divide-gray-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Orders (placeholder) -->
+          <div id="tab-orders" class="admin-tab-content hidden">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div class="px-6 py-16 text-center">
+                <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+                <h3 class="text-lg font-bold text-text mb-2">Orders coming soon</h3>
+                <p class="text-sm text-text-muted max-w-sm mx-auto">The booking system is under development. Orders will appear here once the feature is live.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline>
+  // --- Tab switching ---
+  document.querySelectorAll(".admin-tab").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var tab = btn.getAttribute("data-admin-tab");
+      // Update tab buttons
+      document.querySelectorAll(".admin-tab").forEach(function(b) {
+        if (b.getAttribute("data-admin-tab") === tab) {
+          b.classList.remove("bg-white", "text-gray-600", "border", "border-gray-300", "hover:bg-gray-50");
+          b.classList.add("bg-primary", "text-white");
+        } else {
+          b.classList.remove("bg-primary", "text-white");
+          b.classList.add("bg-white", "text-gray-600", "border", "border-gray-300", "hover:bg-gray-50");
+        }
+      });
+      // Show/hide tab content
+      document.querySelectorAll(".admin-tab-content").forEach(function(c) {
+        c.classList.add("hidden");
+      });
+      var target = document.getElementById("tab-" + tab);
+      if (target) target.classList.remove("hidden");
+    });
+  });
+</script>
+
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged, signOut } from "firebase/auth";
+  import {
+    collection, query, where, orderBy, getDocs, doc, getDoc, updateDoc, deleteDoc, serverTimestamp
+  } from "firebase/firestore";
+  import {
+    isUserAdmin, getAllUsers, getAllListings, getListingsByStatus,
+    updateListingStatus, updateUserType, adminDeleteUser, deleteBoatListing
+  } from "../lib/api";
+
+  function getInitials(name: string | null): string {
+    if (!name) return "?";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function formatDate(val: any): string {
+    if (!val) return "—";
+    const d = val.toDate ? val.toDate() : (val instanceof Date ? val : new Date(val));
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  function statusBadgeHtml(status: string): string {
+    const map: Record<string, string> = {
+      draft: "bg-amber-100 text-amber-800",
+      pending: "bg-blue-100 text-blue-800",
+      published: "bg-green-100 text-green-800",
+      rejected: "bg-red-100 text-red-800",
+    };
+    const cls = map[status] || "bg-gray-100 text-gray-800";
+    const label = status.charAt(0).toUpperCase() + status.slice(1);
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${cls}">${label}</span>`;
+  }
+
+  function typeBadgeHtml(type: string): string {
+    if (type === "admin") {
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-purple-100 text-purple-800">Admin</span>`;
+    }
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-800">User</span>`;
+  }
+
+  const $ = (id: string) => document.getElementById(id);
+
+  // Data stores
+  let allListingsData: any[] = [];
+  let allUsersData: any[] = [];
+  let pendingData: any[] = [];
+
+  // Owner name cache
+  let ownerCache: Record<string, string> = {};
+
+  async function getOwnerName(ownerId: string): Promise<string> {
+    if (ownerCache[ownerId]) return ownerCache[ownerId];
+    try {
+      const snap = await getDoc(doc(db, "users", ownerId));
+      if (snap.exists()) {
+        const d = snap.data();
+        const name = d.displayName || d.firstName || d.email || ownerId;
+        ownerCache[ownerId] = name;
+        return name;
+      }
+    } catch {}
+    ownerCache[ownerId] = ownerId;
+    return ownerId;
+  }
+
+  function boatName(boat: any): string {
+    return [boat.manufacturer, boat.model].filter(Boolean).join(" ") || boat.boatName || boat.listingTitle || "Untitled";
+  }
+
+  // --- Render pending table ---
+  async function renderPendingTable(data: any[]) {
+    const loading = $("pending-loading");
+    const empty = $("pending-empty");
+    const wrap = $("pending-table-wrap");
+    const tbody = $("pending-tbody");
+
+    loading?.classList.add("hidden");
+
+    if (data.length === 0) {
+      empty?.classList.remove("hidden");
+      wrap?.classList.add("hidden");
+      $("pending-count")!.textContent = "0";
+      return;
+    }
+
+    empty?.classList.add("hidden");
+    wrap?.classList.remove("hidden");
+    $("pending-count")!.textContent = String(data.length);
+
+    let html = "";
+    for (const boat of data) {
+      const name = escapeHtml(boatName(boat));
+      const city = escapeHtml(boat.city || "—");
+      const thumb = boat.images?.[0];
+      const ownerName = escapeHtml(await getOwnerName(boat.ownerId));
+      const date = formatDate(boat.createdAt);
+
+      html += `<tr class="pending-row" data-search="${name.toLowerCase()} ${city.toLowerCase()} ${ownerName.toLowerCase()}">
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+              ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<div class="h-full w-full flex items-center justify-center text-gray-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25z"/></svg></div>`}
+            </div>
+            <span class="font-medium text-text">${name}</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-text-muted">${ownerName}</td>
+        <td class="px-6 py-4 text-text-muted">${city}</td>
+        <td class="px-6 py-4 text-text-muted">${date}</td>
+        <td class="px-6 py-4 text-right">
+          <div class="flex items-center justify-end gap-2">
+            <button type="button" class="approve-btn px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors" data-id="${boat.id}">Approve</button>
+            <button type="button" class="reject-btn px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors" data-id="${boat.id}">Reject</button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    if (tbody) tbody.innerHTML = html;
+
+    // Bind approve/reject
+    tbody?.querySelectorAll(".approve-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id")!;
+        try {
+          (btn as HTMLButtonElement).disabled = true;
+          btn.textContent = "...";
+          await updateListingStatus(id, "published");
+          pendingData = pendingData.filter(b => b.id !== id);
+          renderPendingTable(pendingData);
+          // Also refresh all listings if loaded
+          const idx = allListingsData.findIndex(b => b.id === id);
+          if (idx >= 0) allListingsData[idx].status = "published";
+          renderAllListingsTable(allListingsData);
+        } catch (err) {
+          console.error("Approve failed:", err);
+          alert("Failed to approve listing.");
+          (btn as HTMLButtonElement).disabled = false;
+          btn.textContent = "Approve";
+        }
+      });
+    });
+
+    tbody?.querySelectorAll(".reject-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id")!;
+        if (!confirm("Reject this listing?")) return;
+        try {
+          (btn as HTMLButtonElement).disabled = true;
+          btn.textContent = "...";
+          await updateListingStatus(id, "rejected");
+          pendingData = pendingData.filter(b => b.id !== id);
+          renderPendingTable(pendingData);
+          const idx = allListingsData.findIndex(b => b.id === id);
+          if (idx >= 0) allListingsData[idx].status = "rejected";
+          renderAllListingsTable(allListingsData);
+        } catch (err) {
+          console.error("Reject failed:", err);
+          alert("Failed to reject listing.");
+          (btn as HTMLButtonElement).disabled = false;
+          btn.textContent = "Reject";
+        }
+      });
+    });
+  }
+
+  // --- Search filtering for pending ---
+  $("pending-search")?.addEventListener("input", (e) => {
+    const term = (e.target as HTMLInputElement).value.toLowerCase();
+    document.querySelectorAll(".pending-row").forEach(row => {
+      const search = row.getAttribute("data-search") || "";
+      (row as HTMLElement).style.display = search.includes(term) ? "" : "none";
+    });
+  });
+
+  // --- Render all listings table ---
+  async function renderAllListingsTable(data: any[]) {
+    const loading = $("listings-loading");
+    const empty = $("listings-empty");
+    const wrap = $("listings-table-wrap");
+    const tbody = $("listings-tbody");
+    const statusFilter = $("listings-status-filter") as HTMLSelectElement;
+    const searchInput = $("listings-search") as HTMLInputElement;
+
+    loading?.classList.add("hidden");
+
+    // Apply filters
+    let filtered = data;
+    const statusVal = statusFilter?.value || "all";
+    if (statusVal !== "all") {
+      filtered = filtered.filter(b => b.status === statusVal);
+    }
+    const searchTerm = searchInput?.value?.toLowerCase() || "";
+    if (searchTerm) {
+      filtered = filtered.filter(b => {
+        const name = boatName(b).toLowerCase();
+        const city = (b.city || "").toLowerCase();
+        return name.includes(searchTerm) || city.includes(searchTerm);
+      });
+    }
+
+    if (filtered.length === 0) {
+      empty?.classList.remove("hidden");
+      wrap?.classList.add("hidden");
+      return;
+    }
+
+    empty?.classList.add("hidden");
+    wrap?.classList.remove("hidden");
+
+    let html = "";
+    for (const boat of filtered) {
+      const name = escapeHtml(boatName(boat));
+      const city = escapeHtml(boat.city || "—");
+      const thumb = boat.images?.[0];
+      const ownerName = escapeHtml(await getOwnerName(boat.ownerId || ""));
+      const date = formatDate(boat.createdAt);
+      const status = boat.status || "published";
+
+      html += `<tr>
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+              ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<div class="h-full w-full flex items-center justify-center text-gray-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25z"/></svg></div>`}
+            </div>
+            <span class="font-medium text-text">${name}</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-text-muted">${ownerName}</td>
+        <td class="px-6 py-4 text-text-muted">${city}</td>
+        <td class="px-6 py-4">${statusBadgeHtml(status)}</td>
+        <td class="px-6 py-4 text-text-muted">${date}</td>
+        <td class="px-6 py-4 text-right">
+          <div class="flex items-center justify-end gap-2">
+            <select class="listing-status-select px-2 py-1 text-xs border border-gray-300 rounded-lg" data-id="${boat.id}" data-current="${status}">
+              <option value="draft" ${status === "draft" ? "selected" : ""}>Draft</option>
+              <option value="pending" ${status === "pending" ? "selected" : ""}>Pending</option>
+              <option value="published" ${status === "published" ? "selected" : ""}>Published</option>
+              <option value="rejected" ${status === "rejected" ? "selected" : ""}>Rejected</option>
+            </select>
+            <button type="button" class="listing-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-id="${boat.id}" data-name="${name}" title="Delete">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    if (tbody) tbody.innerHTML = html;
+
+    // Bind status change
+    tbody?.querySelectorAll(".listing-status-select").forEach(sel => {
+      sel.addEventListener("change", async (e) => {
+        const id = sel.getAttribute("data-id")!;
+        const newStatus = (sel as HTMLSelectElement).value;
+        try {
+          await updateListingStatus(id, newStatus);
+          const idx = allListingsData.findIndex(b => b.id === id);
+          if (idx >= 0) allListingsData[idx].status = newStatus;
+          // Refresh pending if needed
+          pendingData = allListingsData.filter(b => b.status === "pending");
+          renderPendingTable(pendingData);
+        } catch (err) {
+          console.error("Status change failed:", err);
+          alert("Failed to update status.");
+          (sel as HTMLSelectElement).value = sel.getAttribute("data-current")!;
+        }
+      });
+    });
+
+    // Bind delete
+    tbody?.querySelectorAll(".listing-delete-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id")!;
+        const name = btn.getAttribute("data-name") || "this listing";
+        if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+        try {
+          await deleteBoatListing(id);
+          allListingsData = allListingsData.filter(b => b.id !== id);
+          pendingData = pendingData.filter(b => b.id !== id);
+          renderAllListingsTable(allListingsData);
+          renderPendingTable(pendingData);
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("Failed to delete listing.");
+        }
+      });
+    });
+  }
+
+  // Listings filter/search events
+  $("listings-status-filter")?.addEventListener("change", () => renderAllListingsTable(allListingsData));
+  $("listings-search")?.addEventListener("input", () => renderAllListingsTable(allListingsData));
+
+  // --- Render users table ---
+  async function renderUsersTable(data: any[]) {
+    const loading = $("users-loading");
+    const empty = $("users-empty");
+    const wrap = $("users-table-wrap");
+    const tbody = $("users-tbody");
+
+    loading?.classList.add("hidden");
+
+    if (data.length === 0) {
+      empty?.classList.remove("hidden");
+      wrap?.classList.add("hidden");
+      return;
+    }
+
+    empty?.classList.add("hidden");
+    wrap?.classList.remove("hidden");
+
+    let html = "";
+    for (const user of data) {
+      const name = escapeHtml(user.displayName || user.firstName || "Unknown");
+      const email = escapeHtml(user.email || "—");
+      const type = user.type || "user";
+      const date = formatDate(user.createdAt);
+      const photo = user.photoURL;
+      const initials = getInitials(user.displayName || user.firstName);
+
+      html += `<tr class="user-row" data-search="${name.toLowerCase()} ${email.toLowerCase()}">
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
+              ${photo ? `<img src="${escapeHtml(photo)}" class="h-full w-full object-cover" alt="" />` : `<span>${escapeHtml(initials)}</span>`}
+            </div>
+            <span class="font-medium text-text">${name}</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-text-muted">${email}</td>
+        <td class="px-6 py-4">${typeBadgeHtml(type)}</td>
+        <td class="px-6 py-4 text-text-muted">${date}</td>
+        <td class="px-6 py-4 text-right">
+          <div class="flex items-center justify-end gap-2">
+            <button type="button" class="user-toggle-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${type === "admin" ? "bg-gray-200 text-gray-700 hover:bg-gray-300" : "bg-purple-600 text-white hover:bg-purple-700"}" data-uid="${user.uid}" data-type="${type}">
+              ${type === "admin" ? "Demote to User" : "Make Admin"}
+            </button>
+            <button type="button" class="user-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-uid="${user.uid}" data-name="${name}" title="Delete user">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    if (tbody) tbody.innerHTML = html;
+
+    // Bind toggle admin
+    tbody?.querySelectorAll(".user-toggle-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const uid = btn.getAttribute("data-uid")!;
+        const currentType = btn.getAttribute("data-type")!;
+        const newType = currentType === "admin" ? "user" : "admin";
+        const action = newType === "admin" ? "promote to admin" : "demote to user";
+        if (!confirm(`Are you sure you want to ${action}?`)) return;
+        try {
+          (btn as HTMLButtonElement).disabled = true;
+          await updateUserType(uid, newType as "user" | "admin");
+          const idx = allUsersData.findIndex(u => u.uid === uid);
+          if (idx >= 0) allUsersData[idx].type = newType;
+          renderUsersTable(allUsersData);
+        } catch (err) {
+          console.error("Toggle failed:", err);
+          alert("Failed to update user type.");
+          (btn as HTMLButtonElement).disabled = false;
+        }
+      });
+    });
+
+    // Bind delete
+    tbody?.querySelectorAll(".user-delete-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const uid = btn.getAttribute("data-uid")!;
+        const name = btn.getAttribute("data-name") || "this user";
+        if (!confirm(`Delete user "${name}"? This will remove their Firestore record.`)) return;
+        try {
+          await adminDeleteUser(uid);
+          allUsersData = allUsersData.filter(u => u.uid !== uid);
+          renderUsersTable(allUsersData);
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("Failed to delete user.");
+        }
+      });
+    });
+  }
+
+  // Users search
+  $("users-search")?.addEventListener("input", (e) => {
+    const term = (e.target as HTMLInputElement).value.toLowerCase();
+    document.querySelectorAll(".user-row").forEach(row => {
+      const search = row.getAttribute("data-search") || "";
+      (row as HTMLElement).style.display = search.includes(term) ? "" : "none";
+    });
+  });
+
+  // --- Auth gate + admin check ---
+  let fallbackTimer = setTimeout(() => {
+    $("auth-loading")?.classList.add("hidden");
+    $("auth-gate")?.classList.remove("hidden");
+  }, 3000);
+
+  onAuthStateChanged(auth, async (user) => {
+    clearTimeout(fallbackTimer);
+    const loading = $("auth-loading");
+    const gate = $("auth-gate");
+    const denied = $("access-denied");
+    const content = $("admin-content");
+
+    if (!user) {
+      loading?.classList.add("hidden");
+      gate?.classList.remove("hidden");
+      content?.classList.add("hidden");
+      denied?.classList.add("hidden");
+      return;
+    }
+
+    // Check admin
+    const isAdmin = await isUserAdmin(user.uid);
+    loading?.classList.add("hidden");
+
+    if (!isAdmin) {
+      gate?.classList.add("hidden");
+      denied?.classList.remove("hidden");
+      content?.classList.add("hidden");
+      return;
+    }
+
+    gate?.classList.add("hidden");
+    denied?.classList.add("hidden");
+    content?.classList.remove("hidden");
+
+    // Set sidebar info
+    const initials = getInitials(user.displayName);
+    const displayName = user.displayName || user.email || "Admin";
+    const sidebarName = $("sidebar-name");
+    const sidebarInitials = $("sidebar-avatar-initials");
+    const sidebarImg = $("sidebar-avatar-img") as HTMLImageElement;
+
+    if (sidebarName) sidebarName.textContent = displayName;
+    if (sidebarInitials) sidebarInitials.textContent = initials;
+    if (user.photoURL && sidebarImg) {
+      sidebarImg.src = user.photoURL;
+      sidebarImg.classList.remove("hidden");
+    }
+
+    // Load data in parallel
+    try {
+      const [listings, users] = await Promise.all([
+        getAllListings(),
+        getAllUsers(),
+      ]);
+
+      allListingsData = listings;
+      allUsersData = users;
+      pendingData = listings.filter(b => b.status === "pending");
+
+      renderPendingTable(pendingData);
+      renderAllListingsTable(allListingsData);
+      renderUsersTable(allUsersData);
+    } catch (err) {
+      console.error("Failed to load admin data:", err);
+    }
+  });
+
+  // Sidebar logout
+  $("sidebar-logout-btn")?.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "/";
+  });
+</script>

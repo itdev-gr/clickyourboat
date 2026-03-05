@@ -3,18 +3,28 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users: any authenticated user can read, owner can write
-    match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+    function isAdmin() {
+      return request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.type == "admin";
     }
 
-    // Boats: public read, owner write
+    // Users: any authenticated user can read, owner can write (but cannot change own type), admin can do anything
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.type == "user";
+      allow update: if request.auth != null
+        && ((request.auth.uid == userId && request.resource.data.type == resource.data.type)
+            || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Boats: public read, owner write, admin can update/delete any
     match /boats/{boatId} {
       allow read: if true;
       allow create: if request.auth != null;
       allow update, delete: if request.auth != null
-        && request.auth.uid == resource.data.ownerId;
+        && (request.auth.uid == resource.data.ownerId || isAdmin());
     }
 
     // Destinations: public read, admin write
@@ -44,6 +54,17 @@ service cloud.firestore {
       allow create: if true;
       allow read: if request.auth != null
         && request.auth.token.admin == true;
+    }
+
+    // Orders: participants + admin
+    match /orders/{orderId} {
+      allow read: if request.auth != null
+        && (request.auth.uid == resource.data.renterId
+            || request.auth.uid == resource.data.ownerId || isAdmin());
+      allow create: if request.auth != null;
+      allow update: if request.auth != null
+        && (request.auth.uid == resource.data.renterId || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // Conversations: participants only

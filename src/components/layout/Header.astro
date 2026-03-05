@@ -129,6 +129,7 @@ const boatTypes = [
               <a href="/account" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Profile</a>
               <a href="/messages" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Messages</a>
               <a href="/list-your-boat" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">My Listings</a>
+              <a href="/admin" id="admin-panel-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Admin Panel</a>
               <hr class="my-1 border-gray-100" />
               <button id="logout-btn" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">Log out</button>
             </div>
@@ -254,6 +255,9 @@ const boatTypes = [
         </a>
         <a href="/list-your-boat" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
           My Listings
+        </a>
+        <a href="/admin" id="mobile-admin-panel-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
+          Admin Panel
         </a>
         <button id="mobile-logout-btn" class="w-full text-left px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors font-medium">
           Log out
@@ -381,15 +385,16 @@ const boatTypes = [
 
 <!-- Header auth state — Firebase module -->
 <script>
-  import { auth } from "../../lib/firebase";
+  import { auth, db } from "../../lib/firebase";
   import { onAuthStateChanged, signOut } from "firebase/auth";
+  import { doc, getDoc } from "firebase/firestore";
 
   function getInitials(name: string | null): string {
     if (!name) return "?";
     return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
   }
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     const loggedOut = document.getElementById("header-logged-out");
     const loggedIn = document.getElementById("header-logged-in");
     const mobileLoggedOut = document.getElementById("mobile-logged-out");
@@ -414,11 +419,25 @@ const boatTypes = [
       const mobileName = document.getElementById("mobile-user-name");
       if (mobileAvatar) mobileAvatar.textContent = initials;
       if (mobileName) mobileName.textContent = displayName;
+
+      // Check if user is admin and show admin link
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists() && userDoc.data()?.type === "admin") {
+          document.getElementById("admin-panel-link")?.classList.remove("hidden");
+          document.getElementById("admin-panel-link")?.classList.add("block");
+          document.getElementById("mobile-admin-panel-link")?.classList.remove("hidden");
+        }
+      } catch (e) {
+        // silently ignore — user just won't see admin link
+      }
     } else {
       loggedOut?.classList.remove("hidden");
       loggedIn?.classList.add("hidden");
       mobileLoggedOut?.classList.remove("hidden");
       mobileLoggedIn?.classList.add("hidden");
+      document.getElementById("admin-panel-link")?.classList.add("hidden");
+      document.getElementById("mobile-admin-panel-link")?.classList.add("hidden");
     }
   });
 
