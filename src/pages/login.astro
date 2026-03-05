@@ -453,15 +453,16 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       console.log("[Login] signInWithEmailAndPassword SUCCESS. UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
-      console.log("[Login] Calling updateLastLogin...");
-      try {
-        await updateLastLogin(result.user.uid, result.user.email);
-        console.log("[Login] updateLastLogin completed successfully");
-      } catch (err) {
+      console.log("[Login] Firing updateLastLogin (non-blocking)...");
+      updateLastLogin(result.user.uid, result.user.email).catch((err) => {
         console.error("[Login] updateLastLogin FAILED:", err);
-      }
+      });
       console.log("[Login] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
+      setTimeout(() => {
+        authActionInProgress = false;
+        setLoading(submitBtn, false);
+      }, 3000);
     } catch (err: any) {
       console.error("[Login] signInWithEmailAndPassword FAILED:", err.code, err.message);
       console.error("[Login] Full error object:", err);
@@ -544,17 +545,18 @@ const description = "Log in or create your BoatHaven account to rent boats, save
       console.error("[Signup] Step 2 FAILED — Profile update error:", err);
     }
 
-    // Step 3: Create Firestore doc (await before redirect)
-    console.log("[Signup] Step 3: Calling createUserDoc for UID:", user.uid);
-    try {
-      await createUserDoc(user, { firstName, lastName });
-      console.log("[Signup] Step 3 SUCCESS — Firestore user doc created");
-    } catch (err) {
-      console.error("[Signup] Step 3 FAILED — Firestore user doc error:", err);
-    }
+    // Step 3: Create Firestore doc (fire and forget — don't block redirect)
+    console.log("[Signup] Step 3: Firing createUserDoc (non-blocking) for UID:", user.uid);
+    createUserDoc(user, { firstName, lastName }).catch((err) => {
+      console.error("[Signup] Firestore user doc error:", err);
+    });
 
     console.log("[Signup] All steps done. Redirecting to:", redirectTo);
     window.location.href = redirectTo;
+    setTimeout(() => {
+      authActionInProgress = false;
+      setLoading(submitBtn, false);
+    }, 3000);
   });
 
   // Handle redirect result (when user returns from Google/Facebook redirect)
@@ -563,13 +565,10 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     console.log("[Social] getRedirectResult resolved. Has user:", !!result?.user);
     if (result?.user) {
       console.log("[Social] Redirect result — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName, "provider:", result.providerId);
-      console.log("[Social] Creating/updating Firestore user doc...");
-      try {
-        await createUserDoc(result.user);
-        console.log("[Social] Firestore user doc created/updated successfully");
-      } catch (err) {
+      console.log("[Social] Firing createUserDoc (non-blocking)...");
+      createUserDoc(result.user).catch((err) => {
         console.error("[Social] Firestore user doc FAILED:", err);
-      }
+      });
       console.log("[Social] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
     } else {
@@ -587,13 +586,10 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("[Social] signInWithPopup SUCCESS — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
-      console.log("[Social] Creating/updating Firestore user doc...");
-      try {
-        await createUserDoc(result.user);
-        console.log("[Social] Firestore user doc created/updated successfully");
-      } catch (err) {
+      console.log("[Social] Firing createUserDoc (non-blocking)...");
+      createUserDoc(result.user).catch((err) => {
         console.error("[Social] Firestore user doc FAILED:", err);
-      }
+      });
       console.log("[Social] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
     } catch (err: any) {
