@@ -14,7 +14,7 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == userId
         && request.resource.data.type == "user";
       allow update: if request.auth != null
-        && ((request.auth.uid == userId && request.resource.data.type == resource.data.type)
+        && ((request.auth.uid == userId && request.resource.data.type == resource.data.get('type', 'user'))
             || isAdmin());
       allow delete: if isAdmin();
     }
