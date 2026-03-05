@@ -355,9 +355,10 @@ const description = "Log in or create your BoatHaven account to rent boats, save
   } from "firebase/auth";
   import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
-  console.log("[Auth] Firebase module loaded");
+  console.log("[Auth] Firebase module loaded at", new Date().toISOString());
   console.log("[Auth] Firebase auth instance:", auth?.app?.options?.projectId || "NOT INITIALIZED");
   console.log("[Auth] Firestore instance:", db?.app?.options?.projectId || "NOT INITIALIZED");
+  console.log("[Auth] Current URL:", window.location.href);
 
   // Create user document in Firestore (on registration)
   async function createUserDoc(user: any, extra: { firstName?: string; lastName?: string } = {}) {
@@ -397,15 +398,22 @@ const description = "Log in or create your BoatHaven account to rent boats, save
   const params = new URLSearchParams(window.location.search);
   const redirectParam = params.get("redirect");
   const redirectTo = redirectParam && redirectParam.startsWith("/") ? redirectParam : "/";
+  console.log("[Auth] Redirect param:", redirectParam, "→ redirectTo:", redirectTo);
 
   // Track whether a signup/login action is in progress
   // to prevent onAuthStateChanged from redirecting too early
   let authActionInProgress = false;
 
   // If already logged in (page load), redirect away
+  console.log("[Auth] Registering onAuthStateChanged listener");
   onAuthStateChanged(auth, (user) => {
-    console.log("[Auth] onAuthStateChanged fired. User:", user?.uid || "null", "actionInProgress:", authActionInProgress);
-    if (user && !authActionInProgress) window.location.href = redirectTo;
+    console.log("[Auth] onAuthStateChanged fired. User:", user?.uid || "null", "email:", user?.email || "null", "actionInProgress:", authActionInProgress);
+    if (user && !authActionInProgress) {
+      console.log("[Auth] User already logged in, redirecting to:", redirectTo);
+      window.location.href = redirectTo;
+    } else if (!user) {
+      console.log("[Auth] No user signed in, staying on login page");
+    }
   });
 
   const loginForm = document.getElementById("login-form") as HTMLFormElement;
@@ -431,43 +439,55 @@ const description = "Log in or create your BoatHaven account to rent boats, save
   }
 
   // Login
+  console.log("[Login] Attaching login form listener, form found:", !!loginForm);
   loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    console.log("[Login] Form submitted");
     loginError.classList.add("hidden");
     const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     setLoading(submitBtn, true);
     authActionInProgress = true;
     const email = (loginForm.elements.namedItem("email") as HTMLInputElement).value;
     const password = (loginForm.elements.namedItem("password") as HTMLInputElement).value;
-    console.log("[Login] Attempting login for:", email);
+    console.log("[Login] Attempting signInWithEmailAndPassword for:", email);
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log("[Login] Success. User uid:", result.user.uid);
+      console.log("[Login] signInWithEmailAndPassword SUCCESS. UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
+      console.log("[Login] Calling updateLastLogin...");
       try {
         await updateLastLogin(result.user.uid, result.user.email);
+        console.log("[Login] updateLastLogin completed successfully");
       } catch (err) {
-        console.error("[Login] lastLoginAt update error:", err);
+        console.error("[Login] updateLastLogin FAILED:", err);
       }
+      console.log("[Login] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
     } catch (err: any) {
-      console.error("[Login] Error:", err.code, err.message, err);
+      console.error("[Login] signInWithEmailAndPassword FAILED:", err.code, err.message);
+      console.error("[Login] Full error object:", err);
       authActionInProgress = false;
       setLoading(submitBtn, false);
       if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+        console.log("[Login] Showing error: invalid credentials");
         showError(loginError, "Invalid email or password. Please try again.");
       } else if (err.code === "auth/too-many-requests") {
+        console.log("[Login] Showing error: too many requests");
         showError(loginError, "Too many failed attempts. Please try again later.");
       } else if (err.code === "auth/invalid-email") {
+        console.log("[Login] Showing error: invalid email");
         showError(loginError, "Please enter a valid email address.");
       } else {
+        console.log("[Login] Showing error: unknown -", err.code);
         showError(loginError, "Something went wrong (" + (err.code || "unknown") + "). Please try again.");
       }
     }
   });
 
   // Signup
+  console.log("[Signup] Attaching signup form listener, form found:", !!signupForm);
   signupForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    console.log("[Signup] Form submitted");
     signupError.classList.add("hidden");
     const submitBtn = signupForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     const firstName = (signupForm.elements.namedItem("firstName") as HTMLInputElement).value;
@@ -475,109 +495,145 @@ const description = "Log in or create your BoatHaven account to rent boats, save
     const email = (signupForm.elements.namedItem("email") as HTMLInputElement).value;
     const password = (signupForm.elements.namedItem("password") as HTMLInputElement).value;
     const confirmPassword = (signupForm.elements.namedItem("confirmPassword") as HTMLInputElement).value;
+    console.log("[Signup] Form values — email:", email, "firstName:", firstName, "lastName:", lastName, "passwordLength:", password.length);
 
     if (password !== confirmPassword) {
+      console.log("[Signup] Password mismatch, aborting");
       showError(signupError, "Passwords do not match.");
       return;
     }
+    console.log("[Signup] Passwords match, proceeding");
 
     setLoading(submitBtn, true);
     authActionInProgress = true;
 
     // Step 1: Create the auth account
-    console.log("[Signup] Attempting signup for:", email);
+    console.log("[Signup] Step 1: Calling createUserWithEmailAndPassword for:", email);
     let user;
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       user = result.user;
-      console.log("[Signup] Auth account created. UID:", user.uid);
+      console.log("[Signup] Step 1 SUCCESS — Auth account created. UID:", user.uid, "email:", user.email);
     } catch (err: any) {
-      console.error("[Signup] Auth error:", err.code, err.message, err);
+      console.error("[Signup] Step 1 FAILED — createUserWithEmailAndPassword error:", err.code, err.message);
+      console.error("[Signup] Full error object:", err);
       authActionInProgress = false;
       setLoading(submitBtn, false);
       if (err.code === "auth/email-already-in-use") {
+        console.log("[Signup] Showing error: email already in use");
         showError(signupError, "This email is already registered. Try logging in instead.");
       } else if (err.code === "auth/weak-password") {
+        console.log("[Signup] Showing error: weak password");
         showError(signupError, "Password is too weak. Use at least 8 characters.");
       } else {
+        console.log("[Signup] Showing error: unknown -", err.code);
         showError(signupError, "Something went wrong. Please try again.");
       }
       return;
     }
 
     // Step 2: Update profile (with timeout)
+    console.log("[Signup] Step 2: Calling updateProfile with displayName:", `${firstName} ${lastName}`);
     try {
-      console.log("[Signup] Updating profile with name:", firstName, lastName);
       await Promise.race([
         updateProfile(user, { displayName: `${firstName} ${lastName}` }),
         new Promise((_, reject) => setTimeout(() => reject(new Error("Profile update timed out")), 5000))
       ]);
-      console.log("[Signup] Profile updated successfully");
+      console.log("[Signup] Step 2 SUCCESS — Profile updated. displayName:", user.displayName);
     } catch (err) {
-      console.error("[Signup] Profile update error:", err);
+      console.error("[Signup] Step 2 FAILED — Profile update error:", err);
     }
 
     // Step 3: Create Firestore doc (await before redirect)
+    console.log("[Signup] Step 3: Calling createUserDoc for UID:", user.uid);
     try {
       await createUserDoc(user, { firstName, lastName });
+      console.log("[Signup] Step 3 SUCCESS — Firestore user doc created");
     } catch (err) {
-      console.error("[Signup] Firestore user doc error:", err);
+      console.error("[Signup] Step 3 FAILED — Firestore user doc error:", err);
     }
 
-    console.log("[Signup] Redirecting to", redirectTo);
+    console.log("[Signup] All steps done. Redirecting to:", redirectTo);
     window.location.href = redirectTo;
   });
 
   // Handle redirect result (when user returns from Google/Facebook redirect)
+  console.log("[Social] Checking for redirect result (getRedirectResult)...");
   getRedirectResult(auth).then(async (result) => {
+    console.log("[Social] getRedirectResult resolved. Has user:", !!result?.user);
     if (result?.user) {
-      console.log("[Social] Redirect result received. User:", result.user.uid);
+      console.log("[Social] Redirect result — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName, "provider:", result.providerId);
+      console.log("[Social] Creating/updating Firestore user doc...");
       try {
         await createUserDoc(result.user);
+        console.log("[Social] Firestore user doc created/updated successfully");
       } catch (err) {
-        console.error("[Social] Firestore user doc error:", err);
+        console.error("[Social] Firestore user doc FAILED:", err);
       }
+      console.log("[Social] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
+    } else {
+      console.log("[Social] No redirect result (user did not come from redirect flow)");
     }
-  }).catch((err) => {
-    console.error("[Social] Redirect result error:", err);
+  }).catch((err: any) => {
+    console.error("[Social] getRedirectResult FAILED:", err.code, err.message, err);
   });
 
   // Social auth helper — tries popup first, falls back to redirect
-  async function socialAuth(provider: any, errorEl: HTMLElement) {
+  async function socialAuth(providerName: string, provider: any, errorEl: HTMLElement) {
+    console.log("[Social] socialAuth called — provider:", providerName);
     authActionInProgress = true;
+    console.log("[Social] Attempting signInWithPopup for", providerName);
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("[Social] Popup sign-in success. User:", result.user.uid);
+      console.log("[Social] signInWithPopup SUCCESS — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
+      console.log("[Social] Creating/updating Firestore user doc...");
       try {
         await createUserDoc(result.user);
+        console.log("[Social] Firestore user doc created/updated successfully");
       } catch (err) {
-        console.error("[Social] Firestore user doc error:", err);
+        console.error("[Social] Firestore user doc FAILED:", err);
       }
+      console.log("[Social] Redirecting to:", redirectTo);
       window.location.href = redirectTo;
     } catch (err: any) {
-      console.error("[Social] Popup error:", err.code, err.message);
+      console.error("[Social] signInWithPopup FAILED for", providerName, "— code:", err.code, "message:", err.message);
       // If popup blocked or iframe error, fall back to redirect
       if (err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || err.message?.includes("Illegal url")) {
-        console.log("[Social] Falling back to redirect...");
+        console.log("[Social] Popup blocked/closed, falling back to signInWithRedirect for", providerName);
         try {
           await signInWithRedirect(auth, provider);
-        } catch (redirectErr) {
+          console.log("[Social] signInWithRedirect initiated (page will navigate away)");
+        } catch (redirectErr: any) {
           authActionInProgress = false;
-          console.error("[Social] Redirect error:", redirectErr);
+          console.error("[Social] signInWithRedirect FAILED:", redirectErr.code, redirectErr.message, redirectErr);
           showError(errorEl, "Sign-in failed. Please try again.");
         }
       } else if (err.code === "auth/cancelled-popup-request") {
+        console.log("[Social] Popup cancelled by user");
         authActionInProgress = false;
       } else {
+        console.error("[Social] Unhandled popup error:", err);
         authActionInProgress = false;
         showError(errorEl, "Sign-in failed. Please try again.");
       }
     }
   }
 
-  document.getElementById("google-login-btn")?.addEventListener("click", () => socialAuth(new GoogleAuthProvider(), loginError));
-  document.getElementById("facebook-login-btn")?.addEventListener("click", () => socialAuth(new FacebookAuthProvider(), loginError));
-  document.getElementById("google-signup-btn")?.addEventListener("click", () => socialAuth(new GoogleAuthProvider(), signupError));
-  document.getElementById("facebook-signup-btn")?.addEventListener("click", () => socialAuth(new FacebookAuthProvider(), signupError));
+  document.getElementById("google-login-btn")?.addEventListener("click", () => {
+    console.log("[Social] Google login button clicked");
+    socialAuth("Google", new GoogleAuthProvider(), loginError);
+  });
+  document.getElementById("facebook-login-btn")?.addEventListener("click", () => {
+    console.log("[Social] Facebook login button clicked");
+    socialAuth("Facebook", new FacebookAuthProvider(), loginError);
+  });
+  document.getElementById("google-signup-btn")?.addEventListener("click", () => {
+    console.log("[Social] Google signup button clicked");
+    socialAuth("Google", new GoogleAuthProvider(), signupError);
+  });
+  document.getElementById("facebook-signup-btn")?.addEventListener("click", () => {
+    console.log("[Social] Facebook signup button clicked");
+    socialAuth("Facebook", new FacebookAuthProvider(), signupError);
+  });
 </script>
