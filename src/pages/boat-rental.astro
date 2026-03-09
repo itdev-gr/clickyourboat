@@ -332,6 +332,11 @@ const description =
         rentalType = r.value;
       });
 
+      // Listing type tab (rentals vs experiences)
+      var listingType = "rentals";
+      var activeTab = document.querySelector('.sidebar-tab.border-pink');
+      if (activeTab) listingType = activeTab.getAttribute("data-tab") || "rentals";
+
       // Price range — take first sidebar's values (desktop or mobile, whichever exists)
       var priceMin = 0;
       var priceMax = 1200;
@@ -399,6 +404,7 @@ const description =
         dateStart: dateStart,
         dateEnd: dateEnd,
         rentalType: rentalType,
+        listingType: listingType,
         priceMin: priceMin,
         priceMax: priceMax,
         people: people,
@@ -434,6 +440,11 @@ const description =
       var cardLocation = card.getAttribute("data-location") || "";
       var cardHasSkipper = card.getAttribute("data-has-skipper") === "true";
       var cardNoLicence = card.getAttribute("data-no-licence") === "true";
+      var cardListingType = card.getAttribute("data-listing-type") || "rental";
+
+      // Listing type tab filter (rentals vs experiences)
+      if (filters.listingType === "rentals" && cardListingType !== "rental") return false;
+      if (filters.listingType === "experiences" && cardListingType !== "experience") return false;
 
       // Location filter
       if (filters.locationSearch && cardLocation.indexOf(filters.locationSearch) === -1) return false;

@@ -27,6 +27,7 @@ const { boat } = Astro.props;
   data-location={boat.location.toLowerCase()}
   data-has-skipper={boat.tags.some(t => t.icon === "skipper")}
   data-no-licence={boat.tags.some(t => t.icon === "no-licence")}
+  data-listing-type={boat.priceUnit === "/ day" ? "rental" : "experience"}
 >
   <!-- Image area -->
   <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 boat-card-image-area">

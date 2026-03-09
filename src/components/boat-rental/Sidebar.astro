@@ -315,18 +315,25 @@ const equipmentOptions = [
   const tabs = document.querySelectorAll(".sidebar-tab");
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      tabs.forEach((t) => {
-        t.classList.remove("border-pink", "bg-white");
-        t.classList.add("border-transparent", "bg-gray-50");
-        const label = t.querySelector("span:first-child")!;
-        label.classList.remove("text-pink");
-        label.classList.add("text-text");
+      const tabName = (tab as HTMLElement).dataset.tab;
+      // Update all sidebar tabs (desktop + mobile)
+      document.querySelectorAll(".sidebar-tab").forEach((t) => {
+        const isActive = (t as HTMLElement).dataset.tab === tabName;
+        if (isActive) {
+          t.classList.add("border-pink", "bg-white");
+          t.classList.remove("border-transparent", "bg-gray-50");
+          const label = t.querySelector("span:first-child")!;
+          label.classList.add("text-pink");
+          label.classList.remove("text-text");
+        } else {
+          t.classList.remove("border-pink", "bg-white");
+          t.classList.add("border-transparent", "bg-gray-50");
+          const label = t.querySelector("span:first-child")!;
+          label.classList.remove("text-pink");
+          label.classList.add("text-text");
+        }
       });
-      tab.classList.add("border-pink", "bg-white");
-      tab.classList.remove("border-transparent", "bg-gray-50");
-      const label = tab.querySelector("span:first-child")!;
-      label.classList.add("text-pink");
-      label.classList.remove("text-text");
+      document.dispatchEvent(new CustomEvent("filters-changed"));
     });
   });
 
