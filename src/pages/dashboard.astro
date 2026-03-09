@@ -75,7 +75,7 @@ const description = "Your BoatHaven dashboard — view recent messages and your 
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
             Payment information
           </a>
-          <a href="/account" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+          <a href="/favorites" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
             Favourites
           </a>
@@ -147,6 +147,31 @@ const description = "Your BoatHaven dashboard — view recent messages and your 
             </div>
 
           </div>
+
+          <!-- My Bookings -->
+          <div class="mt-6 bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 class="text-lg font-bold text-text">My Bookings</h2>
+            </div>
+
+            <!-- Loading -->
+            <div id="bookings-loading" class="flex items-center justify-center py-12">
+              <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+
+            <!-- Empty state -->
+            <div id="bookings-empty" class="hidden px-6 py-12 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              <p class="text-sm text-text-muted">No bookings yet</p>
+              <p class="text-xs text-gray-400 mt-1">Browse boats and make your first booking</p>
+            </div>
+
+            <!-- Bookings list -->
+            <div id="bookings-list" class="divide-y divide-gray-100"></div>
+          </div>
+
         </div>
       </main>
     </div>
@@ -157,8 +182,9 @@ const description = "Your BoatHaven dashboard — view recent messages and your 
   import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged, signOut } from "firebase/auth";
   import {
-    collection, query, where, orderBy, limit, getDocs
+    collection, query, where, orderBy, limit, getDocs, updateDoc, doc, serverTimestamp
   } from "firebase/firestore";
+  import { getUserOrders, cancelOrder } from "../lib/api";
 
   // ---- Helpers ----
   function getInitials(name: string | null): string {
@@ -230,9 +256,10 @@ const description = "Your BoatHaven dashboard — view recent messages and your 
       sidebarImg.classList.remove("hidden");
     }
 
-    // Load both sections in parallel
+    // Load all sections in parallel
     loadRecentMessages(user.uid);
     loadYourListings(user.uid);
+    loadUserBookings(user.uid);
   });
 
   // ---- Sidebar logout ----
@@ -372,6 +399,85 @@ const description = "Your BoatHaven dashboard — view recent messages and your 
       if (listEl) listEl.innerHTML = html;
     } catch (err) {
       console.error("[Dashboard] Error loading listings:", err);
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+  }
+
+  // ---- Your Bookings ----
+  async function loadUserBookings(uid: string) {
+    const loadingEl = $("bookings-loading");
+    const emptyEl = $("bookings-empty");
+    const listEl = $("bookings-list");
+
+    try {
+      const bookings = await getUserOrders(uid);
+
+      loadingEl?.classList.add("hidden");
+
+      if (bookings.length === 0) {
+        emptyEl?.classList.remove("hidden");
+        return;
+      }
+
+      const statusStyles: Record<string, string> = {
+        pending: "bg-blue-100 text-blue-800",
+        confirmed: "bg-green-100 text-green-800",
+        cancelled: "bg-gray-100 text-gray-600",
+        completed: "bg-emerald-100 text-emerald-800",
+      };
+
+      let html = "";
+      for (const booking of bookings) {
+        const status = booking.status || "pending";
+        const badgeCls = statusStyles[status] || "bg-gray-100 text-gray-800";
+        const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+        const boatTitle = escapeHtml(booking.boatTitle || "Untitled Boat");
+        const thumb = booking.boatImage;
+        const dateRange = `${booking.startDate || "?"} \u2014 ${booking.endDate || "?"}`;
+        const price = booking.totalPrice ? `\u20AC${booking.totalPrice.toLocaleString()}` : "";
+
+        html += `
+          <div class="flex items-center gap-4 px-6 py-4">
+            <div class="h-14 w-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
+              ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<svg class="h-full w-full p-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>`}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <a href="/boat/${booking.boatId}" class="text-sm font-semibold text-text hover:text-primary truncate">${boatTitle}</a>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${badgeCls}">${statusLabel}</span>
+              </div>
+              <p class="text-xs text-text-muted mt-0.5">${dateRange}</p>
+              ${price ? `<p class="text-xs font-medium text-text mt-0.5">${price}</p>` : ""}
+            </div>
+            ${status === "pending" ? `<button type="button" class="cancel-booking-btn flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition-colors" data-id="${booking.id}">Cancel</button>` : ""}
+          </div>
+        `;
+      }
+
+      if (listEl) listEl.innerHTML = html;
+
+      // Bind cancel buttons
+      listEl?.querySelectorAll(".cancel-booking-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const orderId = btn.getAttribute("data-id");
+          if (!orderId || !confirm("Cancel this booking?")) return;
+          try {
+            (btn as HTMLButtonElement).disabled = true;
+            (btn as HTMLButtonElement).textContent = "...";
+            await cancelOrder(orderId);
+            // Reload
+            loadUserBookings(uid);
+          } catch (err) {
+            console.error("Cancel failed:", err);
+            alert("Failed to cancel booking.");
+            (btn as HTMLButtonElement).disabled = false;
+            (btn as HTMLButtonElement).textContent = "Cancel";
+          }
+        });
+      });
+    } catch (err) {
+      console.error("[Dashboard] Error loading bookings:", err);
       loadingEl?.classList.add("hidden");
       emptyEl?.classList.remove("hidden");
     }

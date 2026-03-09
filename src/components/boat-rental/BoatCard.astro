@@ -8,21 +8,37 @@ interface Props {
 const { boat } = Astro.props;
 ---
 
-<article class="boat-card bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group" data-boat-type={boat.type}>
+<a href={`/boat/${boat.id}`} class="boat-card block bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
+  data-boat-id={boat.id}
+  data-boat-type={boat.type}
+  data-price={boat.price}
+  data-capacity={boat.capacity}
+  data-cabins={boat.cabins}
+  data-berths={boat.berths}
+  data-length={boat.length}
+  data-engine-power={boat.enginePower}
+  data-year={boat.year}
+  data-rating={boat.rating}
+  data-super-owner={boat.superOwner}
+  data-instant-booking={boat.instantBooking}
+  data-free-cancel={boat.perks.includes("free-cancel")}
+  data-ideal-for={boat.idealFor.join(",")}
+  data-equipment={boat.equipment.join(",")}
+>
   <!-- Image area -->
-  <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+  <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 boat-card-image-area">
     <img
       src={boat.images[0]}
       alt={boat.title}
-      class="h-full w-full object-cover"
+      class="h-full w-full object-cover boat-card-img"
       loading="lazy"
       decoding="async"
     />
 
-    <!-- Carousel dots -->
+    <!-- Carousel dots (interactive) -->
     <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-      {boat.images.map((_, i) => (
-        <span class:list={["h-2 w-2 rounded-full", i === 0 ? "bg-white" : "bg-white/50"]} />
+      {boat.images.map((img, i) => (
+        <button class:list={["h-2 w-2 rounded-full carousel-dot cursor-pointer", i === 0 ? "bg-white" : "bg-white/50"]} data-img={img} aria-label={`Photo ${i + 1}`} />
       ))}
     </div>
 
@@ -41,12 +57,21 @@ const { boat } = Astro.props;
       )}
     </div>
 
-    <!-- Heart button -->
+    <!-- Heart/Favorite button -->
     <button
-      class="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors"
+      class="favorite-btn absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors text-gray-600"
       aria-label="Save to favorites"
+      data-boat-id={boat.id}
+      data-boat-title={boat.title}
+      data-boat-image={boat.images[0] || ""}
+      data-boat-location={boat.location}
+      data-boat-price={boat.price}
+      data-boat-price-unit={boat.priceUnit}
+      data-boat-type-val={boat.type}
+      data-boat-rating={boat.rating}
+      data-boat-review-count={boat.reviewCount}
     >
-      <svg class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
     </button>
 
     <!-- New badge -->
@@ -131,4 +156,4 @@ const { boat } = Astro.props;
       </div>
     </div>
   </div>
-</article>
+</a>

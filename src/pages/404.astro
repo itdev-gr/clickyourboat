@@ -1,0 +1,44 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Page Not Found — BoatHaven";
+const description = "The page you're looking for doesn't exist.";
+---
+
+<Layout title={title} description={description}>
+  <div class="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-16">
+    <div class="text-center max-w-lg">
+      <!-- Boat illustration -->
+      <div class="mb-8">
+        <svg class="mx-auto h-32 w-32 text-primary/20" viewBox="0 0 128 128" fill="none">
+          <path d="M16 88C16 88 32 72 64 72C96 72 112 88 112 88" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <path d="M64 72V24" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <path d="M64 24L96 56H64" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity="0.1"/>
+          <path d="M24 104H104" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+          <path d="M32 112H96" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+        </svg>
+      </div>
+
+      <h1 class="text-6xl font-extrabold text-text mb-4">404</h1>
+      <h2 class="text-xl font-bold text-text mb-3">Lost at sea?</h2>
+      <p class="text-text-muted mb-8 leading-relaxed">
+        The page you're looking for seems to have sailed away. It might have been moved, deleted, or never existed.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          href="/"
+          class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
+        >
+          Back to homepage
+        </a>
+        <a
+          href="/boat-rental"
+          class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors"
+        >
+          Browse boats
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

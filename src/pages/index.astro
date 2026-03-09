@@ -9,18 +9,26 @@ import ArticlesSection from "../components/home/ArticlesSection.astro";
 import TrustSection from "../components/home/TrustSection.astro";
 import FaqSection from "../components/home/FaqSection.astro";
 
-// Import mock data (replace with Firestore fetches when connected)
 import { mockDestinations, mockReviews, mockArticles } from "../lib/mock-data";
 
-// When Firebase is configured, uncomment these:
-// import { getTopDestinations, getTopReviews, getLatestArticles } from "../lib/api";
-// const destinations = await getTopDestinations(8);
-// const reviews = await getTopReviews(6);
-// const articles = await getLatestArticles(3);
+// Try Firestore, fall back to mock data
+let destinations = mockDestinations;
+let reviews = mockReviews;
+let articles = mockArticles;
 
-const destinations = mockDestinations;
-const reviews = mockReviews;
-const articles = mockArticles;
+try {
+  const { getTopDestinations, getTopReviews, getLatestArticles } = await import("../lib/api");
+  const [fbDestinations, fbReviews, fbArticles] = await Promise.all([
+    getTopDestinations(8),
+    getTopReviews(6),
+    getLatestArticles(3),
+  ]);
+  if (fbDestinations.length > 0) destinations = fbDestinations;
+  if (fbReviews.length > 0) reviews = fbReviews;
+  if (fbArticles.length > 0) articles = fbArticles;
+} catch {
+  // Firestore unavailable — mock data used
+}
 
 const jsonLd = {
   "@context": "https://schema.org",

@@ -2,7 +2,53 @@
 import Layout from "../layouts/Layout.astro";
 import Sidebar from "../components/boat-rental/Sidebar.astro";
 import BoatCard from "../components/boat-rental/BoatCard.astro";
-import { trendingBoats, allBoats } from "../lib/mock-boats";
+import { trendingBoats as mockTrending, allBoats as mockAll } from "../lib/mock-boats";
+
+// Try Firestore, fall back to mock data
+let trendingBoats = mockTrending;
+let allBoats = mockAll;
+
+try {
+  const { getFeaturedBoats, searchBoats } = await import("../lib/api");
+  const [fbFeatured, fbAll] = await Promise.all([
+    getFeaturedBoats(3),
+    searchBoats({}, 20),
+  ]);
+  // Only use Firestore data if boats exist
+  if (fbAll.length > 0) {
+    // Map Firestore boats to the BoatCard-compatible format
+    const mapBoat = (b: any) => ({
+      id: b.id,
+      type: b.type || b.boatType || "motor",
+      location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
+      rating: b.rating || 0,
+      reviewCount: b.reviewCount || 0,
+      title: b.title || b.listingTitle || b.boatName || "Boat",
+      images: b.images || [],
+      tags: b.tags || [],
+      specs: b.specs || "",
+      perks: b.perks || [],
+      price: b.price || b.pricePerDay || 0,
+      priceUnit: b.priceUnit || "/ day",
+      instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
+      discountOffer: b.discountOffer || false,
+      isNew: b.isNew || false,
+      capacity: b.capacity || 0,
+      cabins: b.cabins || 0,
+      berths: b.berths || 0,
+      length: b.length || 0,
+      enginePower: b.enginePower || b.horsepower || 0,
+      year: b.year || b.yearOfConstruction || 0,
+      superOwner: b.superOwner || false,
+      idealFor: b.idealFor || [],
+      equipment: b.equipment || [],
+    });
+    if (fbFeatured.length > 0) trendingBoats = fbFeatured.map(mapBoat);
+    allBoats = fbAll.map(mapBoat);
+  }
+} catch {
+  // Firestore unavailable — mock data used
+}
 
 const title = "Boat Rental — Find the Perfect Boat | BoatHaven";
 const description =
@@ -170,19 +216,6 @@ const description =
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", function () {
-    var params = new URLSearchParams(window.location.search);
-    var rawType = params.get("type") || "";
-    // Map boat-types page slugs to our internal filter types
-    var slugAliases = {
-      motorboat: "motor", sailboat: "sailing", rib: "motor", houseboat: "motor"
-    };
-    var typeParam = slugAliases[rawType] || rawType;
-    var validTypes = ["sailing", "motor", "catamaran", "yacht", "luxury", "party"];
-    var typeLabels = {
-      sailing: "Sailing", motor: "Motor", catamaran: "Catamaran",
-      yacht: "Yacht", luxury: "Luxury", party: "Party"
-    };
-
     // Dismiss banner
     var closeBanner = document.getElementById("close-banner");
     if (closeBanner) closeBanner.addEventListener("click", function () {
@@ -228,86 +261,478 @@ const description =
       if (e.key === "Escape") closeFilterDrawer();
     });
 
-    if (validTypes.indexOf(typeParam) === -1) return; // No filter active
+    // URL param pre-filter (e.g. ?type=motor)
+    var params = new URLSearchParams(window.location.search);
+    var rawType = params.get("type") || "";
+    var slugAliases = { motorboat: "motor", sailboat: "sailing", rib: "motor", houseboat: "motor" };
+    var typeParam = slugAliases[rawType] || rawType;
+    var validTypes = ["sailing", "motor", "catamaran", "yacht", "luxury", "party"];
 
-    var label = typeLabels[typeParam];
-
-    // Update breadcrumb
-    var breadcrumbCurrent = document.getElementById("breadcrumb-current");
-    var breadcrumbList = document.getElementById("breadcrumb-list");
-    if (breadcrumbCurrent && breadcrumbList) {
-      // Insert "Boat rental" link before the current item
-      var separator = document.createElement("li");
-      separator.textContent = "/";
-      var link = document.createElement("li");
-      var a = document.createElement("a");
-      a.href = "/boat-rental";
-      a.className = "hover:text-primary transition-colors";
-      a.textContent = "Boat rental";
-      link.appendChild(a);
-      breadcrumbList.insertBefore(link, breadcrumbCurrent);
-      breadcrumbList.insertBefore(separator, breadcrumbCurrent);
-      breadcrumbCurrent.textContent = label;
-    }
-
-    // Show filter chip
-    var filterChip = document.getElementById("filter-chip");
-    var chipLabel = document.getElementById("filter-chip-label");
-    var chipCount = document.getElementById("filter-chip-count");
-    if (filterChip) filterChip.classList.remove("hidden");
-    if (chipLabel) chipLabel.textContent = label;
-
-    // Filter boat cards in both grids
-    function filterGrid(gridId) {
-      var grid = document.getElementById(gridId);
-      if (!grid) return 0;
-      var cards = grid.querySelectorAll(".boat-card");
-      var visible = 0;
-      cards.forEach(function (card) {
-        if (card.getAttribute("data-boat-type") === typeParam) {
-          card.style.display = "";
-          visible++;
-        } else {
-          card.style.display = "none";
+    // If URL has ?type=, pre-check the matching boat type checkbox and show chip
+    if (validTypes.indexOf(typeParam) !== -1) {
+      var typeLabels = {
+        sailing: "Sailing", motor: "Motor", catamaran: "Catamaran",
+        yacht: "Yacht", luxury: "Luxury", party: "Party"
+      };
+      document.querySelectorAll(".filter-boat-type").forEach(function (cb) {
+        if (cb.getAttribute("data-filter-value") === typeParam) {
+          cb.checked = true;
         }
       });
-      return visible;
+      // Update breadcrumb
+      var breadcrumbCurrent = document.getElementById("breadcrumb-current");
+      var breadcrumbList = document.getElementById("breadcrumb-list");
+      if (breadcrumbCurrent && breadcrumbList) {
+        var separator = document.createElement("li");
+        separator.textContent = "/";
+        var link = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = "/boat-rental";
+        a.className = "hover:text-primary transition-colors";
+        a.textContent = "Boat rental";
+        link.appendChild(a);
+        breadcrumbList.insertBefore(link, breadcrumbCurrent);
+        breadcrumbList.insertBefore(separator, breadcrumbCurrent);
+        breadcrumbCurrent.textContent = typeLabels[typeParam];
+      }
+      // Show filter chip
+      var filterChip = document.getElementById("filter-chip");
+      var chipLabel = document.getElementById("filter-chip-label");
+      if (filterChip) filterChip.classList.remove("hidden");
+      if (chipLabel) chipLabel.textContent = typeLabels[typeParam];
     }
 
-    var trendingVisible = filterGrid("trending-grid");
-    var allVisible = filterGrid("all-boats-grid");
-    var total = trendingVisible + allVisible;
+    // ==========================================
+    // MAIN FILTER ENGINE
+    // ==========================================
+    function getFilterState() {
+      // Boat types (collect from ALL sidebars — desktop + mobile)
+      var boatTypes = [];
+      document.querySelectorAll(".filter-boat-type:checked").forEach(function (cb) {
+        var val = cb.getAttribute("data-filter-value");
+        if (val && boatTypes.indexOf(val) === -1) boatTypes.push(val);
+      });
 
-    // Update count
-    if (chipCount) chipCount.textContent = total + (total === 1 ? " boat" : " boats") + " found";
+      // Price range — take first sidebar's values (desktop or mobile, whichever exists)
+      var priceMin = 0;
+      var priceMax = 1200;
+      var minSlider = document.querySelector(".filter-price-min");
+      var maxSlider = document.querySelector(".filter-price-max");
+      if (minSlider) priceMin = parseInt(minSlider.value) || 0;
+      if (maxSlider) priceMax = parseInt(maxSlider.value) || 1200;
 
-    // Hide trending section if no trending matches
-    if (trendingVisible === 0) {
+      // Steppers — take max value from any sidebar
+      function getStepperVal(name) {
+        var max = 0;
+        document.querySelectorAll('.stepper-value[data-stepper="' + name + '"]').forEach(function (el) {
+          var v = parseInt(el.textContent) || 0;
+          if (v > max) max = v;
+        });
+        return max;
+      }
+      var people = getStepperVal("people");
+      var cabins = getStepperVal("cabins");
+      var berths = getStepperVal("berths");
+
+      // Range sliders
+      var length = 15;
+      var lengthSlider = document.querySelector(".filter-length");
+      if (lengthSlider) length = parseInt(lengthSlider.value) || 15;
+
+      var engine = 400;
+      var engineSlider = document.querySelector(".filter-engine");
+      if (engineSlider) engine = parseInt(engineSlider.value) || 400;
+
+      var year = 2006;
+      var yearSlider = document.querySelector(".filter-year");
+      if (yearSlider) year = parseInt(yearSlider.value) || 2006;
+
+      // Toggles — true if ANY sidebar has it checked
+      function isToggleOn(name) {
+        var on = false;
+        document.querySelectorAll('.filter-toggle[data-filter-toggle="' + name + '"]').forEach(function (t) {
+          if (t.getAttribute("aria-checked") === "true") on = true;
+        });
+        return on;
+      }
+      var superOwner = isToggleOn("superOwner");
+      var instantBooking = isToggleOn("instantBooking");
+      var freeCancel = isToggleOn("freeCancel");
+      var bestRated = isToggleOn("bestRated");
+
+      // Ideal for checkboxes
+      var idealFor = [];
+      document.querySelectorAll(".filter-ideal-for:checked").forEach(function (cb) {
+        var val = cb.getAttribute("data-filter-value");
+        if (val && idealFor.indexOf(val) === -1) idealFor.push(val);
+      });
+
+      // Equipment checkboxes
+      var equipment = [];
+      document.querySelectorAll(".filter-equipment:checked").forEach(function (cb) {
+        var val = cb.getAttribute("data-filter-value");
+        if (val && equipment.indexOf(val) === -1) equipment.push(val);
+      });
+
+      return {
+        boatTypes: boatTypes,
+        priceMin: priceMin,
+        priceMax: priceMax,
+        people: people,
+        cabins: cabins,
+        berths: berths,
+        length: length,
+        engine: engine,
+        year: year,
+        superOwner: superOwner,
+        instantBooking: instantBooking,
+        freeCancel: freeCancel,
+        bestRated: bestRated,
+        idealFor: idealFor,
+        equipment: equipment,
+      };
+    }
+
+    function cardMatchesFilters(card, filters) {
+      var type = card.getAttribute("data-boat-type") || "";
+      var price = parseFloat(card.getAttribute("data-price")) || 0;
+      var capacity = parseInt(card.getAttribute("data-capacity")) || 0;
+      var cardCabins = parseInt(card.getAttribute("data-cabins")) || 0;
+      var cardBerths = parseInt(card.getAttribute("data-berths")) || 0;
+      var cardLength = parseFloat(card.getAttribute("data-length")) || 0;
+      var cardEngine = parseInt(card.getAttribute("data-engine-power")) || 0;
+      var cardYear = parseInt(card.getAttribute("data-year")) || 0;
+      var cardRating = parseFloat(card.getAttribute("data-rating")) || 0;
+      var cardSuperOwner = card.getAttribute("data-super-owner") === "true";
+      var cardInstantBooking = card.getAttribute("data-instant-booking") === "true";
+      var cardFreeCancel = card.getAttribute("data-free-cancel") === "true";
+      var cardIdealFor = (card.getAttribute("data-ideal-for") || "").split(",").filter(Boolean);
+      var cardEquipment = (card.getAttribute("data-equipment") || "").split(",").filter(Boolean);
+
+      // Boat type filter
+      if (filters.boatTypes.length > 0 && filters.boatTypes.indexOf(type) === -1) return false;
+
+      // Price range
+      if (price < filters.priceMin || price > filters.priceMax) return false;
+
+      // Capacity
+      if (filters.people > 1 && capacity < filters.people) return false;
+
+      // Cabins
+      if (filters.cabins > 0 && cardCabins < filters.cabins) return false;
+
+      // Berths
+      if (filters.berths > 0 && cardBerths < filters.berths) return false;
+
+      // Length (max filter — show boats up to this length)
+      if (filters.length < 15 && cardLength > filters.length) return false;
+
+      // Engine (max filter)
+      if (filters.engine < 400 && cardEngine > filters.engine) return false;
+
+      // Year (min filter — show boats from this year onward)
+      if (cardYear < filters.year) return false;
+
+      // Toggles
+      if (filters.superOwner && !cardSuperOwner) return false;
+      if (filters.instantBooking && !cardInstantBooking) return false;
+      if (filters.freeCancel && !cardFreeCancel) return false;
+      if (filters.bestRated && cardRating < 4) return false;
+
+      // Ideal for (all selected must be present)
+      for (var i = 0; i < filters.idealFor.length; i++) {
+        if (cardIdealFor.indexOf(filters.idealFor[i]) === -1) return false;
+      }
+
+      // Equipment (all selected must be present)
+      for (var j = 0; j < filters.equipment.length; j++) {
+        if (cardEquipment.indexOf(filters.equipment[j]) === -1) return false;
+      }
+
+      return true;
+    }
+
+    function applyFilters() {
+      var filters = getFilterState();
+      var allCards = document.querySelectorAll(".boat-card");
+      var totalVisible = 0;
+      var trendingVisible = 0;
+      var allBoatsVisible = 0;
+
+      allCards.forEach(function (card) {
+        var matches = cardMatchesFilters(card, filters);
+        card.style.display = matches ? "" : "none";
+        if (matches) {
+          totalVisible++;
+          // Check which grid this card is in
+          if (card.closest("#trending-grid")) trendingVisible++;
+          else if (card.closest("#all-boats-grid")) allBoatsVisible++;
+        }
+      });
+
+      // Update section visibility
       var trendingSection = document.getElementById("trending-section");
-      if (trendingSection) trendingSection.style.display = "none";
-    } else {
-      var trendingHeading = document.getElementById("trending-heading");
-      if (trendingHeading) trendingHeading.textContent = "Top " + label.toLowerCase() + " boats";
-    }
-
-    // Update all boats heading
-    var allHeading = document.getElementById("all-boats-heading");
-    if (allHeading) allHeading.textContent = allVisible + " " + label.toLowerCase() + " " + (allVisible === 1 ? "boat" : "boats") + " available";
-
-    // Hide load more when filtering
-    var loadMore = document.getElementById("load-more-wrap");
-    if (loadMore) loadMore.style.display = "none";
-
-    // Show empty state if nothing matches
-    if (total === 0) {
+      var allSection = document.getElementById("all-boats-section");
       var noResults = document.getElementById("no-results");
       var noResultsText = document.getElementById("no-results-text");
-      if (noResults) noResults.classList.remove("hidden");
-      if (noResultsText) noResultsText.textContent = "We couldn't find any " + label.toLowerCase() + " boats matching your criteria.";
-      var trendingSection2 = document.getElementById("trending-section");
-      var allSection = document.getElementById("all-boats-section");
-      if (trendingSection2) trendingSection2.style.display = "none";
-      if (allSection) allSection.style.display = "none";
+      var allHeading = document.getElementById("all-boats-heading");
+
+      if (trendingSection) trendingSection.style.display = trendingVisible > 0 ? "" : "none";
+
+      if (allSection) allSection.style.display = allBoatsVisible > 0 ? "" : "none";
+
+      if (allHeading) {
+        allHeading.textContent = allBoatsVisible + (allBoatsVisible === 1 ? " boat" : " boats") + " available";
+      }
+
+      if (noResults) {
+        if (totalVisible === 0) {
+          noResults.classList.remove("hidden");
+          if (noResultsText) noResultsText.textContent = "We couldn't find any boats matching your filters. Try adjusting your criteria.";
+        } else {
+          noResults.classList.add("hidden");
+        }
+      }
+
+      // Update mobile filter button count
+      var activeCount = countActiveFilters(filters);
+      var filterBtnEl = document.getElementById("mobile-filter-btn");
+      if (filterBtnEl) {
+        if (activeCount > 0) {
+          filterBtnEl.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg> Filters (' + activeCount + ')';
+        } else {
+          filterBtnEl.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg> Filters';
+        }
+      }
     }
+
+    function countActiveFilters(f) {
+      var count = 0;
+      if (f.boatTypes.length > 0) count++;
+      if (f.priceMin > 0 || f.priceMax < 1200) count++;
+      if (f.people > 1) count++;
+      if (f.cabins > 0) count++;
+      if (f.berths > 0) count++;
+      if (f.length < 15) count++;
+      if (f.engine < 400) count++;
+      if (f.year > 2006) count++;
+      if (f.superOwner) count++;
+      if (f.instantBooking) count++;
+      if (f.freeCancel) count++;
+      if (f.bestRated) count++;
+      if (f.idealFor.length > 0) count++;
+      if (f.equipment.length > 0) count++;
+      return count;
+    }
+
+    // Listen for filter changes from sidebar
+    document.addEventListener("filters-changed", applyFilters);
+
+    // Run initial filter (handles ?type= URL param)
+    applyFilters();
+
+    // "Show more boats" button — reveal hidden cards
+    var INITIAL_VISIBLE = 12;
+    var allBoatCards = document.querySelectorAll("#all-boats-grid .boat-card");
+    var loadMoreWrap = document.getElementById("load-more-wrap");
+    var loadMoreBtn = loadMoreWrap ? loadMoreWrap.querySelector("button") : null;
+    var showCount = INITIAL_VISIBLE;
+
+    function updateShowMore() {
+      var visibleCards = [];
+      allBoatCards.forEach(function (card) {
+        if (card.style.display !== "none") visibleCards.push(card);
+      });
+      // Initially hide cards beyond INITIAL_VISIBLE
+      visibleCards.forEach(function (card, i) {
+        if (i >= showCount) {
+          card.classList.add("show-more-hidden");
+          card.style.display = "none";
+        } else {
+          card.classList.remove("show-more-hidden");
+        }
+      });
+      if (loadMoreWrap) {
+        loadMoreWrap.style.display = visibleCards.length > showCount ? "" : "none";
+      }
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener("click", function () {
+        showCount += 12;
+        // Un-hide cards
+        var count = 0;
+        allBoatCards.forEach(function (card) {
+          if (card.style.display !== "none" || card.classList.contains("show-more-hidden")) {
+            card.classList.remove("show-more-hidden");
+            card.style.display = "";
+          }
+        });
+        applyFilters();
+      });
+    }
+
+    // ==========================================
+    // BOAT CARD CAROUSEL + FAVORITES
+    // ==========================================
+    document.querySelectorAll(".boat-card").forEach(function (card) {
+      var imgEl = card.querySelector(".boat-card-img");
+      var dots = card.querySelectorAll(".carousel-dot");
+      var images = [];
+      dots.forEach(function (dot) {
+        images.push(dot.getAttribute("data-img"));
+      });
+      if (images.length <= 1 || !imgEl) return;
+
+      var currentIndex = 0;
+
+      function showImage(idx) {
+        currentIndex = idx;
+        imgEl.src = images[idx];
+        dots.forEach(function (d, i) {
+          d.classList.toggle("bg-white", i === idx);
+          d.classList.toggle("bg-white/50", i !== idx);
+        });
+      }
+
+      dots.forEach(function (dot, i) {
+        dot.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          showImage(i);
+        });
+      });
+
+      // Swipe support
+      var startX = 0;
+      var imageArea = card.querySelector(".boat-card-image-area");
+      if (imageArea) {
+        imageArea.addEventListener("touchstart", function (e) {
+          startX = e.touches[0].clientX;
+        }, { passive: true });
+        imageArea.addEventListener("touchend", function (e) {
+          var diff = startX - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0 && currentIndex < images.length - 1) showImage(currentIndex + 1);
+            else if (diff < 0 && currentIndex > 0) showImage(currentIndex - 1);
+          }
+        }, { passive: true });
+      }
+    });
+
+  });
+</script>
+
+<!-- Favorites: Firebase-backed toggle -->
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import { doc, setDoc, deleteDoc, getDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
+
+  let currentUser: any = null;
+  // Set of favorited boat IDs for the current user
+  const favoritedIds = new Set<string>();
+
+  function setFavoriteVisual(btn: Element, isFav: boolean) {
+    const svg = btn.querySelector("svg");
+    if (!svg) return;
+    if (isFav) {
+      svg.setAttribute("fill", "currentColor");
+      svg.setAttribute("stroke", "currentColor");
+      btn.classList.remove("text-gray-600");
+      btn.classList.add("text-pink");
+    } else {
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      btn.classList.remove("text-pink");
+      btn.classList.add("text-gray-600");
+    }
+  }
+
+  // Load user's favorites and mark hearts
+  async function loadUserFavorites(uid: string) {
+    try {
+      const snap = await getDocs(collection(db, "users", uid, "favorites"));
+      favoritedIds.clear();
+      snap.docs.forEach((d) => favoritedIds.add(d.id));
+      // Update all heart buttons
+      document.querySelectorAll(".favorite-btn").forEach((btn) => {
+        const boatId = btn.getAttribute("data-boat-id");
+        if (boatId && favoritedIds.has(boatId)) {
+          setFavoriteVisual(btn, true);
+        }
+      });
+    } catch (err) {
+      console.error("[Favorites] Error loading favorites:", err);
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+      loadUserFavorites(user.uid);
+    } else {
+      favoritedIds.clear();
+      document.querySelectorAll(".favorite-btn").forEach((btn) => {
+        setFavoriteVisual(btn, false);
+      });
+    }
+  });
+
+  // Attach click handlers
+  document.querySelectorAll(".favorite-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!currentUser) {
+        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        return;
+      }
+
+      const boatId = btn.getAttribute("data-boat-id");
+      if (!boatId) return;
+
+      const isFav = favoritedIds.has(boatId);
+      const favRef = doc(db, "users", currentUser.uid, "favorites", boatId);
+
+      // Optimistic UI update
+      if (isFav) {
+        favoritedIds.delete(boatId);
+        setFavoriteVisual(btn, false);
+      } else {
+        favoritedIds.add(boatId);
+        setFavoriteVisual(btn, true);
+      }
+
+      try {
+        if (isFav) {
+          await deleteDoc(favRef);
+        } else {
+          await setDoc(favRef, {
+            boatId,
+            title: btn.getAttribute("data-boat-title") || "",
+            image: btn.getAttribute("data-boat-image") || "",
+            location: btn.getAttribute("data-boat-location") || "",
+            price: parseFloat(btn.getAttribute("data-boat-price") || "0"),
+            priceUnit: btn.getAttribute("data-boat-price-unit") || "/ day",
+            type: btn.getAttribute("data-boat-type-val") || "",
+            rating: parseFloat(btn.getAttribute("data-boat-rating") || "0"),
+            reviewCount: parseInt(btn.getAttribute("data-boat-review-count") || "0"),
+            addedAt: serverTimestamp(),
+          });
+        }
+      } catch (err) {
+        console.error("[Favorites] Error toggling favorite:", err);
+        // Revert on error
+        if (isFav) {
+          favoritedIds.add(boatId);
+          setFavoriteVisual(btn, true);
+        } else {
+          favoritedIds.delete(boatId);
+          setFavoriteVisual(btn, false);
+        }
+      }
+    });
   });
 </script>

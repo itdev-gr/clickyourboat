@@ -121,6 +121,47 @@ export async function getLatestArticles(count = 3): Promise<Article[]> {
   })) as Article[];
 }
 
+// --- Favorites ---
+export async function addFavorite(userId: string, boatId: string, boatData: Record<string, any>): Promise<void> {
+  const favRef = doc(db, "users", userId, "favorites", boatId);
+  await setDoc(favRef, {
+    boatId,
+    title: boatData.title || "",
+    image: boatData.image || "",
+    location: boatData.location || "",
+    price: boatData.price || 0,
+    priceUnit: boatData.priceUnit || "/ day",
+    type: boatData.type || "",
+    rating: boatData.rating || 0,
+    reviewCount: boatData.reviewCount || 0,
+    addedAt: serverTimestamp(),
+  });
+}
+
+export async function removeFavorite(userId: string, boatId: string): Promise<void> {
+  const favRef = doc(db, "users", userId, "favorites", boatId);
+  await deleteDoc(favRef);
+}
+
+export async function isBoatFavorited(userId: string, boatId: string): Promise<boolean> {
+  const favRef = doc(db, "users", userId, "favorites", boatId);
+  const snap = await getDoc(favRef);
+  return snap.exists();
+}
+
+export async function getUserFavorites(userId: string): Promise<any[]> {
+  const q = query(
+    collection(db, "users", userId, "favorites"),
+    orderBy("addedAt", "desc")
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+    addedAt: d.data().addedAt?.toDate(),
+  }));
+}
+
 // --- Newsletter ---
 export async function subscribeNewsletter(email: string): Promise<void> {
   await addDoc(collection(db, "subscribers"), {
@@ -266,4 +307,183 @@ export async function updateUserType(uid: string, type: "user" | "admin"): Promi
 
 export async function adminDeleteUser(uid: string): Promise<void> {
   await deleteDoc(doc(db, "users", uid));
+}
+
+// --- Orders ---
+
+export async function createOrder(orderData: {
+  boatId: string;
+  boatTitle: string;
+  boatImage?: string;
+  renterId: string;
+  renterName: string;
+  ownerId: string;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+}): Promise<string> {
+  const docRef = await addDoc(collection(db, "orders"), {
+    ...orderData,
+    status: "pending",
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function getUserOrders(userId: string): Promise<any[]> {
+  const q = query(
+    collection(db, "orders"),
+    where("renterId", "==", userId),
+    orderBy("createdAt", "desc")
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+    createdAt: d.data().createdAt?.toDate?.() || null,
+  }));
+}
+
+export async function getAllOrders(): Promise<any[]> {
+  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+    createdAt: d.data().createdAt?.toDate?.() || null,
+  }));
+}
+
+export async function updateOrderStatus(orderId: string, status: string): Promise<void> {
+  await updateDoc(doc(db, "orders", orderId), { status, updatedAt: serverTimestamp() });
+}
+
+export async function cancelOrder(orderId: string): Promise<void> {
+  await updateOrderStatus(orderId, "cancelled");
+}
+
+// --- Reviews (boat-specific) ---
+
+export async function getBoatReviews(boatId: string): Promise<any[]> {
+  const q = query(
+    collection(db, "reviews"),
+    where("boatId", "==", boatId),
+    orderBy("createdAt", "desc")
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+    createdAt: d.data().createdAt?.toDate?.() || null,
+  }));
+}
+
+export async function createReview(reviewData: {
+  boatId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+}): Promise<string> {
+  const docRef = await addDoc(collection(db, "reviews"), {
+    ...reviewData,
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function hasUserReviewedBoat(userId: string, boatId: string): Promise<boolean> {
+  const q = query(
+    collection(db, "reviews"),
+    where("boatId", "==", boatId),
+    where("userId", "==", userId)
+  );
+  const snapshot = await getDocs(q);
+  return !snapshot.empty;
+}
+
+// --- Booking notification ---
+
+export async function sendBookingNotification(
+  renterId: string,
+  renterName: string,
+  ownerId: string,
+  boatId: string,
+  boatTitle: string,
+  startDate: string,
+  endDate: string
+): Promise<void> {
+  // Find existing conversation between renter and owner for this boat, or create one
+  const q = query(
+    collection(db, "conversations"),
+    where("participants", "array-contains", renterId)
+  );
+  const snapshot = await getDocs(q);
+  let conversationId: string | null = null;
+
+  for (const d of snapshot.docs) {
+    const data = d.data();
+    if (data.participants?.includes(ownerId)) {
+      conversationId = d.id;
+      break;
+    }
+  }
+
+  const messageText = `Hi! I've just booked "${boatTitle}" from ${startDate} to ${endDate}. Looking forward to the trip!`;
+
+  if (!conversationId) {
+    // Create new conversation
+    const renterDoc = await getDoc(doc(db, "users", renterId));
+    const ownerDoc = await getDoc(doc(db, "users", ownerId));
+    const renterData = renterDoc.data() || {};
+    const ownerData = ownerDoc.data() || {};
+
+    const convRef = await addDoc(collection(db, "conversations"), {
+      participants: [renterId, ownerId],
+      participantDetails: {
+        [renterId]: {
+          displayName: renterData.displayName || renterName,
+          photoURL: renterData.photoURL || null,
+          firstName: renterData.firstName || "",
+          lastName: renterData.lastName || "",
+        },
+        [ownerId]: {
+          displayName: ownerData.displayName || "Owner",
+          photoURL: ownerData.photoURL || null,
+          firstName: ownerData.firstName || "",
+          lastName: ownerData.lastName || "",
+        },
+      },
+      lastMessage: {
+        text: messageText,
+        senderId: renterId,
+        timestamp: serverTimestamp(),
+      },
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      boatId,
+      boatTitle,
+      unreadCount: { [ownerId]: 1, [renterId]: 0 },
+    });
+    conversationId = convRef.id;
+  } else {
+    // Update existing conversation
+    await updateDoc(doc(db, "conversations", conversationId), {
+      lastMessage: {
+        text: messageText,
+        senderId: renterId,
+        timestamp: serverTimestamp(),
+      },
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  // Add message to conversation
+  await addDoc(collection(db, "conversations", conversationId, "messages"), {
+    text: messageText,
+    senderId: renterId,
+    senderName: renterName,
+    timestamp: serverTimestamp(),
+    readBy: [renterId],
+  });
 }

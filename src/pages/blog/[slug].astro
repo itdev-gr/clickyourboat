@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { formatDate } from "../../lib/utils";
+import { mockArticles } from "../../lib/mock-data";
+import type { Article } from "../../types";
+
+export async function getStaticPaths() {
+  let articles: Article[] = mockArticles;
+  try {
+    const { getLatestArticles } = await import("../../lib/api");
+    const firestoreArticles = await getLatestArticles(100);
+    if (firestoreArticles.length > 0) articles = firestoreArticles;
+  } catch {
+    // Firestore unavailable
+  }
+  return articles.map((a) => ({ params: { slug: a.slug } }));
+}
+
+// Get all articles for this page
+let allArticles: Article[] = mockArticles;
+try {
+  const { getLatestArticles } = await import("../../lib/api");
+  const firestoreArticles = await getLatestArticles(100);
+  if (firestoreArticles.length > 0) {
+    allArticles = firestoreArticles;
+  }
+} catch {
+  // Firestore unavailable — use mock data
+}
+
+const { slug } = Astro.params;
+const article = allArticles.find((a) => a.slug === slug);
+
+if (!article) {
+  return Astro.redirect("/404");
+}
+
+// Get other articles for "More articles" section
+const otherArticles = allArticles.filter((a) => a.slug !== slug).slice(0, 3);
+
+const title = `${article.title} — BoatHaven Blog`;
+const description = article.summary;
+---
+
+<Layout title={title} description={description}>
+  <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <!-- Breadcrumb -->
+    <nav class="mb-8 text-sm text-text-muted" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-1.5">
+        <li><a href="/" class="hover:text-primary transition-colors">Home</a></li>
+        <li>/</li>
+        <li><a href="/blog" class="hover:text-primary transition-colors">Blog</a></li>
+        <li>/</li>
+        <li class="text-text font-medium truncate max-w-[200px]">{article.title}</li>
+      </ol>
+    </nav>
+
+    <!-- Header -->
+    <header class="mb-8">
+      <time class="text-sm text-text-muted font-medium" datetime={article.createdAt?.toISOString?.() ?? ""}>
+        {article.createdAt ? formatDate(article.createdAt) : ""}
+      </time>
+      <h1 class="mt-2 text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text leading-tight">
+        {article.title}
+      </h1>
+      <p class="mt-4 text-lg text-text-muted leading-relaxed">
+        {article.summary}
+      </p>
+    </header>
+
+    <!-- Hero image -->
+    <div class="aspect-[16/9] rounded-2xl overflow-hidden mb-10">
+      <img
+        src={article.image}
+        alt={article.title}
+        class="h-full w-full object-cover"
+        loading="eager"
+      />
+    </div>
+
+    <!-- Article content -->
+    <div class="prose prose-lg max-w-none mb-16">
+      {article.content ? (
+        <Fragment set:html={article.content} />
+      ) : (
+        <div class="bg-surface rounded-xl p-8 text-center">
+          <p class="text-text-muted">Full article content coming soon. Stay tuned!</p>
+        </div>
+      )}
+    </div>
+
+    <!-- Back to blog -->
+    <div class="border-t border-gray-100 pt-8 mb-16">
+      <a href="/blog" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-dark transition-colors">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+        Back to all articles
+      </a>
+    </div>
+  </article>
+
+  <!-- More articles -->
+  {otherArticles.length > 0 && (
+    <section class="bg-surface py-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-text mb-8">More articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {otherArticles.map((a) => (
+            <a href={`/blog/${a.slug}`} class="group block">
+              <article class="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow h-full flex flex-col">
+                <div class="aspect-[16/9] overflow-hidden">
+                  <img
+                    src={a.image}
+                    alt={a.title}
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-5 flex flex-col flex-1">
+                  <time class="text-xs text-text-muted font-medium" datetime={a.createdAt?.toISOString?.() ?? ""}>
+                    {a.createdAt ? formatDate(a.createdAt) : ""}
+                  </time>
+                  <h3 class="mt-2 text-lg font-bold text-text group-hover:text-primary transition-colors line-clamp-2">
+                    {a.title}
+                  </h3>
+                  <p class="mt-2 text-sm text-text-muted line-clamp-2 flex-1">
+                    {a.summary}
+                  </p>
+                </div>
+              </article>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>
