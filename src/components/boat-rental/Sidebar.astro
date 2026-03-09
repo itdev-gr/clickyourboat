@@ -47,27 +47,58 @@ const equipmentOptions = [
     <!-- Where / Dates / Rental type -->
     <div class="border border-gray-200 rounded-xl divide-y divide-gray-200">
       <!-- Where -->
-      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
-        <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-        <div>
+      <div class="px-4 py-3">
+        <div class="flex items-center gap-3 mb-2">
+          <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
           <p class="text-sm font-semibold text-text">Where</p>
-          <p class="text-xs text-text-muted">City of departure</p>
         </div>
+        <input
+          type="text"
+          class="filter-location w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-pink focus:border-transparent"
+          placeholder="City or harbour..."
+        />
       </div>
       <!-- Dates -->
-      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
-        <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-        <div>
+      <div class="px-4 py-3">
+        <div class="flex items-center gap-3 mb-2">
+          <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
           <p class="text-sm font-semibold text-text">Dates</p>
-          <p class="text-xs text-text-muted">Add your dates</p>
         </div>
+        <div class="grid grid-cols-2 gap-2">
+          <input
+            type="date"
+            class="filter-date-start w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-text focus:outline-none focus:ring-2 focus:ring-pink focus:border-transparent"
+          />
+          <input
+            type="date"
+            class="filter-date-end w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-text focus:outline-none focus:ring-2 focus:ring-pink focus:border-transparent"
+          />
+        </div>
+        <p class="text-[10px] text-text-muted mt-1">Boats available for your chosen period</p>
       </div>
       <!-- Rental type -->
-      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
-        <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
-        <div>
+      <div class="px-4 py-3">
+        <div class="flex items-center gap-3 mb-2">
+          <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
           <p class="text-sm font-semibold text-text">Rental type</p>
-          <p class="text-xs text-text-muted">With or without a skipper</p>
+        </div>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="radio" name="rental-type" value="all" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" checked />
+            <span class="text-sm text-text group-hover:text-text">All</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="radio" name="rental-type" value="with-skipper" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text">With skipper</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="radio" name="rental-type" value="without-skipper" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text">Without skipper</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="radio" name="rental-type" value="no-licence" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text">No licence required</span>
+          </label>
         </div>
       </div>
     </div>
@@ -326,6 +357,29 @@ const equipmentOptions = [
     });
   });
 
+  // Location search
+  document.querySelectorAll(".filter-location").forEach((input) => {
+    input.addEventListener("input", () => {
+      document.dispatchEvent(new CustomEvent("filters-changed"));
+    });
+  });
+
+  // Date inputs
+  document.querySelectorAll(".filter-date-start, .filter-date-end").forEach((input) => {
+    // Set min to today
+    (input as HTMLInputElement).min = new Date().toISOString().split("T")[0];
+    input.addEventListener("change", () => {
+      document.dispatchEvent(new CustomEvent("filters-changed"));
+    });
+  });
+
+  // Rental type radios
+  document.querySelectorAll(".filter-rental-type").forEach((radio) => {
+    radio.addEventListener("change", () => {
+      document.dispatchEvent(new CustomEvent("filters-changed"));
+    });
+  });
+
   // Price range sliders + inputs
   function syncPriceFilters(sidebar: Element) {
     const minSlider = sidebar.querySelector(".filter-price-min") as HTMLInputElement;
@@ -437,6 +491,14 @@ const equipmentOptions = [
       document.querySelectorAll(".filter-engine-label").forEach((l) => { l.textContent = "0 - 400+ hp"; });
       document.querySelectorAll(".filter-year").forEach((s) => { (s as HTMLInputElement).value = "2006"; });
       document.querySelectorAll(".filter-year-label").forEach((l) => { l.textContent = "2006 - 2026"; });
+      // Reset location
+      document.querySelectorAll(".filter-location").forEach((s) => { (s as HTMLInputElement).value = ""; });
+      // Reset dates
+      document.querySelectorAll(".filter-date-start, .filter-date-end").forEach((s) => { (s as HTMLInputElement).value = ""; });
+      // Reset rental type
+      document.querySelectorAll(".filter-rental-type").forEach((r) => {
+        (r as HTMLInputElement).checked = (r as HTMLInputElement).value === "all";
+      });
 
       document.dispatchEvent(new CustomEvent("filters-changed"));
     });

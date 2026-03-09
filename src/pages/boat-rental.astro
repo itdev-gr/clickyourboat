@@ -313,6 +313,25 @@ const description =
         if (val && boatTypes.indexOf(val) === -1) boatTypes.push(val);
       });
 
+      // Location search
+      var locationSearch = "";
+      var locationInput = document.querySelector(".filter-location");
+      if (locationInput) locationSearch = locationInput.value.trim().toLowerCase();
+
+      // Dates
+      var dateStart = "";
+      var dateEnd = "";
+      var dateStartInput = document.querySelector(".filter-date-start");
+      var dateEndInput = document.querySelector(".filter-date-end");
+      if (dateStartInput) dateStart = dateStartInput.value;
+      if (dateEndInput) dateEnd = dateEndInput.value;
+
+      // Rental type
+      var rentalType = "all";
+      document.querySelectorAll(".filter-rental-type:checked").forEach(function (r) {
+        rentalType = r.value;
+      });
+
       // Price range — take first sidebar's values (desktop or mobile, whichever exists)
       var priceMin = 0;
       var priceMax = 1200;
@@ -376,6 +395,10 @@ const description =
 
       return {
         boatTypes: boatTypes,
+        locationSearch: locationSearch,
+        dateStart: dateStart,
+        dateEnd: dateEnd,
+        rentalType: rentalType,
         priceMin: priceMin,
         priceMax: priceMax,
         people: people,
@@ -408,6 +431,17 @@ const description =
       var cardFreeCancel = card.getAttribute("data-free-cancel") === "true";
       var cardIdealFor = (card.getAttribute("data-ideal-for") || "").split(",").filter(Boolean);
       var cardEquipment = (card.getAttribute("data-equipment") || "").split(",").filter(Boolean);
+      var cardLocation = card.getAttribute("data-location") || "";
+      var cardHasSkipper = card.getAttribute("data-has-skipper") === "true";
+      var cardNoLicence = card.getAttribute("data-no-licence") === "true";
+
+      // Location filter
+      if (filters.locationSearch && cardLocation.indexOf(filters.locationSearch) === -1) return false;
+
+      // Rental type filter
+      if (filters.rentalType === "with-skipper" && !cardHasSkipper) return false;
+      if (filters.rentalType === "without-skipper" && cardHasSkipper) return false;
+      if (filters.rentalType === "no-licence" && !cardNoLicence) return false;
 
       // Boat type filter
       if (filters.boatTypes.length > 0 && filters.boatTypes.indexOf(type) === -1) return false;
@@ -508,6 +542,9 @@ const description =
 
     function countActiveFilters(f) {
       var count = 0;
+      if (f.locationSearch) count++;
+      if (f.dateStart || f.dateEnd) count++;
+      if (f.rentalType !== "all") count++;
       if (f.boatTypes.length > 0) count++;
       if (f.priceMin > 0 || f.priceMax < 1200) count++;
       if (f.people > 1) count++;
