@@ -69,6 +69,38 @@ const description =
         Filters
       </button>
 
+      <!-- Mobile filter drawer -->
+      <div
+        id="mobile-filter-drawer"
+        class="lg:hidden fixed inset-0 z-50 pointer-events-none"
+        aria-hidden="true"
+      >
+        <div
+          id="filter-drawer-backdrop"
+          class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300"
+        ></div>
+        <div
+          id="filter-drawer-panel"
+          class="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-white rounded-t-2xl shadow-2xl translate-y-full transition-transform duration-300 ease-out flex flex-col"
+        >
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
+            <h2 class="text-lg font-bold text-text">Filters</h2>
+            <button
+              id="close-filter-drawer-btn"
+              class="p-2 rounded-lg text-text-muted hover:bg-gray-100 transition-colors"
+              aria-label="Close filters"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="overflow-y-auto p-5">
+            <Sidebar />
+          </div>
+        </div>
+      </div>
+
       <!-- Main content area -->
       <div class="flex-1 min-w-0">
         <!-- Date prompt banner -->
@@ -156,6 +188,44 @@ const description =
     if (closeBanner) closeBanner.addEventListener("click", function () {
       var banner = document.getElementById("date-banner");
       if (banner) banner.remove();
+    });
+
+    // Mobile filter drawer
+    var filterBtn = document.getElementById("mobile-filter-btn");
+    var filterDrawer = document.getElementById("mobile-filter-drawer");
+    var filterBackdrop = document.getElementById("filter-drawer-backdrop");
+    var filterPanel = document.getElementById("filter-drawer-panel");
+    var closeFilterBtn = document.getElementById("close-filter-drawer-btn");
+
+    function openFilterDrawer() {
+      if (!filterDrawer || !filterBackdrop || !filterPanel) return;
+      filterDrawer.classList.remove("pointer-events-none");
+      filterDrawer.setAttribute("aria-hidden", "false");
+      filterBackdrop.classList.remove("opacity-0");
+      filterBackdrop.classList.add("opacity-100");
+      filterPanel.classList.remove("translate-y-full");
+      filterPanel.classList.add("translate-y-0");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeFilterDrawer() {
+      if (!filterDrawer || !filterBackdrop || !filterPanel) return;
+      filterBackdrop.classList.remove("opacity-100");
+      filterBackdrop.classList.add("opacity-0");
+      filterPanel.classList.remove("translate-y-0");
+      filterPanel.classList.add("translate-y-full");
+      document.body.style.overflow = "";
+      setTimeout(function () {
+        filterDrawer.classList.add("pointer-events-none");
+        filterDrawer.setAttribute("aria-hidden", "true");
+      }, 300);
+    }
+
+    if (filterBtn) filterBtn.addEventListener("click", openFilterDrawer);
+    if (closeFilterBtn) closeFilterBtn.addEventListener("click", closeFilterDrawer);
+    if (filterBackdrop) filterBackdrop.addEventListener("click", closeFilterDrawer);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeFilterDrawer();
     });
 
     if (validTypes.indexOf(typeParam) === -1) return; // No filter active
