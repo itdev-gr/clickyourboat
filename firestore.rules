@@ -24,9 +24,11 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Boats: public read, owner write, admin can update/delete any
+    // Boats: published read, owner/admin read all, owner write, admin can update/delete any
     match /boats/{boatId} {
-      allow read: if true;
+      allow read: if resource.data.status == "published"
+        || (request.auth != null && request.auth.uid == resource.data.ownerId)
+        || isAdmin();
       allow create: if request.auth != null;
       allow update, delete: if request.auth != null
         && (request.auth.uid == resource.data.ownerId || isAdmin());
@@ -35,8 +37,7 @@ service cloud.firestore {
     // Destinations: public read, admin write
     match /destinations/{destId} {
       allow read: if true;
-      allow write: if request.auth != null
-        && request.auth.token.admin == true;
+      allow write: if request.auth != null && isAdmin();
     }
 
     // Reviews: public read, authenticated write
@@ -50,15 +51,13 @@ service cloud.firestore {
     // Articles: public read, admin write
     match /articles/{articleId} {
       allow read: if true;
-      allow write: if request.auth != null
-        && request.auth.token.admin == true;
+      allow write: if request.auth != null && isAdmin();
     }
 
     // Subscribers: public write, admin read
     match /subscribers/{subscriberId} {
       allow create: if true;
-      allow read: if request.auth != null
-        && request.auth.token.admin == true;
+      allow read: if request.auth != null && isAdmin();
     }
 
     // Orders: participants + admin

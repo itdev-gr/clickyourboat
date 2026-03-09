@@ -396,7 +396,8 @@ export async function hasUserReviewedBoat(userId: string, boatId: string): Promi
   const q = query(
     collection(db, "reviews"),
     where("boatId", "==", boatId),
-    where("userId", "==", userId)
+    where("userId", "==", userId),
+    limit(1)
   );
   const snapshot = await getDocs(q);
   return !snapshot.empty;

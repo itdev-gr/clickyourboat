@@ -573,8 +573,21 @@ const description =
       return count;
     }
 
+    // Dismiss date banner when dates are selected in sidebar filters
+    // (Dates are informational only — no availability data to filter against yet)
+    function updateDateBanner() {
+      var filters = getFilterState();
+      var banner = document.getElementById("date-banner");
+      if (banner && (filters.dateStart || filters.dateEnd)) {
+        banner.style.display = "none";
+      }
+    }
+
     // Listen for filter changes from sidebar
-    document.addEventListener("filters-changed", applyFilters);
+    document.addEventListener("filters-changed", function () {
+      applyFilters();
+      updateDateBanner();
+    });
 
     // Run initial filter (handles ?type= URL param)
     applyFilters();

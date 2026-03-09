@@ -395,7 +395,7 @@ const description = "Log in or create your BoatHaven account to rent boats, save
   // Redirect destination: ?redirect=/list-your-boat or default home page
   const params = new URLSearchParams(window.location.search);
   const redirectParam = params.get("redirect");
-  const redirectTo = redirectParam && redirectParam.startsWith("/") ? redirectParam : "/";
+  const redirectTo = redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//") ? redirectParam : "/";
   console.log("[Auth] Redirect param:", redirectParam, "→ redirectTo:", redirectTo);
 
   // Track whether a signup/login action is in progress
