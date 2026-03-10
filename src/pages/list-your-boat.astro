@@ -425,9 +425,9 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
             <h2 class="text-xl font-bold text-text mb-6">Documents &amp; Insurance</h2>
             <div class="space-y-6">
               <div class="max-w-xs">
-                <label for="securityDeposit" class="block text-sm font-semibold text-text mb-2">Security deposit</label>
+                <label for="securityDeposit" class="block text-sm font-semibold text-text mb-2">Security deposit <span class="text-red-500">*</span></label>
                 <div class="flex items-center">
-                  <input type="number" id="securityDeposit" name="securityDeposit" min="0" step="1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                  <input type="number" id="securityDeposit" name="securityDeposit" min="0" step="1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                   <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
                 </div>
               </div>
@@ -1743,6 +1743,10 @@ document.addEventListener("DOMContentLoaded", function () {
           const data = collectSectionData(section);
           await updateBoatSection(editingBoatId, data);
         } else if (section === "documents") {
+          const deposit = Number((document.getElementById("securityDeposit") as HTMLInputElement)?.value);
+          if (isNaN(deposit) || (document.getElementById("securityDeposit") as HTMLInputElement)?.value === "") {
+            throw new Error("Please fill in the required field: Security deposit");
+          }
           const data = collectSectionData(section);
           // Upload insurance cert
           const insuranceInput = document.getElementById("insurance-cert-input") as HTMLInputElement;
