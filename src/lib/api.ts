@@ -184,12 +184,14 @@ export async function uploadBoatPhotos(docId: string, files: File[]): Promise<st
 
 export async function createBoatListing(
   data: Omit<BoatListing, "images" | "createdAt" | "updatedAt">,
-  files: File[]
+  files: File[],
+  ownerId?: string
 ): Promise<string> {
   const docRef = doc(collection(db, "boats"));
   const imageUrls = files.length > 0 ? await uploadBoatPhotos(docRef.id, files) : [];
   await setDoc(docRef, {
     ...data,
+    ...(ownerId ? { ownerId } : {}),
     images: imageUrls,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
