@@ -36,7 +36,7 @@ export async function searchBoats(params: SearchParams, maxResults = 20): Promis
     constraints.push(where("location.city", "==", params.location));
   }
 
-  constraints.push(orderBy("rating", "desc"));
+  constraints.push(orderBy("createdAt", "desc"));
   constraints.push(limit(maxResults));
 
   const q = query(boatsRef, ...constraints);
@@ -53,7 +53,7 @@ export async function getFeaturedBoats(count = 6): Promise<Boat[]> {
   const q = query(
     collection(db, "boats"),
     where("status", "==", "published"),
-    orderBy("rating", "desc"),
+    orderBy("createdAt", "desc"),
     limit(count)
   );
   const snapshot = await getDocs(q);
