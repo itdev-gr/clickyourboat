@@ -345,14 +345,20 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
           <!-- ===== Section 5: Booking ===== -->
           <div id="wizard-section-booking" class="wizard-section hidden">
             <h2 class="text-xl font-bold text-text mb-6">Booking</h2>
+            <div class="bg-blue-50 border border-blue-200/60 rounded-xl p-4 mb-6">
+              <p class="text-sm text-blue-900"><strong>Note:</strong> All fields below are pre-filled with default values. Please review and modify them according to your needs.</p>
+            </div>
             <div class="mb-6">
               <label class="block text-sm font-semibold text-text mb-3">Booking mode</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="booking-mode-card flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-pink transition-colors" data-mode="instant">
-                  <input type="radio" name="bookingMode" value="instant" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" />
-                  <div><p class="text-sm font-semibold text-text">Instant Booking</p><p class="text-xs text-text-muted mt-0.5">Renters can book immediately without approval</p></div>
-                </label>
-                <label class="booking-mode-card flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-pink transition-colors" data-mode="confirmation">
+                <div class="relative flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 opacity-50 cursor-not-allowed" data-mode="instant">
+                  <input type="radio" name="bookingMode" value="instant" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" disabled />
+                  <div>
+                    <div class="flex items-center gap-2"><p class="text-sm font-semibold text-text">Instant Booking</p><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-wide">Coming soon</span></div>
+                    <p class="text-xs text-text-muted mt-0.5">Renters can book immediately without approval</p>
+                  </div>
+                </div>
+                <label class="booking-mode-card flex items-start gap-3 p-4 rounded-xl border-2 border-pink cursor-pointer hover:border-pink transition-colors" data-mode="confirmation">
                   <input type="radio" name="bookingMode" value="confirmation" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" checked />
                   <div><p class="text-sm font-semibold text-text">Confirmation Required</p><p class="text-xs text-text-muted mt-0.5">You review and approve each booking request</p></div>
                 </label>
