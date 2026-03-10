@@ -65,7 +65,7 @@ export interface BoatListing {
   images: string[];
   ownerId: string;
   createdAt: any;
-  status: "draft" | "pending" | "published" | "rejected";
+  status: "draft" | "pending" | "published";
   updatedAt: any;
 
   // General

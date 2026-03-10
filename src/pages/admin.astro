@@ -154,7 +154,6 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
                     <option value="draft">Draft</option>
                     <option value="pending">Pending</option>
                     <option value="published">Published</option>
-                    <option value="rejected">Rejected</option>
                   </select>
                   <input type="text" id="listings-search" placeholder="Search..." class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-48" />
                 </div>
@@ -339,7 +338,6 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
       draft: "bg-amber-100 text-amber-800",
       pending: "bg-blue-100 text-blue-800",
       published: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800",
     };
     const cls = map[status] || "bg-gray-100 text-gray-800";
     const label = status.charAt(0).toUpperCase() + status.slice(1);
@@ -430,7 +428,7 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
         <td class="px-6 py-4 text-right">
           <div class="flex items-center justify-end gap-2">
             <button type="button" class="approve-btn px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors" data-id="${boat.id}">Approve</button>
-            <button type="button" class="reject-btn px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors" data-id="${boat.id}">Reject</button>
+            <button type="button" class="reject-btn px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors" data-id="${boat.id}">Decline</button>
           </div>
         </td>
       </tr>`;
@@ -463,21 +461,21 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
     tbody?.querySelectorAll(".reject-btn").forEach(btn => {
       btn.addEventListener("click", async () => {
         const id = btn.getAttribute("data-id")!;
-        if (!confirm("Reject this listing?")) return;
+        if (!confirm("Decline this listing? The owner will need to make changes and resubmit.")) return;
         try {
           (btn as HTMLButtonElement).disabled = true;
           btn.textContent = "...";
-          await updateListingStatus(id, "rejected");
+          await updateListingStatus(id, "draft");
           pendingData = pendingData.filter(b => b.id !== id);
           renderPendingTable(pendingData);
           const idx = allListingsData.findIndex(b => b.id === id);
-          if (idx >= 0) allListingsData[idx].status = "rejected";
+          if (idx >= 0) allListingsData[idx].status = "draft";
           renderAllListingsTable(allListingsData);
         } catch (err) {
-          console.error("Reject failed:", err);
-          alert("Failed to reject listing.");
+          console.error("Decline failed:", err);
+          alert("Failed to decline listing.");
           (btn as HTMLButtonElement).disabled = false;
-          btn.textContent = "Reject";
+          btn.textContent = "Decline";
         }
       });
     });
@@ -555,7 +553,6 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
               <option value="draft" ${status === "draft" ? "selected" : ""}>Draft</option>
               <option value="pending" ${status === "pending" ? "selected" : ""}>Pending</option>
               <option value="published" ${status === "published" ? "selected" : ""}>Published</option>
-              <option value="rejected" ${status === "rejected" ? "selected" : ""}>Rejected</option>
             </select>
             <button type="button" class="listing-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-id="${boat.id}" data-name="${name}" title="Delete">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
