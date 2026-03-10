@@ -627,11 +627,11 @@ const description =
       // Length (max filter — show boats up to this length)
       if (filters.length < 15 && cardLength > filters.length) return false;
 
-      // Engine (max filter)
-      if (filters.engine < 400 && cardEngine > filters.engine) return false;
+      // Engine (max filter — skip for boats with unset engine)
+      if (cardEngine > 0 && filters.engine < 400 && cardEngine > filters.engine) return false;
 
-      // Year (min filter — show boats from this year onward)
-      if (cardYear < filters.year) return false;
+      // Year (min filter — skip for boats with unset year)
+      if (cardYear > 0 && cardYear < filters.year) return false;
 
       // Toggles
       if (filters.superOwner && !cardSuperOwner) return false;
