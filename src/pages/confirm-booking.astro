@@ -193,10 +193,6 @@ const description = "Review your booking options, select insurance, and confirm 
               Confirm and pay &middot; <span id="confirm-btn-amount">&euro;0</span>
             </button>
 
-            <div id="confirm-success" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
-              <p class="text-sm text-green-800 font-medium">Booking confirmed!</p>
-              <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href="/dashboard" class="underline font-semibold">View your bookings</a></p>
-            </div>
             <div id="confirm-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
               <p class="text-sm text-red-800 font-medium" id="confirm-error-text">Something went wrong</p>
             </div>
@@ -279,7 +275,7 @@ const description = "Review your booking options, select insurance, and confirm 
   import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { doc, getDoc } from "firebase/firestore";
-  import { getBoatListing, createOrder, sendBookingNotification, getChargeSettings } from "../lib/api";
+  import { getBoatListing, getChargeSettings } from "../lib/api";
 
   const $ = (id: string) => document.getElementById(id);
 
@@ -498,44 +494,48 @@ const description = "Review your booking options, select insurance, and confirm 
         }
 
         confirmBtn.disabled = true;
-        confirmBtn.textContent = "Processing...";
+        confirmBtn.textContent = "Redirecting to payment...";
 
         try {
           const boatImage = images[0] || "";
-          const subtot = charterPrice + (insuranceCostPerDay * days) + (weatherCostPerDay * days);
-          const totalPrice = subtot + serviceFee + Math.round(subtot * platformFeePercent) / 100;
+          const insuranceTot = insuranceCostPerDay * days;
+          const weatherTot = weatherCostPerDay * days;
+          const subtot = charterPrice + insuranceTot + weatherTot;
+          const platFee = Math.round(subtot * platformFeePercent) / 100;
+          const totalPrice = subtot + serviceFee + platFee;
 
-          await createOrder({
-            boatId: boatId!,
-            boatTitle,
-            boatImage,
-            renterId: currentUser.uid,
-            renterName: currentUser.displayName || currentUser.email || "Renter",
-            ownerId,
-            startDate: startDateStr!,
-            endDate: endDateStr!,
-            totalPrice,
+          const res = await fetch("/api/create-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              boatId: boatId!,
+              boatTitle,
+              boatImage,
+              renterId: currentUser.uid,
+              renterEmail: currentUser.email || "",
+              ownerId,
+              startDate: startDateStr!,
+              endDate: endDateStr!,
+              charterPrice,
+              insuranceCost: insuranceTot,
+              weatherCost: weatherTot,
+              serviceFee,
+              platformFee: platFee,
+              totalPrice,
+            }),
           });
 
-          if (ownerId) {
-            try {
-              await sendBookingNotification(
-                currentUser.uid,
-                currentUser.displayName || currentUser.email || "Renter",
-                ownerId,
-                boatId!,
-                boatTitle,
-                startDateStr!,
-                endDateStr!
-              );
-            } catch {}
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.error || "Failed to create payment session");
           }
 
-          $("confirm-success")?.classList.remove("hidden");
-          confirmBtn.textContent = "Booking confirmed!";
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
         } catch (err: any) {
           const errorText = $("confirm-error-text");
-          if (errorText) errorText.textContent = err.message || "Failed to create booking.";
+          if (errorText) errorText.textContent = err.message || "Failed to start payment.";
           $("confirm-error")?.classList.remove("hidden");
           confirmBtn.disabled = false;
           confirmBtn.textContent = "Confirm and pay";

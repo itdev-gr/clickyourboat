@@ -1,0 +1,89 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Booking Confirmed — BoatHaven";
+const description = "Your booking has been confirmed. Thank you for choosing BoatHaven!";
+---
+
+<Layout title={title} description={description}>
+  <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+    <div class="max-w-md w-full text-center">
+      <div class="mx-auto mb-6 h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+        <svg class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Booking confirmed!</h1>
+      <p class="text-text-muted mb-2">Your payment was successful and your booking request has been sent to the owner.</p>
+      <p class="text-text-muted mb-8 text-sm">You will receive a confirmation once the owner approves your booking.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="/bookings" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">View my bookings</a>
+        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text text-sm font-bold border border-gray-200 hover:bg-gray-50 transition-colors">Browse more boats</a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import { getBoatListing, createOrder, sendBookingNotification } from "../lib/api";
+
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
+  const boatId = params.get("boatId");
+  const startDate = params.get("startDate");
+  const endDate = params.get("endDate");
+
+  if (sessionId && boatId && startDate && endDate) {
+    // Create the order in Firestore after successful payment
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      // Check if order already created for this session (prevent duplicates)
+      const orderKey = `order_${sessionId}`;
+      if (sessionStorage.getItem(orderKey)) return;
+      sessionStorage.setItem(orderKey, "1");
+
+      try {
+        const boat = await getBoatListing(boatId);
+        if (!boat) return;
+
+        const boatTitle = boat.listingTitle || boat.title || boat.boatName || [boat.manufacturer, boat.model].filter(Boolean).join(" ") || "Boat";
+        const boatImage = boat.images?.[0] || "";
+        const ownerId = boat.ownerId || "";
+        const price = boat.price || boat.pricePerDay || 0;
+        const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)));
+        const totalPrice = days * price;
+
+        await createOrder({
+          boatId,
+          boatTitle,
+          boatImage,
+          renterId: user.uid,
+          renterName: user.displayName || user.email || "Renter",
+          ownerId,
+          startDate,
+          endDate,
+          totalPrice,
+        });
+
+        if (ownerId) {
+          try {
+            await sendBookingNotification(
+              user.uid,
+              user.displayName || user.email || "Renter",
+              ownerId,
+              boatId,
+              boatTitle,
+              startDate,
+              endDate
+            );
+          } catch {}
+        }
+      } catch (err) {
+        console.error("[BookingSuccess] Error creating order:", err);
+      }
+    });
+  }
+</script>
