@@ -64,6 +64,21 @@ export async function getFeaturedBoats(count = 6): Promise<Boat[]> {
   })) as Boat[];
 }
 
+export async function getOwnerBoats(ownerId: string, maxResults = 20): Promise<Boat[]> {
+  const q = query(
+    collection(db, "boats"),
+    where("ownerId", "==", ownerId),
+    orderBy("createdAt", "desc"),
+    limit(maxResults)
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+    createdAt: doc.data().createdAt?.toDate(),
+  })) as Boat[];
+}
+
 // --- Destinations ---
 export async function getTopDestinations(count = 8): Promise<Destination[]> {
   const q = query(

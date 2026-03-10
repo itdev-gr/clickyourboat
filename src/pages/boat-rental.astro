@@ -173,7 +173,9 @@ const description =
 
 <!-- Client-side boat loading -->
 <script>
-  import { getFeaturedBoats, searchBoats } from "../lib/api";
+  import { getFeaturedBoats, searchBoats, getOwnerBoats } from "../lib/api";
+  import { auth } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
 
   function escAttr(s: string): string {
     return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -315,7 +317,7 @@ const description =
     </a>`;
   }
 
-  async function loadBoats() {
+  async function loadBoats(ownerUid?: string) {
     const trendingGrid = document.getElementById("trending-grid");
     const allBoatsGrid = document.getElementById("all-boats-grid");
     const trendingSection = document.getElementById("trending-section");
@@ -323,13 +325,20 @@ const description =
     const noResults = document.getElementById("no-results");
 
     try {
-      const [featured, all] = await Promise.all([
+      const promises: [Promise<any[]>, Promise<any[]>, Promise<any[]>] = [
         getFeaturedBoats(3),
         searchBoats({}, 20),
-      ]);
+        ownerUid ? getOwnerBoats(ownerUid) : Promise.resolve([]),
+      ];
+      const [featured, all, ownerBoats] = await Promise.all(promises);
+
+      // Merge owner boats into the all-boats list, deduplicating by ID
+      const seenIds = new Set(all.map((b: any) => b.id));
+      const extraOwnerBoats = ownerBoats.filter((b: any) => !seenIds.has(b.id));
+      const merged = [...extraOwnerBoats, ...all];
 
       const trendingBoats = featured.map(mapBoat);
-      const allBoats = all.map(mapBoat);
+      const allBoats = merged.map(mapBoat);
 
       // Clear skeletons and render cards
       if (trendingGrid) {
@@ -366,7 +375,11 @@ const description =
     }
   }
 
+  // Load published boats immediately, then reload with owner boats once auth resolves
   loadBoats();
+  onAuthStateChanged(auth, (user) => {
+    if (user) loadBoats(user.uid);
+  });
 </script>
 
 <script is:inline>
