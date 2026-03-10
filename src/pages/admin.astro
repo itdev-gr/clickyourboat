@@ -78,6 +78,10 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
             Orders
           </button>
+          <button type="button" data-sidebar-tab="charges" class="sidebar-tab flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors w-full">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Charges
+          </button>
           <div class="pt-2 mt-2 border-t border-gray-700">
             <button id="sidebar-logout-btn" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors w-full">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
@@ -106,6 +110,9 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
             </button>
             <button type="button" data-admin-tab="orders" class="admin-tab px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">
               Orders
+            </button>
+            <button type="button" data-admin-tab="charges" class="admin-tab px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">
+              Charges
             </button>
           </div>
 
@@ -212,6 +219,53 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
             </div>
           </div>
 
+          <!-- Tab: Charges -->
+          <div id="tab-charges" class="admin-tab-content hidden">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div class="px-6 py-4 border-b border-gray-100">
+                <h2 class="text-lg font-bold text-text">Platform Charges</h2>
+                <p class="text-sm text-text-muted mt-1">Configure commission, service fees, and platform fees applied to bookings.</p>
+              </div>
+              <div id="charges-loading" class="flex items-center justify-center py-12">
+                <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <div id="charges-form" class="hidden p-6 space-y-6">
+                <!-- Commission -->
+                <div>
+                  <label for="charge-commission" class="block text-sm font-semibold text-text mb-1">Commission per Booking (%)</label>
+                  <p class="text-xs text-text-muted mb-2">Percentage the platform takes from each booking's total price.</p>
+                  <div class="relative w-64">
+                    <input type="number" id="charge-commission" min="0" max="100" step="0.1" class="w-full px-3 py-2 pr-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="0" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">%</span>
+                  </div>
+                </div>
+                <!-- Service Fee -->
+                <div>
+                  <label for="charge-service-fee" class="block text-sm font-semibold text-text mb-1">Service Fee (EUR)</label>
+                  <p class="text-xs text-text-muted mb-2">Flat fee added to each booking for platform services.</p>
+                  <div class="relative w-64">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">&euro;</span>
+                    <input type="number" id="charge-service-fee" min="0" step="0.01" class="w-full px-3 py-2 pl-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="0" />
+                  </div>
+                </div>
+                <!-- Platform Fee -->
+                <div>
+                  <label for="charge-platform-fee" class="block text-sm font-semibold text-text mb-1">Platform Fee (%)</label>
+                  <p class="text-xs text-text-muted mb-2">Additional percentage fee charged to the renter on top of the booking price.</p>
+                  <div class="relative w-64">
+                    <input type="number" id="charge-platform-fee" min="0" max="100" step="0.1" class="w-full px-3 py-2 pr-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="0" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">%</span>
+                  </div>
+                </div>
+                <!-- Save -->
+                <div class="pt-2 flex items-center gap-3">
+                  <button type="button" id="charges-save-btn" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Save Changes</button>
+                  <span id="charges-save-msg" class="text-sm text-green-600 font-medium hidden">Saved!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Tab: Orders -->
           <div id="tab-orders" class="admin-tab-content hidden">
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -313,7 +367,8 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
   import {
     isUserAdmin, getAllUsers, getAllListings, getListingsByStatus,
     updateListingStatus, updateUserType, adminDeleteUser, deleteBoatListing,
-    getAllOrders, updateOrderStatus, promoteToOwnerIfNeeded
+    getAllOrders, updateOrderStatus, promoteToOwnerIfNeeded,
+    getChargeSettings, saveChargeSettings
   } from "../lib/api";
 
   function getInitials(name: string | null): string {
@@ -641,19 +696,22 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
       const photo = user.photoURL;
       const initials = getInitials(user.displayName || user.firstName);
 
-      html += `<tr class="user-row" data-search="${name.toLowerCase()} ${email.toLowerCase()}">
+      html += `<tr class="user-row cursor-pointer hover:bg-gray-50 transition-colors" data-search="${name.toLowerCase()} ${email.toLowerCase()}" data-uid="${user.uid}">
         <td class="px-6 py-4">
           <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
               ${photo ? `<img src="${escapeHtml(photo)}" class="h-full w-full object-cover" alt="" />` : `<span>${escapeHtml(initials)}</span>`}
             </div>
-            <span class="font-medium text-text">${name}</span>
+            <div class="flex items-center gap-2">
+              <span class="font-medium text-text">${name}</span>
+              <svg class="user-chevron h-4 w-4 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </div>
           </div>
         </td>
         <td class="px-6 py-4 text-text-muted">${email}</td>
         <td class="px-6 py-4">${typeBadgeHtml(type)}</td>
         <td class="px-6 py-4 text-text-muted">${date}</td>
-        <td class="px-6 py-4 text-right">
+        <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
           <div class="flex items-center justify-end gap-2">
             <select class="user-type-select px-2 py-1.5 rounded-lg text-xs font-medium border border-gray-300 bg-white text-gray-700 cursor-pointer" data-uid="${user.uid}" data-current="${type}">
               <option value="user" ${type === "user" ? "selected" : ""}>User</option>
@@ -663,6 +721,18 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
             <button type="button" class="user-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-uid="${user.uid}" data-name="${name}" title="Delete user">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
             </button>
+          </div>
+        </td>
+      </tr>
+      <tr class="user-boats-row hidden" data-boats-uid="${user.uid}">
+        <td colspan="5" class="px-6 py-0">
+          <div class="user-boats-content py-4 pl-14">
+            <div class="user-boats-loading text-xs text-text-muted flex items-center gap-2">
+              <div class="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              Loading boats...
+            </div>
+            <div class="user-boats-list hidden"></div>
+            <div class="user-boats-empty hidden text-xs text-text-muted italic">No published boats for this user.</div>
           </div>
         </td>
       </tr>`;
@@ -709,6 +779,91 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
         }
       });
     });
+
+    // Bind row click to expand/collapse boats
+    const userBoatsCache: Record<string, any[]> = {};
+    tbody?.querySelectorAll(".user-row").forEach(row => {
+      row.addEventListener("click", async () => {
+        const uid = row.getAttribute("data-uid")!;
+        const boatsRow = tbody.querySelector(`.user-boats-row[data-boats-uid="${uid}"]`) as HTMLElement;
+        if (!boatsRow) return;
+
+        const chevron = row.querySelector(".user-chevron") as SVGElement;
+        const isOpen = !boatsRow.classList.contains("hidden");
+
+        // Close all other open rows
+        tbody.querySelectorAll(".user-boats-row").forEach(r => {
+          r.classList.add("hidden");
+        });
+        tbody.querySelectorAll(".user-chevron").forEach(c => {
+          (c as HTMLElement).style.transform = "";
+        });
+
+        if (isOpen) return; // was open, now closed
+
+        boatsRow.classList.remove("hidden");
+        if (chevron) chevron.style.transform = "rotate(180deg)";
+
+        // Load boats if not cached
+        const loadingEl = boatsRow.querySelector(".user-boats-loading") as HTMLElement;
+        const listEl = boatsRow.querySelector(".user-boats-list") as HTMLElement;
+        const emptyEl = boatsRow.querySelector(".user-boats-empty") as HTMLElement;
+
+        if (userBoatsCache[uid]) {
+          renderUserBoats(userBoatsCache[uid], listEl, emptyEl, loadingEl);
+          return;
+        }
+
+        loadingEl?.classList.remove("hidden");
+        listEl?.classList.add("hidden");
+        emptyEl?.classList.add("hidden");
+
+        try {
+          const userBoats = allListingsData.filter(b => b.ownerId === uid && b.status === "published");
+          userBoatsCache[uid] = userBoats;
+          renderUserBoats(userBoats, listEl, emptyEl, loadingEl);
+        } catch (err) {
+          console.error("Failed to load user boats:", err);
+          loadingEl?.classList.add("hidden");
+          emptyEl?.classList.remove("hidden");
+          if (emptyEl) emptyEl.textContent = "Failed to load boats.";
+        }
+      });
+    });
+  }
+
+  function renderUserBoats(boats: any[], listEl: HTMLElement, emptyEl: HTMLElement, loadingEl: HTMLElement) {
+    loadingEl?.classList.add("hidden");
+
+    if (boats.length === 0) {
+      emptyEl?.classList.remove("hidden");
+      listEl?.classList.add("hidden");
+      return;
+    }
+
+    emptyEl?.classList.add("hidden");
+    listEl?.classList.remove("hidden");
+
+    let html = `<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Published Boats (${boats.length})</p><div class="grid gap-2">`;
+    for (const boat of boats) {
+      const name = escapeHtml(boatName(boat));
+      const city = escapeHtml(boat.city || "—");
+      const thumb = boat.images?.[0];
+      const price = boat.pricePerDay ? `€${boat.pricePerDay}/day` : "";
+
+      html += `<div class="flex items-center gap-3 p-2 rounded-lg bg-gray-50 border border-gray-100">
+        <div class="h-10 w-10 rounded-lg bg-gray-200 flex-shrink-0 overflow-hidden">
+          ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<div class="h-full w-full flex items-center justify-center text-gray-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25z"/></svg></div>`}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-text truncate">${name}</p>
+          <p class="text-xs text-text-muted">${city}${price ? ` · ${price}` : ""}</p>
+        </div>
+        ${statusBadgeHtml("published")}
+      </div>`;
+    }
+    html += `</div>`;
+    listEl.innerHTML = html;
   }
 
   // Users search
@@ -769,6 +924,9 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
       sidebarImg.src = user.photoURL;
       sidebarImg.classList.remove("hidden");
     }
+
+    // Load charges settings (no await needed, runs independently)
+    loadCharges();
 
     // Load data in parallel — use allSettled so one failure doesn't block the others
     const [listingsRes, usersRes, ordersRes] = await Promise.allSettled([
@@ -935,6 +1093,47 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
 
   // Orders filter event
   $("orders-status-filter")?.addEventListener("change", () => renderOrdersTable(allOrdersData));
+
+  // --- Charges tab ---
+  async function loadCharges() {
+    try {
+      const settings = await getChargeSettings();
+      const commInput = $("charge-commission") as HTMLInputElement;
+      const feeInput = $("charge-service-fee") as HTMLInputElement;
+      const platInput = $("charge-platform-fee") as HTMLInputElement;
+      if (commInput) commInput.value = String(settings.commissionPercent);
+      if (feeInput) feeInput.value = String(settings.serviceFee);
+      if (platInput) platInput.value = String(settings.platformFeePercent);
+    } catch (err) {
+      console.error("Failed to load charges:", err);
+    }
+    $("charges-loading")?.classList.add("hidden");
+    $("charges-form")?.classList.remove("hidden");
+  }
+
+  $("charges-save-btn")?.addEventListener("click", async () => {
+    const btn = $("charges-save-btn") as HTMLButtonElement;
+    const msg = $("charges-save-msg")!;
+    const commissionPercent = parseFloat(($("charge-commission") as HTMLInputElement).value) || 0;
+    const serviceFee = parseFloat(($("charge-service-fee") as HTMLInputElement).value) || 0;
+    const platformFeePercent = parseFloat(($("charge-platform-fee") as HTMLInputElement).value) || 0;
+
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+    msg.classList.add("hidden");
+
+    try {
+      await saveChargeSettings({ commissionPercent, serviceFee, platformFeePercent });
+      msg.textContent = "Saved!";
+      msg.classList.remove("hidden");
+      setTimeout(() => msg.classList.add("hidden"), 3000);
+    } catch (err) {
+      console.error("Failed to save charges:", err);
+      alert("Failed to save charge settings.");
+    }
+    btn.disabled = false;
+    btn.textContent = "Save Changes";
+  });
 
   // Sidebar logout
   $("sidebar-logout-btn")?.addEventListener("click", async () => {

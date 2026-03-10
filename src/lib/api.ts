@@ -410,6 +410,33 @@ export async function cancelOrder(orderId: string): Promise<void> {
   await updateOrderStatus(orderId, "cancelled");
 }
 
+// --- Charges / Platform Settings ---
+
+export interface ChargeSettings {
+  commissionPercent: number;   // e.g. 15 means 15%
+  serviceFee: number;          // flat amount in EUR
+  platformFeePercent: number;  // e.g. 5 means 5%
+}
+
+const CHARGES_DOC = doc(db, "settings", "charges");
+
+export async function getChargeSettings(): Promise<ChargeSettings> {
+  const snap = await getDoc(CHARGES_DOC);
+  if (snap.exists()) {
+    const d = snap.data();
+    return {
+      commissionPercent: d.commissionPercent ?? 0,
+      serviceFee: d.serviceFee ?? 0,
+      platformFeePercent: d.platformFeePercent ?? 0,
+    };
+  }
+  return { commissionPercent: 0, serviceFee: 0, platformFeePercent: 0 };
+}
+
+export async function saveChargeSettings(settings: ChargeSettings): Promise<void> {
+  await setDoc(CHARGES_DOC, { ...settings, updatedAt: serverTimestamp() }, { merge: true });
+}
+
 // --- Reviews (boat-specific) ---
 
 export async function getBoatReviews(boatId: string): Promise<any[]> {
