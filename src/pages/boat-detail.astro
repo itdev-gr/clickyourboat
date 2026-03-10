@@ -1,0 +1,481 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Boat Details — BoatHaven";
+const description = "View boat details on BoatHaven";
+---
+
+<Layout title={title} description={description}>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Loading state -->
+    <div id="boat-loading" class="flex items-center justify-center py-20">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Error state -->
+    <div id="boat-error" class="hidden text-center py-20">
+      <h1 class="text-2xl font-bold text-text mb-2">Boat not found</h1>
+      <p class="text-text-muted mb-6">This boat may have been removed or is no longer available.</p>
+      <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors">
+        Browse all boats
+      </a>
+    </div>
+
+    <!-- Boat content (populated by JS) -->
+    <div id="boat-content" class="hidden"></div>
+  </div>
+</Layout>
+
+<script>
+  import { getBoatListing } from "../lib/api";
+
+  function esc(s: string): string {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  async function loadBoatDetail() {
+    const loadingEl = document.getElementById("boat-loading");
+    const errorEl = document.getElementById("boat-error");
+    const contentEl = document.getElementById("boat-content");
+
+    // Extract boat ID from URL: /boat/XXXXX
+    const pathParts = window.location.pathname.split("/").filter(Boolean);
+    const boatIdx = pathParts.indexOf("boat");
+    const boatId = boatIdx >= 0 ? pathParts[boatIdx + 1] : null;
+
+    if (!boatId) {
+      loadingEl?.classList.add("hidden");
+      errorEl?.classList.remove("hidden");
+      return;
+    }
+
+    try {
+      const boat = await getBoatListing(boatId);
+
+      if (!boat) {
+        loadingEl?.classList.add("hidden");
+        errorEl?.classList.remove("hidden");
+        return;
+      }
+
+      const images = boat.images || [];
+      const price = boat.price || boat.pricePerDay || 0;
+      const priceUnit = boat.priceUnit || "/ day";
+      const title = boat.title || boat.listingTitle || "Boat";
+      const location = typeof boat.location === "object"
+        ? `${boat.location.city || ""}, ${boat.location.country || ""}`
+        : (boat.location || `${boat.city || ""} ${boat.harbour || ""}`.trim());
+
+      // Update page title
+      document.title = `${title} — BoatHaven`;
+
+      // Build gallery
+      let galleryHtml = "";
+      if (images.length > 0) {
+        let secondaryHtml = images.slice(1, 5).map((img: string, i: number) => {
+          let overlay = "";
+          if (i === Math.min(images.length - 2, 3) && images.length > 5) {
+            overlay = `<div class="absolute inset-0 bg-black/50 flex items-center justify-center"><span class="text-white font-bold text-lg">+${images.length - 5} photos</span></div>`;
+          }
+          return `<div class="overflow-hidden bg-gray-100 relative"><img src="${esc(img)}" alt="${esc(title)} - Photo ${i + 2}" class="h-full w-full object-cover gallery-thumb cursor-pointer hover:scale-105 transition-transform duration-300" loading="lazy" data-src="${esc(img)}" />${overlay}</div>`;
+        }).join("");
+
+        galleryHtml = `
+          <div class="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-2 rounded-2xl overflow-hidden">
+            <div class="aspect-[4/3] md:aspect-auto overflow-hidden bg-gray-100">
+              <img id="main-image" src="${esc(images[0])}" alt="${esc(title)}" class="h-full w-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" loading="eager" />
+            </div>
+            <div class="hidden md:grid grid-cols-2 grid-rows-2 gap-2">${secondaryHtml}</div>
+          </div>
+        `;
+      } else {
+        galleryHtml = `<div class="aspect-[16/9] rounded-2xl bg-gray-100 flex items-center justify-center"><p class="text-text-muted">No photos available</p></div>`;
+      }
+
+      // Build specs
+      const specs = [
+        boat.type ? { label: "Type", value: boat.type } : null,
+        boat.capacity > 0 ? { label: "Capacity", value: `${boat.capacity} people` } : null,
+        boat.length > 0 ? { label: "Length", value: `${boat.length}m` } : null,
+        boat.cabins > 0 ? { label: "Cabins", value: `${boat.cabins}` } : null,
+        boat.berths > 0 ? { label: "Berths", value: `${boat.berths}` } : null,
+        boat.enginePower > 0 ? { label: "Engine", value: `${boat.enginePower} HP` } : null,
+        boat.year > 0 ? { label: "Year", value: `${boat.year}` } : null,
+      ].filter(Boolean);
+
+      let specsHtml = specs.map((s: any) => `
+        <div class="bg-surface rounded-xl p-4 border border-gray-100">
+          <p class="text-xs text-text-muted uppercase tracking-wide mb-1">${esc(s.label)}</p>
+          <p class="text-sm font-semibold text-text capitalize">${esc(s.value)}</p>
+        </div>
+      `).join("");
+
+      // Build perks
+      const checkSvg = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+      let perksHtml = "";
+      const perks = boat.perks || [];
+      if (perks.includes("fuel")) perksHtml += `<p class="text-sm text-green-600 flex items-center gap-2">${checkSvg} Fuel included</p>`;
+      if (perks.includes("free-cancel")) perksHtml += `<p class="text-sm text-green-600 flex items-center gap-2">${checkSvg} Free cancellation</p>`;
+      if (perks.includes("flexible-cancel")) perksHtml += `<p class="text-sm text-green-600 flex items-center gap-2">${checkSvg} Flexible cancellation</p>`;
+
+      // Rating
+      let ratingHtml = "";
+      if (boat.rating > 0) {
+        ratingHtml = `<div class="flex items-center gap-1.5 flex-shrink-0 bg-surface px-3 py-2 rounded-xl">
+          <svg class="h-5 w-5 text-pink" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <span class="font-bold text-text">${boat.rating}</span>
+          ${boat.reviewCount > 0 ? `<span class="text-sm text-text-muted">(${boat.reviewCount} reviews)</span>` : ""}
+        </div>`;
+      }
+
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <nav class="mb-4 text-sm text-text-muted" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-1.5">
+              <li><a href="/" class="hover:text-primary transition-colors">Home</a></li>
+              <li>/</li>
+              <li><a href="/boat-rental" class="hover:text-primary transition-colors">Boat Rental</a></li>
+              <li>/</li>
+              <li class="text-text font-medium truncate max-w-[250px]">${esc(title)}</li>
+            </ol>
+          </nav>
+
+          <div class="mb-8">${galleryHtml}</div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+            <div class="lg:col-span-2 space-y-8">
+              <div>
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-text">${esc(title)}</h1>
+                    <p class="text-text-muted mt-1 flex items-center gap-1.5">
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                      ${esc(location)}
+                    </p>
+                  </div>
+                  ${ratingHtml}
+                </div>
+                <button id="detail-fav-btn" class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-text hover:border-gray-400 transition-colors" data-boat-id="${esc(boatId)}">
+                  <svg id="detail-fav-icon" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+                  <span id="detail-fav-text">Save to favorites</span>
+                </button>
+              </div>
+
+              <div>
+                <h2 class="text-lg font-bold text-text mb-3">About this boat</h2>
+                <p class="text-text-muted leading-relaxed">${esc(boat.description || `Experience the ${boat.type || "boat"} in ${location}. Perfect for groups of up to ${boat.capacity || "several"} people.`)}</p>
+              </div>
+
+              ${specs.length > 0 ? `<div><h2 class="text-lg font-bold text-text mb-4">Specifications</h2><div class="grid grid-cols-2 sm:grid-cols-3 gap-4">${specsHtml}</div></div>` : ""}
+
+              ${perksHtml ? `<div><h2 class="text-lg font-bold text-text mb-3">What's included</h2><div class="space-y-2">${perksHtml}</div></div>` : ""}
+
+              <div id="reviews-section">
+                <h2 class="text-lg font-bold text-text mb-4">Reviews</h2>
+                <div id="reviews-loading" class="flex items-center justify-center py-8">
+                  <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+                <div id="reviews-empty" class="hidden text-center py-8">
+                  <p class="text-sm text-text-muted">No reviews yet</p>
+                </div>
+                <div id="reviews-list" class="space-y-4"></div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-1">
+              <div class="sticky top-24 space-y-4">
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                  <div class="flex items-baseline gap-1 mb-6">
+                    <span class="text-sm text-text-muted">From</span>
+                    <span class="text-3xl font-extrabold text-text">&euro;${price.toLocaleString()}</span>
+                    ${priceUnit ? `<span class="text-text-muted">${esc(priceUnit)}</span>` : ""}
+                  </div>
+                  <div class="space-y-3 mb-4">
+                    <div>
+                      <label for="booking-start" class="block text-xs font-semibold text-text-muted uppercase tracking-wide mb-1">Start date</label>
+                      <input type="date" id="booking-start" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                    </div>
+                    <div>
+                      <label for="booking-end" class="block text-xs font-semibold text-text-muted uppercase tracking-wide mb-1">End date</label>
+                      <input type="date" id="booking-end" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                    </div>
+                  </div>
+                  <div id="price-summary" class="hidden mb-4 p-4 bg-surface rounded-xl border border-gray-100">
+                    <div class="flex justify-between text-sm mb-2">
+                      <span class="text-text-muted">&euro;${price.toLocaleString()} x <span id="booking-days">0</span> days</span>
+                      <span class="text-text font-medium" id="booking-subtotal">&euro;0</span>
+                    </div>
+                    <div class="border-t border-gray-200 pt-2 flex justify-between">
+                      <span class="text-sm font-bold text-text">Total</span>
+                      <span class="text-sm font-bold text-text" id="booking-total">&euro;0</span>
+                    </div>
+                  </div>
+                  <button id="request-booking-btn"
+                    class="w-full rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 mb-3"
+                    data-boat-id="${esc(boatId)}"
+                    data-owner-id="${esc(boat.ownerId || "")}"
+                    data-price="${price}"
+                    data-boat-title="${esc(title)}"
+                    data-boat-image="${esc(images[0] || "")}"
+                  >${boat.instantBooking ? "Book now" : "Request to book"}</button>
+                  <p class="text-xs text-text-muted text-center">You won't be charged yet</p>
+                  <div id="booking-success" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <p class="text-sm text-green-800 font-medium">Booking request sent!</p>
+                    <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href="/dashboard" class="underline font-semibold">View your bookings</a></p>
+                  </div>
+                  <div id="booking-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <p class="text-sm text-red-800 font-medium" id="booking-error-text">Something went wrong</p>
+                  </div>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-200 p-6">
+                  <h3 class="font-semibold text-text mb-3">Have questions?</h3>
+                  <p class="text-sm text-text-muted mb-4">Contact the owner directly to ask about the boat or trip details.</p>
+                  <button id="contact-owner-btn"
+                    class="w-full rounded-xl border border-gray-200 px-6 py-3 text-sm font-semibold text-text hover:border-gray-400 transition-colors"
+                    data-owner-id="${esc(boat.ownerId || "")}"
+                    data-boat-id="${esc(boatId)}"
+                    data-boat-title="${esc(title)}"
+                  >Contact owner</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        contentEl.classList.remove("hidden");
+      }
+
+      loadingEl?.classList.add("hidden");
+
+      // Init gallery interactions
+      const mainImage = document.getElementById("main-image") as HTMLImageElement;
+      document.querySelectorAll(".gallery-thumb").forEach(thumb => {
+        thumb.addEventListener("click", () => {
+          const newSrc = thumb.getAttribute("data-src");
+          if (mainImage && newSrc) mainImage.src = newSrc;
+        });
+      });
+
+      // Date inputs
+      const today = new Date().toISOString().split("T")[0];
+      const startInput = document.getElementById("booking-start") as HTMLInputElement;
+      const endInput = document.getElementById("booking-end") as HTMLInputElement;
+      if (startInput) startInput.setAttribute("min", today);
+      if (endInput) endInput.setAttribute("min", today);
+
+      function updatePriceSummary() {
+        const start = startInput?.value;
+        const end = endInput?.value;
+        const summary = document.getElementById("price-summary");
+        if (!start || !end || !summary) return;
+        const days = Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24));
+        if (days <= 0) { summary.classList.add("hidden"); return; }
+        const total = days * price;
+        const daysEl = document.getElementById("booking-days");
+        const subtotalEl = document.getElementById("booking-subtotal");
+        const totalEl = document.getElementById("booking-total");
+        if (daysEl) daysEl.textContent = String(days);
+        if (subtotalEl) subtotalEl.textContent = "\u20AC" + total.toLocaleString();
+        if (totalEl) totalEl.textContent = "\u20AC" + total.toLocaleString();
+        summary.classList.remove("hidden");
+      }
+      startInput?.addEventListener("change", updatePriceSummary);
+      endInput?.addEventListener("change", updatePriceSummary);
+
+      // Contact owner
+      const contactBtn = document.getElementById("contact-owner-btn");
+      contactBtn?.addEventListener("click", () => {
+        const ownerId = contactBtn.getAttribute("data-owner-id");
+        if (ownerId) {
+          const params = new URLSearchParams();
+          params.set("with", ownerId);
+          params.set("boatId", boatId);
+          params.set("boatTitle", title);
+          window.location.href = "/messages?" + params.toString();
+        } else {
+          window.location.href = "/messages";
+        }
+      });
+
+      // Dispatch event for booking/favorites scripts
+      document.dispatchEvent(new CustomEvent("boat-detail-loaded", { detail: { boat, boatId } }));
+
+    } catch (err) {
+      console.error("Error loading boat:", err);
+      loadingEl?.classList.add("hidden");
+      errorEl?.classList.remove("hidden");
+    }
+  }
+
+  loadBoatDetail();
+</script>
+
+<!-- Booking logic -->
+<script>
+  import { auth } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import { createOrder, sendBookingNotification, getBoatReviews } from "../lib/api";
+
+  let currentUser: any = null;
+
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+  });
+
+  // Wait for boat detail to be loaded
+  document.addEventListener("boat-detail-loaded", async (e: any) => {
+    const { boatId } = e.detail;
+
+    // Load reviews
+    const loadingEl = document.getElementById("reviews-loading");
+    const emptyEl = document.getElementById("reviews-empty");
+    const listEl = document.getElementById("reviews-list");
+
+    try {
+      const reviews = await getBoatReviews(boatId);
+      loadingEl?.classList.add("hidden");
+      if (reviews.length === 0) {
+        emptyEl?.classList.remove("hidden");
+      } else {
+        let html = "";
+        for (const review of reviews) {
+          const date = review.createdAt
+            ? new Date(review.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+            : "";
+          let stars = "";
+          for (let i = 1; i <= 5; i++) {
+            stars += `<svg class="h-4 w-4 ${i <= review.rating ? "text-yellow-400" : "text-gray-200"}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+          }
+          const div = document.createElement("div");
+          div.textContent = review.userName || "Anonymous";
+          const safeName = div.innerHTML;
+          div.textContent = review.comment || "";
+          const safeComment = div.innerHTML;
+          html += `<div class="bg-surface rounded-xl border border-gray-100 p-5"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2"><div class="flex items-center gap-0.5">${stars}</div><span class="text-sm font-semibold text-text">${safeName}</span></div><span class="text-xs text-gray-400">${date}</span></div><p class="text-sm text-text-muted">${safeComment}</p></div>`;
+        }
+        if (listEl) listEl.innerHTML = html;
+      }
+    } catch {
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+
+    // Booking button
+    const bookBtn = document.getElementById("request-booking-btn") as HTMLButtonElement;
+    const startInput = document.getElementById("booking-start") as HTMLInputElement;
+    const endInput = document.getElementById("booking-end") as HTMLInputElement;
+    const successDiv = document.getElementById("booking-success");
+    const errorDiv = document.getElementById("booking-error");
+    const errorText = document.getElementById("booking-error-text");
+
+    const ownerId = bookBtn?.getAttribute("data-owner-id") || "";
+    const dailyRate = parseFloat(bookBtn?.getAttribute("data-price") || "0");
+    const boatTitle = bookBtn?.getAttribute("data-boat-title") || "";
+    const boatImage = bookBtn?.getAttribute("data-boat-image") || "";
+
+    function showError(msg: string) {
+      if (errorText) errorText.textContent = msg;
+      errorDiv?.classList.remove("hidden");
+      successDiv?.classList.add("hidden");
+    }
+
+    bookBtn?.addEventListener("click", async () => {
+      successDiv?.classList.add("hidden");
+      errorDiv?.classList.add("hidden");
+
+      if (!currentUser) {
+        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      if (ownerId && currentUser.uid === ownerId) { showError("You cannot book your own boat."); return; }
+      if (!ownerId) { showError("This boat is not available for booking."); return; }
+
+      const startVal = startInput?.value;
+      const endVal = endInput?.value;
+      if (!startVal || !endVal) { showError("Please select both start and end dates."); return; }
+
+      const startDate = new Date(startVal);
+      const endDate = new Date(endVal);
+      if (endDate <= startDate) { showError("End date must be after start date."); return; }
+
+      const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+      const totalPrice = days * dailyRate;
+
+      if (!confirm(`Confirm booking for ${days} day${days > 1 ? "s" : ""} at \u20AC${totalPrice.toLocaleString()}?`)) return;
+
+      bookBtn.disabled = true;
+      bookBtn.textContent = "Processing...";
+
+      try {
+        await createOrder({ boatId, boatTitle, boatImage, renterId: currentUser.uid, renterName: currentUser.displayName || currentUser.email || "Renter", ownerId, startDate: startVal, endDate: endVal, totalPrice });
+        if (ownerId) {
+          try { await sendBookingNotification(currentUser.uid, currentUser.displayName || currentUser.email || "Renter", ownerId, boatId, boatTitle, startVal, endVal); } catch {}
+        }
+        successDiv?.classList.remove("hidden");
+        bookBtn.textContent = "Booked!";
+      } catch (err: any) {
+        showError(err.message || "Failed to create booking.");
+        bookBtn.disabled = false;
+        bookBtn.textContent = "Request to book";
+      }
+    });
+  });
+</script>
+
+<!-- Favorites -->
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import { doc, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
+
+  let currentUser: any = null;
+  let isFavorited = false;
+
+  onAuthStateChanged(auth, (user) => { currentUser = user; });
+
+  document.addEventListener("boat-detail-loaded", async (e: any) => {
+    const { boatId } = e.detail;
+    const favBtn = document.getElementById("detail-fav-btn");
+    const favIcon = document.getElementById("detail-fav-icon");
+    const favText = document.getElementById("detail-fav-text");
+    if (!favBtn) return;
+
+    function updateFavUI(fav: boolean) {
+      isFavorited = fav;
+      if (favIcon) {
+        favIcon.setAttribute("fill", fav ? "currentColor" : "none");
+        favIcon.classList.toggle("text-pink", fav);
+        favIcon.classList.toggle("text-gray-400", !fav);
+      }
+      if (favText) favText.textContent = fav ? "Saved to favorites" : "Save to favorites";
+    }
+
+    if (currentUser && boatId) {
+      try {
+        const snap = await getDoc(doc(db, "users", currentUser.uid, "favorites", boatId));
+        updateFavUI(snap.exists());
+      } catch {}
+    }
+
+    favBtn.addEventListener("click", async () => {
+      if (!currentUser) {
+        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      if (!boatId) return;
+      const favRef = doc(db, "users", currentUser.uid, "favorites", boatId);
+      updateFavUI(!isFavorited);
+      try {
+        if (isFavorited) {
+          const title = document.querySelector("h1")?.textContent?.trim() || "";
+          const image = (document.getElementById("main-image") as HTMLImageElement)?.src || "";
+          await setDoc(favRef, { boatId, title, image, location: "", price: 0, priceUnit: "/ day", type: "", rating: 0, reviewCount: 0, addedAt: serverTimestamp() });
+        } else {
+          await deleteDoc(favRef);
+        }
+      } catch {
+        updateFavUI(!isFavorited);
+      }
+    });
+  });
+</script>

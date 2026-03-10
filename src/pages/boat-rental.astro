@@ -1,51 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Sidebar from "../components/boat-rental/Sidebar.astro";
-import BoatCard from "../components/boat-rental/BoatCard.astro";
-import type { BoatCardListing } from "../types";
-
-let trendingBoats: BoatCardListing[] = [];
-let allBoats: BoatCardListing[] = [];
-
-const mapBoat = (b: any): BoatCardListing => ({
-  id: b.id,
-  type: b.type || b.boatType || "motor",
-  location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
-  rating: b.rating || 0,
-  reviewCount: b.reviewCount || 0,
-  title: b.title || b.listingTitle || b.boatName || "Boat",
-  images: b.images || [],
-  tags: b.tags || [],
-  specs: b.specs || "",
-  perks: b.perks || [],
-  price: b.price || b.pricePerDay || 0,
-  priceUnit: b.priceUnit || "/ day",
-  instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
-  discountOffer: b.discountOffer || false,
-  isNew: b.isNew || false,
-  capacity: b.capacity || 0,
-  cabins: b.cabins || 0,
-  berths: b.berths || 0,
-  length: b.length || 0,
-  enginePower: b.enginePower || b.horsepower || 0,
-  year: b.year || b.yearOfConstruction || 0,
-  superOwner: b.superOwner || false,
-  idealFor: b.idealFor || [],
-  equipment: b.equipment || [],
-  ownerId: b.ownerId || "",
-});
-
-try {
-  const { getFeaturedBoats, searchBoats } = await import("../lib/api");
-  const [fbFeatured, fbAll] = await Promise.all([
-    getFeaturedBoats(3),
-    searchBoats({}, 20),
-  ]);
-  trendingBoats = fbFeatured.map(mapBoat);
-  allBoats = fbAll.map(mapBoat);
-} catch {
-  // Firestore unavailable
-}
 
 const title = "Boat Rental — Find the Perfect Boat | BoatHaven";
 const description =
@@ -177,9 +132,10 @@ const description =
             </p>
           </div>
           <div id="trending-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-            {trendingBoats.map((boat) => (
-              <BoatCard boat={boat} />
-            ))}
+            <!-- Loading skeletons -->
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
           </div>
         </section>
 
@@ -193,9 +149,13 @@ const description =
             </p>
           </div>
           <div id="all-boats-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-            {allBoats.map((boat) => (
-              <BoatCard boat={boat} />
-            ))}
+            <!-- Loading skeletons -->
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
+            <div class="boat-skeleton bg-white rounded-xl border border-gray-200/80 overflow-hidden animate-pulse"><div class="aspect-[4/3] bg-gray-200"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div><div class="h-3 bg-gray-200 rounded w-2/3"></div></div></div>
           </div>
 
           <!-- Load more -->
@@ -210,6 +170,204 @@ const description =
     </div>
   </div>
 </Layout>
+
+<!-- Client-side boat loading -->
+<script>
+  import { getFeaturedBoats, searchBoats } from "../lib/api";
+
+  function escAttr(s: string): string {
+    return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function escHtml(s: string): string {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  interface MappedBoat {
+    id: string; type: string; location: string; rating: number; reviewCount: number;
+    title: string; images: string[]; tags: {icon:string;label:string}[]; specs: string;
+    perks: string[]; price: number; priceUnit: string; instantBooking: boolean;
+    discountOffer: boolean; isNew: boolean; capacity: number; cabins: number;
+    berths: number; length: number; enginePower: number; year: number;
+    superOwner: boolean; idealFor: string[]; equipment: string[]; ownerId: string;
+  }
+
+  function mapBoat(b: any): MappedBoat {
+    return {
+      id: b.id,
+      type: b.type || b.boatType || "motor",
+      location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
+      rating: b.rating || 0,
+      reviewCount: b.reviewCount || 0,
+      title: b.title || b.listingTitle || b.boatName || "Boat",
+      images: b.images || [],
+      tags: b.tags || [],
+      specs: b.specs || "",
+      perks: b.perks || [],
+      price: b.price || b.pricePerDay || 0,
+      priceUnit: b.priceUnit || "/ day",
+      instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
+      discountOffer: b.discountOffer || false,
+      isNew: b.isNew || false,
+      capacity: b.capacity || 0,
+      cabins: b.cabins || 0,
+      berths: b.berths || 0,
+      length: b.length || 0,
+      enginePower: b.enginePower || b.horsepower || 0,
+      year: b.year || b.yearOfConstruction || 0,
+      superOwner: b.superOwner || false,
+      idealFor: b.idealFor || [],
+      equipment: b.equipment || [],
+      ownerId: b.ownerId || "",
+    };
+  }
+
+  const checkSvg = '<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+
+  function renderBoatCard(boat: MappedBoat): string {
+    const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
+    const hasSkipper = boat.tags.some(t => t.icon === "skipper");
+    const noLicence = boat.tags.some(t => t.icon === "no-licence");
+    const listingType = boat.priceUnit === "/ day" ? "rental" : "experience";
+
+    let imageHtml = mainImage
+      ? `<img src="${escAttr(mainImage)}" alt="${escAttr(boat.title)}" class="h-full w-full object-cover boat-card-img" loading="lazy" decoding="async" />`
+      : `<div class="h-full w-full flex items-center justify-center text-gray-400"><svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg></div>`;
+
+    let dotsHtml = "";
+    if (boat.images && boat.images.length > 1) {
+      dotsHtml = `<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">${boat.images.map((img, i) =>
+        `<button class="h-2 w-2 rounded-full carousel-dot cursor-pointer ${i === 0 ? "bg-white" : "bg-white/50"}" data-img="${escAttr(img)}" aria-label="Photo ${i + 1}"></button>`
+      ).join("")}</div>`;
+    }
+
+    let badgesHtml = "";
+    if (boat.discountOffer) badgesHtml += `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-pink text-white text-xs font-semibold">Discount offer</span>`;
+    if (boat.instantBooking) badgesHtml += `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg> Instant booking</span>`;
+
+    let ratingHtml = "";
+    if (boat.rating > 0) {
+      ratingHtml = `<div class="flex items-center gap-1 flex-shrink-0"><svg class="h-3.5 w-3.5 text-pink" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><span class="text-xs font-semibold text-text">${boat.rating}</span><span class="text-xs text-text-muted">(${boat.reviewCount})</span></div>`;
+    }
+
+    let tagsHtml = boat.tags.map(tag => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">${escHtml(tag.label)}</span>`).join("");
+
+    let perksHtml = "";
+    if (boat.perks.includes("fuel")) perksHtml += `<p class="text-xs text-green-600 flex items-center gap-1">${checkSvg} Fuel included</p>`;
+    if (boat.perks.includes("free-cancel")) perksHtml += `<p class="text-xs text-green-600 flex items-center gap-1">${checkSvg} Free cancellation</p>`;
+    if (boat.perks.includes("flexible-cancel")) perksHtml += `<p class="text-xs text-green-600 flex items-center gap-1">${checkSvg} Flexible cancellation</p>`;
+
+    return `<a href="/boat/${escAttr(boat.id)}" class="boat-card block bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
+      data-boat-id="${escAttr(boat.id)}"
+      data-boat-type="${escAttr(boat.type)}"
+      data-price="${boat.price}"
+      data-capacity="${boat.capacity}"
+      data-cabins="${boat.cabins}"
+      data-berths="${boat.berths}"
+      data-length="${boat.length}"
+      data-engine-power="${boat.enginePower}"
+      data-year="${boat.year}"
+      data-rating="${boat.rating}"
+      data-super-owner="${boat.superOwner}"
+      data-instant-booking="${boat.instantBooking}"
+      data-free-cancel="${boat.perks.includes("free-cancel")}"
+      data-ideal-for="${escAttr(boat.idealFor.join(","))}"
+      data-equipment="${escAttr(boat.equipment.join(","))}"
+      data-location="${escAttr(boat.location.toLowerCase())}"
+      data-has-skipper="${hasSkipper}"
+      data-no-licence="${noLicence}"
+      data-listing-type="${listingType}"
+      data-owner-id="${escAttr(boat.ownerId)}"
+    >
+      <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 boat-card-image-area">
+        ${imageHtml}
+        ${dotsHtml}
+        <div class="absolute top-3 left-3 flex gap-1.5">${badgesHtml}</div>
+        <button class="favorite-btn absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors text-gray-600"
+          aria-label="Save to favorites"
+          data-boat-id="${escAttr(boat.id)}"
+          data-boat-title="${escAttr(boat.title)}"
+          data-boat-image="${escAttr(mainImage)}"
+          data-boat-location="${escAttr(boat.location)}"
+          data-boat-price="${boat.price}"
+          data-boat-price-unit="${escAttr(boat.priceUnit)}"
+          data-boat-type-val="${escAttr(boat.type)}"
+          data-boat-rating="${boat.rating}"
+          data-boat-review-count="${boat.reviewCount}"
+        ><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg></button>
+      </div>
+      <div class="p-4">
+        <div class="flex items-start justify-between gap-2 mb-1">
+          <h3 class="text-sm font-semibold text-text truncate">${escHtml(boat.location)}</h3>
+          ${ratingHtml}
+        </div>
+        <p class="text-xs text-text-muted truncate mb-2.5">${escHtml(boat.title)}</p>
+        <div class="flex flex-wrap gap-1.5 mb-2.5">${tagsHtml}</div>
+        <p class="text-xs text-text-muted mb-3">${escHtml(boat.specs)}</p>
+        <div class="flex items-end justify-between border-t border-gray-100 pt-3">
+          <div class="space-y-0.5">${perksHtml}</div>
+          <div class="text-right">
+            <span class="text-[11px] text-text-muted">From</span>
+            <span class="text-base font-bold text-text ml-1">&euro;${boat.price.toLocaleString()}</span>
+            ${boat.priceUnit ? `<span class="text-xs text-text-muted"> ${escHtml(boat.priceUnit)}</span>` : ""}
+          </div>
+        </div>
+      </div>
+    </a>`;
+  }
+
+  async function loadBoats() {
+    const trendingGrid = document.getElementById("trending-grid");
+    const allBoatsGrid = document.getElementById("all-boats-grid");
+    const trendingSection = document.getElementById("trending-section");
+    const allBoatsSection = document.getElementById("all-boats-section");
+    const noResults = document.getElementById("no-results");
+
+    try {
+      const [featured, all] = await Promise.all([
+        getFeaturedBoats(3),
+        searchBoats({}, 20),
+      ]);
+
+      const trendingBoats = featured.map(mapBoat);
+      const allBoats = all.map(mapBoat);
+
+      // Clear skeletons and render cards
+      if (trendingGrid) {
+        if (trendingBoats.length > 0) {
+          trendingGrid.innerHTML = trendingBoats.map(renderBoatCard).join("");
+        } else {
+          trendingGrid.innerHTML = "";
+          if (trendingSection) trendingSection.style.display = "none";
+        }
+      }
+
+      if (allBoatsGrid) {
+        if (allBoats.length > 0) {
+          allBoatsGrid.innerHTML = allBoats.map(renderBoatCard).join("");
+        } else {
+          allBoatsGrid.innerHTML = "";
+          if (allBoatsSection) allBoatsSection.style.display = "none";
+        }
+      }
+
+      if (trendingBoats.length === 0 && allBoats.length === 0 && noResults) {
+        noResults.classList.remove("hidden");
+      }
+
+      // Dispatch event so filter engine and favorites can re-bind
+      document.dispatchEvent(new CustomEvent("boats-loaded"));
+    } catch (err) {
+      console.error("Error loading boats:", err);
+      // Clear skeletons
+      if (trendingGrid) trendingGrid.innerHTML = "";
+      if (allBoatsGrid) allBoatsGrid.innerHTML = "";
+      if (trendingSection) trendingSection.style.display = "none";
+      if (noResults) noResults.classList.remove("hidden");
+    }
+  }
+
+  loadBoats();
+</script>
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", function () {
@@ -591,35 +749,14 @@ const description =
 
     // "Show more boats" button — reveal hidden cards
     var INITIAL_VISIBLE = 12;
-    var allBoatCards = document.querySelectorAll("#all-boats-grid .boat-card");
     var loadMoreWrap = document.getElementById("load-more-wrap");
     var loadMoreBtn = loadMoreWrap ? loadMoreWrap.querySelector("button") : null;
     var showCount = INITIAL_VISIBLE;
 
-    function updateShowMore() {
-      var visibleCards = [];
-      allBoatCards.forEach(function (card) {
-        if (card.style.display !== "none") visibleCards.push(card);
-      });
-      // Initially hide cards beyond INITIAL_VISIBLE
-      visibleCards.forEach(function (card, i) {
-        if (i >= showCount) {
-          card.classList.add("show-more-hidden");
-          card.style.display = "none";
-        } else {
-          card.classList.remove("show-more-hidden");
-        }
-      });
-      if (loadMoreWrap) {
-        loadMoreWrap.style.display = visibleCards.length > showCount ? "" : "none";
-      }
-    }
-
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener("click", function () {
         showCount += 12;
-        // Un-hide cards
-        var count = 0;
+        var allBoatCards = document.querySelectorAll("#all-boats-grid .boat-card");
         allBoatCards.forEach(function (card) {
           if (card.style.display !== "none" || card.classList.contains("show-more-hidden")) {
             card.classList.remove("show-more-hidden");
@@ -633,49 +770,62 @@ const description =
     // ==========================================
     // BOAT CARD CAROUSEL + FAVORITES
     // ==========================================
-    document.querySelectorAll(".boat-card").forEach(function (card) {
-      var imgEl = card.querySelector(".boat-card-img");
-      var dots = card.querySelectorAll(".carousel-dot");
-      var images = [];
-      dots.forEach(function (dot) {
-        images.push(dot.getAttribute("data-img"));
-      });
-      if (images.length <= 1 || !imgEl) return;
+    function initCarousels() {
+      document.querySelectorAll(".boat-card").forEach(function (card) {
+        if (card.getAttribute("data-carousel-init")) return;
+        card.setAttribute("data-carousel-init", "1");
 
-      var currentIndex = 0;
-
-      function showImage(idx) {
-        currentIndex = idx;
-        imgEl.src = images[idx];
-        dots.forEach(function (d, i) {
-          d.classList.toggle("bg-white", i === idx);
-          d.classList.toggle("bg-white/50", i !== idx);
+        var imgEl = card.querySelector(".boat-card-img");
+        var dots = card.querySelectorAll(".carousel-dot");
+        var images = [];
+        dots.forEach(function (dot) {
+          images.push(dot.getAttribute("data-img"));
         });
-      }
+        if (images.length <= 1 || !imgEl) return;
 
-      dots.forEach(function (dot, i) {
-        dot.addEventListener("click", function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          showImage(i);
+        var currentIndex = 0;
+
+        function showImage(idx) {
+          currentIndex = idx;
+          imgEl.src = images[idx];
+          dots.forEach(function (d, i) {
+            d.classList.toggle("bg-white", i === idx);
+            d.classList.toggle("bg-white/50", i !== idx);
+          });
+        }
+
+        dots.forEach(function (dot, i) {
+          dot.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showImage(i);
+          });
         });
-      });
 
-      // Swipe support
-      var startX = 0;
-      var imageArea = card.querySelector(".boat-card-image-area");
-      if (imageArea) {
-        imageArea.addEventListener("touchstart", function (e) {
-          startX = e.touches[0].clientX;
-        }, { passive: true });
-        imageArea.addEventListener("touchend", function (e) {
-          var diff = startX - e.changedTouches[0].clientX;
-          if (Math.abs(diff) > 40) {
-            if (diff > 0 && currentIndex < images.length - 1) showImage(currentIndex + 1);
-            else if (diff < 0 && currentIndex > 0) showImage(currentIndex - 1);
-          }
-        }, { passive: true });
-      }
+        // Swipe support
+        var startX = 0;
+        var imageArea = card.querySelector(".boat-card-image-area");
+        if (imageArea) {
+          imageArea.addEventListener("touchstart", function (e) {
+            startX = e.touches[0].clientX;
+          }, { passive: true });
+          imageArea.addEventListener("touchend", function (e) {
+            var diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) {
+              if (diff > 0 && currentIndex < images.length - 1) showImage(currentIndex + 1);
+              else if (diff < 0 && currentIndex > 0) showImage(currentIndex - 1);
+            }
+          }, { passive: true });
+        }
+      });
+    }
+
+    initCarousels();
+
+    // Re-init when boats are loaded dynamically
+    document.addEventListener("boats-loaded", function () {
+      initCarousels();
+      applyFilters();
     });
 
   });
@@ -750,60 +900,79 @@ const description =
     }
   });
 
-  // Attach click handlers
-  document.querySelectorAll(".favorite-btn").forEach((btn) => {
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+  // Attach click handlers to favorite buttons
+  function bindFavoriteButtons() {
+    document.querySelectorAll(".favorite-btn").forEach((btn) => {
+      if (btn.getAttribute("data-fav-init")) return;
+      btn.setAttribute("data-fav-init", "1");
 
-      if (!currentUser) {
-        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
-        return;
-      }
-
+      // Mark as favorited if already in set
       const boatId = btn.getAttribute("data-boat-id");
-      if (!boatId) return;
-
-      const isFav = favoritedIds.has(boatId);
-      const favRef = doc(db, "users", currentUser.uid, "favorites", boatId);
-
-      // Optimistic UI update
-      if (isFav) {
-        favoritedIds.delete(boatId);
-        setFavoriteVisual(btn, false);
-      } else {
-        favoritedIds.add(boatId);
+      if (boatId && favoritedIds.has(boatId)) {
         setFavoriteVisual(btn, true);
       }
 
-      try {
-        if (isFav) {
-          await deleteDoc(favRef);
-        } else {
-          await setDoc(favRef, {
-            boatId,
-            title: btn.getAttribute("data-boat-title") || "",
-            image: btn.getAttribute("data-boat-image") || "",
-            location: btn.getAttribute("data-boat-location") || "",
-            price: parseFloat(btn.getAttribute("data-boat-price") || "0"),
-            priceUnit: btn.getAttribute("data-boat-price-unit") || "/ day",
-            type: btn.getAttribute("data-boat-type-val") || "",
-            rating: parseFloat(btn.getAttribute("data-boat-rating") || "0"),
-            reviewCount: parseInt(btn.getAttribute("data-boat-review-count") || "0"),
-            addedAt: serverTimestamp(),
-          });
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!currentUser) {
+          window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+          return;
         }
-      } catch (err) {
-        console.error("[Favorites] Error toggling favorite:", err);
-        // Revert on error
+
+        const boatId = btn.getAttribute("data-boat-id");
+        if (!boatId) return;
+
+        const isFav = favoritedIds.has(boatId);
+        const favRef = doc(db, "users", currentUser.uid, "favorites", boatId);
+
+        // Optimistic UI update
         if (isFav) {
-          favoritedIds.add(boatId);
-          setFavoriteVisual(btn, true);
-        } else {
           favoritedIds.delete(boatId);
           setFavoriteVisual(btn, false);
+        } else {
+          favoritedIds.add(boatId);
+          setFavoriteVisual(btn, true);
         }
-      }
+
+        try {
+          if (isFav) {
+            await deleteDoc(favRef);
+          } else {
+            await setDoc(favRef, {
+              boatId,
+              title: btn.getAttribute("data-boat-title") || "",
+              image: btn.getAttribute("data-boat-image") || "",
+              location: btn.getAttribute("data-boat-location") || "",
+              price: parseFloat(btn.getAttribute("data-boat-price") || "0"),
+              priceUnit: btn.getAttribute("data-boat-price-unit") || "/ day",
+              type: btn.getAttribute("data-boat-type-val") || "",
+              rating: parseFloat(btn.getAttribute("data-boat-rating") || "0"),
+              reviewCount: parseInt(btn.getAttribute("data-boat-review-count") || "0"),
+              addedAt: serverTimestamp(),
+            });
+          }
+        } catch (err) {
+          console.error("[Favorites] Error toggling favorite:", err);
+          // Revert on error
+          if (isFav) {
+            favoritedIds.add(boatId);
+            setFavoriteVisual(btn, true);
+          } else {
+            favoritedIds.delete(boatId);
+            setFavoriteVisual(btn, false);
+          }
+        }
+      });
     });
+  }
+
+  bindFavoriteButtons();
+
+  // Re-bind when boats are loaded dynamically
+  document.addEventListener("boats-loaded", () => {
+    bindFavoriteButtons();
+    toggleOwnBoats(currentUser?.uid || null);
   });
 </script>

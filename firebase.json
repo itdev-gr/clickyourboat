@@ -12,6 +12,10 @@
     ],
     "rewrites": [
       {
+        "source": "/boat/**",
+        "destination": "/boat-detail/index.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
