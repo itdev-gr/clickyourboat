@@ -273,7 +273,7 @@ const description = "List your boat on BoatHaven and start earning. Reach thousa
           <div id="wizard-section-photos" class="wizard-section hidden">
             <h2 class="text-xl font-bold text-text mb-6">Photos</h2>
             <div class="mb-8">
-              <p class="text-sm font-semibold text-text mb-1">Main photos</p>
+              <p class="text-sm font-semibold text-text mb-1">Main photos <span class="text-red-500">*</span></p>
               <p class="text-xs text-text-muted mb-4">For the cover, choose a photo that shows the whole boat. Drag photos to reorder.</p>
               <div id="upload-zone" class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer">
                 <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
@@ -1712,8 +1712,12 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
         if (section === "photos") {
-          // Upload new photos
+          // Validate at least one photo
           const newFiles: File[] = ((window as any).__selectedFiles || []).filter((f: any) => f != null);
+          if (newFiles.length === 0 && existingImageUrls.length === 0) {
+            throw new Error("Please upload at least one photo.");
+          }
+          // Upload new photos
           if (newFiles.length > 0) {
             const newUrls = await uploadBoatPhotos(editingBoatId, newFiles);
             existingImageUrls = [...existingImageUrls, ...newUrls];
