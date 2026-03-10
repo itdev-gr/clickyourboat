@@ -759,25 +759,34 @@ const description = "BoatHaven admin dashboard — manage listings, users, and o
       sidebarImg.classList.remove("hidden");
     }
 
-    // Load data in parallel
-    try {
-      const [listings, users, orders] = await Promise.all([
-        getAllListings(),
-        getAllUsers(),
-        getAllOrders(),
-      ]);
+    // Load data in parallel — use allSettled so one failure doesn't block the others
+    const [listingsRes, usersRes, ordersRes] = await Promise.allSettled([
+      getAllListings(),
+      getAllUsers(),
+      getAllOrders(),
+    ]);
 
-      allListingsData = listings;
-      allUsersData = users;
-      allOrdersData = orders;
-      pendingData = listings.filter(b => b.status === "pending");
-
+    if (listingsRes.status === "fulfilled") {
+      allListingsData = listingsRes.value;
+      pendingData = allListingsData.filter(b => b.status === "pending");
       renderPendingTable(pendingData);
       renderAllListingsTable(allListingsData);
+    } else {
+      console.error("Failed to load listings:", listingsRes.reason);
+    }
+
+    if (usersRes.status === "fulfilled") {
+      allUsersData = usersRes.value;
       renderUsersTable(allUsersData);
+    } else {
+      console.error("Failed to load users:", usersRes.reason);
+    }
+
+    if (ordersRes.status === "fulfilled") {
+      allOrdersData = ordersRes.value;
       renderOrdersTable(allOrdersData);
-    } catch (err) {
-      console.error("Failed to load admin data:", err);
+    } else {
+      console.error("Failed to load orders:", ordersRes.reason);
     }
   });
 
