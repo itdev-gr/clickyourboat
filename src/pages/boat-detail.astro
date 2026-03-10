@@ -596,7 +596,7 @@ const description = "View boat details on BoatHaven";
               data-price="${price}"
               data-boat-title="${esc(boatTitle)}"
               data-boat-image="${esc(images[0] || "")}"
-            >${instantBooking ? "Book now" : "Request to book"}</button>
+            >${instantBooking ? "Book now" : "Continue Booking"}</button>
             <p class="text-xs text-text-muted text-center mt-2">You won't be charged yet</p>
 
             <div id="booking-success" class="hidden mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -909,7 +909,7 @@ const description = "View boat details on BoatHaven";
       } catch (err: any) {
         showError(err.message || "Failed to create booking.");
         bookBtn.disabled = false;
-        bookBtn.textContent = "Request to book";
+        bookBtn.textContent = "Continue Booking";
       }
     });
   });

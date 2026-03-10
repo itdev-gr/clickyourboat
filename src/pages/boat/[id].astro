@@ -391,7 +391,7 @@ const priceUnit = boat.priceUnit || "/ day";
               data-boat-title={boat.title || boat.listingTitle || "Boat"}
               data-boat-image={images[0] || ""}
             >
-              {boat.instantBooking ? "Book now" : "Request to book"}
+              {boat.instantBooking ? "Book now" : "Continue Booking"}
             </button>
 
             <p class="text-xs text-text-muted text-center">You won't be charged yet</p>
@@ -643,7 +643,7 @@ const priceUnit = boat.priceUnit || "/ day";
       console.error("Booking error:", err);
       showError(err.message || "Failed to create booking. Please try again.");
       bookBtn.disabled = false;
-      bookBtn.textContent = "Request to book";
+      bookBtn.textContent = "Continue Booking";
     }
   });
 
