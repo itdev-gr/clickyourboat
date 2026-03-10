@@ -1,20 +1,14 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { trendingBoats, allBoats } from "../../lib/mock-boats";
-import type { BoatListing as MockBoat } from "../../lib/mock-boats";
 
 export async function getStaticPaths() {
-  const allMockBoats = [...trendingBoats, ...allBoats];
-  const paths = allMockBoats.map((b) => ({ params: { id: b.id } }));
+  const paths: { params: { id: string } }[] = [];
 
-  // Also try to get Firestore boat IDs
   try {
     const { searchBoats } = await import("../../lib/api");
     const firestoreBoats = await searchBoats({}, 100);
     firestoreBoats.forEach((b: any) => {
-      if (!paths.some((p) => p.params.id === b.id)) {
-        paths.push({ params: { id: b.id } });
-      }
+      paths.push({ params: { id: b.id } });
     });
   } catch {
     // Firestore unavailable
@@ -25,25 +19,12 @@ export async function getStaticPaths() {
 
 const { id } = Astro.params;
 
-// Try Firestore first, fall back to mock data
 let boat: any = null;
 try {
   const { getBoatListing } = await import("../../lib/api");
   boat = await getBoatListing(id!);
 } catch {
   // Firestore unavailable
-}
-
-// Fallback to mock data
-if (!boat) {
-  const allMockBoats = [...trendingBoats, ...allBoats];
-  const mockBoat = allMockBoats.find((b) => b.id === id);
-  if (mockBoat) {
-    boat = {
-      ...mockBoat,
-      description: `Experience an unforgettable adventure aboard the ${mockBoat.title}. Located in ${mockBoat.location}, this ${mockBoat.type} boat is perfect for your next trip on the water.`,
-    };
-  }
 }
 
 if (!boat) {

@@ -2,11 +2,38 @@
 import Layout from "../layouts/Layout.astro";
 import Sidebar from "../components/boat-rental/Sidebar.astro";
 import BoatCard from "../components/boat-rental/BoatCard.astro";
-import { trendingBoats as mockTrending, allBoats as mockAll } from "../lib/mock-boats";
+import type { BoatListing } from "../lib/mock-boats";
 
-// Try Firestore, fall back to mock data
-let trendingBoats = mockTrending;
-let allBoats = mockAll;
+let trendingBoats: BoatListing[] = [];
+let allBoats: BoatListing[] = [];
+
+const mapBoat = (b: any): BoatListing => ({
+  id: b.id,
+  type: b.type || b.boatType || "motor",
+  location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
+  rating: b.rating || 0,
+  reviewCount: b.reviewCount || 0,
+  title: b.title || b.listingTitle || b.boatName || "Boat",
+  images: b.images || [],
+  tags: b.tags || [],
+  specs: b.specs || "",
+  perks: b.perks || [],
+  price: b.price || b.pricePerDay || 0,
+  priceUnit: b.priceUnit || "/ day",
+  instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
+  discountOffer: b.discountOffer || false,
+  isNew: b.isNew || false,
+  capacity: b.capacity || 0,
+  cabins: b.cabins || 0,
+  berths: b.berths || 0,
+  length: b.length || 0,
+  enginePower: b.enginePower || b.horsepower || 0,
+  year: b.year || b.yearOfConstruction || 0,
+  superOwner: b.superOwner || false,
+  idealFor: b.idealFor || [],
+  equipment: b.equipment || [],
+  ownerId: b.ownerId || "",
+});
 
 try {
   const { getFeaturedBoats, searchBoats } = await import("../lib/api");
@@ -14,41 +41,10 @@ try {
     getFeaturedBoats(3),
     searchBoats({}, 20),
   ]);
-  // Only use Firestore data if boats exist
-  if (fbAll.length > 0) {
-    // Map Firestore boats to the BoatCard-compatible format
-    const mapBoat = (b: any) => ({
-      id: b.id,
-      type: b.type || b.boatType || "motor",
-      location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
-      rating: b.rating || 0,
-      reviewCount: b.reviewCount || 0,
-      title: b.title || b.listingTitle || b.boatName || "Boat",
-      images: b.images || [],
-      tags: b.tags || [],
-      specs: b.specs || "",
-      perks: b.perks || [],
-      price: b.price || b.pricePerDay || 0,
-      priceUnit: b.priceUnit || "/ day",
-      instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
-      discountOffer: b.discountOffer || false,
-      isNew: b.isNew || false,
-      capacity: b.capacity || 0,
-      cabins: b.cabins || 0,
-      berths: b.berths || 0,
-      length: b.length || 0,
-      enginePower: b.enginePower || b.horsepower || 0,
-      year: b.year || b.yearOfConstruction || 0,
-      superOwner: b.superOwner || false,
-      idealFor: b.idealFor || [],
-      equipment: b.equipment || [],
-      ownerId: b.ownerId || "",
-    });
-    if (fbFeatured.length > 0) trendingBoats = fbFeatured.map(mapBoat);
-    allBoats = fbAll.map(mapBoat);
-  }
+  trendingBoats = fbFeatured.map(mapBoat);
+  allBoats = fbAll.map(mapBoat);
 } catch {
-  // Firestore unavailable — mock data used
+  // Firestore unavailable
 }
 
 const title = "Boat Rental — Find the Perfect Boat | BoatHaven";
