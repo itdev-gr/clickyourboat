@@ -24,6 +24,7 @@ export interface BoatListing {
   superOwner: boolean;
   idealFor: string[];
   equipment: string[];
+  ownerId?: string;
 }
 
 export const trendingBoats: BoatListing[] = [

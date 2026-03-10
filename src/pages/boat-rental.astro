@@ -42,6 +42,7 @@ try {
       superOwner: b.superOwner || false,
       idealFor: b.idealFor || [],
       equipment: b.equipment || [],
+      ownerId: b.ownerId || "",
     });
     if (fbFeatured.length > 0) trendingBoats = fbFeatured.map(mapBoat);
     allBoats = fbAll.map(mapBoat);
@@ -728,8 +729,21 @@ const description =
     }
   }
 
+  // Hide/show own boats based on auth state
+  function toggleOwnBoats(uid: string | null) {
+    document.querySelectorAll(".boat-card").forEach((card) => {
+      const ownerId = card.getAttribute("data-owner-id");
+      if (ownerId && uid && ownerId === uid) {
+        (card as HTMLElement).style.display = "none";
+      } else {
+        (card as HTMLElement).style.display = "";
+      }
+    });
+  }
+
   onAuthStateChanged(auth, (user) => {
     currentUser = user;
+    toggleOwnBoats(user?.uid || null);
     if (user) {
       loadUserFavorites(user.uid);
     } else {

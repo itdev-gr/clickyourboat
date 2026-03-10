@@ -23,6 +23,9 @@ export async function searchBoats(params: SearchParams, maxResults = 20): Promis
   const boatsRef = collection(db, "boats");
   const constraints: Parameters<typeof query>[1][] = [];
 
+  // Only return published boats
+  constraints.push(where("status", "==", "published"));
+
   if (params.type) {
     constraints.push(where("type", "==", params.type));
   }
@@ -49,6 +52,7 @@ export async function searchBoats(params: SearchParams, maxResults = 20): Promis
 export async function getFeaturedBoats(count = 6): Promise<Boat[]> {
   const q = query(
     collection(db, "boats"),
+    where("status", "==", "published"),
     orderBy("rating", "desc"),
     limit(count)
   );
