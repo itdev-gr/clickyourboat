@@ -322,8 +322,21 @@ export async function updateListingStatus(boatId: string, status: string): Promi
   await updateDoc(doc(db, "boats", boatId), { status, updatedAt: serverTimestamp() });
 }
 
-export async function updateUserType(uid: string, type: "user" | "admin"): Promise<void> {
+export async function updateUserType(uid: string, type: "user" | "owner" | "admin"): Promise<void> {
   await updateDoc(doc(db, "users", uid), { type });
+}
+
+export async function promoteToOwnerIfNeeded(boatId: string): Promise<void> {
+  const boatSnap = await getDoc(doc(db, "boats", boatId));
+  if (!boatSnap.exists()) return;
+  const ownerId = boatSnap.data()?.ownerId;
+  if (!ownerId) return;
+  const userSnap = await getDoc(doc(db, "users", ownerId));
+  if (!userSnap.exists()) return;
+  const currentType = userSnap.data()?.type;
+  if (currentType === "user") {
+    await updateDoc(doc(db, "users", ownerId), { type: "owner" });
+  }
 }
 
 export async function adminDeleteUser(uid: string): Promise<void> {

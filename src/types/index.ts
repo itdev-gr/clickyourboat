@@ -210,7 +210,7 @@ export interface UserProfile {
   firstName: string | null;
   lastName: string | null;
   photoURL: string | null;
-  type: "user" | "admin";
+  type: "user" | "owner" | "admin";
   createdAt: any;
   lastLoginAt: any;
 }

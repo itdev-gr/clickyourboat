@@ -123,7 +123,7 @@ const boatTypes = [
               <a href="/account" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Profile</a>
               <a href="/messages" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Messages</a>
               <a href="/favorites" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Favorites</a>
-              <a href="/list-your-boat" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">My Listings</a>
+              <a href="/list-your-boat" id="my-listings-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">My Listings</a>
               <a href="/admin" id="admin-panel-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">Admin Panel</a>
               <hr class="my-1 border-gray-100" />
               <button id="logout-btn" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">Log out</button>
@@ -258,7 +258,7 @@ const boatTypes = [
         <a href="/favorites" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
           Favorites
         </a>
-        <a href="/list-your-boat" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
+        <a href="/list-your-boat" id="mobile-my-listings-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
           My Listings
         </a>
         <a href="/admin" id="mobile-admin-panel-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
@@ -432,20 +432,29 @@ const boatTypes = [
       if (mobileAvatar) mobileAvatar.textContent = initials;
       if (mobileName) mobileName.textContent = displayName;
 
-      // Check if user is admin and show admin link
+      // Check user type and show role-based links
       try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data()?.type === "admin") {
-          document.getElementById("admin-panel-link")?.classList.remove("hidden");
-          document.getElementById("admin-panel-link")?.classList.add("block");
-          document.getElementById("mobile-admin-panel-link")?.classList.remove("hidden");
-          document.getElementById("admin-nav-btn")?.classList.remove("hidden");
-          document.getElementById("admin-nav-btn")?.classList.add("inline-flex");
-          document.getElementById("mobile-admin-nav-btn")?.classList.remove("hidden");
-          document.getElementById("mobile-admin-nav-btn")?.classList.add("block");
+        if (userDoc.exists()) {
+          const userType = userDoc.data()?.type;
+          if (userType === "owner" || userType === "admin") {
+            document.getElementById("my-listings-link")?.classList.remove("hidden");
+            document.getElementById("my-listings-link")?.classList.add("block");
+            document.getElementById("mobile-my-listings-link")?.classList.remove("hidden");
+            document.getElementById("mobile-my-listings-link")?.classList.add("block");
+          }
+          if (userType === "admin") {
+            document.getElementById("admin-panel-link")?.classList.remove("hidden");
+            document.getElementById("admin-panel-link")?.classList.add("block");
+            document.getElementById("mobile-admin-panel-link")?.classList.remove("hidden");
+            document.getElementById("admin-nav-btn")?.classList.remove("hidden");
+            document.getElementById("admin-nav-btn")?.classList.add("inline-flex");
+            document.getElementById("mobile-admin-nav-btn")?.classList.remove("hidden");
+            document.getElementById("mobile-admin-nav-btn")?.classList.add("block");
+          }
         }
       } catch (e) {
-        // silently ignore — user just won't see admin link
+        // silently ignore — user just won't see role-based links
       }
     } else {
       loggedOut?.classList.remove("hidden");
