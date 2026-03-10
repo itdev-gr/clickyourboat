@@ -252,8 +252,12 @@ const description = "Review your booking options, select insurance, and confirm 
                   <span class="text-text font-medium" id="price-weather-val">&euro;0</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-text-muted">Service Fee and Taxes</span>
-                  <span class="text-text font-medium" id="price-service">&euro;10</span>
+                  <span class="text-text-muted">Service Fee</span>
+                  <span class="text-text font-medium" id="price-service">&euro;0</span>
+                </div>
+                <div id="price-platform-row" class="hidden flex justify-between">
+                  <span class="text-text-muted">Platform Fee</span>
+                  <span class="text-text font-medium" id="price-platform-val">&euro;0</span>
                 </div>
                 <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
                   <span class="font-bold text-text">Total</span>
@@ -261,22 +265,6 @@ const description = "Review your booking options, select insurance, and confirm 
                 </div>
               </div>
 
-              <div class="mt-4 pt-4 border-t border-gray-100 space-y-2 text-sm">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="font-semibold text-text">Down Payment</p>
-                    <p class="text-xs text-text-muted">To be paid now</p>
-                  </div>
-                  <span class="font-bold text-text" id="price-down">&euro;0</span>
-                </div>
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="font-semibold text-text">Balance payment</p>
-                    <p class="text-xs text-text-muted" id="price-balance-date">To be paid before your trip</p>
-                  </div>
-                  <span class="font-bold text-text" id="price-balance">&euro;0</span>
-                </div>
-              </div>
             </div>
 
           </div>
@@ -291,7 +279,7 @@ const description = "Review your booking options, select insurance, and confirm 
   import { auth, db } from "../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { doc, getDoc } from "firebase/firestore";
-  import { getBoatListing, createOrder, sendBookingNotification } from "../lib/api";
+  import { getBoatListing, createOrder, sendBookingNotification, getChargeSettings } from "../lib/api";
 
   const $ = (id: string) => document.getElementById(id);
 
@@ -332,7 +320,11 @@ const description = "Review your booking options, select insurance, and confirm 
       const endDate = new Date(endDateStr!);
       const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
       const charterPrice = days * price;
-      const serviceFee = 10;
+
+      // Load charge settings from Firebase
+      const charges = await getChargeSettings();
+      const serviceFee = charges.serviceFee;
+      const platformFeePercent = charges.platformFeePercent;
 
       // Back link
       const backLink = $("back-link") as HTMLAnchorElement;
@@ -383,11 +375,9 @@ const description = "Review your booking options, select insurance, and confirm 
       function recalcPrices() {
         const insuranceTot = insuranceCostPerDay * days;
         const weatherTot = weatherCostPerDay * days;
-        const total = charterPrice + insuranceTot + weatherTot + serviceFee;
-
-        // Down payment: ~27% of total
-        const downPayment = Math.round(total * 0.27);
-        const balance = total - downPayment;
+        const subtotal = charterPrice + insuranceTot + weatherTot;
+        const platformFee = Math.round(subtotal * platformFeePercent) / 100;
+        const total = subtotal + serviceFee + platformFee;
 
         // Update price sidebar
         const fmt = (n: number) => "\u20AC" + n.toLocaleString();
@@ -420,21 +410,19 @@ const description = "Review your booking options, select insurance, and confirm 
         const serviceEl = $("price-service");
         if (serviceEl) serviceEl.textContent = fmt(serviceFee);
 
+        const platRow = $("price-platform-row");
+        const platVal = $("price-platform-val");
+        if (platformFee > 0) {
+          platRow?.classList.remove("hidden");
+          platRow?.classList.add("flex");
+          if (platVal) platVal.textContent = fmt(platformFee);
+        } else {
+          platRow?.classList.add("hidden");
+          platRow?.classList.remove("flex");
+        }
+
         const totalEl = $("price-total");
         if (totalEl) totalEl.textContent = fmt(total);
-
-        const downEl = $("price-down");
-        if (downEl) downEl.textContent = fmt(downPayment);
-        const balanceEl = $("price-balance");
-        if (balanceEl) balanceEl.textContent = fmt(balance);
-
-        // Balance date (30 days before start)
-        const balanceDateEl = $("price-balance-date");
-        if (balanceDateEl) {
-          const bd = new Date(startDate);
-          bd.setDate(bd.getDate() - 30);
-          balanceDateEl.textContent = `To be paid before ${fmtDate(bd)}`;
-        }
 
         // Confirm button
         const confirmBtnAmt = $("confirm-btn-amount");
@@ -514,7 +502,8 @@ const description = "Review your booking options, select insurance, and confirm 
 
         try {
           const boatImage = images[0] || "";
-          const totalPrice = charterPrice + (insuranceCostPerDay * days) + (weatherCostPerDay * days) + serviceFee;
+          const subtot = charterPrice + (insuranceCostPerDay * days) + (weatherCostPerDay * days);
+          const totalPrice = subtot + serviceFee + Math.round(subtot * platformFeePercent) / 100;
 
           await createOrder({
             boatId: boatId!,
