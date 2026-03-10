@@ -3,10 +3,15 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
 
-const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY);
+function getStripe() {
+  const key = import.meta.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY is not configured");
+  return new Stripe(key);
+}
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const stripe = getStripe();
     const body = await request.json();
     const {
       boatId,
