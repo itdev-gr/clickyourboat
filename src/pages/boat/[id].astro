@@ -1,22 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-export async function getStaticPaths() {
-  const paths: { params: { id: string } }[] = [];
-
-  try {
-    const { searchBoats } = await import("../../lib/api");
-    const firestoreBoats = await searchBoats({}, 100);
-    firestoreBoats.forEach((b: any) => {
-      paths.push({ params: { id: b.id } });
-    });
-  } catch {
-    // Firestore unavailable
-  }
-
-  return paths;
-}
-
 const { id } = Astro.params;
 
 let boat: any = null;

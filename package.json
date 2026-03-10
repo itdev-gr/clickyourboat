@@ -9,9 +9,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.5",
+    "@stripe/stripe-js": "^8.9.0",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.17.1",
     "firebase": "^12.10.0",
+    "stripe": "^20.4.1",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
