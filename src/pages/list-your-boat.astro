@@ -1588,7 +1588,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
       // Section completion
-      if (data.completedSections) { updateProgress(data.completedSections); }
+      if (data.completedSections) {
+        completedSectionsSet = new Set(data.completedSections);
+        updateProgress(data.completedSections);
+      }
       showForm();
       (window as any).showWizardSection("general");
     } catch (err) { console.error("Failed to load boat:", err); alert("Failed to load boat data."); }
