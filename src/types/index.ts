@@ -231,6 +231,34 @@ export interface Order {
 
 export type BoatType = Boat["type"] | "luxury" | "party";
 
+export interface BoatCardListing {
+  id: string;
+  type: "motor" | "sailing" | "catamaran" | "yacht" | "luxury" | "party";
+  location: string;
+  rating: number;
+  reviewCount: number;
+  title: string;
+  images: string[];
+  tags: { label: string; icon: "skipper" | "no-skipper" | "boat-type" | "super-owner" | "no-licence" }[];
+  specs: string;
+  perks: ("fuel" | "free-cancel" | "flexible-cancel")[];
+  price: number;
+  priceUnit: string;
+  instantBooking: boolean;
+  discountOffer: boolean;
+  isNew: boolean;
+  capacity: number;
+  cabins: number;
+  berths: number;
+  length: number;
+  enginePower: number;
+  year: number;
+  superOwner: boolean;
+  idealFor: string[];
+  equipment: string[];
+  ownerId?: string;
+}
+
 export interface SearchParams {
   location?: string;
   startDate?: string;

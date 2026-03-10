@@ -2,12 +2,12 @@
 import Layout from "../layouts/Layout.astro";
 import Sidebar from "../components/boat-rental/Sidebar.astro";
 import BoatCard from "../components/boat-rental/BoatCard.astro";
-import type { BoatListing } from "../lib/mock-boats";
+import type { BoatCardListing } from "../types";
 
-let trendingBoats: BoatListing[] = [];
-let allBoats: BoatListing[] = [];
+let trendingBoats: BoatCardListing[] = [];
+let allBoats: BoatCardListing[] = [];
 
-const mapBoat = (b: any): BoatListing => ({
+const mapBoat = (b: any): BoatCardListing => ({
   id: b.id,
   type: b.type || b.boatType || "motor",
   location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
