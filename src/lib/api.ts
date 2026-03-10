@@ -365,6 +365,20 @@ export async function getUserOrders(userId: string): Promise<any[]> {
   }));
 }
 
+export async function getOwnerOrders(ownerId: string): Promise<any[]> {
+  const q = query(
+    collection(db, "orders"),
+    where("ownerId", "==", ownerId),
+    orderBy("createdAt", "desc")
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+    createdAt: d.data().createdAt?.toDate?.() || null,
+  }));
+}
+
 export async function getAllOrders(): Promise<any[]> {
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
