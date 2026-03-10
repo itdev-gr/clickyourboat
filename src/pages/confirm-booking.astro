@@ -1,0 +1,614 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Confirm and Pay — BoatHaven";
+const description = "Review your booking options, select insurance, and confirm your reservation.";
+---
+
+<Layout title={title} description={description}>
+  <!-- Loading state -->
+  <div id="page-loading" class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm text-text-muted">Loading booking details...</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div id="page-error" class="hidden min-h-[60vh] flex items-center justify-center px-4">
+    <div class="text-center max-w-md">
+      <h1 class="text-2xl font-bold text-text mb-2">Booking unavailable</h1>
+      <p id="page-error-text" class="text-text-muted mb-6">Missing booking information. Please go back and select your dates.</p>
+      <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Browse boats</a>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div id="page-content" class="hidden">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+
+      <!-- Back + Title -->
+      <div class="flex items-center gap-3 mb-8">
+        <a id="back-link" href="/boat-rental" class="h-10 w-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
+          <svg class="h-5 w-5 text-text" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        </a>
+        <h1 class="text-2xl font-bold text-text">Confirm and pay</h1>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-12">
+
+        <!-- ===== Left Column ===== -->
+        <div class="min-w-0 space-y-8">
+
+          <!-- Rental Type -->
+          <section id="rental-type-section" class="hidden">
+            <h2 class="text-lg font-bold text-text mb-4">Rental type</h2>
+            <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
+              <label class="rental-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-primary bg-primary/5 transition-colors">
+                <input type="radio" name="rental-type" value="without-skipper" class="mt-1 accent-primary" checked />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">Without skipper</p>
+                  <p class="text-xs text-text-muted mt-0.5">No license required, even if you're the skipper.</p>
+                </div>
+              </label>
+              <label id="skipper-option" class="rental-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors border-t border-gray-200">
+                <input type="radio" name="rental-type" value="with-skipper" class="mt-1 accent-primary" />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">With a skipper &middot; <span id="skipper-price-label" class="text-text-muted font-normal">+&euro;100/ day</span></p>
+                  <p class="text-xs text-text-muted mt-0.5">You will be accompanied by a skipper.</p>
+                </div>
+              </label>
+            </div>
+          </section>
+
+          <!-- Cruise Insurance -->
+          <section>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-bold text-text">Cruise insurance</h2>
+            </div>
+            <p class="text-sm text-text-muted mb-3">Get a refund in case of unforeseen circumstances (cancellation, accident, illness, etc.).</p>
+
+            <div class="bg-primary/5 border border-primary/20 rounded-lg px-4 py-2.5 mb-4 flex items-center gap-2">
+              <svg class="h-5 w-5 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+              <p class="text-sm text-primary font-medium">Cruise insurance applies to the entire crew.</p>
+            </div>
+
+            <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
+              <!-- Multi-risk -->
+              <label class="insurance-option flex items-start gap-3 px-4 py-4 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors relative">
+                <input type="radio" name="insurance" value="multi-risk" class="mt-1 accent-primary" />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <p class="text-sm font-semibold text-text">Multi-risk</p>
+                    <span class="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase">Recommended</span>
+                  </div>
+                  <p class="text-sm font-semibold text-primary mb-2" id="insurance-multi-price">&euro;47 / day</p>
+                  <div class="space-y-1 text-sm text-text-muted">
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Cancellation or postponement</div>
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Delayed departure</div>
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Medical assistance</div>
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Repatriation</div>
+                  </div>
+                  <a href="#" class="text-xs font-semibold text-primary hover:underline mt-2 inline-block">Information document</a>
+                </div>
+              </label>
+
+              <div class="border-t border-gray-200"></div>
+
+              <!-- Assistance -->
+              <label class="insurance-option flex items-start gap-3 px-4 py-4 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="insurance" value="assistance" class="mt-1 accent-primary" />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text mb-1">Assistance</p>
+                  <p class="text-sm font-semibold text-primary mb-2" id="insurance-assist-price">&euro;29 / day</p>
+                  <div class="space-y-1 text-sm text-text-muted">
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Cancellation or postponement</div>
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Delayed departure</div>
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Medical assistance</div>
+                    <div class="flex items-center gap-2"><svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Repatriation</div>
+                  </div>
+                  <a href="#" class="text-xs font-semibold text-primary hover:underline mt-2 inline-block">Information document</a>
+                </div>
+              </label>
+
+              <div class="border-t border-gray-200"></div>
+
+              <!-- No insurance -->
+              <label class="insurance-option flex items-center gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="insurance" value="none" class="accent-primary" checked />
+                <p class="text-sm text-text-muted">I don't want to be insured</p>
+              </label>
+            </div>
+          </section>
+
+          <!-- Weather Guarantee -->
+          <section>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-bold text-text">Weather Guarantee</h2>
+              <span class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Guarantee</span>
+            </div>
+            <p class="text-sm text-text-muted mb-3">Be fully refunded if the weather does not allow you to navigate due to unexpected weather conditions.</p>
+
+            <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
+              <label class="weather-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="weather" value="yes" class="mt-1 accent-primary" />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">I wish to be fully refunded in case of weather cancellation</p>
+                  <p class="text-sm font-semibold text-primary mt-0.5" id="weather-price">&euro;14 / day</p>
+                  <p class="text-xs text-text-muted mt-0.5">You will be fully refunded after the owner confirms.</p>
+                </div>
+              </label>
+
+              <div class="border-t border-gray-200"></div>
+
+              <label class="weather-option flex items-center gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="weather" value="no" class="accent-primary" checked />
+                <p class="text-sm text-text-muted">I do not wish to be insured</p>
+              </label>
+            </div>
+          </section>
+
+          <!-- Choose how to pay -->
+          <section>
+            <h2 class="text-lg font-bold text-text mb-4">Choose how to pay</h2>
+            <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
+              <label class="pay-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="payment-plan" value="full" class="mt-1 accent-primary" />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">Pay the total amount</p>
+                  <p class="text-sm font-semibold text-primary mt-0.5" id="pay-full-amount">&euro;0</p>
+                  <p class="text-xs text-text-muted mt-0.5">Pay the total amount of the booking today.</p>
+                </div>
+              </label>
+
+              <div class="border-t border-gray-200"></div>
+
+              <label class="pay-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-primary bg-primary/5 transition-colors">
+                <input type="radio" name="payment-plan" value="split" class="mt-1 accent-primary" checked />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">Pay in two parts without any extra fee</p>
+                  <p class="text-sm font-semibold text-primary mt-0.5" id="pay-split-down">&euro;0</p>
+                  <p class="text-xs text-text-muted mt-0.5" id="pay-split-desc">Pay &euro;0 now and the balance (&euro;0) before your trip.</p>
+                </div>
+              </label>
+            </div>
+          </section>
+
+          <!-- Cancellation Conditions -->
+          <section>
+            <h2 class="text-lg font-bold text-text mb-2">Cancellation conditions</h2>
+            <div class="text-sm text-text-muted space-y-1 mb-4">
+              <p>Free cancellation available for the next 48h.</p>
+              <p>Full refund: Get back all of the reservation amount, up to the day before booking, excluding service charges and commission.</p>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <svg class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                </div>
+                <p class="text-sm text-text">Free cancellation in the next 48h</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <svg class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+                </div>
+                <p class="text-sm text-text">Customer service available 24/7</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <svg class="h-4 w-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+                </div>
+                <p class="text-sm text-text">Payment 100% secure</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
+                  <svg class="h-4 w-4 text-pink-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
+                <p class="text-sm text-text">4.9/5 from over 500,000 verified reviews</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Terms & Confirm Button -->
+          <section class="pb-8">
+            <p class="text-xs text-text-muted mb-4">
+              By selecting the button below, you unconditionally agree to the
+              <a href="/terms" class="underline hover:text-text">Terms &amp; Conditions</a>,
+              <a href="/terms" class="underline hover:text-text">Cancellation conditions</a>,
+              <a href="/terms" class="underline hover:text-text">Insurance conditions</a>. You also agree to pay the total amount of the reservation.
+            </p>
+
+            <button id="confirm-btn"
+              class="w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Confirm and pay &middot; <span id="confirm-btn-amount">&euro;0</span>
+            </button>
+
+            <div id="confirm-success" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+              <p class="text-sm text-green-800 font-medium">Booking confirmed!</p>
+              <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href="/dashboard" class="underline font-semibold">View your bookings</a></p>
+            </div>
+            <div id="confirm-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p class="text-sm text-red-800 font-medium" id="confirm-error-text">Something went wrong</p>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ===== Right Sidebar ===== -->
+        <div class="hidden lg:block">
+          <div class="sticky top-20 space-y-4">
+
+            <!-- Boat Card -->
+            <div class="bg-white rounded-2xl border border-gray-200 p-5">
+              <div class="flex gap-4 mb-4">
+                <div class="h-20 w-20 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+                  <img id="sidebar-boat-img" src="" alt="" class="h-full w-full object-cover hidden" />
+                </div>
+                <div class="min-w-0">
+                  <p id="sidebar-boat-model" class="text-sm font-bold text-text truncate"></p>
+                  <p id="sidebar-boat-title" class="text-sm text-text-muted truncate"></p>
+                  <p id="sidebar-boat-location" class="text-xs text-text-muted mt-0.5 truncate"></p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-4 pb-4 border-b border-gray-100" id="sidebar-owner-row">
+                <span id="sidebar-owner-name" class="font-medium text-text"></span>
+              </div>
+
+              <div class="flex items-start gap-3 text-sm text-text">
+                <svg class="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                <div>
+                  <p id="sidebar-date-from"></p>
+                  <p id="sidebar-date-to"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Details -->
+            <div class="bg-white rounded-2xl border border-gray-200 p-5">
+              <h3 class="text-base font-bold text-text mb-4">Price details</h3>
+
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-text-muted">Charter price</span>
+                  <span class="text-text font-medium" id="price-charter">&euro;0</span>
+                </div>
+                <div id="price-insurance-row" class="hidden flex justify-between">
+                  <span class="text-text-muted" id="price-insurance-label">Insurance</span>
+                  <span class="text-text font-medium" id="price-insurance-val">&euro;0</span>
+                </div>
+                <div id="price-weather-row" class="hidden flex justify-between">
+                  <span class="text-text-muted">Weather Guarantee</span>
+                  <span class="text-text font-medium" id="price-weather-val">&euro;0</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-text-muted">Service Fee and Taxes</span>
+                  <span class="text-text font-medium" id="price-service">&euro;10</span>
+                </div>
+                <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
+                  <span class="font-bold text-text">Total</span>
+                  <span class="font-bold text-text" id="price-total">&euro;0</span>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-gray-100 space-y-2 text-sm">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="font-semibold text-text">Down Payment</p>
+                    <p class="text-xs text-text-muted">To be paid now</p>
+                  </div>
+                  <span class="font-bold text-text" id="price-down">&euro;0</span>
+                </div>
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="font-semibold text-text">Balance payment</p>
+                    <p class="text-xs text-text-muted" id="price-balance-date">To be paid before your trip</p>
+                  </div>
+                  <span class="font-bold text-text" id="price-balance">&euro;0</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { auth, db } from "../lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import { doc, getDoc } from "firebase/firestore";
+  import { getBoatListing, createOrder, sendBookingNotification } from "../lib/api";
+
+  const $ = (id: string) => document.getElementById(id);
+
+  // Parse URL params
+  const params = new URLSearchParams(window.location.search);
+  const boatId = params.get("boatId");
+  const startDateStr = params.get("startDate");
+  const endDateStr = params.get("endDate");
+
+  if (!boatId || !startDateStr || !endDateStr) {
+    $("page-loading")?.classList.add("hidden");
+    $("page-error")?.classList.remove("hidden");
+  } else {
+    init();
+  }
+
+  async function init() {
+    try {
+      const boat = await getBoatListing(boatId!);
+      if (!boat) {
+        $("page-loading")?.classList.add("hidden");
+        $("page-error")?.classList.remove("hidden");
+        return;
+      }
+
+      const price = boat.price || boat.pricePerDay || 0;
+      const boatTitle = boat.listingTitle || boat.title || boat.boatName || [boat.manufacturer, boat.model].filter(Boolean).join(" ") || "Boat";
+      const modelStr = [boat.manufacturer, boat.model].filter(Boolean).join(" ") || boatTitle;
+      const city = boat.city || "";
+      const harbour = boat.harbour || "";
+      const locationStr = [city, harbour].filter(Boolean).join(", ") || "Location not specified";
+      const images: string[] = boat.images || [];
+      const ownerId = boat.ownerId || "";
+      const skipperAvailable = boat.skipperAvailable || boat.skipper === "both" || boat.skipper === "with-skipper" || false;
+      const year = boat.year || boat.yearOfConstruction || 0;
+
+      const startDate = new Date(startDateStr!);
+      const endDate = new Date(endDateStr!);
+      const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+      const charterPrice = days * price;
+      const serviceFee = 10;
+
+      // Back link
+      const backLink = $("back-link") as HTMLAnchorElement;
+      if (backLink) backLink.href = `/boat/${boatId}`;
+
+      // Show rental type if skipper available
+      if (skipperAvailable) {
+        $("rental-type-section")?.classList.remove("hidden");
+      }
+
+      // Sidebar: boat info
+      const imgEl = $("sidebar-boat-img") as HTMLImageElement;
+      if (images[0] && imgEl) {
+        imgEl.src = images[0];
+        imgEl.classList.remove("hidden");
+      }
+      const modelEl = $("sidebar-boat-model");
+      if (modelEl) modelEl.textContent = modelStr + (year ? ` (${year})` : "");
+      const titleEl = $("sidebar-boat-title");
+      if (titleEl) titleEl.textContent = boatTitle !== modelStr ? boatTitle : "";
+      const locEl = $("sidebar-boat-location");
+      if (locEl) locEl.textContent = locationStr;
+
+      // Owner name
+      if (ownerId) {
+        try {
+          const ownerDoc = await getDoc(doc(db, "users", ownerId));
+          if (ownerDoc.exists()) {
+            const ownerData = ownerDoc.data();
+            const ownerName = ownerData.displayName || [ownerData.firstName, ownerData.lastName].filter(Boolean).join(" ") || "Owner";
+            const nameEl = $("sidebar-owner-name");
+            if (nameEl) nameEl.textContent = `Offered by ${ownerName}`;
+          }
+        } catch {}
+      }
+
+      // Dates
+      const fmtDate = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+      const fromEl = $("sidebar-date-from");
+      const toEl = $("sidebar-date-to");
+      if (fromEl) fromEl.textContent = `From ${fmtDate(startDate)}`;
+      if (toEl) toEl.textContent = `To ${fmtDate(endDate)}`;
+
+      // Price calculation state
+      let insuranceCostPerDay = 0;
+      let weatherCostPerDay = 0;
+
+      function recalcPrices() {
+        const insuranceTot = insuranceCostPerDay * days;
+        const weatherTot = weatherCostPerDay * days;
+        const total = charterPrice + insuranceTot + weatherTot + serviceFee;
+
+        // Split payment: ~27% down
+        const downPayment = Math.round(total * 0.27);
+        const balance = total - downPayment;
+
+        // Determine which payment plan is selected
+        const paymentPlan = (document.querySelector('input[name="payment-plan"]:checked') as HTMLInputElement)?.value || "split";
+        const amountDue = paymentPlan === "full" ? total : downPayment;
+
+        // Update price sidebar
+        const fmt = (n: number) => "\u20AC" + n.toLocaleString();
+
+        const charterEl = $("price-charter");
+        if (charterEl) charterEl.textContent = fmt(charterPrice);
+
+        const insRow = $("price-insurance-row");
+        const insVal = $("price-insurance-val");
+        if (insuranceTot > 0) {
+          insRow?.classList.remove("hidden");
+          insRow?.classList.add("flex");
+          if (insVal) insVal.textContent = fmt(insuranceTot);
+        } else {
+          insRow?.classList.add("hidden");
+          insRow?.classList.remove("flex");
+        }
+
+        const weaRow = $("price-weather-row");
+        const weaVal = $("price-weather-val");
+        if (weatherTot > 0) {
+          weaRow?.classList.remove("hidden");
+          weaRow?.classList.add("flex");
+          if (weaVal) weaVal.textContent = fmt(weatherTot);
+        } else {
+          weaRow?.classList.add("hidden");
+          weaRow?.classList.remove("flex");
+        }
+
+        const serviceEl = $("price-service");
+        if (serviceEl) serviceEl.textContent = fmt(serviceFee);
+
+        const totalEl = $("price-total");
+        if (totalEl) totalEl.textContent = fmt(total);
+
+        const downEl = $("price-down");
+        if (downEl) downEl.textContent = fmt(downPayment);
+        const balanceEl = $("price-balance");
+        if (balanceEl) balanceEl.textContent = fmt(balance);
+
+        // Balance date (30 days before start)
+        const balanceDateEl = $("price-balance-date");
+        if (balanceDateEl) {
+          const bd = new Date(startDate);
+          bd.setDate(bd.getDate() - 30);
+          balanceDateEl.textContent = `To be paid before ${fmtDate(bd)}`;
+        }
+
+        // Pay full amount
+        const payFullEl = $("pay-full-amount");
+        if (payFullEl) payFullEl.textContent = fmt(total);
+        const paySplitDownEl = $("pay-split-down");
+        if (paySplitDownEl) paySplitDownEl.textContent = fmt(downPayment);
+        const paySplitDescEl = $("pay-split-desc");
+        if (paySplitDescEl) paySplitDescEl.textContent = `Pay ${fmt(downPayment)} now and the balance (${fmt(balance)}) before ${fmtDate(new Date(startDate.getTime() - 30 * 86400000))}.`;
+
+        // Confirm button
+        const confirmBtnAmt = $("confirm-btn-amount");
+        if (confirmBtnAmt) confirmBtnAmt.textContent = fmt(amountDue);
+      }
+
+      // Radio change handlers - insurance
+      document.querySelectorAll('input[name="insurance"]').forEach(r => {
+        r.addEventListener("change", () => {
+          const val = (r as HTMLInputElement).value;
+          if (val === "multi-risk") insuranceCostPerDay = 47;
+          else if (val === "assistance") insuranceCostPerDay = 29;
+          else insuranceCostPerDay = 0;
+          highlightRadioGroup("insurance-option", "insurance");
+          recalcPrices();
+        });
+      });
+
+      // Radio change handlers - weather
+      document.querySelectorAll('input[name="weather"]').forEach(r => {
+        r.addEventListener("change", () => {
+          weatherCostPerDay = (r as HTMLInputElement).value === "yes" ? 14 : 0;
+          highlightRadioGroup("weather-option", "weather");
+          recalcPrices();
+        });
+      });
+
+      // Radio change handlers - rental type
+      document.querySelectorAll('input[name="rental-type"]').forEach(r => {
+        r.addEventListener("change", () => {
+          highlightRadioGroup("rental-option", "rental-type");
+        });
+      });
+
+      // Radio change handlers - payment plan
+      document.querySelectorAll('input[name="payment-plan"]').forEach(r => {
+        r.addEventListener("change", () => {
+          highlightRadioGroup("pay-option", "payment-plan");
+          recalcPrices();
+        });
+      });
+
+      function highlightRadioGroup(labelClass: string, radioName: string) {
+        document.querySelectorAll(`.${labelClass}`).forEach(lbl => {
+          const input = lbl.querySelector(`input[name="${radioName}"]`) as HTMLInputElement;
+          if (input?.checked) {
+            lbl.classList.add("border-primary", "bg-primary/5");
+            lbl.classList.remove("border-transparent");
+          } else {
+            lbl.classList.remove("border-primary", "bg-primary/5");
+            lbl.classList.add("border-transparent");
+          }
+        });
+      }
+
+      // Initial calculation
+      recalcPrices();
+
+      // Show page
+      $("page-loading")?.classList.add("hidden");
+      $("page-content")?.classList.remove("hidden");
+
+      // Confirm button
+      let currentUser: any = null;
+
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (!user) {
+          window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
+        }
+      });
+
+      const confirmBtn = $("confirm-btn") as HTMLButtonElement;
+      confirmBtn?.addEventListener("click", async () => {
+        $("confirm-success")?.classList.add("hidden");
+        $("confirm-error")?.classList.add("hidden");
+
+        if (!currentUser) {
+          window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
+          return;
+        }
+
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Processing...";
+
+        try {
+          const boatImage = images[0] || "";
+          const totalPrice = charterPrice + (insuranceCostPerDay * days) + (weatherCostPerDay * days) + serviceFee;
+
+          await createOrder({
+            boatId: boatId!,
+            boatTitle,
+            boatImage,
+            renterId: currentUser.uid,
+            renterName: currentUser.displayName || currentUser.email || "Renter",
+            ownerId,
+            startDate: startDateStr!,
+            endDate: endDateStr!,
+            totalPrice,
+          });
+
+          if (ownerId) {
+            try {
+              await sendBookingNotification(
+                currentUser.uid,
+                currentUser.displayName || currentUser.email || "Renter",
+                ownerId,
+                boatId!,
+                boatTitle,
+                startDateStr!,
+                endDateStr!
+              );
+            } catch {}
+          }
+
+          $("confirm-success")?.classList.remove("hidden");
+          confirmBtn.textContent = "Booking confirmed!";
+        } catch (err: any) {
+          const errorText = $("confirm-error-text");
+          if (errorText) errorText.textContent = err.message || "Failed to create booking.";
+          $("confirm-error")?.classList.remove("hidden");
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "Confirm and pay";
+        }
+      });
+
+    } catch (err) {
+      console.error("[ConfirmBooking] Error:", err);
+      $("page-loading")?.classList.add("hidden");
+      $("page-error")?.classList.remove("hidden");
+    }
+  }
+</script>

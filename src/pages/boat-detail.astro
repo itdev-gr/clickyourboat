@@ -779,7 +779,7 @@ const description = "View boat details on BoatHaven";
 <script>
   import { auth } from "../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
-  import { createOrder, sendBookingNotification, getBoatReviews } from "../lib/api";
+  import { getBoatReviews } from "../lib/api";
 
   let currentUser: any = null;
 
@@ -891,26 +891,13 @@ const description = "View boat details on BoatHaven";
       const endDate = new Date(endVal);
       if (endDate <= startDate) { showError("End date must be after start date."); return; }
 
-      const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
-      const totalPrice = days * dailyRate;
-
-      if (!confirm(`Confirm booking for ${days} day${days > 1 ? "s" : ""} at \u20AC${totalPrice.toLocaleString()}?`)) return;
-
-      bookBtn.disabled = true;
-      bookBtn.textContent = "Processing...";
-
-      try {
-        await createOrder({ boatId, boatTitle, boatImage, renterId: currentUser.uid, renterName: currentUser.displayName || currentUser.email || "Renter", ownerId, startDate: startVal, endDate: endVal, totalPrice });
-        if (ownerId) {
-          try { await sendBookingNotification(currentUser.uid, currentUser.displayName || currentUser.email || "Renter", ownerId, boatId, boatTitle, startVal, endVal); } catch {}
-        }
-        successDiv?.classList.remove("hidden");
-        bookBtn.textContent = "Booked!";
-      } catch (err: any) {
-        showError(err.message || "Failed to create booking.");
-        bookBtn.disabled = false;
-        bookBtn.textContent = "Continue Booking";
-      }
+      // Redirect to confirm-booking page with all necessary params
+      const params = new URLSearchParams({
+        boatId,
+        startDate: startVal,
+        endDate: endVal,
+      });
+      window.location.href = "/confirm-booking?" + params.toString();
     });
   });
 </script>
