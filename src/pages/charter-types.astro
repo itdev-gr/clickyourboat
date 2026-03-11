@@ -53,10 +53,10 @@ const charterTypes = [
     />
     <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/65"></div>
     <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4" data-i18n="charter.page_title">
         Charter Types
       </h1>
-      <p class="text-lg sm:text-xl text-white/85 max-w-2xl">
+      <p class="text-lg sm:text-xl text-white/85 max-w-2xl" data-i18n="charter.page_subtitle">
         From licence-free fun to luxury getaways — choose the charter that fits your style
       </p>
     </div>
@@ -140,8 +140,8 @@ const charterTypes = [
   <section class="bg-surface py-16 sm:py-20" aria-labelledby="compare-charters-heading">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
-        <h2 id="compare-charters-heading" class="text-2xl sm:text-3xl font-bold text-text">Compare charter types</h2>
-        <p class="mt-2 text-text-muted">See which charter experience is right for you</p>
+        <h2 id="compare-charters-heading" class="text-2xl sm:text-3xl font-bold text-text" data-i18n="charter.compare_title">Compare charter types</h2>
+        <p class="mt-2 text-text-muted" data-i18n="charter.compare_subtitle">See which charter experience is right for you</p>
       </div>
 
       <div class="overflow-x-auto">
@@ -156,41 +156,41 @@ const charterTypes = [
           </thead>
           <tbody class="divide-y divide-gray-100">
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Capacity</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.capacity">Capacity</td>
               {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{ct.specs.capacity}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Boat length</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.boat_length">Boat length</td>
               {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{"length" in ct.specs ? ct.specs.length : "—"}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Duration</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Day trips</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Day to multi-week</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.duration">Duration</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.day_trips">Day trips</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.day_to_multi">Day to multi-week</td>
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Skipper</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Not required</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Full crew included</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.skipper">Skipper</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.not_required">Not required</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.full_crew">Full crew included</td>
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Experience needed</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.experience_needed">Experience needed</td>
               {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{ct.specs.experience}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">From price</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.from_price">From price</td>
               {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 font-bold text-text">€{ct.priceFrom}/day</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Best for</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">Beginners & casual trips</td>
-              <td class="text-center px-6 py-3.5 text-text-muted">VIP events & celebrations</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.best_for">Best for</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.beginners">Beginners & casual trips</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.vip_events">VIP events & celebrations</td>
             </tr>
             <tr>
               <td class="px-5 py-4"></td>
               {charterTypes.map((ct) => (
                 <td class="text-center px-6 py-4">
-                  <a href={`/boat-rental?charter=${ct.slug}`} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors">
+                  <a href={`/boat-rental?charter=${ct.slug}`} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors" data-i18n="charter.browse">
                     Browse
                   </a>
                 </td>
@@ -205,15 +205,15 @@ const charterTypes = [
   <!-- CTA Banner -->
   <section class="py-16 bg-primary">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Need help choosing a charter?</h2>
-      <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4" data-i18n="charter.help_title">Need help choosing a charter?</h2>
+      <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto" data-i18n="charter.help_desc">
         Our team can help you find the perfect charter for your group, budget, and experience level.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-4">
-        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors">
+        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors" data-i18n="charter.browse_all">
           Browse all boats
         </a>
-        <a href="/contact" class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors">
+        <a href="/contact" class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors" data-i18n="charter.contact_advice">
           Contact us for advice
         </a>
       </div>

@@ -7,40 +7,40 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <!-- Left: Copy -->
       <div>
-        <h2 id="owner-cta-heading" class="text-3xl sm:text-4xl font-bold text-white mb-4">
+        <h2 id="owner-cta-heading" class="text-3xl sm:text-4xl font-bold text-white mb-4" data-i18n="owner.title">
           Own a boat? Start earning today.
         </h2>
-        <p class="text-lg text-white/80 mb-6 max-w-lg">
+        <p class="text-lg text-white/80 mb-6 max-w-lg" data-i18n="owner.subtitle">
           Join thousands of boat owners who earn extra income by listing their boat on BoatHaven. It's free to list and we handle the payments.
         </p>
         <ul class="space-y-3 mb-8">
           <li class="flex items-center gap-3 text-white/90">
             <svg class="h-5 w-5 text-accent flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            Free to list your boat
+            <span data-i18n="owner.free_list">Free to list your boat</span>
           </li>
           <li class="flex items-center gap-3 text-white/90">
             <svg class="h-5 w-5 text-accent flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            Secure payments guaranteed
+            <span data-i18n="owner.secure_payments">Secure payments guaranteed</span>
           </li>
           <li class="flex items-center gap-3 text-white/90">
             <svg class="h-5 w-5 text-accent flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            Insurance coverage included
+            <span data-i18n="owner.insurance">Insurance coverage included</span>
           </li>
         </ul>
         <a
           href="/list-your-boat"
           class="inline-flex items-center px-6 py-3 rounded-lg bg-accent text-text font-bold hover:bg-accent-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
         >
-          List Your Boat
+          <span data-i18n="owner.list_boat">List Your Boat</span>
         </a>
       </div>
 
       <!-- Right: Earnings Estimator -->
       <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/20">
-        <h3 class="text-xl font-bold text-white mb-6">Estimate your earnings</h3>
+        <h3 class="text-xl font-bold text-white mb-6" data-i18n="owner.estimate_title">Estimate your earnings</h3>
         <form id="earnings-form" class="space-y-5">
           <div>
-            <label for="est-boat-type" class="block text-sm font-medium text-white/90 mb-1.5">Boat type</label>
+            <label for="est-boat-type" class="block text-sm font-medium text-white/90 mb-1.5" data-i18n="owner.boat_type">Boat type</label>
             <select
               id="est-boat-type"
               class="w-full rounded-lg bg-white/10 border border-white/20 px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent"
@@ -53,17 +53,18 @@
           </div>
 
           <div>
-            <label for="est-location" class="block text-sm font-medium text-white/90 mb-1.5">Location</label>
+            <label for="est-location" class="block text-sm font-medium text-white/90 mb-1.5" data-i18n="owner.location">Location</label>
             <input
               type="text"
               id="est-location"
               placeholder="e.g. Ibiza, Athens..."
+              data-i18n-placeholder="owner.location_placeholder"
               class="w-full rounded-lg bg-white/10 border border-white/20 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
           <div>
-            <label for="est-days" class="block text-sm font-medium text-white/90 mb-1.5">
+            <label for="est-days" class="block text-sm font-medium text-white/90 mb-1.5" data-i18n="owner.days_available">
               Days available per year: <span id="est-days-value" class="text-accent font-bold">60</span>
             </label>
             <input
@@ -75,14 +76,14 @@
               class="w-full accent-accent"
             />
             <div class="flex justify-between text-xs text-white/50 mt-1">
-              <span>10 days</span>
-              <span>200 days</span>
+              <span data-i18n="owner.days_10">10 days</span>
+              <span data-i18n="owner.days_200">200 days</span>
             </div>
           </div>
 
           <!-- Result -->
           <div class="bg-white/10 rounded-xl p-5 text-center">
-            <p class="text-sm text-white/70 mb-1">Estimated yearly earnings</p>
+            <p class="text-sm text-white/70 mb-1" data-i18n="owner.estimated_earnings">Estimated yearly earnings</p>
             <p id="est-result" class="text-4xl font-extrabold text-accent">
               &euro;12,750
             </p>
@@ -93,7 +94,7 @@
             id="est-calculate-btn"
             class="w-full rounded-lg bg-accent text-text font-bold py-3 hover:bg-accent-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
           >
-            Estimate Earnings
+            <span data-i18n="owner.estimate_btn">Estimate Earnings</span>
           </button>
         </form>
       </div>

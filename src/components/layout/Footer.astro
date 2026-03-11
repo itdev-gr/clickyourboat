@@ -4,35 +4,39 @@ const currentYear = new Date().getFullYear();
 const columns = [
   {
     title: "Explore",
+    i18n: "footer.explore",
     links: [
-      { label: "Boat Rental", href: "/boat-rental" },
-      { label: "Boat Types", href: "/boat-types" },
-      { label: "Charter Types", href: "/charter-types" },
-      { label: "Destinations", href: "/destinations" },
-      { label: "Favorites", href: "/favorites" },
+      { label: "Boat Rental", href: "/boat-rental", i18n: "footer.boat_rental" },
+      { label: "Boat Types", href: "/boat-types", i18n: "footer.boat_types" },
+      { label: "Charter Types", href: "/charter-types", i18n: "footer.charter_types" },
+      { label: "Destinations", href: "/destinations", i18n: "footer.destinations" },
+      { label: "Favorites", href: "/favorites", i18n: "footer.favorites" },
     ],
   },
   {
     title: "For Owners",
+    i18n: "footer.for_owners",
     links: [
-      { label: "List Your Boat", href: "/list-your-boat" },
-      { label: "My Offers", href: "/my-offers" },
-      { label: "Dashboard", href: "/dashboard" },
+      { label: "List Your Boat", href: "/list-your-boat", i18n: "footer.list_your_boat" },
+      { label: "My Offers", href: "/my-offers", i18n: "footer.my_offers" },
+      { label: "Dashboard", href: "/dashboard", i18n: "footer.dashboard" },
     ],
   },
   {
     title: "Support",
+    i18n: "footer.support",
     links: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "My Bookings", href: "/bookings" },
-      { label: "My Account", href: "/account" },
+      { label: "Contact Us", href: "/contact", i18n: "footer.contact_us" },
+      { label: "My Bookings", href: "/bookings", i18n: "footer.my_bookings" },
+      { label: "My Account", href: "/account", i18n: "footer.my_account" },
     ],
   },
   {
     title: "Legal",
+    i18n: "footer.legal",
     links: [
-      { label: "Terms of Service", href: "/terms" },
-      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms", i18n: "footer.terms" },
+      { label: "Privacy Policy", href: "/privacy", i18n: "footer.privacy" },
     ],
   },
 ];
@@ -46,13 +50,13 @@ const columns = [
         <a href="/" class="flex items-center gap-2 text-white font-bold text-xl mb-4">
           <img src="/logo-white.svg" alt="Your Boat" class="h-8" />
         </a>
-        <p class="text-sm text-slate-400 mb-6">
+        <p class="text-sm text-slate-400 mb-6" data-i18n="footer.tagline">
           Find your perfect boat experience. Thousands of boats worldwide, ready for your next adventure.
         </p>
 
         <!-- Newsletter -->
         <form id="newsletter-form" class="space-y-3">
-          <label for="newsletter-email" class="text-sm font-medium">Stay updated</label>
+          <label for="newsletter-email" class="text-sm font-medium" data-i18n="footer.stay_updated">Stay updated</label>
           <div class="flex gap-2">
             <input
               type="email"
@@ -60,11 +64,13 @@ const columns = [
               name="email"
               required
               placeholder="your@email.com"
+              data-i18n-placeholder="footer.email_placeholder"
               class="flex-1 rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-light"
             />
             <button
               type="submit"
               class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-light transition-colors focus:outline-none focus:ring-2 focus:ring-primary-light"
+              data-i18n="footer.subscribe"
             >
               Subscribe
             </button>
@@ -76,13 +82,14 @@ const columns = [
       <!-- Link Columns -->
       {columns.map((col) => (
         <div>
-          <h3 class="text-sm font-semibold text-white mb-4">{col.title}</h3>
+          <h3 class="text-sm font-semibold text-white mb-4" data-i18n={col.i18n}>{col.title}</h3>
           <ul class="space-y-3">
             {col.links.map((link) => (
               <li>
                 <a
                   href={link.href}
                   class="text-sm text-slate-400 hover:text-white transition-colors"
+                  data-i18n={link.i18n}
                 >
                   {link.label}
                 </a>
@@ -95,7 +102,7 @@ const columns = [
 
     <!-- Bottom Bar -->
     <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm text-slate-500">
+      <p class="text-sm text-slate-500" data-i18n="footer.rights">
         &copy; {currentYear} BoatHaven. All rights reserved.
       </p>
       <div class="flex items-center gap-4">
@@ -127,7 +134,8 @@ const columns = [
     // Client-side email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      msg.textContent = "Please enter a valid email address.";
+      const t = (window as any).__i18n;
+      msg.textContent = t ? t.translations["footer.email_error"]?.[t.getLang()] : "Please enter a valid email address.";
       msg.classList.remove("hidden", "text-green-400");
       msg.classList.add("text-red-400");
       return;
@@ -135,12 +143,14 @@ const columns = [
 
     try {
       await subscribeNewsletter(email);
-      msg.textContent = "Thanks for subscribing!";
+      const t2 = (window as any).__i18n;
+      msg.textContent = t2 ? t2.translations["footer.email_success"]?.[t2.getLang()] : "Thanks for subscribing!";
       msg.classList.remove("hidden", "text-red-400");
       msg.classList.add("text-green-400");
       form.reset();
     } catch {
-      msg.textContent = "Something went wrong. Please try again.";
+      const t3 = (window as any).__i18n;
+      msg.textContent = t3 ? t3.translations["footer.email_fail"]?.[t3.getLang()] : "Something went wrong. Please try again.";
       msg.classList.remove("hidden", "text-green-400");
       msg.classList.add("text-red-400");
     }

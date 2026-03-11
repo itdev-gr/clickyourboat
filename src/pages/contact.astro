@@ -10,8 +10,8 @@ const description = "Get in touch with the BoatHaven team. We're here to help wi
     <div class="max-w-3xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-12">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-text mb-3">Contact Us</h1>
-        <p class="text-lg text-text-muted max-w-xl mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-text mb-3" data-i18n="contact.title">Contact Us</h1>
+        <p class="text-lg text-text-muted max-w-xl mx-auto" data-i18n="contact.subtitle">
           Have a question or need help? Fill out the form below and our team will get back to you within 24 hours.
         </p>
       </div>
@@ -23,24 +23,24 @@ const description = "Get in touch with the BoatHaven team. We're here to help wi
             <div class="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
             </div>
-            <h3 class="font-semibold text-text mb-1">Email</h3>
-            <p class="text-sm text-text-muted">support@boathaven.com</p>
+            <h3 class="font-semibold text-text mb-1" data-i18n="contact.email_card_title">Email</h3>
+            <p class="text-sm text-text-muted" data-i18n="contact.email_card_desc">support@boathaven.com</p>
           </div>
 
           <div class="bg-surface rounded-xl p-5 border border-gray-100">
             <div class="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <h3 class="font-semibold text-text mb-1">Response time</h3>
-            <p class="text-sm text-text-muted">Within 24 hours</p>
+            <h3 class="font-semibold text-text mb-1" data-i18n="contact.response_title">Response time</h3>
+            <p class="text-sm text-text-muted" data-i18n="contact.response_desc">Within 24 hours</p>
           </div>
 
           <div class="bg-surface rounded-xl p-5 border border-gray-100">
             <div class="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
             </div>
-            <h3 class="font-semibold text-text mb-1">FAQ</h3>
-            <p class="text-sm text-text-muted">Check our <a href="/#faq" class="text-primary hover:underline">FAQ section</a> for quick answers.</p>
+            <h3 class="font-semibold text-text mb-1" data-i18n="contact.faq_title">FAQ</h3>
+            <p class="text-sm text-text-muted" data-i18n="contact.faq_desc">Check our <a href="/#faq" class="text-primary hover:underline">FAQ section</a> for quick answers.</p>
           </div>
         </div>
 
@@ -49,7 +49,7 @@ const description = "Get in touch with the BoatHaven team. We're here to help wi
           <form id="contact-form" class="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8 space-y-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label for="contact-name" class="block text-sm font-medium text-text mb-1.5">Full name</label>
+                <label for="contact-name" class="block text-sm font-medium text-text mb-1.5" data-i18n="contact.name">Full name</label>
                 <input
                   type="text"
                   id="contact-name"
@@ -60,7 +60,7 @@ const description = "Get in touch with the BoatHaven team. We're here to help wi
                 />
               </div>
               <div>
-                <label for="contact-email" class="block text-sm font-medium text-text mb-1.5">Email address</label>
+                <label for="contact-email" class="block text-sm font-medium text-text mb-1.5" data-i18n="contact.email">Email address</label>
                 <input
                   type="email"
                   id="contact-email"
@@ -73,32 +73,33 @@ const description = "Get in touch with the BoatHaven team. We're here to help wi
             </div>
 
             <div>
-              <label for="contact-subject" class="block text-sm font-medium text-text mb-1.5">Subject</label>
+              <label for="contact-subject" class="block text-sm font-medium text-text mb-1.5" data-i18n="contact.subject">Subject</label>
               <select
                 id="contact-subject"
                 name="subject"
                 required
                 class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
-                <option value="">Select a topic</option>
-                <option value="booking">Booking inquiry</option>
-                <option value="listing">Listing my boat</option>
-                <option value="account">Account issues</option>
-                <option value="payment">Payment & refunds</option>
-                <option value="technical">Technical support</option>
-                <option value="partnership">Partnership</option>
-                <option value="other">Other</option>
+                <option value="" data-i18n="contact.select_subject">Select a topic</option>
+                <option value="booking" data-i18n="contact.booking_inquiry">Booking inquiry</option>
+                <option value="listing" data-i18n="contact.listing">Listing my boat</option>
+                <option value="account" data-i18n="contact.account_issues">Account issues</option>
+                <option value="payment" data-i18n="contact.payment">Payment & refunds</option>
+                <option value="technical" data-i18n="contact.technical">Technical support</option>
+                <option value="partnership" data-i18n="contact.partnership">Partnership</option>
+                <option value="other" data-i18n="contact.other">Other</option>
               </select>
             </div>
 
             <div>
-              <label for="contact-message" class="block text-sm font-medium text-text mb-1.5">Message</label>
+              <label for="contact-message" class="block text-sm font-medium text-text mb-1.5" data-i18n="contact.message">Message</label>
               <textarea
                 id="contact-message"
                 name="message"
                 required
                 rows={5}
                 placeholder="Tell us how we can help..."
+                data-i18n-placeholder="contact.message_placeholder"
                 class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               ></textarea>
             </div>
@@ -111,7 +112,7 @@ const description = "Get in touch with the BoatHaven team. We're here to help wi
               id="contact-btn"
               class="w-full sm:w-auto rounded-xl bg-primary px-8 py-3 text-sm font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              Send message
+              <span data-i18n="contact.send">Send message</span>
             </button>
           </form>
         </div>

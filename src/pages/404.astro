@@ -20,8 +20,8 @@ const description = "The page you're looking for doesn't exist.";
       </div>
 
       <h1 class="text-6xl font-extrabold text-text mb-4">404</h1>
-      <h2 class="text-xl font-bold text-text mb-3">Lost at sea?</h2>
-      <p class="text-text-muted mb-8 leading-relaxed">
+      <h2 class="text-xl font-bold text-text mb-3" data-i18n="404.title">Lost at sea?</h2>
+      <p class="text-text-muted mb-8 leading-relaxed" data-i18n="404.subtitle">
         The page you're looking for seems to have sailed away. It might have been moved, deleted, or never existed.
       </p>
 
@@ -30,13 +30,13 @@ const description = "The page you're looking for doesn't exist.";
           href="/"
           class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
         >
-          Back to homepage
+          <span data-i18n="404.back_home">Back to homepage</span>
         </a>
         <a
           href="/boat-rental"
           class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors"
         >
-          Browse boats
+          <span data-i18n="404.browse_boats">Browse boats</span>
         </a>
       </div>
     </div>
