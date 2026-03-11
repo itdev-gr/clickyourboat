@@ -1,192 +1,94 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-const title = "Popular Destinations — Boat Rental Locations | BoatHaven";
+const title = "Athens Boat Tours — Boat Trips From Athens Greece | BoatHaven";
 const description =
-  "Discover the best boat rental destinations across the Mediterranean. From Greek islands to the French Riviera — find your perfect sailing location.";
+  "Athens, a city of ancient ruins and modern elegance, offers an unmatched maritime experience best enjoyed from the sea. Explore our Athens boat tours and trips.";
 
-const destinations = [
+const tours = [
   {
-    name: "Athens",
-    slug: "athens",
-    country: "Greece",
-    flag: "🇬🇷",
-    image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=80&auto=format",
-    description: "The gateway to the Aegean Sea. Explore the Saronic Gulf islands, swim in crystal-clear coves, and enjoy the vibrant coastal culture just minutes from the historic capital.",
-    boats: 1240,
-    highlights: ["Saronic Gulf islands", "Ancient coastal towns", "Year-round sailing", "Easy access from city centre"],
-    href: "/boat-rental/greece/athens",
+    name: "ARSIDA, PATROKLOS & SOUNIO: Half Day Tour",
+    slug: "arsida-patroklos-sounio",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/ARSIDA-PATROKLOS-SOUNIO-Half-Day-Tour-compressed.jpg",
+    description: "Explore three iconic spots, Arsida, Patroklos, and Sounio, on this half-day journey with crystal-clear waters and coastal views.",
+    href: "https://boat4all.gr/tour/arsida-patroklos-sounio-half-day-tour/",
   },
   {
-    name: "Santorini",
-    slug: "santorini",
-    country: "Greece",
-    flag: "🇬🇷",
-    image: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&q=80&auto=format",
-    description: "Iconic caldera views, volcanic beaches, and legendary sunsets. Sail around the crescent-shaped island and discover hidden hot springs and secluded swimming spots.",
-    boats: 187,
-    highlights: ["Caldera sailing", "Volcanic hot springs", "World-famous sunsets", "Red & black sand beaches"],
-    href: "/boat-rental/greece/santorini",
+    name: "HYDRA & POROS: Full Day Tour",
+    slug: "hydra-poros",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/HYDRA-POROS-Full-Day-Tour-compressed-1.jpg",
+    description: "Sail through vibrant history with picturesque landscapes, quaint villages, and crystal waters.",
+    href: "https://boat4all.gr/tour/hydra-poros-full-day-tour/",
   },
   {
-    name: "Mykonos",
-    slug: "mykonos",
-    country: "Greece",
-    flag: "🇬🇷",
-    image: "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=800&q=80&auto=format",
-    description: "Turquoise waters meet cosmopolitan energy. Cruise to the sacred island of Delos, anchor at paradise beaches, and experience the Cyclades at their finest.",
-    boats: 198,
-    highlights: ["Delos island excursions", "Paradise & Super Paradise beaches", "Vibrant nightlife", "Cycladic island-hopping"],
-    href: "/boat-rental/greece/mykonos",
+    name: "ATHENIAN RIVIERA & FLEVES",
+    slug: "athenian-riviera-fleves",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/HYDRA-POROS-Full-Day-Tour-compressed.jpg",
+    description: "Cruise along the Athenian Riviera to Fleves Island with sandy beaches and seaside charm.",
+    href: "https://boat4all.gr/tour/athenian-riviera-fleves/",
   },
   {
-    name: "Ibiza",
-    slug: "ibiza",
-    country: "Spain",
-    flag: "🇪🇸",
-    image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80&auto=format",
-    description: "More than just nightlife — Ibiza offers pristine coves, turquoise waters, and magical sunsets. Sail to Formentera for some of the Mediterranean's clearest water.",
-    boats: 920,
-    highlights: ["Formentera day trips", "Hidden coves & beaches", "Stunning sunset spots", "Crystal-clear waters"],
-    href: "/boat-rental/spain/ibiza",
+    name: "AIGINA ISLAND Boat Tour",
+    slug: "aigina-island",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/AIGINA-ISLAND-compressed.jpg",
+    description: "Sail to Aigina Island, famous for ancient sites and charming villages, perfect for sightseeing and sunbathing.",
+    href: "https://boat4all.gr/tour/aigina-island/",
   },
   {
-    name: "Split",
-    slug: "split",
-    country: "Croatia",
-    flag: "🇭🇷",
-    image: "https://images.unsplash.com/photo-1592150621744-aca64f48394a?w=800&q=80&auto=format",
-    description: "Your gateway to the Croatian islands. From Split, sail to Hvar, Brac, and Vis — each offering its own character, from lavender fields to the famous Blue Cave.",
-    boats: 1080,
-    highlights: ["Blue Cave on Vis", "Hvar island hopping", "Diocletian's Palace", "Pristine Adriatic waters"],
-    href: "/boat-rental/croatia/split",
+    name: "AGISTRI ISLAND ESCAPE: A Serene Boat Tour Adventure",
+    slug: "agistri-island-escape",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/AGISTRI-ISLAND-ESCAPE-A-Serene-Boat-Tour-Adventure-compressed.jpg",
+    description: "Discover Agistri's hidden beauty, turquoise waters, and tranquil beaches ideal for serenity seekers.",
+    href: "https://boat4all.gr/tour/agistri-island-escape-a-serene-boat-tour-adventure/",
   },
   {
-    name: "Dubrovnik",
-    slug: "dubrovnik",
-    country: "Croatia",
-    flag: "🇭🇷",
-    image: "https://images.unsplash.com/photo-1555990538-1e6c53b44ce5?w=800&q=80&auto=format",
-    description: "The Pearl of the Adriatic. Sail along medieval city walls, explore the Elaphiti Islands, and anchor in secluded bays along the stunning southern Croatian coastline.",
-    boats: 680,
-    highlights: ["Elaphiti Islands", "Medieval old town views", "Lokrum Island", "Montenegro day trips"],
-    href: "/boat-rental/croatia/dubrovnik",
+    name: "KEA ISLAND BOAT TOUR: Discover the Hidden Gem of the Cyclades",
+    slug: "kea-island",
+    image: "https://boat4all.gr/wp-content/uploads/2025/07/IMG_7878-750x540.jpg",
+    description: "Sail to Kea, a Cycladic treasure with pristine beaches and traditional charm for adventurers.",
+    href: "https://boat4all.gr/tour/kea-island-boat-tour-discover-the-hidden-gem-of-the-cyclades/",
   },
   {
-    name: "Amalfi Coast",
-    slug: "amalfi-coast",
-    country: "Italy",
-    flag: "🇮🇹",
-    image: "https://images.unsplash.com/photo-1534008897995-27a23e859048?w=800&q=80&auto=format",
-    description: "Dramatic cliffs, pastel villages, and the scent of lemon groves. Cruise from Positano to Capri, visit the Blue Grotto, and dine on fresh seafood overlooking the sea.",
-    boats: 745,
-    highlights: ["Capri & Blue Grotto", "Positano coastline", "World-class cuisine", "Dramatic cliff scenery"],
-    href: "/boat-rental/italy/amalfi",
+    name: "Honeymoon Bliss Boat Tour",
+    slug: "honeymoon-bliss",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Honeymoon-Bliss-Tour-compressed.jpg",
+    description: "Celebrate love with romantic cruise through magical waters, intimate settings, beautiful sunsets.",
+    href: "https://boat4all.gr/tour/honeymoon-bliss-tour/",
   },
   {
-    name: "Sardinia",
-    slug: "sardinia",
-    country: "Italy",
-    flag: "🇮🇹",
-    image: "https://images.unsplash.com/photo-1586105449897-20b5efeb3233?w=800&q=80&auto=format",
-    description: "Emerald waters, hidden coves, and the glamorous Costa Smeralda. Sardinia offers some of the Mediterranean's most beautiful and unspoiled coastline.",
-    boats: 145,
-    highlights: ["Costa Smeralda", "La Maddalena archipelago", "Emerald-green waters", "Secluded anchorages"],
-    href: "/boat-rental/italy/sardinia",
+    name: "Historical Explorer Boat Tour",
+    slug: "historical-explorer",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Historical-Explorer-Tour-compressed.jpg",
+    description: "Embark on journey through ancient past, exploring historic ruins and coastal sites.",
+    href: "https://boat4all.gr/tour/historical-explorer-tour/",
   },
   {
-    name: "Saint-Tropez",
-    slug: "saint-tropez",
-    country: "France",
-    flag: "🇫🇷",
-    image: "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&q=80&auto=format",
-    description: "The jewel of the French Riviera. Anchor in the legendary harbour, explore the Pampelonne beaches, and cruise along the glamorous Cote d'Azur coastline.",
-    boats: 856,
-    highlights: ["Pampelonne beaches", "Glamorous harbour", "Cote d'Azur cruising", "Porquerolles island"],
-    href: "/boat-rental/france/saint-tropez",
+    name: "Bachelor/Bachelorette Party Cruise",
+    slug: "bachelor-bachelorette",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Bachelorette-Party-Cruise-compressed.jpg",
+    description: "Celebrate in style with private boat party surrounded by stunning seascapes for bride/groom-to-be.",
+    href: "https://boat4all.gr/tour/bachelor-bachelorette-party-cruise/",
   },
   {
-    name: "Bodrum",
-    slug: "bodrum",
-    country: "Turkey",
-    flag: "🇹🇷",
-    image: "https://images.unsplash.com/photo-1568322503252-f4e2cfb5d9e5?w=800&q=80&auto=format",
-    description: "Where the Aegean meets Turkish hospitality. Sail along the turquoise coast, explore ancient ruins from the water, and enjoy world-class marinas at unbeatable prices.",
-    boats: 430,
-    highlights: ["Turquoise Coast sailing", "Ancient ruins & history", "Affordable luxury", "Excellent marinas"],
-    href: "/boat-rental/turkey/bodrum",
-  },
-];
-
-const regions = [
-  {
-    name: "Greece",
-    flag: "🇬🇷",
-    locations: [
-      { name: "Athens", href: "/boat-rental/greece/athens" },
-      { name: "Santorini", href: "/boat-rental/greece/santorini" },
-      { name: "Mykonos", href: "/boat-rental/greece/mykonos" },
-      { name: "Corfu", href: "/boat-rental/greece/corfu" },
-      { name: "Rhodes", href: "/boat-rental/greece/rhodes" },
-      { name: "Lefkada", href: "/boat-rental/greece/lefkada" },
-    ],
+    name: "Family Adventure Boat Tour",
+    slug: "family-adventure",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Family-Adventure-Tour-compressed.jpg",
+    description: "Enjoy fun-filled day on water perfect for families with activities, swimming for all ages.",
+    href: "https://boat4all.gr/tour/family-adventure-tour/",
   },
   {
-    name: "Croatia",
-    flag: "🇭🇷",
-    locations: [
-      { name: "Split", href: "/boat-rental/croatia/split" },
-      { name: "Dubrovnik", href: "/boat-rental/croatia/dubrovnik" },
-      { name: "Zadar", href: "/boat-rental/croatia/zadar" },
-      { name: "Hvar", href: "/boat-rental/croatia/hvar" },
-      { name: "Trogir", href: "/boat-rental/croatia/trogir" },
-    ],
+    name: "A Thrilling Launch from Athens to Aegina's Charms",
+    slug: "athens-to-aegina",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/A-Thrilling-Launch-from-Athens-to-Aeginas-Charms-compressed.jpg",
+    description: "Journey from Athens to Aegina discovering local delights and beaches blending adventure with relaxation.",
+    href: "https://boat4all.gr/tour/a-thrilling-launch-from-athens-to-aeginas-charms/",
   },
   {
-    name: "Spain",
-    flag: "🇪🇸",
-    locations: [
-      { name: "Ibiza", href: "/boat-rental/spain/ibiza" },
-      { name: "Mallorca", href: "/boat-rental/spain/mallorca" },
-      { name: "Barcelona", href: "/boat-rental/spain/barcelona" },
-      { name: "Menorca", href: "/boat-rental/spain/menorca" },
-      { name: "Marbella", href: "/boat-rental/spain/marbella" },
-      { name: "Tenerife", href: "/boat-rental/spain/tenerife" },
-    ],
-  },
-  {
-    name: "Italy",
-    flag: "🇮🇹",
-    locations: [
-      { name: "Amalfi Coast", href: "/boat-rental/italy/amalfi" },
-      { name: "Sardinia", href: "/boat-rental/italy/sardinia" },
-      { name: "Naples", href: "/boat-rental/italy/naples" },
-      { name: "Sicily", href: "/boat-rental/italy/sicily" },
-      { name: "Lake Como", href: "/boat-rental/italy/lake-como" },
-      { name: "Portofino", href: "/boat-rental/italy/portofino" },
-    ],
-  },
-  {
-    name: "France",
-    flag: "🇫🇷",
-    locations: [
-      { name: "Saint-Tropez", href: "/boat-rental/france/saint-tropez" },
-      { name: "Nice", href: "/boat-rental/france/nice" },
-      { name: "Cannes", href: "/boat-rental/france/cannes" },
-      { name: "Corsica", href: "/boat-rental/france/corsica" },
-      { name: "Marseille", href: "/boat-rental/france/marseille" },
-    ],
-  },
-  {
-    name: "Turkey",
-    flag: "🇹🇷",
-    locations: [
-      { name: "Bodrum", href: "/boat-rental/turkey/bodrum" },
-      { name: "Fethiye", href: "/boat-rental/turkey/fethiye" },
-      { name: "Gocek", href: "/boat-rental/turkey/gocek" },
-      { name: "Marmaris", href: "/boat-rental/turkey/marmaris" },
-      { name: "Antalya", href: "/boat-rental/turkey/antalya" },
-    ],
+    name: "Art and Culture Boat Tour",
+    slug: "art-and-culture",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Art-and-Culture-Tour-compressed.jpg",
+    description: "Delve into Greece's artistic heritage visiting coastal galleries and unique artistic hubs.",
+    href: "https://boat4all.gr/tour/art-and-culture-tour/",
   },
 ];
 ---
@@ -196,7 +98,7 @@ const regions = [
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "Popular Destinations",
+      name: "Athens Boat Tours",
       description,
       url: "https://boathaven.com/destinations",
       publisher: { "@type": "Organization", name: "BoatHaven" },
@@ -206,125 +108,140 @@ const regions = [
   <!-- Hero -->
   <section class="relative h-[360px] sm:h-[420px] overflow-hidden">
     <img
-      src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80&auto=format"
-      alt="Beautiful Mediterranean coastline from the sea"
+      src="https://boat4all.gr/wp-content/uploads/2024/10/ARSIDA-PATROKLOS-SOUNIO-Half-Day-Tour-compressed.jpg"
+      alt="Athens boat tours on the Aegean Sea"
       class="absolute inset-0 h-full w-full object-cover"
       loading="eager"
     />
     <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/65"></div>
     <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+      <p class="text-sm sm:text-base text-white/70 uppercase tracking-widest font-medium mb-3">Choose Your Destination</p>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4">
-        Popular Destinations
+        Athens Boat Tours & Trips
       </h1>
       <p class="text-lg sm:text-xl text-white/85 max-w-2xl">
-        Discover the best sailing locations across the Mediterranean and beyond
+        Athens, a city of ancient ruins and modern elegance, offers an unmatched maritime experience best enjoyed from the sea
       </p>
     </div>
   </section>
 
-  <!-- Quick nav pills -->
-  <div class="sticky top-16 z-30 bg-white border-b border-border">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <nav class="flex gap-2 py-3 overflow-x-auto scrollbar-hide" aria-label="Destinations">
-        {destinations.map((d) => (
-          <a
-            href={`#${d.slug}`}
-            class="flex-shrink-0 px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-text-muted hover:border-primary hover:text-primary transition-colors"
-          >
-            {d.flag} {d.name}
-          </a>
-        ))}
-      </nav>
+  <!-- Intro -->
+  <section class="py-12 sm:py-16 bg-white">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-text-muted leading-relaxed text-base sm:text-lg">
+        The Athenian coastline is renowned for its stunning cliffs, calm waters, pristine coves, and charming coastal towns. Whether you're looking for a relaxing getaway or an exciting boat tour, an Athens boat trip lets you explore the Athenian Riviera, where you can escape traffic, crowded beaches, and charming coastal towns.
+      </p>
     </div>
-  </div>
+  </section>
 
-  <!-- Destination cards -->
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 space-y-24">
-    {destinations.map((dest, i) => (
-      <section id={dest.slug} class="scroll-mt-32" aria-labelledby={`${dest.slug}-heading`}>
-        <div class:list={["grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center", i % 2 !== 0 && "lg:direction-rtl"]}>
-          <!-- Image -->
-          <div class:list={["relative rounded-2xl overflow-hidden aspect-[4/3] group", i % 2 !== 0 && "lg:order-2"]}>
-            <img
-              src={dest.image}
-              alt={`Boat rental in ${dest.name}, ${dest.country}`}
-              class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-            <div class="absolute bottom-4 left-4">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-sm font-medium">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                {dest.country}
-              </span>
-            </div>
-            <div class="absolute bottom-4 right-4">
-              <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-sm font-medium">
-                {dest.boats.toLocaleString()} boats
-              </span>
-            </div>
-          </div>
-
-          <!-- Content -->
-          <div class:list={[i % 2 !== 0 && "lg:order-1"]}>
-            <h2 id={`${dest.slug}-heading`} class="text-3xl sm:text-4xl font-extrabold text-text mb-3">
-              {dest.name}
-            </h2>
-            <p class="text-lg text-primary font-medium mb-4">{dest.flag} {dest.country}</p>
-            <p class="text-text-muted leading-relaxed mb-6">{dest.description}</p>
-
-            <!-- Highlights -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-8">
-              {dest.highlights.map((h) => (
-                <div class="flex items-center gap-2">
-                  <svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                  <span class="text-sm text-text-muted">{h}</span>
-                </div>
-              ))}
-            </div>
-
-            <!-- CTA -->
-            <a
-              href={dest.href}
-              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              Explore {dest.name}
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-            </a>
-          </div>
-        </div>
-      </section>
-    ))}
-  </div>
-
-  <!-- All locations by region -->
-  <section class="bg-surface py-16 sm:py-20" aria-labelledby="all-locations-heading">
+  <!-- Tour Cards Grid -->
+  <section class="pb-16 sm:pb-20 bg-white" aria-labelledby="tours-heading">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-10">
-        <h2 id="all-locations-heading" class="text-2xl sm:text-3xl font-bold text-text">All destinations by region</h2>
-        <p class="mt-2 text-text-muted">Browse boat rentals across all our sailing locations</p>
+      <div class="mb-10 text-center">
+        <h2 id="tours-heading" class="text-2xl sm:text-3xl font-bold text-text">
+          Athens Boat Tours, Including Private Customizable Experiences
+        </h2>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
-        {regions.map((region) => (
-          <div>
-            <h3 class="font-bold text-text text-sm mb-3 flex items-center gap-1.5">
-              <span class="text-base">{region.flag}</span>
-              {region.name}
-            </h3>
-            <ul class="space-y-2">
-              {region.locations.map((loc) => (
-                <li>
-                  <a
-                    href={loc.href}
-                    class="text-sm text-text-muted hover:text-primary transition-colors"
-                  >
-                    {loc.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tours.map((tour) => (
+          <a
+            href={tour.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group block rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-xl transition-shadow duration-300"
+          >
+            <!-- Image -->
+            <div class="relative aspect-[4/3] overflow-hidden">
+              <img
+                src={tour.image}
+                alt={tour.name}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-5">
+              <h3 class="font-bold text-text text-base sm:text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
+                {tour.name}
+              </h3>
+              <p class="text-sm text-text-muted leading-relaxed mb-4">
+                {tour.description}
+              </p>
+              <span class="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                Explore Now
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Explore Athens by Boat -->
+  <section class="py-16 sm:py-20 bg-surface" aria-labelledby="why-heading">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 id="why-heading" class="text-2xl sm:text-3xl font-bold text-text">Why Explore Athens by Boat?</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          </div>
+          <h3 class="font-bold text-text mb-2">Escape the Crowds</h3>
+          <p class="text-sm text-text-muted">No need to battle the busy streets or packed tours. Instead, experience the tranquility of the open seas.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21"/></svg>
+          </div>
+          <h3 class="font-bold text-text mb-2">Historical Perspective</h3>
+          <p class="text-sm text-text-muted">Enjoy unique views of Athens' iconic ruins and monuments, making it a truly unique and memorable experience.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
+          </div>
+          <h3 class="font-bold text-text mb-2">Luxury & Comfort</h3>
+          <p class="text-sm text-text-muted">Sail in style with soft drinks, snacks, and modern amenities. Choose between shared and private tours.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
+          </div>
+          <h3 class="font-bold text-text mb-2">Hidden Treasures</h3>
+          <p class="text-sm text-text-muted">Uncover secluded beaches, local swim spots, and fresh seafood tavernas only accessible by boat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Onboard -->
+  <section class="py-16 sm:py-20 bg-white" aria-labelledby="onboard-heading">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 id="onboard-heading" class="text-2xl sm:text-3xl font-bold text-text">What to Expect Onboard</h2>
+        <p class="mt-2 text-text-muted">Every tour comes with everything you need for the perfect day at sea</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {[
+          "Modern boats with spacious seating, Wi-Fi, and air-conditioned lounges",
+          "Experienced captains ensuring smooth sailing and safety",
+          "Complimentary snacks, refreshments, and lunch aboard",
+          "Swimming stops at the Aegean's most breathtaking waters",
+          "Destinations perfect for snorkeling, sunbathing, and photography",
+          "Personalised itineraries for private charters",
+        ].map((item) => (
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-surface">
+            <svg class="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            <span class="text-sm text-text-muted">{item}</span>
           </div>
         ))}
       </div>
@@ -334,9 +251,9 @@ const regions = [
   <!-- CTA Banner -->
   <section class="py-16 bg-primary">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Ready to set sail?</h2>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Ready to explore Athens by sea?</h2>
       <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
-        Browse thousands of boats across the Mediterranean's most beautiful destinations.
+        The best time for an Athens boat tour is from May to October, when the weather is warm and the sea conditions are ideal. Book your unforgettable maritime experience today.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-4">
         <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors">
@@ -349,13 +266,3 @@ const regions = [
     </div>
   </section>
 </Layout>
-
-<style>
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-</style>
