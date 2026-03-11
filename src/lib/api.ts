@@ -68,6 +68,7 @@ export async function getOwnerBoats(ownerId: string, maxResults = 20): Promise<B
   const q = query(
     collection(db, "boats"),
     where("ownerId", "==", ownerId),
+    where("status", "==", "published"),
     orderBy("createdAt", "desc"),
     limit(maxResults)
   );
