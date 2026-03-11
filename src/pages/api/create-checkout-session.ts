@@ -4,7 +4,7 @@ import type { APIRoute } from "astro";
 import Stripe from "stripe";
 
 function getStripe() {
-  const key = import.meta.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY;
+  const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY is not configured");
   return new Stripe(key);
 }
