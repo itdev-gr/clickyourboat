@@ -1,0 +1,313 @@
+---
+import { getLangFromParam, localizeHref } from "../../../lib/i18n-utils";
+import Layout from "../../../layouts/Layout.astro";
+import { tours, pick } from "../../../data/tours";
+import type { Lang } from "../../../lib/i18n-utils";
+
+export function getStaticPaths() {
+  const langs = ["en", "gr"];
+  return tours.flatMap((tour) =>
+    langs.map((lang) => ({
+      params: { lang, slug: tour.slug },
+      props: { tour },
+    }))
+  );
+}
+
+const { lang } = Astro.params;
+const { tour } = Astro.props;
+const resolvedLang: Lang = getLangFromParam(lang);
+const p = (b: { en: string; el: string }) => pick(b, resolvedLang);
+
+const title = `${p(tour.name)} — Athens Boat Tour | BoatHaven`;
+const description = p(tour.description);
+const l = (href: string) => localizeHref(href, lang);
+---
+
+<Layout lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "TouristTrip",
+      name: p(tour.name),
+      description: p(tour.description),
+      image: tour.image,
+      touristType: "Boat Tour",
+      url: `https://boathaven.com/destinations/${tour.slug}`,
+      provider: { "@type": "Organization", name: "BoatHaven" },
+      offers: {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+      },
+    })} />
+  </Fragment>
+
+  <!-- Hero -->
+  <section class="relative h-[360px] sm:h-[450px] overflow-hidden">
+    <img
+      src={tour.image}
+      alt={p(tour.name)}
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70"></div>
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+      <div class="mb-4 flex items-center gap-3">
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-semibold text-white border border-white/20">
+          <span data-i18n={tour.durationType === "half-day" ? "tour.half_day" : "tour.full_day"}>{tour.durationType === "half-day" ? "Half Day" : "Full Day"}</span> · {p(tour.duration)}
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 max-w-4xl">
+        {p(tour.name)}
+      </h1>
+      <p class="text-lg text-white/85 max-w-2xl">
+        {p(tour.description)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <div class="bg-white border-b border-gray-100">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+      <nav class="flex items-center gap-2 text-sm text-text-muted">
+        <a href={l("/")} class="hover:text-primary transition-colors" data-i18n="tour.home">Home</a>
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <a href={l("/destinations")} class="hover:text-primary transition-colors" data-i18n="nav.destinations">Destinations</a>
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-text font-medium truncate max-w-[200px] sm:max-w-none">{p(tour.name)}</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Quick Info Bar -->
+  <section class="bg-surface border-b border-gray-200">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <p class="text-xs text-text-muted font-medium" data-i18n="tour.duration">Duration</p>
+            <p class="text-sm font-bold text-text">{p(tour.duration)}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+          </div>
+          <div>
+            <p class="text-xs text-text-muted font-medium" data-i18n="tour.departure">Departure</p>
+            <p class="text-sm font-bold text-text">{p(tour.departure)}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+          </div>
+          <div>
+            <p class="text-xs text-text-muted font-medium" data-i18n="tour.group_size">Group Size</p>
+            <p class="text-sm font-bold text-text">{p(tour.groupSize)}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+          </div>
+          <div>
+            <p class="text-xs text-text-muted font-medium" data-i18n="tour.season">Season</p>
+            <p class="text-sm font-bold text-text" data-i18n="tour.season_value">May – October</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 sm:py-16 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-14">
+
+        <!-- Left: Description & Itinerary -->
+        <div class="lg:col-span-2 space-y-12">
+
+          <!-- Overview -->
+          <div>
+            <h2 class="text-2xl font-bold text-text mb-6" data-i18n="tour.overview">Overview</h2>
+            <div class="space-y-4">
+              {tour.fullDescription.map((paragraph) => (
+                <p class="text-text-muted leading-relaxed">{p(paragraph)}</p>
+              ))}
+            </div>
+          </div>
+
+          <!-- Highlights -->
+          <div>
+            <h2 class="text-2xl font-bold text-text mb-6" data-i18n="tour.highlights">Tour Highlights</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {tour.highlights.map((highlight) => (
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface">
+                  <svg class="h-5 w-5 text-primary flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
+                  <span class="text-sm text-text-muted">{p(highlight)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Itinerary -->
+          <div>
+            <h2 class="text-2xl font-bold text-text mb-6" data-i18n="tour.itinerary">Itinerary</h2>
+            <div class="space-y-0">
+              {tour.itinerary.map((stop, index) => (
+                <div class="relative flex gap-4 pb-8 last:pb-0">
+                  {index < tour.itinerary.length - 1 && (
+                    <div class="absolute left-[19px] top-10 bottom-0 w-px bg-gray-200"></div>
+                  )}
+                  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold z-10">
+                    {stop.time}
+                  </div>
+                  <div class="flex-1 pt-1">
+                    <h3 class="font-bold text-text mb-1">{p(stop.title)}</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">{p(stop.description)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Sidebar -->
+        <div class="space-y-6">
+
+          <!-- Book / Contact Card -->
+          <div class="sticky top-20 space-y-6">
+            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <h3 class="text-lg font-bold text-text mb-4" data-i18n="tour.interested">Interested in this tour?</h3>
+              <p class="text-sm text-text-muted mb-6" data-i18n="tour.interested_desc">Get in touch with us to check availability and book your unforgettable experience.</p>
+              <a
+                href={l("/contact")}
+                class="block w-full text-center px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-colors"
+                data-i18n="tour.contact_book"
+              >
+                Contact us to book
+              </a>
+              <a
+                href={l("/boat-rental")}
+                class="block w-full text-center px-6 py-3 rounded-xl border border-gray-200 text-text font-bold text-sm hover:border-primary hover:text-primary transition-colors mt-3"
+                data-i18n="tour.browse_boats"
+              >
+                Browse all boats
+              </a>
+            </div>
+
+            <!-- What's Included -->
+            <div class="rounded-2xl border border-gray-200 bg-white p-6">
+              <h3 class="text-lg font-bold text-text mb-4" data-i18n="tour.whats_included">What's Included</h3>
+              <div class="space-y-2.5">
+                {tour.included.map((item) => (
+                  <div class="flex items-start gap-2.5">
+                    <svg class="h-4.5 w-4.5 text-green-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                    <span class="text-sm text-text-muted">{p(item)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Not Included -->
+            <div class="rounded-2xl border border-gray-200 bg-white p-6">
+              <h3 class="text-lg font-bold text-text mb-4" data-i18n="tour.not_included">Not Included</h3>
+              <div class="space-y-2.5">
+                {tour.notIncluded.map((item) => (
+                  <div class="flex items-start gap-2.5">
+                    <svg class="h-4.5 w-4.5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span class="text-sm text-text-muted">{p(item)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- What to Bring -->
+            <div class="rounded-2xl border border-gray-200 bg-white p-6">
+              <h3 class="text-lg font-bold text-text mb-4" data-i18n="tour.what_to_bring">What to Bring</h3>
+              <div class="space-y-2.5">
+                {tour.whatToBring.map((item) => (
+                  <div class="flex items-start gap-2.5">
+                    <svg class="h-4.5 w-4.5 text-primary flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                    <span class="text-sm text-text-muted">{p(item)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Other Tours -->
+  <section class="py-16 sm:py-20 bg-surface">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-text" data-i18n="tour.explore_more">Explore More Tours</h2>
+        <p class="mt-2 text-text-muted" data-i18n="tour.explore_more_desc">Discover other unforgettable Athens boat experiences</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tours.filter((t) => t.slug !== tour.slug).slice(0, 3).map((otherTour) => (
+          <a
+            href={l(`/destinations/${otherTour.slug}`)}
+            class="group block rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-xl transition-shadow duration-300"
+          >
+            <div class="relative aspect-[4/3] overflow-hidden">
+              <img
+                src={otherTour.image}
+                alt={p(otherTour.name)}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+              <div class="absolute top-3 left-3">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-white/90 text-xs font-semibold text-text">
+                  <span data-i18n={otherTour.durationType === "half-day" ? "tour.half_day" : "tour.full_day"}>{otherTour.durationType === "half-day" ? "Half Day" : "Full Day"}</span>
+                </span>
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="font-bold text-text text-base mb-2 group-hover:text-primary transition-colors leading-snug">
+                {p(otherTour.name)}
+              </h3>
+              <p class="text-sm text-text-muted leading-relaxed line-clamp-2">{p(otherTour.description)}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="mt-8 text-center">
+        <a
+          href={l("/destinations")}
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-text hover:border-primary hover:text-primary transition-colors"
+        >
+          <span data-i18n="tour.view_all_tours">View all tours</span>
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="py-16 bg-primary">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4" data-i18n="destinations.cta_title">Ready to explore Athens by sea?</h2>
+      <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto" data-i18n="destinations.cta_desc">
+        The best time for an Athens boat tour is from May to October, when the weather is warm and the sea conditions are ideal. Book your unforgettable maritime experience today.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href={l("/contact")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors" data-i18n="tour.contact_us">
+          Contact us
+        </a>
+        <a href={l("/destinations")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors" data-i18n="tour.view_all_tours">
+          View all tours
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,11 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "My Favorites — BoatHaven";
 const description = "View your saved favorite boats on BoatHaven.";
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <!-- Loading state -->
   <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
@@ -26,8 +29,8 @@ const description = "View your saved favorite boats on BoatHaven.";
         <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Log in to view your favorites</h1>
         <p class="text-text-muted mb-8 max-w-sm mx-auto">Save boats you love and find them here anytime.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a href="/login?redirect=/favorites" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Log in</a>
-          <a href="/login?signup&redirect=/favorites" class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors">Create account</a>
+          <a href={l("/login?redirect=/favorites")} class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Log in</a>
+          <a href={l("/login?signup&redirect=/favorites")} class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors">Create account</a>
         </div>
       </div>
     </div>
@@ -41,7 +44,7 @@ const description = "View your saved favorite boats on BoatHaven.";
           <h1 class="text-2xl sm:text-3xl font-extrabold text-text">My Favorites</h1>
           <p id="favorites-count" class="text-text-muted mt-1"></p>
         </div>
-        <a href="/boat-rental" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors">
+        <a href={l("/boat-rental")} class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-gray-400 transition-colors">
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
           Browse boats
         </a>
@@ -59,7 +62,7 @@ const description = "View your saved favorite boats on BoatHaven.";
         </svg>
         <h2 class="text-xl font-bold text-text mb-2">No favorites yet</h2>
         <p class="text-text-muted mb-6 max-w-sm mx-auto">Browse boats and tap the heart icon to save them here for later.</p>
-        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors">
+        <a href={l("/boat-rental")} class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors">
           Browse boats
         </a>
       </div>
@@ -71,7 +74,7 @@ const description = "View your saved favorite boats on BoatHaven.";
 </Layout>
 
 <script>
-  import { auth, db } from "../lib/firebase";
+  import { auth, db } from "../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { collection, query, orderBy, getDocs, deleteDoc, doc } from "firebase/firestore";
 
@@ -145,7 +148,7 @@ const description = "View your saved favorite boats on BoatHaven.";
 
         html += `
           <div class="favorite-card bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group" data-boat-id="${escapeHtml(boatId)}">
-            <a href="/boat/${escapeHtml(boatId)}" class="block">
+            <a href={l("/boat/${escapeHtml(boatId)}")} class="block">
               <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
                 ${image
                   ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" class="h-full w-full object-cover" loading="lazy" />`

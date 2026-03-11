@@ -1,0 +1,7 @@
+---
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+// Redirect to /[lang]/login?signup — single page handles both
+return Astro.redirect(localizeHref("/login?signup", lang));
+---

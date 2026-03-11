@@ -1,4 +1,12 @@
 ---
+import { localizeHref } from "../../lib/i18n-utils";
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = "en" } = Astro.props;
+const l = (href: string) => localizeHref(href, lang);
 const currentYear = new Date().getFullYear();
 
 const columns = [
@@ -47,7 +55,7 @@ const columns = [
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
       <!-- Brand + Newsletter -->
       <div class="col-span-2 md:col-span-4 lg:col-span-1">
-        <a href="/" class="flex items-center gap-2 text-white font-bold text-xl mb-4">
+        <a href={l("/")} class="flex items-center gap-2 text-white font-bold text-xl mb-4">
           <img src="/logo-white.svg" alt="Your Boat" class="h-8" />
         </a>
         <p class="text-sm text-slate-400 mb-6" data-i18n="footer.tagline">
@@ -87,7 +95,7 @@ const columns = [
             {col.links.map((link) => (
               <li>
                 <a
-                  href={link.href}
+                  href={l(link.href)}
                   class="text-sm text-slate-400 hover:text-white transition-colors"
                   data-i18n={link.i18n}
                 >

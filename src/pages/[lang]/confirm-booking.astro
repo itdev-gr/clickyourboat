@@ -1,11 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Confirm and Pay — BoatHaven";
 const description = "Review your booking options, select insurance, and confirm your reservation.";
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <!-- Loading state -->
   <div id="page-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
@@ -19,7 +22,7 @@ const description = "Review your booking options, select insurance, and confirm 
     <div class="text-center max-w-md">
       <h1 class="text-2xl font-bold text-text mb-2">Booking unavailable</h1>
       <p id="page-error-text" class="text-text-muted mb-6">Missing booking information. Please go back and select your dates.</p>
-      <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Browse boats</a>
+      <a href={l("/boat-rental")} class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Browse boats</a>
     </div>
   </div>
 
@@ -29,7 +32,7 @@ const description = "Review your booking options, select insurance, and confirm 
 
       <!-- Back + Title -->
       <div class="flex items-center gap-3 mb-8">
-        <a id="back-link" href="/boat-rental" class="h-10 w-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
+        <a id="back-link" href={l("/boat-rental")} class="h-10 w-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
           <svg class="h-5 w-5 text-text" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
         </a>
         <h1 class="text-2xl font-bold text-text">Confirm and pay</h1>
@@ -182,9 +185,9 @@ const description = "Review your booking options, select insurance, and confirm 
           <section class="pb-8">
             <p class="text-xs text-text-muted mb-4">
               By selecting the button below, you unconditionally agree to the
-              <a href="/terms" class="underline hover:text-text">Terms &amp; Conditions</a>,
-              <a href="/terms" class="underline hover:text-text">Cancellation conditions</a>,
-              <a href="/terms" class="underline hover:text-text">Insurance conditions</a>. You also agree to pay the total amount of the reservation.
+              <a href={l("/terms")} class="underline hover:text-text">Terms &amp; Conditions</a>,
+              <a href={l("/terms")} class="underline hover:text-text">Cancellation conditions</a>,
+              <a href={l("/terms")} class="underline hover:text-text">Insurance conditions</a>. You also agree to pay the total amount of the reservation.
             </p>
 
             <button id="confirm-btn"
@@ -321,10 +324,11 @@ const description = "Review your booking options, select insurance, and confirm 
 </Layout>
 
 <script>
-  import { auth, db } from "../lib/firebase";
+  function getLangPrefix() { return document.documentElement.dataset.langPrefix || "en"; }
+  import { auth, db } from "../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { doc, getDoc } from "firebase/firestore";
-  import { getBoatListing, getChargeSettings, createOrder, sendBookingNotification } from "../lib/api";
+  import { getBoatListing, getChargeSettings, createOrder, sendBookingNotification } from "../../lib/api";
   import { loadStripe } from "@stripe/stripe-js";
 
   const $ = (id: string) => document.getElementById(id);
@@ -532,7 +536,7 @@ const description = "Review your booking options, select insurance, and confirm 
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         if (!user) {
-          window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
+          window.location.href = "/" + getLangPrefix() + "/login?redirect=" + encodeURIComponent(window.location.href);
         }
       });
 
@@ -594,7 +598,7 @@ const description = "Review your booking options, select insurance, and confirm 
         $("confirm-error")?.classList.add("hidden");
 
         if (!currentUser) {
-          window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
+          window.location.href = "/" + getLangPrefix() + "/login?redirect=" + encodeURIComponent(window.location.href);
           return;
         }
 

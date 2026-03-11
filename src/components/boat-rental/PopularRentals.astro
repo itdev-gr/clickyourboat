@@ -1,4 +1,10 @@
 ---
+import { localizeHref } from "../../lib/i18n-utils";
+
+interface Props {
+  lang?: string;
+}
+
 // Popular rentals by country — link grid organized by region like Click&Boat
 const regions = [
   {
@@ -71,6 +77,9 @@ const regions = [
     ],
   },
 ];
+
+const { lang = "en" } = Astro.props;
+const l = (href: string) => localizeHref(href, lang);
 ---
 
 <section class="py-16 sm:py-20 bg-white" aria-labelledby="popular-rentals-heading">
@@ -109,7 +118,7 @@ const regions = [
 
     <div class="mt-10 text-center">
       <a
-        href="/destinations"
+        href={l("/destinations")}
         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-primary hover:text-primary transition-colors"
       >
         View all destinations

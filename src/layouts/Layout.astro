@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import { getLangFromParam, getAlternateLang } from "../lib/i18n-utils";
 
 interface Props {
   title?: string;
@@ -9,6 +10,7 @@ interface Props {
   image?: string;
   fullHeight?: boolean;
   hideFooter?: boolean;
+  lang?: string;
 }
 
 const {
@@ -17,13 +19,22 @@ const {
   image = "/og-image.jpg",
   fullHeight = false,
   hideFooter = false,
+  lang = "en",
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathaven.com");
+const resolvedLang = getLangFromParam(lang);
+const altLang = getAlternateLang(lang);
+const pathname = Astro.url.pathname;
+// Strip the current lang prefix to get the base path
+const basePath = pathname.replace(new RegExp(`^/${lang}`), "") || "/";
+const altHref = `/${altLang}${basePath}`;
+const canonicalUrl = new URL(pathname, Astro.site ?? "https://boathaven.com");
+const enHref = new URL(`/en${basePath}`, Astro.site ?? "https://boathaven.com");
+const elHref = new URL(`/gr${basePath}`, Astro.site ?? "https://boathaven.com");
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={resolvedLang} data-lang-prefix={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,6 +45,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathave
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Hreflang -->
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="el" href={elHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -66,17 +82,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathave
       type Lang = "en" | "el";
 
       function getLang(): Lang {
-        return (localStorage.getItem("lang") as Lang) || "en";
-      }
-
-      function setLang(lang: Lang) {
-        localStorage.setItem("lang", lang);
-        document.documentElement.lang = lang;
-        applyTranslations(lang);
-        // Update toggle buttons
-        document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
-          btn.textContent = lang === "en" ? "EN" : "GR";
-        });
+        return (document.documentElement.lang as Lang) || "en";
       }
 
       function applyTranslations(lang: Lang) {
@@ -85,6 +91,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathave
           const key = el.getAttribute("data-i18n")!;
           const t = translations[key];
           if (t && t[lang]) el.textContent = t[lang];
+        });
+        // Force select elements to re-render after option text changes
+        document.querySelectorAll("select").forEach((sel) => {
+          const idx = (sel as HTMLSelectElement).selectedIndex;
+          (sel as HTMLSelectElement).selectedIndex = idx;
         });
         // innerHTML (for strings with nested HTML)
         document.querySelectorAll("[data-i18n-html]").forEach((el) => {
@@ -109,25 +120,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathave
       // Apply on page load
       document.addEventListener("DOMContentLoaded", () => {
         const lang = getLang();
-        document.documentElement.lang = lang;
         applyTranslations(lang);
-        document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
-          btn.textContent = lang === "en" ? "EN" : "GR";
-        });
       });
 
       // Also apply immediately for fast rendering
-      const currentLang = getLang();
-      document.documentElement.lang = currentLang;
-
-      // Toggle handler
-      document.addEventListener("click", (e) => {
-        const btn = (e.target as Element).closest("[data-lang-toggle]");
-        if (!btn) return;
-        const current = getLang();
-        const next: Lang = current === "en" ? "el" : "en";
-        setLang(next);
-      });
+      applyTranslations(getLang());
 
       // Re-apply after dynamic content loads
       document.addEventListener("boats-loaded", () => {
@@ -135,14 +132,14 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://boathave
       });
 
       // Expose for other scripts
-      (window as any).__i18n = { getLang, setLang, applyTranslations, translations };
+      (window as any).__i18n = { getLang, applyTranslations, translations };
     </script>
   </head>
   <body class:list={["flex flex-col", fullHeight ? "h-screen overflow-hidden" : "min-h-screen"]}>
-    <Header />
+    <Header lang={lang} />
     <main class:list={["flex-1", fullHeight && "min-h-0 overflow-hidden"]}>
       <slot />
     </main>
-    {!hideFooter && <div class="flex-shrink-0"><Footer /></div>}
+    {!hideFooter && <div class="flex-shrink-0"><Footer lang={lang} /></div>}
   </body>
 </html>

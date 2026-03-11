@@ -1,11 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Booking Confirmed — BoatHaven";
 const description = "Your booking has been confirmed. Thank you for choosing BoatHaven!";
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
     <div class="max-w-md w-full text-center">
       <div class="mx-auto mb-6 h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
@@ -17,8 +20,8 @@ const description = "Your booking has been confirmed. Thank you for choosing Boa
       <p class="text-text-muted mb-2">Your payment was successful and your booking request has been sent to the owner.</p>
       <p class="text-text-muted mb-8 text-sm">You will receive a confirmation once the owner approves your booking.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a href="/bookings" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">View my bookings</a>
-        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text text-sm font-bold border border-gray-200 hover:bg-gray-50 transition-colors">Browse more boats</a>
+        <a href={l("/bookings")} class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">View my bookings</a>
+        <a href={l("/boat-rental")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text text-sm font-bold border border-gray-200 hover:bg-gray-50 transition-colors">Browse more boats</a>
       </div>
     </div>
   </div>

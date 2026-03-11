@@ -1,30 +1,30 @@
 ---
 // Left sidebar filters — fully functional filter panel
 const boatTypeOptions = [
-  { label: "Motor", value: "motor" },
-  { label: "Sailing", value: "sailing" },
-  { label: "Catamaran", value: "catamaran" },
-  { label: "Yacht", value: "yacht" },
-  { label: "Luxury", value: "luxury" },
-  { label: "Party", value: "party" },
+  { label: "Motor", value: "motor", i18nKey: "filter.motor" },
+  { label: "Sailing", value: "sailing", i18nKey: "filter.sailing" },
+  { label: "Catamaran", value: "catamaran", i18nKey: "filter.catamaran" },
+  { label: "Yacht", value: "yacht", i18nKey: "filter.yacht" },
+  { label: "Luxury", value: "luxury", i18nKey: "filter.luxury" },
+  { label: "Party", value: "party", i18nKey: "filter.party" },
 ];
 
 const idealForOptions = [
-  "Wakeboard and water skis",
-  "Water-based activities",
-  "Unique experience",
-  "Fishing",
-  "Events",
+  { label: "Wakeboard and water skis", i18nKey: "filter.wakeboard_ski" },
+  { label: "Water-based activities", i18nKey: "filter.water_activities" },
+  { label: "Unique experience", i18nKey: "filter.unique_experience" },
+  { label: "Fishing", i18nKey: "filter.fishing" },
+  { label: "Events", i18nKey: "filter.events" },
 ];
 
 const equipmentOptions = [
-  "Wakeboard",
-  "Towable Tube",
-  "Watermaker",
-  "Generator",
-  "Air Conditioning",
-  "External speakers",
-  "Paddle board",
+  { label: "Wakeboard", i18nKey: "filter.wakeboard" },
+  { label: "Towable Tube", i18nKey: "filter.towable_tube" },
+  { label: "Watermaker", i18nKey: "filter.watermaker" },
+  { label: "Generator", i18nKey: "filter.generator" },
+  { label: "Air Conditioning", i18nKey: "filter.air_conditioning" },
+  { label: "External speakers", i18nKey: "filter.external_speakers" },
+  { label: "Paddle board", i18nKey: "filter.paddle_board" },
 ];
 ---
 
@@ -34,12 +34,12 @@ const equipmentOptions = [
     <div class="border border-gray-200 rounded-xl overflow-hidden">
       <div class="grid grid-cols-2">
         <button class="sidebar-tab px-4 py-3 text-left border-b-2 border-pink bg-white" data-tab="rentals">
-          <span class="block text-sm font-bold text-pink">Boat Rentals</span>
-          <span class="block text-xs text-text-muted">All boat rentals</span>
+          <span class="block text-sm font-bold text-pink" data-i18n="filter.sidebar_boat_rentals">Boat Rentals</span>
+          <span class="block text-xs text-text-muted" data-i18n="filter.sidebar_all_rentals">All boat rentals</span>
         </button>
         <button class="sidebar-tab px-4 py-3 text-left border-b-2 border-transparent bg-gray-50 hover:bg-white transition-colors" data-tab="experiences">
-          <span class="block text-sm font-bold text-text">Daily experiences</span>
-          <span class="block text-xs text-text-muted">Activities with captain</span>
+          <span class="block text-sm font-bold text-text" data-i18n="filter.sidebar_daily_exp">Daily experiences</span>
+          <span class="block text-xs text-text-muted" data-i18n="filter.sidebar_activities">Activities with captain</span>
         </button>
       </div>
     </div>
@@ -50,19 +50,19 @@ const equipmentOptions = [
       <div class="px-4 py-3">
         <div class="flex items-center gap-3 mb-2">
           <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-          <p class="text-sm font-semibold text-text">Where</p>
+          <p class="text-sm font-semibold text-text" data-i18n="filter.where">Where</p>
         </div>
         <input
           type="text"
           class="filter-location w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-pink focus:border-transparent"
-          placeholder="City or harbour..."
+          placeholder="City or harbour..." data-i18n-placeholder="filter.city_placeholder"
         />
       </div>
       <!-- Dates -->
       <div class="px-4 py-3">
         <div class="flex items-center gap-3 mb-2">
           <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-          <p class="text-sm font-semibold text-text">Dates</p>
+          <p class="text-sm font-semibold text-text" data-i18n="filter.dates">Dates</p>
         </div>
         <div class="grid grid-cols-2 gap-2">
           <input
@@ -74,30 +74,30 @@ const equipmentOptions = [
             class="filter-date-end w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-text focus:outline-none focus:ring-2 focus:ring-pink focus:border-transparent"
           />
         </div>
-        <p class="text-[10px] text-text-muted mt-1">Boats available for your chosen period</p>
+        <p class="text-[10px] text-text-muted mt-1" data-i18n="filter.dates_desc">Boats available for your chosen period</p>
       </div>
       <!-- Rental type -->
       <div class="px-4 py-3">
         <div class="flex items-center gap-3 mb-2">
           <svg class="h-5 w-5 text-text-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.76 6.76L3.93 3.93"/></svg>
-          <p class="text-sm font-semibold text-text">Rental type</p>
+          <p class="text-sm font-semibold text-text" data-i18n="filter.rental_type">Rental type</p>
         </div>
         <div class="space-y-2">
           <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="rental-type" value="all" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" checked />
-            <span class="text-sm text-text group-hover:text-text">All</span>
+            <span class="text-sm text-text group-hover:text-text" data-i18n="filter.all">All</span>
           </label>
           <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="rental-type" value="with-skipper" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" />
-            <span class="text-sm text-text group-hover:text-text">With skipper</span>
+            <span class="text-sm text-text group-hover:text-text" data-i18n="filter.with_skipper">With skipper</span>
           </label>
           <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="rental-type" value="without-skipper" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" />
-            <span class="text-sm text-text group-hover:text-text">Without skipper</span>
+            <span class="text-sm text-text group-hover:text-text" data-i18n="filter.without_skipper">Without skipper</span>
           </label>
           <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="rental-type" value="no-licence" class="filter-rental-type h-4 w-4 border-gray-300 text-pink focus:ring-pink" />
-            <span class="text-sm text-text group-hover:text-text">No licence required</span>
+            <span class="text-sm text-text group-hover:text-text" data-i18n="filter.no_licence">No licence required</span>
           </label>
         </div>
       </div>
@@ -105,12 +105,12 @@ const equipmentOptions = [
 
     <!-- Boat type -->
     <div>
-      <h3 class="text-sm font-bold text-text mb-3">Boat type</h3>
+      <h3 class="text-sm font-bold text-text mb-3" data-i18n="filter.boat_type">Boat type</h3>
       <div class="space-y-2.5">
         {boatTypeOptions.map((opt) => (
           <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="checkbox" class="filter-boat-type h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" data-filter-value={opt.value} />
-            <span class="text-sm text-text group-hover:text-text">{opt.label}</span>
+            <span class="text-sm text-text group-hover:text-text" data-i18n={opt.i18nKey}>{opt.label}</span>
           </label>
         ))}
       </div>
@@ -118,7 +118,7 @@ const equipmentOptions = [
 
     <!-- Price per day -->
     <div>
-      <h3 class="text-sm font-bold text-text mb-3">Price per day</h3>
+      <h3 class="text-sm font-bold text-text mb-3" data-i18n="filter.price_per_day">Price per day</h3>
       <div class="px-1">
         <div class="flex items-center gap-3">
           <input
@@ -131,12 +131,12 @@ const equipmentOptions = [
         </div>
         <div class="flex items-center gap-2 mt-3">
           <div class="flex items-center border border-gray-200 rounded-lg px-3 py-1.5 flex-1">
-            <span class="text-xs text-text-muted mr-1">Min</span>
+            <span class="text-xs text-text-muted mr-1" data-i18n="filter.min">Min</span>
             <input type="number" class="filter-price-min-input w-full text-xs text-text bg-transparent outline-none" value="0" min="0" max="1200" />
           </div>
           <span class="text-text-muted text-xs">-</span>
           <div class="flex items-center border border-gray-200 rounded-lg px-3 py-1.5 flex-1">
-            <span class="text-xs text-text-muted mr-1">Max</span>
+            <span class="text-xs text-text-muted mr-1" data-i18n="filter.max">Max</span>
             <input type="number" class="filter-price-max-input w-full text-xs text-text bg-transparent outline-none" value="1200" min="0" max="1200" />
           </div>
         </div>
@@ -158,7 +158,7 @@ const equipmentOptions = [
 
     <!-- Number steppers -->
     <div class="flex items-center justify-between">
-      <span class="text-sm font-bold text-text">Number of people</span>
+      <span class="text-sm font-bold text-text" data-i18n="filter.number_people">Number of people</span>
       <div class="flex items-center gap-2">
         <button class="stepper-btn h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-text-muted hover:border-gray-400 transition-colors" data-stepper="people" data-dir="down" aria-label="Decrease people">
           <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M5 12h14"/></svg>
@@ -171,7 +171,7 @@ const equipmentOptions = [
     </div>
 
     <div class="flex items-center justify-between">
-      <span class="text-sm font-bold text-text">Number of cabins</span>
+      <span class="text-sm font-bold text-text" data-i18n="filter.number_cabins">Number of cabins</span>
       <div class="flex items-center gap-2">
         <button class="stepper-btn h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-text-muted hover:border-gray-400 transition-colors" data-stepper="cabins" data-dir="down" aria-label="Decrease cabins">
           <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M5 12h14"/></svg>
@@ -184,7 +184,7 @@ const equipmentOptions = [
     </div>
 
     <div class="flex items-center justify-between">
-      <span class="text-sm font-bold text-text">Number of berths</span>
+      <span class="text-sm font-bold text-text" data-i18n="filter.number_berths">Number of berths</span>
       <div class="flex items-center gap-2">
         <button class="stepper-btn h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-text-muted hover:border-gray-400 transition-colors" data-stepper="berths" data-dir="down" aria-label="Decrease berths">
           <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M5 12h14"/></svg>
@@ -199,7 +199,7 @@ const equipmentOptions = [
     <!-- Boat length -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold text-text">Boat length</h3>
+        <h3 class="text-sm font-bold text-text" data-i18n="filter.boat_length">Boat length</h3>
         <span class="filter-length-label text-xs text-text-muted">0 - 15+ m</span>
       </div>
       <input type="range" min="0" max="15" value="15" class="filter-length w-full accent-pink h-1" />
@@ -208,7 +208,7 @@ const equipmentOptions = [
     <!-- Engine power -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold text-text">Engine power</h3>
+        <h3 class="text-sm font-bold text-text" data-i18n="filter.engine_power">Engine power</h3>
         <span class="filter-engine-label text-xs text-text-muted">0 - 400+ hp</span>
       </div>
       <input type="range" min="0" max="400" value="400" class="filter-engine w-full accent-pink h-1" />
@@ -219,8 +219,8 @@ const equipmentOptions = [
       <!-- Super Owners -->
       <div class="flex items-start justify-between gap-3">
         <div>
-          <p class="text-sm font-bold text-text">Super Owners</p>
-          <p class="text-xs text-text-muted">Rent from well-reputed boat owners</p>
+          <p class="text-sm font-bold text-text" data-i18n="filter.super_owners">Super Owners</p>
+          <p class="text-xs text-text-muted" data-i18n="filter.super_owners_desc">Rent from well-reputed boat owners</p>
         </div>
         <button class="filter-toggle relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false" data-filter-toggle="superOwner">
           <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
@@ -230,8 +230,8 @@ const equipmentOptions = [
       <!-- Instant booking -->
       <div class="flex items-start justify-between gap-3">
         <div>
-          <p class="text-sm font-bold text-text">Instant booking</p>
-          <p class="text-xs text-text-muted">Book without waiting for owner's confirmation</p>
+          <p class="text-sm font-bold text-text" data-i18n="filter.instant_booking">Instant booking</p>
+          <p class="text-xs text-text-muted" data-i18n="filter.instant_booking_desc">Book without waiting for owner's confirmation</p>
         </div>
         <button class="filter-toggle relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false" data-filter-toggle="instantBooking">
           <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
@@ -243,12 +243,12 @@ const equipmentOptions = [
 
     <!-- Ideal for -->
     <div>
-      <h3 class="text-sm font-bold text-text mb-3">Ideal for</h3>
+      <h3 class="text-sm font-bold text-text mb-3" data-i18n="filter.ideal_for">Ideal for</h3>
       <div class="space-y-2.5">
         {idealForOptions.map((item) => (
           <label class="flex items-center gap-2.5 cursor-pointer group">
-            <input type="checkbox" class="filter-ideal-for h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" data-filter-value={item} />
-            <span class="text-sm text-text group-hover:text-text">{item}</span>
+            <input type="checkbox" class="filter-ideal-for h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" data-filter-value={item.label} />
+            <span class="text-sm text-text group-hover:text-text" data-i18n={item.i18nKey}>{item.label}</span>
           </label>
         ))}
       </div>
@@ -256,12 +256,12 @@ const equipmentOptions = [
 
     <!-- Equipment -->
     <div>
-      <h3 class="text-sm font-bold text-text mb-3">Equipment</h3>
+      <h3 class="text-sm font-bold text-text mb-3" data-i18n="filter.equipment">Equipment</h3>
       <div class="space-y-2.5">
         {equipmentOptions.map((item) => (
           <label class="flex items-center gap-2.5 cursor-pointer group">
-            <input type="checkbox" class="filter-equipment h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" data-filter-value={item} />
-            <span class="text-sm text-text group-hover:text-text">{item}</span>
+            <input type="checkbox" class="filter-equipment h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" data-filter-value={item.label} />
+            <span class="text-sm text-text group-hover:text-text" data-i18n={item.i18nKey}>{item.label}</span>
           </label>
         ))}
       </div>
@@ -272,8 +272,8 @@ const equipmentOptions = [
     <!-- Free cancellation -->
     <div class="flex items-start justify-between gap-3">
       <div>
-        <p class="text-sm font-bold text-text">Free cancellation</p>
-        <p class="text-xs text-text-muted">Refunds possible up to 24 hours before departure</p>
+        <p class="text-sm font-bold text-text" data-i18n="filter.free_cancellation">Free cancellation</p>
+        <p class="text-xs text-text-muted" data-i18n="filter.free_cancel_desc">Refunds possible up to 24 hours before departure</p>
       </div>
       <button class="filter-toggle relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false" data-filter-toggle="freeCancel">
         <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
@@ -284,10 +284,10 @@ const equipmentOptions = [
     <div class="flex items-start justify-between gap-3">
       <div>
         <p class="text-sm font-bold text-text flex items-center gap-1">
-          Best rated
+          <span data-i18n="filter.best_rated">Best rated</span>
           <svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
         </p>
-        <p class="text-xs text-text-muted">Only display boats with a rating over 4 stars</p>
+        <p class="text-xs text-text-muted" data-i18n="filter.best_rated_desc">Only display boats with a rating over 4 stars</p>
       </div>
       <button class="filter-toggle relative h-6 w-11 rounded-full bg-gray-200 transition-colors flex-shrink-0" role="switch" aria-checked="false" data-filter-toggle="bestRated">
         <span class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"></span>
@@ -297,7 +297,7 @@ const equipmentOptions = [
     <!-- Year of manufacture -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold text-text">Year of manufacture</h3>
+        <h3 class="text-sm font-bold text-text" data-i18n="filter.year">Year of manufacture</h3>
         <span class="filter-year-label text-xs text-text-muted">2006 - 2026</span>
       </div>
       <input type="range" min="2006" max="2026" value="2006" class="filter-year w-full accent-pink h-1" />
@@ -305,7 +305,7 @@ const equipmentOptions = [
 
     <!-- Reset filters -->
     <button class="filter-reset w-full py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-text-muted hover:border-gray-400 hover:text-text transition-colors">
-      Reset all filters
+      <span data-i18n="filter.reset_all">Reset all filters</span>
     </button>
   </div>
 </aside>

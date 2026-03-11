@@ -1,13 +1,17 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../../lib/i18n-utils";
+import Layout from "../../../layouts/Layout.astro";
 
 export async function getStaticPaths() {
-  const paths: { params: { id: string } }[] = [];
+  const paths: { params: { id: string; lang: string } }[] = [];
+  const langs = ["en", "gr"];
   try {
-    const { searchBoats } = await import("../../lib/api");
+    const { searchBoats } = await import("../../../lib/api");
     const firestoreBoats = await searchBoats({}, 100);
     firestoreBoats.forEach((b: any) => {
-      paths.push({ params: { id: b.id } });
+      langs.forEach((lang) => {
+        paths.push({ params: { id: b.id, lang } });
+      });
     });
   } catch {
     // Firestore unavailable at build time
@@ -15,18 +19,18 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { id } = Astro.params;
+const { id, lang } = Astro.params;
 
 let boat: any = null;
 try {
-  const { getBoatListing } = await import("../../lib/api");
+  const { getBoatListing } = await import("../../../lib/api");
   boat = await getBoatListing(id!);
 } catch {
   // Firestore unavailable
 }
 
 if (!boat) {
-  return Astro.redirect("/404");
+  return Astro.redirect(l("/404"));
 }
 
 const title = `${boat.title || boat.listingTitle || "Boat"} — BoatHaven`;
@@ -34,16 +38,17 @@ const description = boat.description || boat.title || "View boat details on Boat
 const images = boat.images || [];
 const price = boat.price || boat.pricePerDay || 0;
 const priceUnit = boat.priceUnit || "/ day";
+const l = (href: string) => localizeHref(href, lang);
 ---
 
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
     <!-- Breadcrumb -->
     <nav class="mb-4 text-sm text-text-muted" aria-label="Breadcrumb">
       <ol class="flex items-center gap-1.5">
-        <li><a href="/" class="hover:text-primary transition-colors">Home</a></li>
+        <li><a href={l("/")} class="hover:text-primary transition-colors">Home</a></li>
         <li>/</li>
-        <li><a href="/boat-rental" class="hover:text-primary transition-colors">Boat Rental</a></li>
+        <li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">Boat Rental</a></li>
         <li>/</li>
         <li class="text-text font-medium truncate max-w-[250px]">{boat.title || boat.listingTitle}</li>
       </ol>
@@ -399,7 +404,7 @@ const priceUnit = boat.priceUnit || "/ day";
             <!-- Booking messages -->
             <div id="booking-success" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
               <p class="text-sm text-green-800 font-medium">Booking request sent!</p>
-              <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href="/dashboard" class="underline font-semibold">View your bookings</a></p>
+              <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href={l("/dashboard")} class="underline font-semibold">View your bookings</a></p>
             </div>
             <div id="booking-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
               <p class="text-sm text-red-800 font-medium" id="booking-error-text">Something went wrong</p>
@@ -513,9 +518,9 @@ const priceUnit = boat.priceUnit || "/ day";
           params.set("with", ownerId);
           if (cBoatId) params.set("boatId", cBoatId);
           if (cBoatTitle) params.set("boatTitle", cBoatTitle);
-          window.location.href = "/messages?" + params.toString();
+          window.location.href = "/" + getLangPrefix() + "/messages?" + params.toString();
         } else {
-          window.location.href = "/messages";
+          window.location.href = "/" + getLangPrefix() + "/messages";
         }
       });
     }
@@ -524,9 +529,13 @@ const priceUnit = boat.priceUnit || "/ day";
 
 <!-- Booking logic -->
 <script>
-  import { auth } from "../../lib/firebase";
+
+  function getLangPrefix() {
+    return document.documentElement.dataset.langPrefix || "en";
+  }
+  import { auth } from "../../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
-  import { getBoatReviews, createReview, hasUserReviewedBoat, getUserOrders } from "../../lib/api";
+  import { getBoatReviews, createReview, hasUserReviewedBoat, getUserOrders } from "../../../lib/api";
 
   const bookBtn = document.getElementById("request-booking-btn") as HTMLButtonElement;
   const startInput = document.getElementById("booking-start") as HTMLInputElement;
@@ -565,7 +574,7 @@ const priceUnit = boat.priceUnit || "/ day";
 
     // Auth check
     if (!currentUser) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+      window.location.href = "/" + getLangPrefix() + "/login?redirect=" + encodeURIComponent(window.location.pathname);
       return;
     }
 
@@ -602,7 +611,7 @@ const priceUnit = boat.priceUnit || "/ day";
       startDate: startVal,
       endDate: endVal,
     });
-    window.location.href = "/confirm-booking?" + params.toString();
+    window.location.href = "/" + getLangPrefix() + "/confirm-booking?" + params.toString();
   });
 
   // --- Reviews ---
@@ -736,7 +745,7 @@ const priceUnit = boat.priceUnit || "/ day";
 
 <!-- Boat detail favorites: Firebase-backed -->
 <script>
-  import { auth, db } from "../../lib/firebase";
+  import { auth, db } from "../../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { doc, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
@@ -780,7 +789,7 @@ const priceUnit = boat.priceUnit || "/ day";
 
   favBtn?.addEventListener("click", async () => {
     if (!currentUser) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+      window.location.href = "/" + getLangPrefix() + "/login?redirect=" + encodeURIComponent(window.location.pathname);
       return;
     }
     if (!boatId) return;

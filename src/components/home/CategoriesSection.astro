@@ -1,4 +1,13 @@
 ---
+import { localizeHref } from "../../lib/i18n-utils";
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = "en" } = Astro.props;
+const l = (href: string) => localizeHref(href, lang);
+
 const categories = [
   {
     label: "Sailing",
@@ -48,7 +57,7 @@ const categories = [
     <div class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4">
       {categories.map((cat) => (
         <a
-          href={`/boat-rental?type=${cat.slug}`}
+          href={l(`/boat-rental?type=${cat.slug}`)}
           class="flex-shrink-0 snap-start flex flex-col items-center gap-3 rounded-xl bg-white border border-border p-6 w-36 hover:border-primary hover:shadow-md transition-all group"
         >
           <div class="text-text-muted group-hover:text-primary transition-colors" set:html={cat.icon} />

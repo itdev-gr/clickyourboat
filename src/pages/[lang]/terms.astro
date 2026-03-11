@@ -1,11 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Terms of Service — BoatHaven";
 const description = "Read the BoatHaven Terms of Service.";
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12">
     <h1 class="text-3xl font-extrabold text-text mb-8">Terms of Service</h1>
 
@@ -31,7 +34,7 @@ const description = "Read the BoatHaven Terms of Service.";
       <p>We reserve the right to modify these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms.</p>
 
       <h2 class="text-xl font-bold text-text">7. Contact</h2>
-      <p>For questions about these terms, please <a href="/contact" class="text-primary hover:underline">contact us</a>.</p>
+      <p>For questions about these terms, please <a href={l("/contact")} class="text-primary hover:underline">contact us</a>.</p>
     </div>
   </div>
 </Layout>

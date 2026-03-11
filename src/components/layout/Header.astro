@@ -1,4 +1,14 @@
 ---
+import { localizeHref, getAlternateLang } from "../../lib/i18n-utils";
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = "en" } = Astro.props;
+const altLang = getAlternateLang(lang);
+const l = (href: string) => localizeHref(href, lang);
+
 const navLinks = [
   { label: "Boat Rental", href: "/boat-rental", i18n: "nav.boat_rental" },
   { label: "Charter Types", href: "/charter-types", i18n: "nav.charter_types" },
@@ -15,6 +25,12 @@ const boatTypes = [
   { label: "Luxury", href: "/boat-rental?type=luxury", i18n: "nav.luxury" },
   { label: "Party", href: "/boat-rental?type=party", i18n: "nav.party" },
 ];
+
+// Build the alternate URL for the language toggle
+const currentPath = Astro.url.pathname;
+const basePath = currentPath.replace(new RegExp(`^/${lang}`), "") || "/";
+const altUrl = `/${altLang}${basePath}`;
+const toggleLabel = lang === "en" ? "GR" : "EN";
 ---
 
 <header
@@ -24,19 +40,19 @@ const boatTypes = [
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
-      <a href="/" class="flex items-center">
-        <img src="/logo-full-cyan.svg" alt="Your Boat" class="h-10" />
+      <a href={l("/")} class="flex items-center -ml-2 lg:-ml-32">
+        <img src="/tap-your-boat.svg" alt="Tap Your Boat" class="h-10" />
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
-        <a href="/boat-rental" class="text-sm font-medium text-text-muted hover:text-primary transition-colors" data-i18n="nav.boat_rental">Boat Rental</a>
+      <nav class="hidden lg:flex items-center gap-6 flex-1 justify-center" aria-label="Main navigation">
+        <a href={l("/boat-rental")} class="text-sm font-medium text-text-muted hover:text-primary transition-colors whitespace-nowrap" data-i18n="nav.boat_rental">Boat Rental</a>
 
         <!-- Boat Types dropdown -->
         <div class="relative" id="boat-types-dropdown">
           <button
             id="boat-types-btn"
-            class="text-sm font-medium text-text-muted hover:text-primary transition-colors flex items-center gap-1"
+            class="text-sm font-medium text-text-muted hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap"
             aria-expanded="false"
             aria-haspopup="true"
           >
@@ -50,7 +66,7 @@ const boatTypes = [
             <div class="w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1.5">
               {boatTypes.map((bt) => (
                 <a
-                  href={bt.href}
+                  href={l(bt.href)}
                   class="block px-4 py-2 text-sm text-text hover:bg-surface hover:text-primary transition-colors"
                   data-i18n={bt.i18n}
                 >
@@ -59,7 +75,7 @@ const boatTypes = [
               ))}
               <hr class="my-1.5 border-gray-100" />
               <a
-                href="/boat-types"
+                href={l("/boat-types")}
                 class="block px-4 py-2 text-sm font-medium text-primary hover:bg-surface transition-colors"
                 data-i18n="common.view_all"
               >
@@ -71,8 +87,8 @@ const boatTypes = [
 
         {navLinks.slice(1).map((link) => (
           <a
-            href={link.href}
-            class="text-sm font-medium text-text-muted hover:text-primary transition-colors"
+            href={l(link.href)}
+            class="text-sm font-medium text-text-muted hover:text-primary transition-colors whitespace-nowrap"
             data-i18n={link.i18n}
           >
             {link.label}
@@ -81,31 +97,31 @@ const boatTypes = [
       </nav>
 
       <!-- Right Actions -->
-      <div class="hidden lg:flex items-center gap-4">
-        <!-- Language Toggle -->
-        <button
-          data-lang-toggle
-          class="text-sm font-medium text-text-muted hover:text-text transition-colors cursor-pointer"
-          aria-label="Toggle language"
+      <div class="hidden lg:flex items-center gap-4 -mr-32">
+        <!-- Language Toggle (navigation link) -->
+        <a
+          href={altUrl}
+          class="text-sm font-medium text-text-muted hover:text-text transition-colors flex items-center gap-1"
+          aria-label="Switch language"
         >
-          <svg class="inline-block h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
           </svg>
-          EN
-        </button>
+          <span>{toggleLabel}</span>
+        </a>
 
         <!-- Logged-out actions -->
         <div id="header-logged-out" class="flex items-center gap-4">
           <a
-            href="/login"
+            href={l("/login")}
             class="text-sm font-medium text-text-muted hover:text-primary transition-colors"
             data-i18n="nav.log_in"
           >
             Log in
           </a>
           <a
-            href="/login?signup"
+            href={l("/login?signup")}
             class="text-sm font-medium text-text-muted hover:text-primary transition-colors"
             data-i18n="nav.sign_up"
           >
@@ -126,12 +142,12 @@ const boatTypes = [
             </button>
             <!-- Dropdown -->
             <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-50">
-              <a href="/dashboard" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.dashboard">Dashboard</a>
-              <a href="/account" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.account">Account</a>
-              <a href="/messages" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.messages">Messages</a>
-              <a href="/favorites" class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.favorites">Favorites</a>
-              <a href="/list-your-boat" id="my-listings-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.my_listings">My Listings</a>
-              <a href="/admin" id="admin-panel-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.admin_panel">Admin Panel</a>
+              <a href={l("/dashboard")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.dashboard">Dashboard</a>
+              <a href={l("/account")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.account">Account</a>
+              <a href={l("/messages")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.messages">Messages</a>
+              <a href={l("/favorites")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.favorites">Favorites</a>
+              <a href={l("/list-your-boat")} id="my-listings-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.my_listings">My Listings</a>
+              <a href={l("/admin")} id="admin-panel-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.admin_panel">Admin Panel</a>
               <hr class="my-1 border-gray-100" />
               <button id="logout-btn" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors" data-i18n="nav.log_out">Log out</button>
             </div>
@@ -140,13 +156,13 @@ const boatTypes = [
 
         <a
           id="admin-nav-btn"
-          href="/admin"
+          href={l("/admin")}
           class="hidden items-center px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
         >
           <span data-i18n="nav.admin_panel">Admin Panel</span>
         </a>
         <a
-          href="/list-your-boat"
+          href={l("/list-your-boat")}
           class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           data-i18n="nav.list_your_boat"
         >
@@ -188,7 +204,7 @@ const boatTypes = [
     id="drawer-panel"
   >
     <div class="flex items-center justify-between p-4 border-b border-border">
-      <img src="/logo-full-cyan.svg" alt="Your Boat" class="h-8" />
+      <img src="/tap-your-boat.svg" alt="Tap Your Boat" class="h-8" />
       <button
         class="p-2 rounded-lg text-text-muted hover:bg-surface transition-colors"
         id="close-drawer-btn"
@@ -201,7 +217,7 @@ const boatTypes = [
     </div>
 
     <nav class="p-4 space-y-1" aria-label="Mobile navigation">
-      <a href="/boat-rental" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.boat_rental">Boat Rental</a>
+      <a href={l("/boat-rental")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.boat_rental">Boat Rental</a>
 
       <!-- Mobile Boat Types expandable -->
       <div>
@@ -215,7 +231,7 @@ const boatTypes = [
         <div id="mobile-boat-types-list" class="hidden pl-4 space-y-0.5">
           {boatTypes.map((bt) => (
             <a
-              href={bt.href}
+              href={l(bt.href)}
               class="block px-4 py-2.5 rounded-lg text-sm text-text-muted hover:bg-surface hover:text-primary transition-colors"
               data-i18n={bt.i18n}
             >
@@ -223,7 +239,7 @@ const boatTypes = [
             </a>
           ))}
           <a
-            href="/boat-types"
+            href={l("/boat-types")}
             class="block px-4 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-surface transition-colors"
             data-i18n="common.view_all"
           >
@@ -234,7 +250,7 @@ const boatTypes = [
 
       {navLinks.slice(1).map((link) => (
         <a
-          href={link.href}
+          href={l(link.href)}
           class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium"
           data-i18n={link.i18n}
         >
@@ -243,24 +259,24 @@ const boatTypes = [
       ))}
 
       <!-- Mobile Language Toggle -->
-      <button
-        data-lang-toggle
+      <a
+        href={altUrl}
         class="flex items-center gap-2 w-full px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium"
       >
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
           <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
         </svg>
-        EN
-      </button>
+        <span>{toggleLabel}</span>
+      </a>
 
       <hr class="my-4 border-border" />
       <!-- Mobile logged-out -->
       <div id="mobile-logged-out">
-        <a href="/login" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.log_in">
+        <a href={l("/login")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.log_in">
           Log in
         </a>
-        <a href="/login?signup" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.sign_up">
+        <a href={l("/login?signup")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.sign_up">
           Sign up
         </a>
       </div>
@@ -270,22 +286,22 @@ const boatTypes = [
           <div id="mobile-user-avatar" class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold"></div>
           <span id="mobile-user-name" class="text-sm font-semibold text-text truncate"></span>
         </div>
-        <a href="/dashboard" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="footer.dashboard">
+        <a href={l("/dashboard")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="footer.dashboard">
           Dashboard
         </a>
-        <a href="/account" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.account">
+        <a href={l("/account")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.account">
           Account
         </a>
-        <a href="/messages" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.messages">
+        <a href={l("/messages")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.messages">
           Messages
         </a>
-        <a href="/favorites" class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="footer.favorites">
+        <a href={l("/favorites")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="footer.favorites">
           Favorites
         </a>
-        <a href="/list-your-boat" id="mobile-my-listings-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.my_listings">
+        <a href={l("/list-your-boat")} id="mobile-my-listings-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.my_listings">
           My Listings
         </a>
-        <a href="/admin" id="mobile-admin-panel-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.admin_panel">
+        <a href={l("/admin")} id="mobile-admin-panel-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.admin_panel">
           Admin Panel
         </a>
         <button id="mobile-logout-btn" class="w-full text-left px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors font-medium" data-i18n="nav.log_out">
@@ -295,14 +311,14 @@ const boatTypes = [
       <div class="pt-2 space-y-2">
         <a
           id="mobile-admin-nav-btn"
-          href="/admin"
+          href={l("/admin")}
           class="hidden w-full text-center px-4 py-3 rounded-lg bg-gray-900 text-white font-semibold hover:bg-gray-700 transition-colors"
           data-i18n="nav.admin_panel"
         >
           Admin Panel
         </a>
         <a
-          href="/list-your-boat"
+          href={l("/list-your-boat")}
           class="block w-full text-center px-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition-colors"
           data-i18n="nav.list_your_boat"
         >
@@ -432,6 +448,12 @@ const boatTypes = [
     return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
   }
 
+  // Detect the lang prefix from the current URL for redirects
+  function getLangPrefix(): string {
+    const match = window.location.pathname.match(/^\/(en|gr)\//);
+    return match ? match[1] : "en";
+  }
+
   onAuthStateChanged(auth, async (user) => {
     const loggedOut = document.getElementById("header-logged-out");
     const loggedIn = document.getElementById("header-logged-in");
@@ -499,10 +521,10 @@ const boatTypes = [
   // Logout
   document.getElementById("logout-btn")?.addEventListener("click", async () => {
     await signOut(auth);
-    window.location.href = "/";
+    window.location.href = `/${getLangPrefix()}/`;
   });
   document.getElementById("mobile-logout-btn")?.addEventListener("click", async () => {
     await signOut(auth);
-    window.location.href = "/";
+    window.location.href = `/${getLangPrefix()}/`;
   });
 </script>

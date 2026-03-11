@@ -1,11 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Privacy Policy — BoatHaven";
 const description = "Read the BoatHaven Privacy Policy.";
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12">
     <h1 class="text-3xl font-extrabold text-text mb-8">Privacy Policy</h1>
 
@@ -34,7 +37,7 @@ const description = "Read the BoatHaven Privacy Policy.";
       <p>We may update this policy from time to time. We will notify users of significant changes via email or platform notification.</p>
 
       <h2 class="text-xl font-bold text-text">8. Contact</h2>
-      <p>For privacy-related questions, please <a href="/contact" class="text-primary hover:underline">contact us</a>.</p>
+      <p>For privacy-related questions, please <a href={l("/contact")} class="text-primary hover:underline">contact us</a>.</p>
     </div>
   </div>
 </Layout>

@@ -13,12 +13,13 @@
   >
     <!-- Location -->
     <div class="lg:col-span-2 relative">
-      <label for="search-location" class="block text-sm font-medium text-text mb-1.5">Location</label>
+      <label for="search-location" class="block text-sm font-medium text-text mb-1.5" data-i18n="search.location">Location</label>
       <input
         type="text"
         id="search-location"
         name="location"
         placeholder="Where do you want to sail?"
+        data-i18n-placeholder="search.location_placeholder"
         autocomplete="off"
         class="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
       />
@@ -33,7 +34,7 @@
 
     <!-- Start Date -->
     <div>
-      <label for="search-start-date" class="block text-sm font-medium text-text mb-1.5">Start date</label>
+      <label for="search-start-date" class="block text-sm font-medium text-text mb-1.5" data-i18n="search.start_date">Start date</label>
       <input
         type="date"
         id="search-start-date"
@@ -44,7 +45,7 @@
 
     <!-- End Date -->
     <div>
-      <label for="search-end-date" class="block text-sm font-medium text-text mb-1.5">End date</label>
+      <label for="search-end-date" class="block text-sm font-medium text-text mb-1.5" data-i18n="search.end_date">End date</label>
       <input
         type="date"
         id="search-end-date"
@@ -55,17 +56,17 @@
 
     <!-- Boat Type -->
     <div>
-      <label for="search-type" class="block text-sm font-medium text-text mb-1.5">Boat type</label>
+      <label for="search-type" class="block text-sm font-medium text-text mb-1.5" data-i18n="search.boat_type">Boat type</label>
       <select
         id="search-type"
         name="type"
         class="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none"
       >
-        <option value="">All types</option>
-        <option value="sailing">Sailing</option>
-        <option value="motor">Motor</option>
-        <option value="catamaran">Catamaran</option>
-        <option value="yacht">Yacht</option>
+        <option value="" data-i18n="search.all_types">All types</option>
+        <option value="sailing" data-i18n="nav.sailing">Sailing</option>
+        <option value="motor" data-i18n="nav.motor">Motor</option>
+        <option value="catamaran" data-i18n="nav.catamaran">Catamaran</option>
+        <option value="yacht" data-i18n="nav.yacht">Yacht</option>
       </select>
     </div>
 
@@ -79,11 +80,12 @@
           value="true"
           class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
         />
-        <label for="search-skipper" class="text-sm text-text-muted">With skipper</label>
+        <label for="search-skipper" class="text-sm text-text-muted" data-i18n="search.with_skipper">With skipper</label>
       </div>
       <button
         type="submit"
         class="w-full rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        data-i18n="search.search_boats"
       >
         Search Boats
       </button>

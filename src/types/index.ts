@@ -156,13 +156,15 @@ export interface Review {
   createdAt: Date;
 }
 
+export type BilingualText = { en: string; el: string } | string;
+
 export interface Article {
   id: string;
-  title: string;
+  title: BilingualText;
   slug: string;
   image: string;
-  summary: string;
-  content: string;
+  summary: BilingualText;
+  content: BilingualText;
   createdAt: Date;
 }
 

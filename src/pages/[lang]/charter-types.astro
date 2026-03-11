@@ -1,5 +1,8 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Charter Types — Choose Your Perfect Charter | BoatHaven";
 const description =
@@ -29,9 +32,9 @@ const charterTypes = [
     priceFrom: 1500,
   },
 ];
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -124,7 +127,7 @@ const charterTypes = [
 
             <!-- CTA -->
             <a
-              href={`/boat-rental?charter=${ct.slug}`}
+              href={l(`/boat-rental?charter=${ct.slug}`)}
               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               Browse {ct.name} Charters
@@ -190,7 +193,7 @@ const charterTypes = [
               <td class="px-5 py-4"></td>
               {charterTypes.map((ct) => (
                 <td class="text-center px-6 py-4">
-                  <a href={`/boat-rental?charter=${ct.slug}`} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors" data-i18n="charter.browse">
+                  <a href={l(`/boat-rental?charter=${ct.slug}`)} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors" data-i18n="charter.browse">
                     Browse
                   </a>
                 </td>
@@ -210,10 +213,10 @@ const charterTypes = [
         Our team can help you find the perfect charter for your group, budget, and experience level.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-4">
-        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors" data-i18n="charter.browse_all">
+        <a href={l("/boat-rental")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors" data-i18n="charter.browse_all">
           Browse all boats
         </a>
-        <a href="/contact" class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors" data-i18n="charter.contact_advice">
+        <a href={l("/contact")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors" data-i18n="charter.contact_advice">
           Contact us for advice
         </a>
       </div>

@@ -1,11 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Boat Details — BoatHaven";
 const description = "View boat details on BoatHaven";
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <!-- Loading state -->
   <div id="boat-loading" class="flex items-center justify-center py-20">
     <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -15,7 +18,7 @@ const description = "View boat details on BoatHaven";
   <div id="boat-error" class="hidden text-center py-20">
     <h1 class="text-2xl font-bold text-text mb-2">Boat not found</h1>
     <p class="text-text-muted mb-6">This boat may have been removed or is no longer available.</p>
-    <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors">
+    <a href={l("/boat-rental")} class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors">
       Browse all boats
     </a>
   </div>
@@ -80,8 +83,12 @@ const description = "View boat details on BoatHaven";
 
 <!-- Main detail loader -->
 <script>
-  import { getBoatListing } from "../lib/api";
-  import { db } from "../lib/firebase";
+
+  function getLangPrefix() {
+    return document.documentElement.dataset.langPrefix || "en";
+  }
+  import { getBoatListing } from "../../lib/api";
+  import { db } from "../../lib/firebase";
   import { doc, getDoc } from "firebase/firestore";
 
   function esc(s: string): string {
@@ -170,10 +177,10 @@ const description = "View boat details on BoatHaven";
         headerEl.innerHTML = `
           <nav class="mb-3 text-sm text-text-muted" aria-label="Breadcrumb">
             <ol class="flex items-center gap-1.5 flex-wrap">
-              <li><a href="/boat-rental" class="hover:text-primary transition-colors">Boat rental</a></li>
+              <li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">Boat rental</a></li>
               <li class="text-gray-300">&gt;</li>
-              ${city ? `<li><a href="/boat-rental" class="hover:text-primary transition-colors">Boat rental ${esc(city)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
-              ${boatTypeLabel ? `<li><a href="/boat-rental" class="hover:text-primary transition-colors">${esc(boatTypeLabel)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
+              ${city ? `<li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">Boat rental ${esc(city)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
+              ${boatTypeLabel ? `<li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">${esc(boatTypeLabel)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
               <li class="text-text font-medium truncate max-w-[300px]">${esc(boatTitle)}</li>
             </ol>
           </nav>
@@ -601,7 +608,7 @@ const description = "View boat details on BoatHaven";
 
             <div id="booking-success" class="hidden mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
               <p class="text-sm text-green-800 font-medium">Booking request sent!</p>
-              <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href="/dashboard" class="underline font-semibold">View your bookings</a></p>
+              <p class="text-xs text-green-600 mt-1">The owner has been notified. <a href={l("/dashboard")} class="underline font-semibold">View your bookings</a></p>
             </div>
             <div id="booking-error" class="hidden mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
               <p class="text-sm text-red-800 font-medium" id="booking-error-text">Something went wrong</p>
@@ -735,9 +742,9 @@ const description = "View boat details on BoatHaven";
           params.set("with", oid);
           params.set("boatId", boatId!);
           params.set("boatTitle", boatTitle);
-          window.location.href = "/messages?" + params.toString();
+          window.location.href = "/" + getLangPrefix() + "/messages?" + params.toString();
         } else {
-          window.location.href = "/messages";
+          window.location.href = "/" + getLangPrefix() + "/messages";
         }
       }
       document.getElementById("contact-owner-btn")?.addEventListener("click", function() { handleContactClick(this); });
@@ -777,9 +784,9 @@ const description = "View boat details on BoatHaven";
 
 <!-- Booking logic -->
 <script>
-  import { auth } from "../lib/firebase";
+  import { auth } from "../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
-  import { getBoatReviews } from "../lib/api";
+  import { getBoatReviews } from "../../lib/api";
 
   let currentUser: any = null;
 
@@ -877,7 +884,7 @@ const description = "View boat details on BoatHaven";
       errorDiv?.classList.add("hidden");
 
       if (!currentUser) {
-        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        window.location.href = "/" + getLangPrefix() + "/login?redirect=" + encodeURIComponent(window.location.pathname);
         return;
       }
       if (ownerId && currentUser.uid === ownerId) { showError("You cannot book your own boat."); return; }
@@ -897,14 +904,14 @@ const description = "View boat details on BoatHaven";
         startDate: startVal,
         endDate: endVal,
       });
-      window.location.href = "/confirm-booking?" + params.toString();
+      window.location.href = "/" + getLangPrefix() + "/confirm-booking?" + params.toString();
     });
   });
 </script>
 
 <!-- Favorites -->
 <script>
-  import { auth, db } from "../lib/firebase";
+  import { auth, db } from "../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { doc, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
@@ -939,7 +946,7 @@ const description = "View boat details on BoatHaven";
 
     favBtn.addEventListener("click", async () => {
       if (!currentUser) {
-        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        window.location.href = "/" + getLangPrefix() + "/login?redirect=" + encodeURIComponent(window.location.pathname);
         return;
       }
       if (!boatId) return;

@@ -1,5 +1,8 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
 
 const title = "Boat Types — Find the Right Boat for You | BoatHaven";
 const description =
@@ -13,6 +16,7 @@ const boatTypes = [
     description:
       "Catamarans offer unmatched stability and spacious living areas, making them the ideal choice for families, groups, and anyone who values comfort. With two hulls and a wide beam, they provide smooth sailing even in choppy conditions. Enjoy generous deck space, multiple cabins, and the freedom to explore coastlines in style.",
     features: ["Exceptional stability", "Spacious living areas", "Multiple cabins & berths", "Large deck & trampoline", "Great for families & groups", "Ideal for multi-day charters"],
+    featureKeys: ["bt.catamaran.feat1", "bt.catamaran.feat2", "bt.catamaran.feat3", "bt.catamaran.feat4", "bt.catamaran.feat5", "bt.catamaran.feat6"],
     image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80&auto=format",
     specs: { capacity: "8–26 guests", length: "10–20 m", speed: "6–12 knots", licence: "Required or with skipper" },
     priceFrom: 500,
@@ -24,6 +28,7 @@ const boatTypes = [
     description:
       "Houseboats combine the comforts of home with the freedom of the open water. Perfect for canals, rivers, and lakes, they offer a unique way to explore at a leisurely pace. With full kitchens, comfortable bedrooms, and living spaces, a houseboat holiday is unlike anything else.",
     features: ["Full kitchen & bathroom", "Comfortable bedrooms", "No licence required in many areas", "Perfect for rivers & canals", "Slow-paced relaxation", "Unique holiday experience"],
+    featureKeys: ["bt.houseboat.feat1", "bt.houseboat.feat2", "bt.houseboat.feat3", "bt.houseboat.feat4", "bt.houseboat.feat5", "bt.houseboat.feat6"],
     image: "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=800&q=80&auto=format",
     specs: { capacity: "4–12 guests", length: "8–15 m", speed: "3–8 knots", licence: "Often not required" },
     priceFrom: 150,
@@ -35,6 +40,7 @@ const boatTypes = [
     description:
       "Motorboats are the most versatile option for day trips and coastal exploration. From small runabouts to large cruisers, they offer speed and convenience to reach your favourite bays, beaches, and islands in no time. Easy to handle and available with or without a skipper.",
     features: ["Fast & easy to handle", "Ideal for day trips", "Wide range of sizes", "Available without licence (small)", "Great for water sports", "Explore bays & islands quickly"],
+    featureKeys: ["bt.motorboat.feat1", "bt.motorboat.feat2", "bt.motorboat.feat3", "bt.motorboat.feat4", "bt.motorboat.feat5", "bt.motorboat.feat6"],
     image: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80&auto=format",
     specs: { capacity: "4–12 guests", length: "5–15 m", speed: "15–40 knots", licence: "Varies by size" },
     priceFrom: 100,
@@ -46,6 +52,7 @@ const boatTypes = [
     description:
       "Rigid Inflatable Boats (RIBs) are the go-to choice for thrill-seekers and water sports enthusiasts. Lightweight yet incredibly sturdy, they handle rough seas with ease and offer exhilarating speeds. Perfect for reaching hidden coves and beaches that larger boats can't access.",
     features: ["Lightweight & fast", "Excellent in rough seas", "Access shallow waters & coves", "Great for water sports", "Easy to manoeuvre", "Available without licence (small)"],
+    featureKeys: ["bt.rib.feat1", "bt.rib.feat2", "bt.rib.feat3", "bt.rib.feat4", "bt.rib.feat5", "bt.rib.feat6"],
     image: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=800&q=80&auto=format",
     specs: { capacity: "6–12 guests", length: "5–10 m", speed: "20–50 knots", licence: "Varies by size" },
     priceFrom: 120,
@@ -57,14 +64,15 @@ const boatTypes = [
     description:
       "Sailboats offer the most authentic and rewarding way to explore the ocean. Powered by the wind, they provide a peaceful, eco-friendly experience that connects you to the elements. Whether you're an experienced sailor or prefer to hire a skipper, there's nothing quite like the feeling of catching the wind.",
     features: ["Eco-friendly wind power", "Peaceful sailing experience", "Ideal for island hopping", "Multiple cabins for overnight", "Classic nautical adventure", "With or without skipper"],
+    featureKeys: ["bt.sailboat.feat1", "bt.sailboat.feat2", "bt.sailboat.feat3", "bt.sailboat.feat4", "bt.sailboat.feat5", "bt.sailboat.feat6"],
     image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=800&q=80&auto=format",
     specs: { capacity: "4–12 guests", length: "8–18 m", speed: "5–10 knots", licence: "Required or with skipper" },
     priceFrom: 200,
   },
 ];
+const l = (href: string) => localizeHref(href, lang);
 ---
-
-<Layout title={title} description={description}>
+<Layout lang={lang} title={title} description={description}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -86,10 +94,10 @@ const boatTypes = [
     />
     <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/65"></div>
     <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4" data-i18n="boat_types.title">
         Boat Types
       </h1>
-      <p class="text-lg sm:text-xl text-white/85 max-w-2xl">
+      <p class="text-lg sm:text-xl text-white/85 max-w-2xl" data-i18n="boat_types.subtitle">
         From catamarans to sailboats — find the right vessel for every adventure
       </p>
     </div>
@@ -103,6 +111,7 @@ const boatTypes = [
           <a
             href={`#${bt.slug}`}
             class="flex-shrink-0 px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-text-muted hover:border-primary hover:text-primary transition-colors"
+            data-i18n={`bt.${bt.slug}.name`}
           >
             {bt.name}
           </a>
@@ -127,55 +136,55 @@ const boatTypes = [
             />
             <!-- Price badge -->
             <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
-              <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium">From</p>
-              <p class="text-xl font-extrabold text-text">€{bt.priceFrom}<span class="text-sm font-medium text-text-muted"> / day</span></p>
+              <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium" data-i18n="boat_types.from">From</p>
+              <p class="text-xl font-extrabold text-text">€{bt.priceFrom}<span class="text-sm font-medium text-text-muted" data-i18n="boat_types.per_day"> / day</span></p>
             </div>
           </div>
 
           <!-- Content -->
           <div class:list={[i % 2 !== 0 && "lg:order-1"]}>
-            <h2 id={`${bt.slug}-heading`} class="text-3xl sm:text-4xl font-extrabold text-text mb-3">
+            <h2 id={`${bt.slug}-heading`} class="text-3xl sm:text-4xl font-extrabold text-text mb-3" data-i18n={`bt.${bt.slug}.name`}>
               {bt.name}
             </h2>
-            <p class="text-lg text-primary font-medium mb-4">{bt.headline}</p>
-            <p class="text-text-muted leading-relaxed mb-6">{bt.description}</p>
+            <p class="text-lg text-primary font-medium mb-4" data-i18n={`bt.${bt.slug}.headline`}>{bt.headline}</p>
+            <p class="text-text-muted leading-relaxed mb-6" data-i18n={`bt.${bt.slug}.desc`}>{bt.description}</p>
 
             <!-- Specs grid -->
             <div class="grid grid-cols-2 gap-3 mb-6">
               <div class="bg-surface rounded-xl p-3.5">
-                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5">Capacity</p>
+                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5" data-i18n="boat_types.capacity">Capacity</p>
                 <p class="text-sm font-bold text-text">{bt.specs.capacity}</p>
               </div>
               <div class="bg-surface rounded-xl p-3.5">
-                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5">Length</p>
+                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5" data-i18n="boat_types.length">Length</p>
                 <p class="text-sm font-bold text-text">{bt.specs.length}</p>
               </div>
               <div class="bg-surface rounded-xl p-3.5">
-                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5">Speed</p>
+                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5" data-i18n="boat_types.speed">Speed</p>
                 <p class="text-sm font-bold text-text">{bt.specs.speed}</p>
               </div>
               <div class="bg-surface rounded-xl p-3.5">
-                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5">Licence</p>
-                <p class="text-sm font-bold text-text">{bt.specs.licence}</p>
+                <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5" data-i18n="boat_types.licence">Licence</p>
+                <p class="text-sm font-bold text-text" data-i18n={`bt.${bt.slug}.spec_licence`}>{bt.specs.licence}</p>
               </div>
             </div>
 
             <!-- Features -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-8">
-              {bt.features.map((f) => (
+              {bt.features.map((f, fi) => (
                 <div class="flex items-center gap-2">
                   <svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                  <span class="text-sm text-text-muted">{f}</span>
+                  <span class="text-sm text-text-muted" data-i18n={bt.featureKeys[fi]}>{f}</span>
                 </div>
               ))}
             </div>
 
             <!-- CTA -->
             <a
-              href={`/boat-rental?type=${bt.slug}`}
+              href={l(`/boat-rental?type=${bt.slug}`)}
               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              Browse {bt.name}
+              <span data-i18n={`bt.${bt.slug}.browse`}>Browse {bt.name}</span>
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
             </a>
           </div>
@@ -188,8 +197,8 @@ const boatTypes = [
   <section class="bg-surface py-16 sm:py-20" aria-labelledby="compare-heading">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
-        <h2 id="compare-heading" class="text-2xl sm:text-3xl font-bold text-text">Compare boat types</h2>
-        <p class="mt-2 text-text-muted">Find which boat is best for your trip at a glance</p>
+        <h2 id="compare-heading" class="text-2xl sm:text-3xl font-bold text-text" data-i18n="boat_types.compare_title">Compare boat types</h2>
+        <p class="mt-2 text-text-muted" data-i18n="boat_types.compare_subtitle">Find which boat is best for your trip at a glance</p>
       </div>
 
       <div class="overflow-x-auto">
@@ -198,44 +207,44 @@ const boatTypes = [
             <tr class="border-b border-gray-200 bg-gray-50">
               <th class="text-left px-5 py-4 font-semibold text-text-muted"></th>
               {boatTypes.map((bt) => (
-                <th class="text-center px-4 py-4 font-bold text-text whitespace-nowrap">{bt.name}</th>
+                <th class="text-center px-4 py-4 font-bold text-text whitespace-nowrap" data-i18n={`bt.${bt.slug}.name`}>{bt.name}</th>
               ))}
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Capacity</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.capacity">Capacity</td>
               {boatTypes.map((bt) => <td class="text-center px-4 py-3.5 text-text-muted">{bt.specs.capacity}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Length</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.length">Length</td>
               {boatTypes.map((bt) => <td class="text-center px-4 py-3.5 text-text-muted">{bt.specs.length}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Speed</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.speed">Speed</td>
               {boatTypes.map((bt) => <td class="text-center px-4 py-3.5 text-text-muted">{bt.specs.speed}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Licence</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.licence">Licence</td>
               {boatTypes.map((bt) => <td class="text-center px-4 py-3.5 text-text-muted">{bt.specs.licence}</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">From price</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.from_price">From price</td>
               {boatTypes.map((bt) => <td class="text-center px-4 py-3.5 font-bold text-text">€{bt.priceFrom}/day</td>)}
             </tr>
             <tr>
-              <td class="px-5 py-3.5 font-medium text-text">Best for</td>
-              <td class="text-center px-4 py-3.5 text-text-muted">Families & groups</td>
-              <td class="text-center px-4 py-3.5 text-text-muted">Relaxed getaways</td>
-              <td class="text-center px-4 py-3.5 text-text-muted">Day trips & exploring</td>
-              <td class="text-center px-4 py-3.5 text-text-muted">Adventure & water sports</td>
-              <td class="text-center px-4 py-3.5 text-text-muted">Classic sailing trips</td>
+              <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.best_for">Best for</td>
+              <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_catamarans">Families & groups</td>
+              <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_houseboats">Relaxed getaways</td>
+              <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_motorboats">Day trips & exploring</td>
+              <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_ribs">Adventure & water sports</td>
+              <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_sailboats">Classic sailing trips</td>
             </tr>
             <tr>
               <td class="px-5 py-4"></td>
               {boatTypes.map((bt) => (
                 <td class="text-center px-4 py-4">
-                  <a href={`/boat-rental?type=${bt.slug}`} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors">
+                  <a href={l(`/boat-rental?type=${bt.slug}`)} class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors" data-i18n="boat_types.browse">
                     Browse
                   </a>
                 </td>
@@ -250,15 +259,15 @@ const boatTypes = [
   <!-- CTA Banner -->
   <section class="py-16 bg-primary">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Not sure which boat to choose?</h2>
-      <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4" data-i18n="boat_types.not_sure_title">Not sure which boat to choose?</h2>
+      <p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto" data-i18n="boat_types.not_sure_desc">
         Browse all available boats, filter by your needs, and find the perfect match for your next trip on the water.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-4">
-        <a href="/boat-rental" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors">
+        <a href={l("/boat-rental")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-text font-bold text-sm hover:bg-gray-50 transition-colors" data-i18n="boat_types.browse_all">
           Browse all boats
         </a>
-        <a href="/contact" class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors">
+        <a href={l("/contact")} class="inline-flex items-center px-6 py-3 rounded-xl bg-white/15 border border-white/25 text-white font-bold text-sm hover:bg-white/25 transition-colors" data-i18n="boat_types.contact_advice">
           Contact us for advice
         </a>
       </div>
