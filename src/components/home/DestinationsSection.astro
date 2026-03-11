@@ -1,11 +1,78 @@
 ---
-import type { Destination } from "../../types";
-
-interface Props {
-  destinations: Destination[];
-}
-
-const { destinations } = Astro.props;
+const tours = [
+  {
+    name: "ARSIDA, PATROKLOS & SOUNIO: Half Day Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/ARSIDA-PATROKLOS-SOUNIO-Half-Day-Tour-compressed.jpg",
+    description: "Explore three iconic spots, Arsida, Patroklos, and Sounio, on this half-day journey with crystal-clear waters and coastal views.",
+    href: "https://boat4all.gr/tour/arsida-patroklos-sounio-half-day-tour/",
+  },
+  {
+    name: "HYDRA & POROS: Full Day Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/HYDRA-POROS-Full-Day-Tour-compressed-1.jpg",
+    description: "Sail through vibrant history with picturesque landscapes, quaint villages, and crystal waters.",
+    href: "https://boat4all.gr/tour/hydra-poros-full-day-tour/",
+  },
+  {
+    name: "ATHENIAN RIVIERA & FLEVES",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/HYDRA-POROS-Full-Day-Tour-compressed.jpg",
+    description: "Cruise along the Athenian Riviera to Fleves Island with sandy beaches and seaside charm.",
+    href: "https://boat4all.gr/tour/athenian-riviera-fleves/",
+  },
+  {
+    name: "AIGINA ISLAND Boat Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/AIGINA-ISLAND-compressed.jpg",
+    description: "Sail to Aigina Island, famous for ancient sites and charming villages, perfect for sightseeing and sunbathing.",
+    href: "https://boat4all.gr/tour/aigina-island/",
+  },
+  {
+    name: "AGISTRI ISLAND ESCAPE",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/AGISTRI-ISLAND-ESCAPE-A-Serene-Boat-Tour-Adventure-compressed.jpg",
+    description: "Discover Agistri's hidden beauty, turquoise waters, and tranquil beaches ideal for serenity seekers.",
+    href: "https://boat4all.gr/tour/agistri-island-escape-a-serene-boat-tour-adventure/",
+  },
+  {
+    name: "KEA ISLAND BOAT TOUR",
+    image: "https://boat4all.gr/wp-content/uploads/2025/07/IMG_7878-750x540.jpg",
+    description: "Sail to Kea, a Cycladic treasure with pristine beaches and traditional charm for adventurers.",
+    href: "https://boat4all.gr/tour/kea-island-boat-tour-discover-the-hidden-gem-of-the-cyclades/",
+  },
+  {
+    name: "Honeymoon Bliss Boat Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Honeymoon-Bliss-Tour-compressed.jpg",
+    description: "Celebrate love with romantic cruise through magical waters, intimate settings, beautiful sunsets.",
+    href: "https://boat4all.gr/tour/honeymoon-bliss-tour/",
+  },
+  {
+    name: "Historical Explorer Boat Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Historical-Explorer-Tour-compressed.jpg",
+    description: "Embark on journey through ancient past, exploring historic ruins and coastal sites.",
+    href: "https://boat4all.gr/tour/historical-explorer-tour/",
+  },
+  {
+    name: "Bachelor/Bachelorette Party Cruise",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Bachelorette-Party-Cruise-compressed.jpg",
+    description: "Celebrate in style with private boat party surrounded by stunning seascapes for bride/groom-to-be.",
+    href: "https://boat4all.gr/tour/bachelor-bachelorette-party-cruise/",
+  },
+  {
+    name: "Family Adventure Boat Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Family-Adventure-Tour-compressed.jpg",
+    description: "Enjoy fun-filled day on water perfect for families with activities, swimming for all ages.",
+    href: "https://boat4all.gr/tour/family-adventure-tour/",
+  },
+  {
+    name: "Athens to Aegina's Charms",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/A-Thrilling-Launch-from-Athens-to-Aeginas-Charms-compressed.jpg",
+    description: "Journey from Athens to Aegina discovering local delights and beaches blending adventure with relaxation.",
+    href: "https://boat4all.gr/tour/a-thrilling-launch-from-athens-to-aeginas-charms/",
+  },
+  {
+    name: "Art and Culture Boat Tour",
+    image: "https://boat4all.gr/wp-content/uploads/2024/10/Art-and-Culture-Tour-compressed.jpg",
+    description: "Delve into Greece's artistic heritage visiting coastal galleries and unique artistic hubs.",
+    href: "https://boat4all.gr/tour/art-and-culture-tour/",
+  },
+];
 ---
 
 <section id="destinations" class="py-20" aria-labelledby="destinations-heading">
@@ -15,30 +82,44 @@ const { destinations } = Astro.props;
         Popular destinations
       </h2>
       <p class="mt-3 text-text-muted text-lg max-w-2xl mx-auto">
-        Explore the most sought-after boating destinations worldwide
+        Explore our most popular Athens boat tours and trips
       </p>
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      {destinations.map((dest) => (
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {tours.map((tour) => (
         <a
-          href={`/destinations/${dest.slug}`}
-          class="group relative overflow-hidden rounded-xl aspect-[4/3] block"
+          href={tour.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group block rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300"
         >
-          <img
-            src={dest.image}
-            alt={dest.name}
-            class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
-            decoding="async"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-4">
-            <h3 class="text-white font-bold text-lg">{dest.name}</h3>
-            <p class="text-white/80 text-sm">{dest.boatCount} boats</p>
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <img
+              src={tour.image}
+              alt={tour.name}
+              class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-text font-bold text-sm leading-snug mb-1 group-hover:text-primary transition-colors line-clamp-2">{tour.name}</h3>
+            <p class="text-text-muted text-xs leading-relaxed line-clamp-2">{tour.description}</p>
           </div>
         </a>
       ))}
+    </div>
+
+    <div class="mt-10 text-center">
+      <a
+        href="/destinations"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-text hover:border-primary hover:text-primary transition-colors"
+      >
+        View all tours
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
     </div>
   </div>
 </section>
