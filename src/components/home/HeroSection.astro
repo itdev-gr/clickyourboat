@@ -1,5 +1,7 @@
 ---
 import SearchForm from "../search/SearchForm.astro";
+interface Props { lang?: string; }
+const { lang = "en" } = Astro.props;
 ---
 
 <section class="relative min-h-[600px] lg:min-h-[700px] flex items-center" aria-label="Hero">
@@ -28,6 +30,6 @@ import SearchForm from "../search/SearchForm.astro";
     </div>
 
     <!-- Search Form (Hydrated Island) -->
-    <SearchForm />
+    <SearchForm lang={lang} />
   </div>
 </section>

@@ -87,7 +87,7 @@ const l = (href: string) => localizeHref(href, lang);
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </Fragment>
 
-  <HeroSection />
+  <HeroSection lang={lang} />
   <SocialProofSection reviews={reviews} />
   <DestinationsSection lang={lang} />
   <CategoriesSection lang={lang} />

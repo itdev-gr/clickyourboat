@@ -462,7 +462,7 @@ const l = (href: string) => localizeHref(href, lang);
         separator.textContent = "/";
         var link = document.createElement("li");
         var a = document.createElement("a");
-        a.href = "/boat-rental";
+        a.href = "/" + getLangPrefix() + "/boat-rental";
         a.className = "hover:text-primary transition-colors";
         a.textContent = "Boat rental";
         link.appendChild(a);

@@ -20,36 +20,36 @@ const l = (href: string) => localizeHref(href, lang);
       <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-black/20"></div>
       <div class="relative z-10 flex flex-col justify-end h-full p-12">
         <div class="max-w-sm mb-10">
-          <h2 class="text-2xl font-bold text-white mb-3">Your next adventure starts here</h2>
-          <p class="text-white/70 text-sm leading-relaxed mb-6">
+          <h2 class="text-2xl font-bold text-white mb-3" data-i18n="auth.sidebar_title">Your next adventure starts here</h2>
+          <p class="text-white/70 text-sm leading-relaxed mb-6" data-i18n="auth.sidebar_desc">
             Join BoatHaven and get access to over 50,000 boats in 600+ destinations worldwide.
           </p>
           <div class="flex items-center gap-6">
             <div>
               <p class="text-2xl font-extrabold text-white">50K+</p>
-              <p class="text-xs text-white/60">Boats</p>
+              <p class="text-xs text-white/60" data-i18n="auth.sidebar_boats">Boats</p>
             </div>
             <div class="h-8 w-px bg-white/20"></div>
             <div>
               <p class="text-2xl font-extrabold text-white">600+</p>
-              <p class="text-xs text-white/60">Destinations</p>
+              <p class="text-xs text-white/60" data-i18n="auth.sidebar_destinations">Destinations</p>
             </div>
             <div class="h-8 w-px bg-white/20"></div>
             <div>
               <p class="text-2xl font-extrabold text-white">12K+</p>
-              <p class="text-xs text-white/60">Reviews</p>
+              <p class="text-xs text-white/60" data-i18n="auth.sidebar_reviews">Reviews</p>
             </div>
           </div>
         </div>
         <blockquote class="max-w-md border-t border-white/15 pt-6">
-          <p class="text-base text-white/90 font-medium leading-relaxed mb-3">
+          <p class="text-base text-white/90 font-medium leading-relaxed mb-3" data-i18n="auth.sidebar_testimonial">
             "BoatHaven made our family holiday unforgettable. The booking was seamless and the boat was perfect."
           </p>
           <footer class="flex items-center gap-3">
             <div class="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">MS</div>
             <div>
               <p class="text-white text-sm font-semibold">Maria Santos</p>
-              <p class="text-white/50 text-xs">Sailed in Santorini</p>
+              <p class="text-white/50 text-xs" data-i18n="auth.sidebar_testimonial_location">Sailed in Santorini</p>
             </div>
           </footer>
         </blockquote>
@@ -61,7 +61,7 @@ const l = (href: string) => localizeHref(href, lang);
       <div class="w-full max-w-md">
         <!-- Logo -->
         <a href={l("/")} class="flex items-center mb-8">
-          <img src="/logo-full.svg" alt="Your Boat" class="h-10" />
+          <img src="/tap-your-boat.svg" alt="Tap Your Boat" class="h-10" />
         </a>
 
         <!-- Tabs -->
@@ -85,7 +85,7 @@ const l = (href: string) => localizeHref(href, lang);
         <!-- ============ LOGIN PANEL ============ -->
         <div id="panel-login">
           <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-2" data-i18n="auth.welcome_back">Welcome back</h1>
-          <p class="text-text-muted mb-6">Log in to your account to continue</p>
+          <p class="text-text-muted mb-6" data-i18n="auth.login_subtitle">Log in to your account to continue</p>
 
           <!-- Social -->
           <div class="space-y-3 mb-5">
@@ -114,7 +114,7 @@ const l = (href: string) => localizeHref(href, lang);
           <form id="login-form" class="space-y-4">
             <div>
               <label for="login-email" class="block text-sm font-medium text-text mb-1.5" data-i18n="auth.email">Email address</label>
-              <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="you@example.com" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="you@example.com" data-i18n-placeholder="auth.placeholder_email" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
             </div>
             <div>
               <div class="flex items-center justify-between mb-1.5">
@@ -122,7 +122,7 @@ const l = (href: string) => localizeHref(href, lang);
                 <a href={l("/forgot-password")} class="text-xs text-primary hover:text-primary-dark transition-colors font-medium" data-i18n="auth.forgot_password">Forgot password?</a>
               </div>
               <div class="relative">
-                <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="Enter your password" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="Enter your password" data-i18n-placeholder="auth.placeholder_password" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                 <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors" aria-label="Show password">
                   <svg class="h-5 w-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <svg class="h-5 w-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
@@ -136,15 +136,15 @@ const l = (href: string) => localizeHref(href, lang);
           </form>
 
           <p class="mt-6 text-center text-sm text-text-muted">
-            Don't have an account?
-            <button class="font-semibold text-primary hover:text-primary-dark transition-colors switch-to-signup">Sign up</button>
+            <span data-i18n="auth.no_account">Don't have an account?</span>
+            <button class="font-semibold text-primary hover:text-primary-dark transition-colors switch-to-signup" data-i18n="auth.switch_signup">Sign up</button>
           </p>
         </div>
 
         <!-- ============ SIGNUP PANEL ============ -->
         <div id="panel-signup" class="hidden">
           <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-2" data-i18n="auth.join_us">Create your account</h1>
-          <p class="text-text-muted mb-6">Join thousands of boaters around the world</p>
+          <p class="text-text-muted mb-6" data-i18n="auth.signup_subtitle">Join thousands of boaters around the world</p>
 
           <!-- Social -->
           <div class="space-y-3 mb-5">
@@ -174,21 +174,21 @@ const l = (href: string) => localizeHref(href, lang);
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label for="signup-first" class="block text-sm font-medium text-text mb-1.5" data-i18n="auth.first_name">First name</label>
-                <input type="text" id="signup-first" name="firstName" required autocomplete="given-name" placeholder="John" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="text" id="signup-first" name="firstName" required autocomplete="given-name" placeholder="John" data-i18n-placeholder="auth.placeholder_first" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div>
                 <label for="signup-last" class="block text-sm font-medium text-text mb-1.5" data-i18n="auth.last_name">Last name</label>
-                <input type="text" id="signup-last" name="lastName" required autocomplete="family-name" placeholder="Doe" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="text" id="signup-last" name="lastName" required autocomplete="family-name" placeholder="Doe" data-i18n-placeholder="auth.placeholder_last" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div>
               <label for="signup-email" class="block text-sm font-medium text-text mb-1.5" data-i18n="auth.email">Email address</label>
-              <input type="email" id="signup-email" name="email" required autocomplete="email" placeholder="you@example.com" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              <input type="email" id="signup-email" name="email" required autocomplete="email" placeholder="you@example.com" data-i18n-placeholder="auth.placeholder_email" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
             </div>
             <div>
               <label for="signup-password" class="block text-sm font-medium text-text mb-1.5" data-i18n="auth.password">Password</label>
               <div class="relative">
-                <input type="password" id="signup-password" name="password" required minlength={8} autocomplete="new-password" placeholder="Min. 8 characters" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="password" id="signup-password" name="password" required minlength={8} autocomplete="new-password" placeholder="Min. 8 characters" data-i18n-placeholder="auth.placeholder_min_chars" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                 <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors" aria-label="Show password">
                   <svg class="h-5 w-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <svg class="h-5 w-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
@@ -206,18 +206,18 @@ const l = (href: string) => localizeHref(href, lang);
             <div>
               <label for="signup-confirm-password" class="block text-sm font-medium text-text mb-1.5" data-i18n="auth.confirm_password">Confirm password</label>
               <div class="relative">
-                <input type="password" id="signup-confirm-password" name="confirmPassword" required minlength={8} autocomplete="new-password" placeholder="Re-enter your password" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="password" id="signup-confirm-password" name="confirmPassword" required minlength={8} autocomplete="new-password" placeholder="Re-enter your password" data-i18n-placeholder="auth.placeholder_reenter" class="w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 pr-11 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                 <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors" aria-label="Show password">
                   <svg class="h-5 w-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <svg class="h-5 w-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
                 </button>
               </div>
-              <p id="confirm-password-error" class="text-xs text-red-500 mt-1 hidden">Passwords do not match</p>
+              <p id="confirm-password-error" class="text-xs text-red-500 mt-1 hidden" data-i18n="auth.passwords_no_match">Passwords do not match</p>
             </div>
             <label class="flex items-start gap-2.5 cursor-pointer">
               <input type="checkbox" id="signup-terms" name="terms" required class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary mt-0.5" />
               <span class="text-xs text-text-muted leading-relaxed">
-                I agree to the <a href={l("/terms")} class="text-primary hover:underline" data-i18n="auth.terms">Terms of Service</a> and <a href={l("/privacy")} class="text-primary hover:underline" data-i18n="auth.privacy">Privacy Policy</a>
+                <span data-i18n="auth.i_agree">I agree to the</span> <a href={l("/terms")} class="text-primary hover:underline" data-i18n="auth.terms">Terms of Service</a> &amp; <a href={l("/privacy")} class="text-primary hover:underline" data-i18n="auth.privacy">Privacy Policy</a>
               </span>
             </label>
             <p id="signup-error" class="text-sm text-red-500 hidden"></p>
@@ -227,8 +227,8 @@ const l = (href: string) => localizeHref(href, lang);
           </form>
 
           <p class="mt-6 text-center text-sm text-text-muted">
-            Already have an account?
-            <button class="font-semibold text-primary hover:text-primary-dark transition-colors switch-to-login">Log in</button>
+            <span data-i18n="auth.has_account">Already have an account?</span>
+            <button class="font-semibold text-primary hover:text-primary-dark transition-colors switch-to-login" data-i18n="auth.switch_login">Log in</button>
           </p>
         </div>
 
@@ -287,10 +287,16 @@ const l = (href: string) => localizeHref(href, lang);
       });
     });
 
-    // Password strength meter
+    // Password strength meter — language-aware labels
     var signupPw = document.getElementById("signup-password");
     var strengthBars = document.querySelectorAll("#strength-bars div");
     var strengthText = document.getElementById("strength-text");
+
+    // Resolve translations from the i18n system
+    var i18nObj = window.__i18n || {};
+    var lang = i18nObj.getLang ? i18nObj.getLang() : "en";
+    var trans = i18nObj.translations || {};
+    function tr(key, fallback) { return (trans[key] && trans[key][lang]) || fallback; }
 
     if (signupPw) {
       signupPw.addEventListener("input", function () {
@@ -302,7 +308,12 @@ const l = (href: string) => localizeHref(href, lang);
         if (/[^A-Za-z0-9]/.test(val)) score++;
 
         var colors = ["bg-red-400", "bg-orange-400", "bg-yellow-400", "bg-green-400"];
-        var labels = ["Weak", "Fair", "Good", "Strong"];
+        var labels = [
+          tr("auth.strength_weak", "Weak"),
+          tr("auth.strength_fair", "Fair"),
+          tr("auth.strength_good", "Good"),
+          tr("auth.strength_strong", "Strong"),
+        ];
         var textColors = ["text-red-500", "text-orange-500", "text-yellow-600", "text-green-600"];
 
         strengthBars.forEach(function (bar, i) {
@@ -357,14 +368,16 @@ const l = (href: string) => localizeHref(href, lang);
   } from "firebase/auth";
   import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
-  console.log("[Auth] Firebase module loaded at", new Date().toISOString());
-  console.log("[Auth] Firebase auth instance:", auth?.app?.options?.projectId || "NOT INITIALIZED");
-  console.log("[Auth] Firestore instance:", db?.app?.options?.projectId || "NOT INITIALIZED");
-  console.log("[Auth] Current URL:", window.location.href);
+  // i18n helper — reads from window.__i18n populated by the i18n client script
+  function tr(key: string, fallback: string): string {
+    const i18n = (window as any).__i18n;
+    if (!i18n?.translations?.[key]) return fallback;
+    const lang = i18n.getLang?.() || "en";
+    return i18n.translations[key][lang] || fallback;
+  }
 
   // Create user document in Firestore (on registration)
   async function createUserDoc(user: any, extra: { firstName?: string; lastName?: string } = {}) {
-    console.log("[Firestore] Creating user doc for uid:", user.uid);
     const userRef = doc(db, "users", user.uid);
     const data = {
       uid: user.uid,
@@ -377,22 +390,17 @@ const l = (href: string) => localizeHref(href, lang);
       createdAt: serverTimestamp(),
       lastLoginAt: serverTimestamp(),
     };
-    console.log("[Firestore] Writing data:", JSON.stringify({ ...data, createdAt: "serverTimestamp()", lastLoginAt: "serverTimestamp()" }));
     await setDoc(userRef, data, { merge: true });
-    console.log("[Firestore] User doc created successfully");
   }
 
   // Update lastLoginAt timestamp (on login)
   async function updateLastLogin(uid: string, email: string | null) {
-    console.log("[Firestore] Updating lastLoginAt for uid:", uid);
     const userRef = doc(db, "users", uid);
-    // Use setDoc with merge so it works even if the doc doesn't exist yet
     await setDoc(userRef, {
       uid,
       email,
       lastLoginAt: serverTimestamp(),
     }, { merge: true });
-    console.log("[Firestore] lastLoginAt updated successfully");
   }
 
   // Redirect destination: ?redirect=/list-your-boat or default home page
@@ -401,21 +409,14 @@ const l = (href: string) => localizeHref(href, lang);
   const langPrefix = document.documentElement.dataset.langPrefix || "en";
   const defaultRedirect = "/" + langPrefix + "/";
   const redirectTo = redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//") ? redirectParam : defaultRedirect;
-  console.log("[Auth] Redirect param:", redirectParam, "→ redirectTo:", redirectTo);
 
   // Track whether a signup/login action is in progress
-  // to prevent onAuthStateChanged from redirecting too early
   let authActionInProgress = false;
 
   // If already logged in (page load), redirect away
-  console.log("[Auth] Registering onAuthStateChanged listener");
   onAuthStateChanged(auth, (user) => {
-    console.log("[Auth] onAuthStateChanged fired. User:", user?.uid || "null", "email:", user?.email || "null", "actionInProgress:", authActionInProgress);
     if (user && !authActionInProgress) {
-      console.log("[Auth] User already logged in, redirecting to:", redirectTo);
       window.location.href = redirectTo;
-    } else if (!user) {
-      console.log("[Auth] No user signed in, staying on login page");
     }
   });
 
@@ -433,7 +434,7 @@ const l = (href: string) => localizeHref(href, lang);
     btn.disabled = loading;
     if (loading) {
       btn.dataset.originalText = btn.textContent || "";
-      btn.textContent = "Please wait...";
+      btn.textContent = tr("auth.please_wait", "Please wait...");
       btn.classList.add("opacity-70", "cursor-not-allowed");
     } else {
       btn.textContent = btn.dataset.originalText || "";
@@ -442,56 +443,40 @@ const l = (href: string) => localizeHref(href, lang);
   }
 
   // Login
-  console.log("[Login] Attaching login form listener, form found:", !!loginForm);
   loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("[Login] Form submitted");
     loginError.classList.add("hidden");
     const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     setLoading(submitBtn, true);
     authActionInProgress = true;
     const email = (loginForm.elements.namedItem("email") as HTMLInputElement).value;
     const password = (loginForm.elements.namedItem("password") as HTMLInputElement).value;
-    console.log("[Login] Attempting signInWithEmailAndPassword for:", email);
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log("[Login] signInWithEmailAndPassword SUCCESS. UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
-      console.log("[Login] Firing updateLastLogin (non-blocking)...");
-      updateLastLogin(result.user.uid, result.user.email).catch((err) => {
-        console.error("[Login] updateLastLogin FAILED:", err);
-      });
-      console.log("[Login] Redirecting to:", redirectTo);
+      updateLastLogin(result.user.uid, result.user.email).catch(() => {});
       window.location.href = redirectTo;
       setTimeout(() => {
         authActionInProgress = false;
         setLoading(submitBtn, false);
       }, 3000);
     } catch (err: any) {
-      console.error("[Login] signInWithEmailAndPassword FAILED:", err.code, err.message);
-      console.error("[Login] Full error object:", err);
       authActionInProgress = false;
       setLoading(submitBtn, false);
       if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
-        console.log("[Login] Showing error: invalid credentials");
-        showError(loginError, "Invalid email or password. Please try again.");
+        showError(loginError, tr("auth.err_invalid_cred", "Invalid email or password. Please try again."));
       } else if (err.code === "auth/too-many-requests") {
-        console.log("[Login] Showing error: too many requests");
-        showError(loginError, "Too many failed attempts. Please try again later.");
+        showError(loginError, tr("auth.err_too_many", "Too many failed attempts. Please try again later."));
       } else if (err.code === "auth/invalid-email") {
-        console.log("[Login] Showing error: invalid email");
-        showError(loginError, "Please enter a valid email address.");
+        showError(loginError, tr("auth.err_invalid_email", "Please enter a valid email address."));
       } else {
-        console.log("[Login] Showing error: unknown -", err.code);
-        showError(loginError, "Something went wrong (" + (err.code || "unknown") + "). Please try again.");
+        showError(loginError, tr("auth.err_generic", "Something went wrong. Please try again."));
       }
     }
   });
 
   // Signup
-  console.log("[Signup] Attaching signup form listener, form found:", !!signupForm);
   signupForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("[Signup] Form submitted");
     signupError.classList.add("hidden");
     const submitBtn = signupForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     const firstName = (signupForm.elements.namedItem("firstName") as HTMLInputElement).value;
@@ -499,65 +484,43 @@ const l = (href: string) => localizeHref(href, lang);
     const email = (signupForm.elements.namedItem("email") as HTMLInputElement).value;
     const password = (signupForm.elements.namedItem("password") as HTMLInputElement).value;
     const confirmPassword = (signupForm.elements.namedItem("confirmPassword") as HTMLInputElement).value;
-    console.log("[Signup] Form values — email:", email, "firstName:", firstName, "lastName:", lastName, "passwordLength:", password.length);
 
     if (password !== confirmPassword) {
-      console.log("[Signup] Password mismatch, aborting");
-      showError(signupError, "Passwords do not match.");
+      showError(signupError, tr("auth.passwords_no_match", "Passwords do not match."));
       return;
     }
-    console.log("[Signup] Passwords match, proceeding");
 
     setLoading(submitBtn, true);
     authActionInProgress = true;
 
-    // Step 1: Create the auth account
-    console.log("[Signup] Step 1: Calling createUserWithEmailAndPassword for:", email);
     let user;
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       user = result.user;
-      console.log("[Signup] Step 1 SUCCESS — Auth account created. UID:", user.uid, "email:", user.email);
     } catch (err: any) {
-      console.error("[Signup] Step 1 FAILED — createUserWithEmailAndPassword error:", err.code, err.message);
-      console.error("[Signup] Full error object:", err);
       authActionInProgress = false;
       setLoading(submitBtn, false);
       if (err.code === "auth/email-already-in-use") {
-        console.log("[Signup] Showing error: email already in use");
-        showError(signupError, "This email is already registered. Try logging in instead.");
+        showError(signupError, tr("auth.err_email_in_use", "This email is already registered. Try logging in instead."));
       } else if (err.code === "auth/weak-password") {
-        console.log("[Signup] Showing error: weak password");
-        showError(signupError, "Password is too weak. Use at least 8 characters.");
+        showError(signupError, tr("auth.err_weak_password", "Password is too weak. Use at least 8 characters."));
       } else {
-        console.log("[Signup] Showing error: unknown -", err.code);
-        showError(signupError, "Something went wrong. Please try again.");
+        showError(signupError, tr("auth.err_generic", "Something went wrong. Please try again."));
       }
       return;
     }
 
-    // Step 2: Update profile (with timeout)
-    console.log("[Signup] Step 2: Calling updateProfile with displayName:", `${firstName} ${lastName}`);
     try {
       await Promise.race([
         updateProfile(user, { displayName: `${firstName} ${lastName}` }),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("Profile update timed out")), 5000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000))
       ]);
-      console.log("[Signup] Step 2 SUCCESS — Profile updated. displayName:", user.displayName);
-    } catch (err) {
-      console.error("[Signup] Step 2 FAILED — Profile update error:", err);
-    }
+    } catch {}
 
-    // Step 3: Create Firestore doc (must complete before redirect)
-    console.log("[Signup] Step 3: Creating Firestore user doc for UID:", user.uid);
     try {
       await createUserDoc(user, { firstName, lastName });
-      console.log("[Signup] Step 3 SUCCESS — Firestore user doc created");
-    } catch (err) {
-      console.error("[Signup] Step 3 FAILED — Firestore user doc error:", err);
-    }
+    } catch {}
 
-    console.log("[Signup] All steps done. Redirecting to:", redirectTo);
     window.location.href = redirectTo;
     setTimeout(() => {
       authActionInProgress = false;
@@ -566,80 +529,47 @@ const l = (href: string) => localizeHref(href, lang);
   });
 
   // Handle redirect result (when user returns from Google/Facebook redirect)
-  console.log("[Social] Checking for redirect result (getRedirectResult)...");
   getRedirectResult(auth).then(async (result) => {
-    console.log("[Social] getRedirectResult resolved. Has user:", !!result?.user);
     if (result?.user) {
-      console.log("[Social] Redirect result — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName, "provider:", result.providerId);
-      try {
-        await createUserDoc(result.user);
-        console.log("[Social] Firestore user doc created");
-      } catch (err) {
-        console.error("[Social] Firestore user doc FAILED:", err);
-      }
-      console.log("[Social] Redirecting to:", redirectTo);
+      try { await createUserDoc(result.user); } catch {}
       window.location.href = redirectTo;
-    } else {
-      console.log("[Social] No redirect result (user did not come from redirect flow)");
     }
-  }).catch((err: any) => {
-    console.error("[Social] getRedirectResult FAILED:", err.code, err.message, err);
-  });
+  }).catch(() => {});
 
-  // Social auth helper — tries popup first, falls back to redirect
+  // Social auth helper
   async function socialAuth(providerName: string, provider: any, errorEl: HTMLElement) {
-    console.log("[Social] socialAuth called — provider:", providerName);
     authActionInProgress = true;
-    console.log("[Social] Attempting signInWithPopup for", providerName);
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("[Social] signInWithPopup SUCCESS — UID:", result.user.uid, "email:", result.user.email, "displayName:", result.user.displayName);
-      try {
-        await createUserDoc(result.user);
-        console.log("[Social] Firestore user doc created");
-      } catch (err) {
-        console.error("[Social] Firestore user doc FAILED:", err);
-      }
-      console.log("[Social] Redirecting to:", redirectTo);
+      try { await createUserDoc(result.user); } catch {}
       window.location.href = redirectTo;
     } catch (err: any) {
-      console.error("[Social] signInWithPopup FAILED for", providerName, "— code:", err.code, "message:", err.message);
-      // If popup blocked or iframe error, fall back to redirect
       if (err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || err.message?.includes("Illegal url")) {
-        console.log("[Social] Popup blocked/closed, falling back to signInWithRedirect for", providerName);
         try {
           await signInWithRedirect(auth, provider);
-          console.log("[Social] signInWithRedirect initiated (page will navigate away)");
-        } catch (redirectErr: any) {
+        } catch {
           authActionInProgress = false;
-          console.error("[Social] signInWithRedirect FAILED:", redirectErr.code, redirectErr.message, redirectErr);
-          showError(errorEl, "Sign-in failed. Please try again.");
+          showError(errorEl, tr("auth.err_signin_failed", "Sign-in failed. Please try again."));
         }
       } else if (err.code === "auth/cancelled-popup-request") {
-        console.log("[Social] Popup cancelled by user");
         authActionInProgress = false;
       } else {
-        console.error("[Social] Unhandled popup error:", err);
         authActionInProgress = false;
-        showError(errorEl, "Sign-in failed. Please try again.");
+        showError(errorEl, tr("auth.err_signin_failed", "Sign-in failed. Please try again."));
       }
     }
   }
 
   document.getElementById("google-login-btn")?.addEventListener("click", () => {
-    console.log("[Social] Google login button clicked");
     socialAuth("Google", new GoogleAuthProvider(), loginError);
   });
   document.getElementById("facebook-login-btn")?.addEventListener("click", () => {
-    console.log("[Social] Facebook login button clicked");
     socialAuth("Facebook", new FacebookAuthProvider(), loginError);
   });
   document.getElementById("google-signup-btn")?.addEventListener("click", () => {
-    console.log("[Social] Google signup button clicked");
     socialAuth("Google", new GoogleAuthProvider(), signupError);
   });
   document.getElementById("facebook-signup-btn")?.addEventListener("click", () => {
-    console.log("[Social] Facebook signup button clicked");
     socialAuth("Facebook", new FacebookAuthProvider(), signupError);
   });
 </script>

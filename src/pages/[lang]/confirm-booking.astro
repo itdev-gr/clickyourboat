@@ -378,7 +378,7 @@ const l = (href: string) => localizeHref(href, lang);
 
       // Back link
       const backLink = $("back-link") as HTMLAnchorElement;
-      if (backLink) backLink.href = `/boat/${boatId}`;
+      if (backLink) backLink.href = `/${getLangPrefix()}/boat/${boatId}`;
 
       // Show rental type if skipper available
       if (skipperAvailable) {
@@ -711,7 +711,7 @@ const l = (href: string) => localizeHref(href, lang);
 
           // Redirect to success page
           setTimeout(() => {
-            window.location.href = `/booking-success?boatId=${boatId}&startDate=${startDateStr}&endDate=${endDateStr}`;
+            window.location.href = `/${getLangPrefix()}/booking-success?boatId=${boatId}&startDate=${startDateStr}&endDate=${endDateStr}`;
           }, 1500);
         }
       });

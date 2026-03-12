@@ -54,11 +54,12 @@ const categories = [
       Browse by category
     </h2>
 
-    <div class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4">
+    <!-- Desktop: grid -->
+    <div class="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
       {categories.map((cat) => (
         <a
           href={l(`/boat-rental?type=${cat.slug}`)}
-          class="flex-shrink-0 snap-start flex flex-col items-center gap-3 rounded-xl bg-white border border-border p-6 w-36 hover:border-primary hover:shadow-md transition-all group"
+          class="flex flex-col items-center gap-3 rounded-xl bg-white border border-border p-6 hover:border-primary hover:shadow-md transition-all group"
         >
           <div class="text-text-muted group-hover:text-primary transition-colors" set:html={cat.icon} />
           <span class="text-sm font-semibold text-text group-hover:text-primary transition-colors" data-i18n={cat.i18n}>
@@ -66,6 +67,41 @@ const categories = [
           </span>
         </a>
       ))}
+    </div>
+
+    <!-- Mobile: carousel -->
+    <div class="sm:hidden">
+      <div
+        id="cat-carousel"
+        class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2"
+      >
+        {categories.map((cat, i) => (
+          <a
+            href={l(`/boat-rental?type=${cat.slug}`)}
+            class="cat-slide flex-shrink-0 snap-center flex flex-col items-center justify-center gap-3 rounded-xl bg-white border border-border p-5 w-[calc(50%-6px)] hover:border-primary hover:shadow-md transition-all group"
+            data-index={i}
+          >
+            <div class="text-text-muted group-hover:text-primary transition-colors" set:html={cat.icon} />
+            <span class="text-sm font-semibold text-text group-hover:text-primary transition-colors text-center" data-i18n={cat.i18n}>
+              {cat.label}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Dots -->
+      <div id="cat-dots" class="flex justify-center gap-1.5 mt-4">
+        {Array.from({ length: Math.ceil(categories.length / 2) }).map((_, i) => (
+          <button
+            class:list={[
+              "cat-dot h-1.5 rounded-full transition-all duration-300",
+              i === 0 ? "w-6 bg-primary" : "w-1.5 bg-gray-300",
+            ]}
+            data-page={i}
+            aria-label={`Page ${i + 1}`}
+          />
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -79,3 +115,54 @@ const categories = [
     display: none;
   }
 </style>
+
+<script>
+  function initCatCarousel() {
+    const carousel = document.getElementById("cat-carousel");
+    const dots = document.querySelectorAll<HTMLButtonElement>(".cat-dot");
+    if (!carousel || dots.length === 0) return;
+
+    const totalPages = dots.length;
+
+    function updateDots(activeIndex: number) {
+      dots.forEach((dot, i) => {
+        if (i === activeIndex) {
+          dot.classList.remove("w-1.5", "bg-gray-300");
+          dot.classList.add("w-6", "bg-primary");
+        } else {
+          dot.classList.remove("w-6", "bg-primary");
+          dot.classList.add("w-1.5", "bg-gray-300");
+        }
+      });
+    }
+
+    // Scroll listener to detect current page
+    let ticking = false;
+    carousel.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollLeft = carousel.scrollLeft;
+          const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+          const progress = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+          const page = Math.round(progress * (totalPages - 1));
+          updateDots(Math.min(page, totalPages - 1));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Dot click to scroll
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => {
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        const targetScroll = totalPages > 1 ? (i / (totalPages - 1)) * maxScroll : 0;
+        carousel.scrollTo({ left: targetScroll, behavior: "smooth" });
+      });
+    });
+  }
+
+  // Run on page load and Astro navigation
+  initCatCarousel();
+  document.addEventListener("astro:after-swap", initCatCarousel);
+</script>
