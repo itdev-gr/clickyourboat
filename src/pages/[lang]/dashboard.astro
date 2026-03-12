@@ -185,8 +185,307 @@ const l = (href: string) => localizeHref(href, lang);
   import { auth, db } from "../../lib/firebase";
   import { onAuthStateChanged, signOut } from "firebase/auth";
   import {
-    collection, query, where, orderBy, limit, getDocs, updateDoc, doc, getDoc, serverTimestamp
+    collection, query, where, orderBy, limit, getDocs, updateDoc, doc, serverTimestamp
   } from "firebase/firestore";
   import { getUserOrders, cancelOrder } from "../../lib/api";
 
-  // 
+  // ---- Detect language from URL ----
+  const lang = window.location.pathname.split("/")[1] || "en";
+
+  // ---- Helpers ----
+  function getInitials(name: string | null): string {
+    if (!name) return "?";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function timeAgo(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "now";
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function truncate(text: string, maxLen: number): string {
+    if (text.length <= maxLen) return text;
+    return text.slice(0, maxLen).trimEnd() + "\u2026";
+  }
+
+  // ---- DOM refs ----
+  const $ = (id: string) => document.getElementById(id);
+
+  // ---- Auth gate ----
+  let fallbackTimer = setTimeout(() => {
+    $("auth-loading")?.classList.add("hidden");
+    $("auth-gate")?.classList.remove("hidden");
+  }, 3000);
+
+  onAuthStateChanged(auth, async (user) => {
+    clearTimeout(fallbackTimer);
+    const loading = $("auth-loading");
+    const gate = $("auth-gate");
+    const content = $("dashboard-content");
+
+    if (!user) {
+      loading?.classList.add("hidden");
+      gate?.classList.remove("hidden");
+      content?.classList.add("hidden");
+      return;
+    }
+
+    loading?.classList.add("hidden");
+    gate?.classList.add("hidden");
+    content?.classList.remove("hidden");
+
+    // Set sidebar info
+    const initials = getInitials(user.displayName);
+    const displayName = user.displayName || user.email || "User";
+    const sidebarName = $("sidebar-name");
+    const sidebarInitials = $("sidebar-avatar-initials");
+    const sidebarImg = $("sidebar-avatar-img") as HTMLImageElement;
+
+    if (sidebarName) sidebarName.textContent = displayName;
+    if (sidebarInitials) sidebarInitials.textContent = initials;
+    if (user.photoURL && sidebarImg) {
+      sidebarImg.src = user.photoURL;
+      sidebarImg.classList.remove("hidden");
+    }
+
+    // Load all sections in parallel
+    loadRecentMessages(user.uid);
+    loadYourListings(user.uid);
+    loadUserBookings(user.uid);
+  });
+
+  // ---- Sidebar logout ----
+  $("sidebar-logout-btn")?.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = `/${lang}/`;
+  });
+
+  // ---- Recent Messages ----
+  async function loadRecentMessages(uid: string) {
+    const loadingEl = $("messages-loading");
+    const emptyEl = $("messages-empty");
+    const listEl = $("messages-list");
+
+    try {
+      const q = query(
+        collection(db, "conversations"),
+        where("participants", "array-contains", uid),
+        orderBy("updatedAt", "desc"),
+        limit(5)
+      );
+
+      const snap = await getDocs(q);
+
+      loadingEl?.classList.add("hidden");
+
+      if (snap.empty) {
+        emptyEl?.classList.remove("hidden");
+        return;
+      }
+
+      let html = "";
+      snap.docs.forEach(doc => {
+        const conv = doc.data();
+        const convId = doc.id;
+
+        const otherId = conv.participants?.find((p: string) => p !== uid);
+        const other = otherId && conv.participantDetails ? conv.participantDetails[otherId] : null;
+        const otherName = other?.displayName || "Unknown";
+        const otherInitials = getInitials(otherName);
+        const otherPhoto = other?.photoURL;
+
+        const lastText = conv.lastMessage?.text ? truncate(conv.lastMessage.text, 50) : "No messages yet";
+        const lastTime = conv.lastMessage?.timestamp
+          ? timeAgo(conv.lastMessage.timestamp.toDate ? conv.lastMessage.timestamp.toDate() : new Date(conv.lastMessage.timestamp))
+          : "";
+
+        const unread = conv.unreadCount?.[uid] || 0;
+
+        html += `
+          <a href="/${lang}/messages?id=${convId}" class="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
+              ${otherPhoto ? `<img src="${escapeHtml(otherPhoto)}" class="h-full w-full object-cover" alt="" />` : `<span>${escapeHtml(otherInitials)}</span>`}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-text truncate">${escapeHtml(otherName)}</span>
+                <span class="text-xs text-gray-400 flex-shrink-0 ml-2">${lastTime}</span>
+              </div>
+              <p class="text-xs text-text-muted truncate ${unread > 0 ? "font-medium text-text" : ""}">${escapeHtml(lastText)}</p>
+            </div>
+            ${unread > 0 ? `<span class="flex-shrink-0 h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">${unread}</span>` : ""}
+          </a>
+        `;
+      });
+
+      if (listEl) listEl.innerHTML = html;
+    } catch (err) {
+      console.error("[Dashboard] Error loading messages:", err);
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+  }
+
+  // ---- Your Listings ----
+  async function loadYourListings(uid: string) {
+    const loadingEl = $("listings-loading");
+    const emptyEl = $("listings-empty");
+    const listEl = $("listings-list");
+
+    try {
+      const q = query(
+        collection(db, "boats"),
+        where("ownerId", "==", uid),
+        orderBy("createdAt", "desc"),
+        limit(5)
+      );
+
+      const snap = await getDocs(q);
+
+      loadingEl?.classList.add("hidden");
+
+      if (snap.empty) {
+        emptyEl?.classList.remove("hidden");
+        return;
+      }
+
+      let html = "";
+      snap.docs.forEach(doc => {
+        const boat = doc.data();
+
+        const thumb = boat.images?.[0];
+        const manufacturer = boat.manufacturer || "";
+        const model = boat.model || "";
+        const boatTitle = [manufacturer, model].filter(Boolean).join(" ") || "Untitled Boat";
+        const location = [boat.city, boat.harbour].filter(Boolean).join(" \u2014 ") || "";
+        const createdDate = boat.createdAt?.toDate
+          ? boat.createdAt.toDate().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+          : "";
+
+        const boatStatus = boat.status || "published";
+        const statusBadge = boatStatus === "draft"
+          ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-[11px] font-semibold text-amber-800">Draft</span>`
+          : boatStatus === "pending"
+          ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-100 text-[11px] font-semibold text-blue-800">Pending</span>`
+          : boatStatus === "rejected"
+          ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-red-100 text-[11px] font-semibold text-red-800">Rejected</span>`
+          : `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-green-100 text-[11px] font-semibold text-green-800">Published</span>`;
+
+        html += `
+          <div class="flex items-center gap-4 px-6 py-4">
+            <div class="h-14 w-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
+              ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<svg class="h-full w-full p-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25z" /></svg>`}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <p class="text-sm font-semibold text-text truncate">${escapeHtml(boatTitle)}</p>
+                ${statusBadge}
+              </div>
+              ${location ? `<p class="text-xs text-text-muted truncate">${escapeHtml(location)}</p>` : ""}
+              ${createdDate ? `<p class="text-xs text-gray-400 mt-0.5">${createdDate}</p>` : ""}
+            </div>
+          </div>
+        `;
+      });
+
+      if (listEl) listEl.innerHTML = html;
+    } catch (err) {
+      console.error("[Dashboard] Error loading listings:", err);
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+  }
+
+  // ---- Your Bookings ----
+  async function loadUserBookings(uid: string) {
+    const loadingEl = $("bookings-loading");
+    const emptyEl = $("bookings-empty");
+    const listEl = $("bookings-list");
+
+    try {
+      const bookings = await getUserOrders(uid);
+
+      loadingEl?.classList.add("hidden");
+
+      if (bookings.length === 0) {
+        emptyEl?.classList.remove("hidden");
+        return;
+      }
+
+      const statusStyles: Record<string, string> = {
+        pending: "bg-blue-100 text-blue-800",
+        confirmed: "bg-green-100 text-green-800",
+        cancelled: "bg-gray-100 text-gray-600",
+        completed: "bg-emerald-100 text-emerald-800",
+      };
+
+      let html = "";
+      for (const booking of bookings) {
+        const status = booking.status || "pending";
+        const badgeCls = statusStyles[status] || "bg-gray-100 text-gray-800";
+        const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+        const boatTitle = escapeHtml(booking.boatTitle || "Untitled Boat");
+        const thumb = booking.boatImage;
+        const dateRange = `${booking.startDate || "?"} \u2014 ${booking.endDate || "?"}`;
+        const price = booking.totalPrice ? `\u20AC${booking.totalPrice.toLocaleString()}` : "";
+
+        html += `
+          <div class="flex items-center gap-4 px-6 py-4">
+            <div class="h-14 w-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
+              ${thumb ? `<img src="${escapeHtml(thumb)}" class="h-full w-full object-cover" alt="" />` : `<svg class="h-full w-full p-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>`}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <a href="/${lang}/boat/${booking.boatId}" class="text-sm font-semibold text-text hover:text-primary truncate">${boatTitle}</a>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${badgeCls}">${statusLabel}</span>
+              </div>
+              <p class="text-xs text-text-muted mt-0.5">${dateRange}</p>
+              ${price ? `<p class="text-xs font-medium text-text mt-0.5">${price}</p>` : ""}
+            </div>
+            ${status === "pending" ? `<button type="button" class="cancel-booking-btn flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition-colors" data-id="${booking.id}">Cancel</button>` : ""}
+          </div>
+        `;
+      }
+
+      if (listEl) listEl.innerHTML = html;
+
+      // Bind cancel buttons
+      listEl?.querySelectorAll(".cancel-booking-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const orderId = btn.getAttribute("data-id");
+          if (!orderId || !confirm("Cancel this booking?")) return;
+          try {
+            (btn as HTMLButtonElement).disabled = true;
+            (btn as HTMLButtonElement).textContent = "...";
+            await cancelOrder(orderId);
+            // Reload
+            loadUserBookings(uid);
+          } catch (err) {
+            console.error("Cancel failed:", err);
+            alert("Failed to cancel booking.");
+            (btn as HTMLButtonElement).disabled = false;
+            (btn as HTMLButtonElement).textContent = "Cancel";
+          }
+        });
+      });
+    } catch (err) {
+      console.error("[Dashboard] Error loading bookings:", err);
+      loadingEl?.classList.add("hidden");
+      emptyEl?.classList.remove("hidden");
+    }
+  }
+</script>
