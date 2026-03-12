@@ -13,7 +13,7 @@ const l = (href: string) => localizeHref(href, lang);
   <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
       <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <p class="text-sm text-text-muted">Loading...</p>
+      <p class="text-sm text-text-muted" data-i18n="lyb.auth_gate.loading">Loading...</p>
     </div>
   </div>
 
@@ -26,8 +26,8 @@ const l = (href: string) => localizeHref(href, lang);
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
           </svg>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Log in to list your boat</h1>
-        <p class="text-text-muted mb-8 max-w-sm mx-auto">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3" data-i18n="lyb.auth_gate.title">Log in to list your boat</h1>
+        <p class="text-text-muted mb-8 max-w-sm mx-auto" data-i18n="lyb.auth_gate.desc">
           You need to be logged in to list your boat on BoatHaven. Sign in or create an account to get started.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -35,13 +35,13 @@ const l = (href: string) => localizeHref(href, lang);
             href={l("/login?redirect=/list-your-boat")}
             class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            Log in
+            <span data-i18n="lyb.auth_gate.login">Log in</span>
           </a>
           <a
             href={l("/login?signup&redirect=/list-your-boat")}
             class="inline-flex items-center px-6 py-3 rounded-xl border border-gray-200 text-sm font-bold text-text hover:bg-gray-50 transition-colors"
           >
-            Create account
+            <span data-i18n="lyb.auth_gate.create">Create account</span>
           </a>
         </div>
       </div>
@@ -52,7 +52,7 @@ const l = (href: string) => localizeHref(href, lang);
   <div id="my-listings" class="hidden">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-bold text-text">My Listings</h1>
+        <h1 class="text-2xl font-bold text-text" data-i18n="lyb.listings.title">My Listings</h1>
         <button
           type="button"
           id="add-new-listing-btn"
@@ -61,32 +61,32 @@ const l = (href: string) => localizeHref(href, lang);
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          Add New Listing
+          <span data-i18n="lyb.listings.add_new">Add New Listing</span>
         </button>
       </div>
 
       <!-- Filter tabs -->
       <div id="listings-tabs" class="hidden flex gap-2 mb-6">
-        <button type="button" data-tab="all" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-primary text-white">All <span class="tab-count">(0)</span></button>
-        <button type="button" data-tab="published" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Published <span class="tab-count">(0)</span></button>
-        <button type="button" data-tab="pending" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Pending <span class="tab-count">(0)</span></button>
-        <button type="button" data-tab="drafts" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Drafts <span class="tab-count">(0)</span></button>
+        <button type="button" data-tab="all" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-primary text-white"><span data-i18n="lyb.listings.all">All</span> <span class="tab-count">(0)</span></button>
+        <button type="button" data-tab="published" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"><span data-i18n="lyb.listings.published">Published</span> <span class="tab-count">(0)</span></button>
+        <button type="button" data-tab="pending" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"><span data-i18n="lyb.listings.pending">Pending</span> <span class="tab-count">(0)</span></button>
+        <button type="button" data-tab="drafts" class="listings-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"><span data-i18n="lyb.listings.drafts">Drafts</span> <span class="tab-count">(0)</span></button>
       </div>
 
       <!-- Loading spinner -->
       <div id="listings-loading" class="flex items-center justify-center py-16">
         <div class="text-center">
           <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <p class="text-sm text-text-muted">Loading your listings...</p>
+          <p class="text-sm text-text-muted" data-i18n="lyb.listings.loading">Loading your listings...</p>
         </div>
       </div>
 
       <!-- Error banner -->
       <div id="listings-error" class="hidden rounded-xl border border-red-200 bg-red-50 p-6 text-center">
-        <p class="text-sm text-red-700 mb-3">Failed to load your listings. Please try again.</p>
+        <p class="text-sm text-red-700 mb-3" data-i18n="lyb.listings.error">Failed to load your listings. Please try again.</p>
         <button type="button" id="listings-retry-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
-          Retry
+          <span data-i18n="lyb.listings.retry">Retry</span>
         </button>
       </div>
 
@@ -101,8 +101,8 @@ const l = (href: string) => localizeHref(href, lang);
       <!-- Sidebar -->
       <aside id="wizard-sidebar" class="hidden lg:flex flex-col w-[280px] bg-white border-r border-gray-200 shrink-0">
         <div class="p-6 border-b border-gray-200">
-          <h2 class="text-lg font-bold text-pink">Ahoy there Captain!</h2>
-          <p class="text-sm text-text-muted mt-1">Complete all sections to publish your listing</p>
+          <h2 class="text-lg font-bold text-pink" data-i18n="lyb.wizard.greeting">Ahoy there Captain!</h2>
+          <p class="text-sm text-text-muted mt-1" data-i18n="lyb.wizard.complete_all">Complete all sections to publish your listing</p>
           <div class="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
             <div id="wizard-progress" class="h-full bg-pink rounded-full transition-all" style="width:0%"></div>
           </div>
@@ -110,7 +110,7 @@ const l = (href: string) => localizeHref(href, lang);
         </div>
         <nav class="flex-1 overflow-y-auto py-2" id="wizard-nav"></nav>
         <div class="p-6 border-t border-gray-200">
-          <p class="text-xs text-text-muted">Need some help?</p>
+          <p class="text-xs text-text-muted" data-i18n="lyb.wizard.help">Need some help?</p>
           <p class="text-sm font-semibold text-text mt-1">+30 210 1234567</p>
         </div>
       </aside>
@@ -130,11 +130,11 @@ const l = (href: string) => localizeHref(href, lang);
         <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
           <button type="button" id="wizard-back-btn" class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-            Back
+            <span data-i18n="lyb.wizard.back">Back</span>
           </button>
           <div class="flex items-center gap-2">
-            <button type="button" id="wizard-preview-btn" class="px-4 py-2 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors">Preview</button>
-            <button type="button" id="wizard-publish-btn" class="px-4 py-2 rounded-lg bg-pink text-white text-sm font-medium hover:opacity-90 transition-opacity">Publish</button>
+            <button type="button" id="wizard-preview-btn" class="px-4 py-2 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors" data-i18n="lyb.wizard.preview">Preview</button>
+            <button type="button" id="wizard-publish-btn" class="px-4 py-2 rounded-lg bg-pink text-white text-sm font-medium hover:opacity-90 transition-opacity" data-i18n="lyb.wizard.publish">Publish</button>
           </div>
         </div>
 
@@ -143,62 +143,62 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 1: General ===== -->
           <div id="wizard-section-general" class="wizard-section">
-            <h2 class="text-xl font-bold text-text mb-6">General Information</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.general.title">General Information</h2>
             <div class="mb-8">
-              <label class="block text-sm font-semibold text-text mb-4">Type <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-semibold text-text mb-4"><span data-i18n="lyb.general.type">Type</span> <span class="text-red-500">*</span></label>
               <div class="flex flex-wrap gap-3" id="boat-type-grid">
                 <button type="button" data-type="motorboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/><path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span class="text-xs font-medium text-text">Motorboat</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.motorboat">Motorboat</span>
                 </button>
                 <button type="button" data-type="sailboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M24 8v24" stroke-linecap="round"/><path d="M24 8L14 30h20L24 8z" stroke-linejoin="round"/><path d="M8 34c0 0 6-4 16-4s16 4 16 4" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">Sailboat</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.sailboat">Sailboat</span>
                 </button>
                 <button type="button" data-type="rib" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 28c2-4 8-6 18-6s16 2 18 6" stroke-linecap="round"/><path d="M16 22l4-6h8l4 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 32h32" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">RIB</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.rib">RIB</span>
                 </button>
                 <button type="button" data-type="catamaran" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M10 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 28h32" stroke-linecap="round"/><path d="M12 32h24" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">Catamaran</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.catamaran">Catamaran</span>
                 </button>
                 <button type="button" data-type="houseboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><rect x="10" y="18" width="28" height="12" rx="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 18v-6h20v6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 18v-6M28 18v-6" stroke-linecap="round"/><path d="M6 34c2-2 6-4 18-4s16 2 18 4" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">Houseboat</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.houseboat">Houseboat</span>
                 </button>
                 <button type="button" data-type="jetski" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M10 28c2-3 8-5 14-5" stroke-linecap="round"/><path d="M24 23l6-6 4 2-2 9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 32c4-2 12-4 20-4s12 2 14 4" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">Jet ski</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.jetski">Jet ski</span>
                 </button>
                 <button type="button" data-type="gulet" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/><path d="M16 24v-10M24 24v-12M32 24v-10" stroke-linecap="round"/><path d="M16 14l8-2 8 2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 34h28" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">Gulet</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.gulet">Gulet</span>
                 </button>
                 <button type="button" data-type="without-licence" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/><path d="M18 24l4-8h4l4 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 34h28" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text leading-tight text-center">Boat without<br/>licence</span>
+                  <span class="text-xs font-medium text-text leading-tight text-center" data-i18n-html="lyb.general.without_licence">Boat without<br/>licence</span>
                 </button>
                 <button type="button" data-type="yacht" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 32c2-6 10-10 18-10s14 4 18 10" stroke-linecap="round"/><path d="M24 22V10" stroke-linecap="round"/><path d="M24 10l10 8H24" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 36h32" stroke-linecap="round"/></svg>
-                  <span class="text-xs font-medium text-text">Yacht</span>
+                  <span class="text-xs font-medium text-text" data-i18n="lyb.general.yacht">Yacht</span>
                 </button>
               </div>
               <input type="hidden" name="boatType" id="boat-type-input" />
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="city" class="block text-sm font-semibold text-text mb-2">City</label>
+                <label for="city" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.general.city">City</label>
                 <input type="text" id="city" name="city" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div>
-                <label for="harbour" class="block text-sm font-semibold text-text mb-2">Harbour <span class="text-red-500">*</span></label>
-                <input type="text" id="harbour" name="harbour" placeholder="Enter harbour name" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <label for="harbour" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.general.harbour">Harbour</span> <span class="text-red-500">*</span></label>
+                <input type="text" id="harbour" name="harbour" placeholder="Enter harbour name" data-i18n-placeholder="lyb.general.harbour_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start mb-6">
               <div>
-                <label for="professional" class="block text-sm font-semibold text-text mb-2">Are you a professional?</label>
+                <label for="professional" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.general.professional">Are you a professional?</label>
                 <div class="relative">
                   <select id="professional" name="professional" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                     <option value="yes">Yes</option><option value="no">No</option>
@@ -207,22 +207,22 @@ const l = (href: string) => localizeHref(href, lang);
                 </div>
               </div>
               <div class="bg-amber-50 border border-amber-200/60 rounded-xl p-4">
-                <p class="text-sm text-amber-900"><strong>Attention:</strong> Your status must be accurately indicated. Presenting yourself as a "non-professional" when that is not the case constitutes a misleading commercial practice.</p>
+                <p class="text-sm text-amber-900"><strong data-i18n="lyb.general.attention">Attention:</strong> <span data-i18n="lyb.general.attention_text">Your status must be accurately indicated. Presenting yourself as a "non-professional" when that is not the case constitutes a misleading commercial practice.</span></p>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="manufacturer" class="block text-sm font-semibold text-text mb-2">Manufacturer <span class="text-red-500">*</span></label>
-                <input type="text" id="manufacturer" name="manufacturer" placeholder="Manufacturer" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <label for="manufacturer" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.general.manufacturer">Manufacturer</span> <span class="text-red-500">*</span></label>
+                <input type="text" id="manufacturer" name="manufacturer" placeholder="Manufacturer" data-i18n-placeholder="lyb.general.manufacturer_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div>
-                <label for="model" class="block text-sm font-semibold text-text mb-2">Model <span class="text-red-500">*</span></label>
-                <input type="text" id="model" name="model" placeholder="Model" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <label for="model" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.general.model">Model</span> <span class="text-red-500">*</span></label>
+                <input type="text" id="model" name="model" placeholder="Model" data-i18n-placeholder="lyb.general.model_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div class="mb-6">
-              <label for="boatName" class="block text-sm font-semibold text-text mb-2">Boat name <span class="text-red-500">*</span></label>
-              <input type="text" id="boatName" name="boatName" placeholder="Give your boat a name" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-md" />
+              <label for="boatName" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.general.boat_name">Boat name</span> <span class="text-red-500">*</span></label>
+              <input type="text" id="boatName" name="boatName" placeholder="Give your boat a name" data-i18n-placeholder="lyb.general.boat_name_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-md" />
             </div>
             <div class="flex justify-end mt-8">
               <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="general">Save</button>
@@ -231,39 +231,39 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 2: Description ===== -->
           <div id="wizard-section-description" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Description</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.desc.title">Description</h2>
             <div class="mb-6">
-              <label class="block text-sm font-semibold text-text mb-3">Languages of the listing <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-semibold text-text mb-3"><span data-i18n="lyb.desc.languages">Languages of the listing</span> <span class="text-red-500">*</span></label>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="language-grid">
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="en" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" checked /><span class="text-sm text-text">English</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="el" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Greek</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="fr" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">French</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="es" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Spanish</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="it" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Italian</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="de" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Deutsch</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="nl" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Nederlands</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="pl" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Polski</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="ru" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Russian</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="pt" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Portuguese</span></label>
-                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="sv" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">Svenska</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="en" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" checked /><span class="text-sm text-text" data-i18n="lyb.desc.english">English</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="el" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.greek">Greek</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="fr" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.french">French</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="es" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.spanish">Spanish</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="it" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.italian">Italian</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="de" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.deutsch">Deutsch</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="nl" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.nederlands">Nederlands</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="pl" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.polski">Polski</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="ru" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.russian">Russian</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="pt" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.portuguese">Portuguese</span></label>
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="sv" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.svenska">Svenska</span></label>
               </div>
             </div>
             <div class="mb-6">
-              <label for="listingTitle" class="block text-sm font-semibold text-text mb-2">Title of the listing <span class="text-red-500">*</span></label>
-              <input type="text" id="listingTitle" name="listingTitle" placeholder="e.g. Beautiful sailing yacht in Athens" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              <label for="listingTitle" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.listing_title">Title of the listing</span> <span class="text-red-500">*</span></label>
+              <input type="text" id="listingTitle" name="listingTitle" placeholder="e.g. Beautiful sailing yacht in Athens" data-i18n-placeholder="lyb.desc.listing_title_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <div class="lg:col-span-2">
-                <label for="description" class="block text-sm font-semibold text-text mb-2">Description <span class="text-red-500">*</span></label>
-                <textarea id="description" name="description" rows="8" placeholder="Describe your boat, the experience you offer, what makes it special..." required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"></textarea>
+                <label for="description" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.description">Description</span> <span class="text-red-500">*</span></label>
+                <textarea id="description" name="description" rows="8" placeholder="Describe your boat, the experience you offer, what makes it special..." data-i18n-placeholder="lyb.desc.description_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"></textarea>
               </div>
               <div class="bg-blue-50 border border-blue-200/60 rounded-xl p-4 h-fit">
-                <h3 class="text-sm font-bold text-blue-900 mb-2">Writing tips</h3>
+                <h3 class="text-sm font-bold text-blue-900 mb-2" data-i18n="lyb.desc.tips_title">Writing tips</h3>
                 <ul class="text-xs text-blue-800 space-y-1.5">
-                  <li>Highlight unique features of your boat</li>
-                  <li>Mention included equipment and amenities</li>
-                  <li>Describe the sailing area and best destinations</li>
-                  <li>Include practical info (boarding, parking)</li>
+                  <li data-i18n="lyb.desc.tip1">Highlight unique features of your boat</li>
+                  <li data-i18n="lyb.desc.tip2">Mention included equipment and amenities</li>
+                  <li data-i18n="lyb.desc.tip3">Describe the sailing area and best destinations</li>
+                  <li data-i18n="lyb.desc.tip4">Include practical info (boarding, parking)</li>
                 </ul>
               </div>
             </div>
@@ -274,29 +274,29 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 3: Photos ===== -->
           <div id="wizard-section-photos" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Photos</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.photos.title">Photos</h2>
             <div class="mb-8">
-              <p class="text-sm font-semibold text-text mb-1">Main photos <span class="text-red-500">*</span></p>
-              <p class="text-xs text-text-muted mb-4">For the cover, choose a photo that shows the whole boat. Drag photos to reorder.</p>
+              <p class="text-sm font-semibold text-text mb-1"><span data-i18n="lyb.photos.main">Main photos</span> <span class="text-red-500">*</span></p>
+              <p class="text-xs text-text-muted mb-4" data-i18n="lyb.photos.cover_hint">For the cover, choose a photo that shows the whole boat. Drag photos to reorder.</p>
               <div id="upload-zone" class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer">
                 <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <div class="pointer-events-none">
                   <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><rect x="10" y="10" width="28" height="28" rx="4" /><circle cx="20" cy="22" r="4" /><path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                  <p class="text-sm font-semibold text-text mb-1">Post your photos here</p>
-                  <p class="text-xs text-text-muted">Min 400x400px &middot; jpeg, png, gif</p>
-                  <p class="mt-3"><span class="text-sm text-primary hover:text-primary-dark underline font-medium cursor-pointer" id="upload-click-trigger">Download from your device</span></p>
+                  <p class="text-sm font-semibold text-text mb-1" data-i18n="lyb.photos.post_here">Post your photos here</p>
+                  <p class="text-xs text-text-muted" data-i18n="lyb.photos.min_size">Min 400x400px &middot; jpeg, png, gif</p>
+                  <p class="mt-3"><span class="text-sm text-primary hover:text-primary-dark underline font-medium cursor-pointer" id="upload-click-trigger" data-i18n="lyb.photos.download">Download from your device</span></p>
                 </div>
               </div>
               <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4" id="photo-previews"></div>
             </div>
             <div class="mb-6">
-              <p class="text-sm font-semibold text-text mb-1">Boat plan</p>
-              <p class="text-xs text-text-muted mb-4">Upload a plan/layout image of your boat (optional)</p>
+              <p class="text-sm font-semibold text-text mb-1" data-i18n="lyb.photos.plan">Boat plan</p>
+              <p class="text-xs text-text-muted mb-4" data-i18n="lyb.photos.plan_hint">Upload a plan/layout image of your boat (optional)</p>
               <div id="plan-upload-zone" class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer max-w-sm">
                 <input type="file" id="plan-photo-input" accept="image/jpeg,image/png,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <div class="pointer-events-none">
                   <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-4l-2-2H7L5 7H5a2 2 0 00-2 2z"/></svg>
-                  <p class="text-xs text-text-muted">Upload boat plan</p>
+                  <p class="text-xs text-text-muted" data-i18n="lyb.photos.upload_plan">Upload boat plan</p>
                 </div>
               </div>
               <div id="plan-preview" class="mt-3"></div>
@@ -308,35 +308,35 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 4: Price ===== -->
           <div id="wizard-section-price" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Price</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.price.title">Price</h2>
             <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-              <h3 class="text-sm font-bold text-text mb-4">Price and options</h3>
+              <h3 class="text-sm font-bold text-text mb-4" data-i18n="lyb.price.options">Price and options</h3>
               <div class="flex items-center gap-3 mb-4 max-w-xs">
-                <label for="pricePerDay" class="text-sm font-semibold text-text whitespace-nowrap">Price / day <span class="text-red-500">*</span></label>
+                <label for="pricePerDay" class="text-sm font-semibold text-text whitespace-nowrap"><span data-i18n="lyb.price.per_day">Price / day</span> <span class="text-red-500">*</span></label>
                 <div class="flex items-center flex-1">
                   <input type="number" id="pricePerDay" name="pricePerDay" min="0" step="1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                   <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
                 </div>
               </div>
               <details class="mb-4">
-                <summary class="text-sm font-medium text-primary cursor-pointer hover:text-primary-dark">Advanced pricing options</summary>
+                <summary class="text-sm font-medium text-primary cursor-pointer hover:text-primary-dark" data-i18n="lyb.price.advanced">Advanced pricing options</summary>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <div>
-                    <label for="reservationMinDays" class="block text-xs font-semibold text-text mb-1">Min. rental days</label>
+                    <label for="reservationMinDays" class="block text-xs font-semibold text-text mb-1" data-i18n="lyb.price.min_days">Min. rental days</label>
                     <input type="number" id="reservationMinDays" name="reservationMinDays" min="1" value="1" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                   </div>
                   <div>
-                    <label for="reservationMaxDays" class="block text-xs font-semibold text-text mb-1">Max. rental days</label>
+                    <label for="reservationMaxDays" class="block text-xs font-semibold text-text mb-1" data-i18n="lyb.price.max_days">Max. rental days</label>
                     <input type="number" id="reservationMaxDays" name="reservationMaxDays" min="1" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                   </div>
                 </div>
               </details>
               <div>
-                <h4 class="text-sm font-semibold text-text mb-2">Price periods</h4>
+                <h4 class="text-sm font-semibold text-text mb-2" data-i18n="lyb.price.periods">Price periods</h4>
                 <div id="price-periods-list" class="space-y-3 mb-3"></div>
                 <button type="button" id="add-price-period-btn" class="inline-flex items-center gap-1.5 text-sm font-medium text-pink hover:text-pink-light transition-colors">
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                  Create a new price period
+                  <span data-i18n="lyb.price.new_period">Create a new price period</span>
                 </button>
               </div>
             </div>
@@ -347,58 +347,58 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 5: Booking ===== -->
           <div id="wizard-section-booking" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Booking</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.booking.title">Booking</h2>
             <div class="bg-blue-50 border border-blue-200/60 rounded-xl p-4 mb-6">
-              <p class="text-sm text-blue-900"><strong>Note:</strong> All fields below are pre-filled with default values. Please review and modify them according to your needs.</p>
+              <p class="text-sm text-blue-900"><strong data-i18n="lyb.booking.note">Note:</strong> <span data-i18n="lyb.booking.note_text">All fields below are pre-filled with default values. Please review and modify them according to your needs.</span></p>
             </div>
             <div class="mb-6">
-              <label class="block text-sm font-semibold text-text mb-3">Booking mode</label>
+              <label class="block text-sm font-semibold text-text mb-3" data-i18n="lyb.booking.mode">Booking mode</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="relative flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 opacity-50 cursor-not-allowed" data-mode="instant">
                   <input type="radio" name="bookingMode" value="instant" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" disabled />
                   <div>
-                    <div class="flex items-center gap-2"><p class="text-sm font-semibold text-text">Instant Booking</p><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-wide">Coming soon</span></div>
-                    <p class="text-xs text-text-muted mt-0.5">Renters can book immediately without approval</p>
+                    <div class="flex items-center gap-2"><p class="text-sm font-semibold text-text" data-i18n="lyb.booking.instant">Instant Booking</p><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-wide" data-i18n="lyb.booking.coming_soon">Coming soon</span></div>
+                    <p class="text-xs text-text-muted mt-0.5" data-i18n="lyb.booking.instant_desc">Renters can book immediately without approval</p>
                   </div>
                 </div>
                 <label class="booking-mode-card flex items-start gap-3 p-4 rounded-xl border-2 border-pink cursor-pointer hover:border-pink transition-colors" data-mode="confirmation">
                   <input type="radio" name="bookingMode" value="confirmation" class="mt-1 h-4 w-4 text-pink focus:ring-pink border-gray-300" checked />
-                  <div><p class="text-sm font-semibold text-text">Confirmation Required</p><p class="text-xs text-text-muted mt-0.5">You review and approve each booking request</p></div>
+                  <div><p class="text-sm font-semibold text-text" data-i18n="lyb.booking.confirmation">Confirmation Required</p><p class="text-xs text-text-muted mt-0.5" data-i18n="lyb.booking.confirmation_desc">You review and approve each booking request</p></div>
                 </label>
               </div>
             </div>
             <div class="bg-gray-50 rounded-xl p-4 mb-6">
-              <p class="text-sm text-text-muted"><strong>Skipper:</strong> To add skipper as an option, go to the <span class="text-pink font-medium cursor-pointer" onclick="showWizardSection('extras')">Extras</span> section.</p>
+              <p class="text-sm text-text-muted"><strong data-i18n="lyb.booking.skipper_note">Skipper:</strong> <span data-i18n="lyb.booking.skipper_text">To add skipper as an option, go to the</span> <span class="text-pink font-medium cursor-pointer" onclick="showWizardSection('extras')" data-i18n="lyb.booking.extras_link">Extras</span> <span data-i18n="lyb.booking.skipper_suffix">section.</span></p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="checkInTime" class="block text-sm font-semibold text-text mb-2">Check-in time</label>
+                <label for="checkInTime" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.checkin">Check-in time</label>
                 <div class="relative"><select id="checkInTime" name="checkInTime" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10" id="checkInTime"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="checkOutTime" class="block text-sm font-semibold text-text mb-2">Check-out time</label>
+                <label for="checkOutTime" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.checkout">Check-out time</label>
                 <div class="relative"><select id="checkOutTime" name="checkOutTime" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="checkInTimeDayRental" class="block text-sm font-semibold text-text mb-2">Check-in (day rental)</label>
+                <label for="checkInTimeDayRental" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.checkin_day">Check-in (day rental)</label>
                 <div class="relative"><select id="checkInTimeDayRental" name="checkInTimeDayRental" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="checkOutTimeDayRental" class="block text-sm font-semibold text-text mb-2">Check-out (day rental)</label>
+                <label for="checkOutTimeDayRental" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.checkout_day">Check-out (day rental)</label>
                 <div class="relative"><select id="checkOutTimeDayRental" name="checkOutTimeDayRental" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="downpaymentPercentage" class="block text-sm font-semibold text-text mb-2">Downpayment %</label>
+                <label for="downpaymentPercentage" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.downpayment">Downpayment %</label>
                 <div class="relative"><select id="downpaymentPercentage" name="downpaymentPercentage" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="25">25%</option><option value="50" selected>50%</option><option value="75">75%</option><option value="100">100%</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="daysBeforeBalancePayment" class="block text-sm font-semibold text-text mb-2">Days before balance payment</label>
+                <label for="daysBeforeBalancePayment" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.balance_days">Days before balance payment</label>
                 <div class="relative"><select id="daysBeforeBalancePayment" name="daysBeforeBalancePayment" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="7">7 days</option><option value="14">14 days</option><option value="21">21 days</option><option value="30" selected>30 days</option><option value="45">45 days</option><option value="60">60 days</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
@@ -406,13 +406,13 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="fuelCost" class="block text-sm font-semibold text-text mb-2">Fuel cost</label>
+                <label for="fuelCost" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.fuel">Fuel cost</label>
                 <div class="relative"><select id="fuelCost" name="fuelCost" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="included">Included</option><option value="not-included" selected>Not included</option><option value="by-arrangement">By arrangement</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="licenceRequired" class="block text-sm font-semibold text-text mb-2">Licence required</label>
+                <label for="licenceRequired" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.licence">Licence required</label>
                 <div class="relative"><select id="licenceRequired" name="licenceRequired" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="yes">Yes</option><option value="no">No</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
@@ -425,33 +425,33 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 6: Documents ===== -->
           <div id="wizard-section-documents" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Documents &amp; Insurance</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.docs.title">Documents &amp; Insurance</h2>
             <div class="space-y-6">
               <div class="max-w-xs">
-                <label for="securityDeposit" class="block text-sm font-semibold text-text mb-2">Security deposit <span class="text-red-500">*</span></label>
+                <label for="securityDeposit" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.docs.deposit">Security deposit</span> <span class="text-red-500">*</span></label>
                 <div class="flex items-center">
                   <input type="number" id="securityDeposit" name="securityDeposit" min="0" step="1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                   <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-semibold text-text mb-2">Certificate of insurance</label>
+                <label class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.docs.insurance_cert">Certificate of insurance</label>
                 <div class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-primary/50 transition-colors cursor-pointer max-w-sm">
                   <input type="file" id="insurance-cert-input" accept="image/*,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <p class="text-sm text-text-muted">Upload insurance certificate (image or PDF)</p>
+                  <p class="text-sm text-text-muted" data-i18n="lyb.docs.insurance_upload">Upload insurance certificate (image or PDF)</p>
                 </div>
                 <div id="insurance-cert-preview" class="mt-2 text-sm text-green-700"></div>
               </div>
               <div>
-                <label class="block text-sm font-semibold text-text mb-2">Certificate of ownership</label>
+                <label class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.docs.ownership_cert">Certificate of ownership</label>
                 <div class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-primary/50 transition-colors cursor-pointer max-w-sm">
                   <input type="file" id="ownership-cert-input" accept="image/*,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <p class="text-sm text-text-muted">Upload ownership certificate (image or PDF)</p>
+                  <p class="text-sm text-text-muted" data-i18n="lyb.docs.ownership_upload">Upload ownership certificate (image or PDF)</p>
                 </div>
                 <div id="ownership-cert-preview" class="mt-2 text-sm text-green-700"></div>
               </div>
               <div class="max-w-xs">
-                <label for="yachtInsured" class="block text-sm font-semibold text-text mb-2">Is the yacht insured?</label>
+                <label for="yachtInsured" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.docs.insured">Is the yacht insured?</label>
                 <div class="relative"><select id="yachtInsured" name="yachtInsured" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="yes">Yes</option><option value="no">No</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
@@ -464,20 +464,20 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 7: Calendar ===== -->
           <div id="wizard-section-calendar" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">My Calendar</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.calendar.title">My Calendar</h2>
             <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-              <h3 class="text-sm font-bold text-text mb-3">Add unavailability period</h3>
+              <h3 class="text-sm font-bold text-text mb-3" data-i18n="lyb.calendar.add_unavail">Add unavailability period</h3>
               <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-                <div><label class="block text-xs font-semibold text-text mb-1">From</label><input type="date" id="unavail-from" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /></div>
-                <div><label class="block text-xs font-semibold text-text mb-1">To</label><input type="date" id="unavail-to" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /></div>
-                <div><label class="block text-xs font-semibold text-text mb-1">Reason</label>
+                <div><label class="block text-xs font-semibold text-text mb-1" data-i18n="lyb.calendar.from">From</label><input type="date" id="unavail-from" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /></div>
+                <div><label class="block text-xs font-semibold text-text mb-1" data-i18n="lyb.calendar.to">To</label><input type="date" id="unavail-to" class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /></div>
+                <div><label class="block text-xs font-semibold text-text mb-1" data-i18n="lyb.calendar.reason">Reason</label>
                   <div class="relative"><select id="unavail-reason" class="w-full appearance-none rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-8"><option value="personal">Personal</option><option value="maintenance">Maintenance</option><option value="booked-elsewhere">Booked elsewhere</option><option value="other">Other</option></select><svg class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
                 </div>
-                <button type="button" id="add-unavail-btn" class="px-4 py-2.5 rounded-xl bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity">Add</button>
+                <button type="button" id="add-unavail-btn" class="px-4 py-2.5 rounded-xl bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-i18n="lyb.calendar.add_btn">Add</button>
               </div>
             </div>
             <div id="unavail-periods-list" class="space-y-2 mb-6"></div>
-            <h3 class="text-sm font-bold text-text mb-3">Calendar View</h3>
+            <h3 class="text-sm font-bold text-text mb-3" data-i18n="lyb.calendar.view">Calendar View</h3>
             <div id="calendar-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6"></div>
             <div class="flex justify-end mt-8">
               <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="calendar">Save</button>
@@ -486,7 +486,7 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 8: Equipment ===== -->
           <div id="wizard-section-equipment" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Equipment</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.equip.title">Equipment</h2>
             <div id="equipment-grid" class="space-y-6"></div>
             <div class="flex justify-end mt-8">
               <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="equipment">Save</button>
@@ -495,12 +495,12 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 9: Extras ===== -->
           <div id="wizard-section-extras" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Extras</h2>
-            <p class="text-sm text-text-muted mb-4">Add optional extras that renters can add to their booking.</p>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.extras.title">Extras</h2>
+            <p class="text-sm text-text-muted mb-4" data-i18n="lyb.extras.desc">Add optional extras that renters can add to their booking.</p>
             <div id="extras-list" class="space-y-3 mb-4"></div>
             <button type="button" id="add-extra-btn" class="inline-flex items-center gap-1.5 text-sm font-medium text-pink hover:text-pink-light transition-colors">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              Add extra
+              <span data-i18n="lyb.extras.add">Add extra</span>
             </button>
             <div class="flex justify-end mt-8">
               <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="extras">Save</button>
@@ -509,90 +509,90 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 10: Other ===== -->
           <div id="wizard-section-other" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Other / Technical Details</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.other.title">Other / Technical Details</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="engineType" class="block text-sm font-semibold text-text mb-2">Engine type</label>
+                <label for="engineType" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.engine_type">Engine type</label>
                 <div class="relative"><select id="engineType" name="engineType" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="">Select...</option><option value="inboard">Inboard</option><option value="outboard">Outboard</option><option value="electric">Electric</option><option value="none">None</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="horsepower" class="block text-sm font-semibold text-text mb-2">Horsepower <span class="text-red-500">*</span></label>
+                <label for="horsepower" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.horsepower">Horsepower</span> <span class="text-red-500">*</span></label>
                 <div class="flex items-center max-w-[180px]"><input type="number" id="horsepower" name="horsepower" min="0" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">hp</span></div>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="width" class="block text-sm font-semibold text-text mb-2">Width <span class="text-red-500">*</span></label>
+                <label for="width" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.width">Width</span> <span class="text-red-500">*</span></label>
                 <div class="flex items-center max-w-[180px]"><input type="number" id="width" name="width" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
               </div>
               <div>
-                <label for="boatDraft" class="block text-sm font-semibold text-text mb-2">Draft <span class="text-red-500">*</span></label>
+                <label for="boatDraft" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.draft">Draft</span> <span class="text-red-500">*</span></label>
                 <div class="flex items-center max-w-[180px]"><input type="number" id="boatDraft" name="draft" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="equippedOffshore" class="block text-sm font-semibold text-text mb-2">Equipped offshore</label>
+                <label for="equippedOffshore" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.equipped_offshore">Equipped offshore</label>
                 <div class="relative"><select id="equippedOffshore" name="equippedOffshore" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="yes">Yes</option><option value="no">No</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="crewMembers" class="block text-sm font-semibold text-text mb-2">Crew members</label>
+                <label for="crewMembers" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.crew_members">Crew members</label>
                 <input type="number" id="crewMembers" name="crewMembers" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="tenderHorsepower" class="block text-sm font-semibold text-text mb-2">Tender horsepower</label>
+                <label for="tenderHorsepower" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.tender_hp">Tender horsepower</label>
                 <input type="number" id="tenderHorsepower" name="tenderHorsepower" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div>
-                <label for="yearOfConstruction" class="block text-sm font-semibold text-text mb-2">Year of construction</label>
+                <label for="yearOfConstruction" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.year">Year of construction</label>
                 <input type="number" id="yearOfConstruction" name="yearOfConstruction" min="1900" max="2030" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="renovated" class="block text-sm font-semibold text-text mb-2">Renovated</label>
+                <label for="renovated" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.renovated">Renovated</label>
                 <div class="relative"><select id="renovated" name="renovated" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10">
                   <option value="yes">Yes</option><option value="no" selected>No</option>
                 </select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
-                <label for="fuelConsumption" class="block text-sm font-semibold text-text mb-2">Fuel consumption</label>
+                <label for="fuelConsumption" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.fuel_consumption">Fuel consumption</label>
                 <div class="flex items-center max-w-[180px]"><input type="number" id="fuelConsumption" name="fuel" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">L/h</span></div>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="speed" class="block text-sm font-semibold text-text mb-2">Speed</label>
+                <label for="speed" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.speed">Speed</label>
                 <div class="flex items-center max-w-[180px]"><input type="number" id="speed" name="speed" min="0" step="0.1" class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">Kn</span></div>
               </div>
               <div>
-                <label for="capacity" class="block text-sm font-semibold text-text mb-2">Onboard capacity</label>
+                <label for="capacity" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.capacity">Onboard capacity</label>
                 <input type="number" id="capacity" name="capacity" min="1" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="length" class="block text-sm font-semibold text-text mb-2">Length <span class="text-red-500">*</span></label>
+                <label for="length" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.length">Length</span> <span class="text-red-500">*</span></label>
                 <div class="flex items-center max-w-[180px]"><input type="number" id="length" name="length" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
               </div>
               <div>
-                <label for="cabins" class="block text-sm font-semibold text-text mb-2">Cabins</label>
+                <label for="cabins" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.cabins">Cabins</label>
                 <input type="number" id="cabins" name="cabins" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="berths" class="block text-sm font-semibold text-text mb-2">Berths</label>
+                <label for="berths" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.berths">Berths</label>
                 <input type="number" id="berths" name="berths" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div>
-                <label for="bathrooms" class="block text-sm font-semibold text-text mb-2">Bathrooms</label>
+                <label for="bathrooms" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.bathrooms">Bathrooms</label>
                 <input type="number" id="bathrooms" name="bathrooms" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
             </div>
@@ -603,32 +603,32 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- ===== Section 11: Discounts ===== -->
           <div id="wizard-section-discounts" class="wizard-section hidden">
-            <h2 class="text-xl font-bold text-text mb-6">Discounts</h2>
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.disc.title">Discounts</h2>
             <div class="mb-8">
-              <h3 class="text-sm font-bold text-text mb-3">Standard discounts</h3>
+              <h3 class="text-sm font-bold text-text mb-3" data-i18n="lyb.disc.standard">Standard discounts</h3>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="standard-discounts">
                 <div class="bg-white rounded-xl border border-gray-200 p-4">
-                  <h4 class="text-sm font-semibold text-text mb-1">First booking</h4>
-                  <p class="text-xs text-text-muted mb-3">Offer a discount to attract your first customer</p>
+                  <h4 class="text-sm font-semibold text-text mb-1" data-i18n="lyb.disc.first_booking">First booking</h4>
+                  <p class="text-xs text-text-muted mb-3" data-i18n="lyb.disc.first_booking_desc">Offer a discount to attract your first customer</p>
                   <button type="button" class="add-std-discount-btn text-sm font-medium text-pink hover:text-pink-light transition-colors" data-type="first-booking">+ Add</button>
                   <div class="discount-config hidden mt-3"><label class="text-xs font-semibold text-text">Discount %</label><input type="number" class="std-discount-pct w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm" min="1" max="100" value="10" data-type="first-booking" /></div>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-200 p-4">
-                  <h4 class="text-sm font-semibold text-text mb-1">Early-bird</h4>
-                  <p class="text-xs text-text-muted mb-3">Reward customers who book in advance</p>
+                  <h4 class="text-sm font-semibold text-text mb-1" data-i18n="lyb.disc.early_bird">Early-bird</h4>
+                  <p class="text-xs text-text-muted mb-3" data-i18n="lyb.disc.early_bird_desc">Reward customers who book in advance</p>
                   <button type="button" class="add-std-discount-btn text-sm font-medium text-pink hover:text-pink-light transition-colors" data-type="early-bird">+ Add</button>
                   <div class="discount-config hidden mt-3"><label class="text-xs font-semibold text-text">Discount %</label><input type="number" class="std-discount-pct w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm" min="1" max="100" value="10" data-type="early-bird" /></div>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-200 p-4">
-                  <h4 class="text-sm font-semibold text-text mb-1">Last-minute</h4>
-                  <p class="text-xs text-text-muted mb-3">Fill empty slots with last-minute deals</p>
+                  <h4 class="text-sm font-semibold text-text mb-1" data-i18n="lyb.disc.last_minute">Last-minute</h4>
+                  <p class="text-xs text-text-muted mb-3" data-i18n="lyb.disc.last_minute_desc">Fill empty slots with last-minute deals</p>
                   <button type="button" class="add-std-discount-btn text-sm font-medium text-pink hover:text-pink-light transition-colors" data-type="last-minute">+ Add</button>
                   <div class="discount-config hidden mt-3"><label class="text-xs font-semibold text-text">Discount %</label><input type="number" class="std-discount-pct w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm" min="1" max="100" value="15" data-type="last-minute" /></div>
                 </div>
               </div>
             </div>
             <div class="mb-6">
-              <h3 class="text-sm font-bold text-text mb-3">Length-of-stay discounts</h3>
+              <h3 class="text-sm font-bold text-text mb-3" data-i18n="lyb.disc.length_stay">Length-of-stay discounts</h3>
               <div id="length-discounts-list" class="space-y-2 mb-3"></div>
               <button type="button" id="add-length-discount-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-pink text-pink text-sm font-medium hover:bg-pink/5 transition-colors">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
@@ -636,7 +636,7 @@ const l = (href: string) => localizeHref(href, lang);
               </button>
             </div>
             <div class="mb-6">
-              <h3 class="text-sm font-bold text-text mb-3">Custom discounts</h3>
+              <h3 class="text-sm font-bold text-text mb-3" data-i18n="lyb.disc.custom">Custom discounts</h3>
               <div id="custom-discounts-list" class="space-y-2 mb-3"></div>
               <button type="button" id="add-custom-discount-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-pink text-pink text-sm font-medium hover:bg-pink/5 transition-colors">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
@@ -650,10 +650,10 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- Success / Error banners -->
           <div id="form-success" class="hidden rounded-xl bg-green-50 border border-green-200 p-4 mt-6">
-            <p class="text-sm font-semibold text-green-800">Saved successfully!</p>
+            <p class="text-sm font-semibold text-green-800" data-i18n="lyb.msg.saved">Saved successfully!</p>
           </div>
           <div id="form-error" class="hidden rounded-xl bg-red-50 border border-red-200 p-4 mt-6">
-            <p class="text-sm font-semibold text-red-800" id="form-error-msg">Something went wrong. Please try again.</p>
+            <p class="text-sm font-semibold text-red-800" id="form-error-msg" data-i18n="lyb.msg.error">Something went wrong. Please try again.</p>
           </div>
 
         </div>
@@ -669,7 +669,7 @@ const l = (href: string) => localizeHref(href, lang);
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl">
           <!-- Header -->
           <div class="sticky top-0 z-10 bg-white rounded-t-2xl border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-lg font-bold text-text">Listing Preview</h2>
+            <h2 class="text-lg font-bold text-text" data-i18n="lyb.preview.title">Listing Preview</h2>
             <button type="button" id="preview-close-btn" class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
               <svg class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
@@ -680,7 +680,7 @@ const l = (href: string) => localizeHref(href, lang);
             <!-- Photo gallery -->
             <div id="preview-gallery" class="mb-6">
               <div id="preview-main-image" class="aspect-[16/9] rounded-xl overflow-hidden bg-gray-100 mb-3 flex items-center justify-center">
-                <p class="text-sm text-text-muted">No photos uploaded yet</p>
+                <p class="text-sm text-text-muted" data-i18n="lyb.preview.no_photos">No photos uploaded yet</p>
               </div>
               <div id="preview-thumbs" class="flex gap-2 overflow-x-auto pb-1"></div>
             </div>
@@ -691,7 +691,7 @@ const l = (href: string) => localizeHref(href, lang);
               <div class="lg:col-span-2 space-y-6">
                 <!-- Title + location -->
                 <div>
-                  <h1 id="preview-title" class="text-2xl font-bold text-text mb-1">Untitled Listing</h1>
+                  <h1 id="preview-title" class="text-2xl font-bold text-text mb-1" data-i18n="lyb.preview.untitled">Untitled Listing</h1>
                   <p id="preview-location" class="text-sm text-text-muted flex items-center gap-1">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z"/></svg>
                     <span>—</span>
@@ -706,19 +706,19 @@ const l = (href: string) => localizeHref(href, lang);
 
                 <!-- Description -->
                 <div id="preview-description-block" class="hidden">
-                  <h3 class="text-sm font-bold text-text mb-2">Description</h3>
+                  <h3 class="text-sm font-bold text-text mb-2" data-i18n="lyb.preview.description">Description</h3>
                   <p id="preview-description" class="text-sm text-text-muted leading-relaxed whitespace-pre-line"></p>
                 </div>
 
                 <!-- Equipment -->
                 <div id="preview-equipment-block" class="hidden">
-                  <h3 class="text-sm font-bold text-text mb-2">Equipment</h3>
+                  <h3 class="text-sm font-bold text-text mb-2" data-i18n="lyb.preview.equipment">Equipment</h3>
                   <div id="preview-equipment" class="flex flex-wrap gap-1.5"></div>
                 </div>
 
                 <!-- Extras -->
                 <div id="preview-extras-block" class="hidden">
-                  <h3 class="text-sm font-bold text-text mb-2">Extras</h3>
+                  <h3 class="text-sm font-bold text-text mb-2" data-i18n="lyb.preview.extras">Extras</h3>
                   <div id="preview-extras" class="space-y-1"></div>
                 </div>
               </div>
@@ -727,10 +727,10 @@ const l = (href: string) => localizeHref(href, lang);
               <div>
                 <div class="bg-white rounded-xl border border-gray-200 p-5 sticky top-24">
                   <div class="mb-4">
-                    <span class="text-xs text-text-muted">From</span>
+                    <span class="text-xs text-text-muted" data-i18n="lyb.preview.from">From</span>
                     <div class="flex items-baseline gap-1">
                       <span id="preview-price" class="text-2xl font-bold text-text">—</span>
-                      <span class="text-sm text-text-muted">/ day</span>
+                      <span class="text-sm text-text-muted" data-i18n="lyb.preview.per_day">/ day</span>
                     </div>
                   </div>
                   <div id="preview-booking-mode" class="mb-4"></div>
@@ -742,8 +742,8 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- Footer -->
           <div class="border-t border-gray-200 px-6 py-4 flex items-center justify-between rounded-b-2xl bg-gray-50">
-            <p class="text-xs text-text-muted">This is how renters will see your listing</p>
-            <button type="button" id="preview-close-btn-2" class="px-5 py-2.5 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors">Close Preview</button>
+            <p class="text-xs text-text-muted" data-i18n="lyb.preview.how_renters_see">This is how renters will see your listing</p>
+            <button type="button" id="preview-close-btn-2" class="px-5 py-2.5 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors" data-i18n="lyb.preview.close">Close Preview</button>
           </div>
         </div>
       </div>
@@ -755,30 +755,50 @@ const l = (href: string) => localizeHref(href, lang);
 <!-- UI logic — no dependencies, always works -->
 <script is:inline>
 document.addEventListener("DOMContentLoaded", function () {
+  // ---- i18n helper ----
+  var i18nObj = window.__i18n || {};
+  var lang = i18nObj.getLang ? i18nObj.getLang() : "en";
+  var trans = i18nObj.translations || {};
+  function tr(key, fallback) { return (trans[key] && trans[key][lang]) || fallback; }
+
   // ---- Equipment catalog (static data) ----
-  var EQUIPMENT_CATALOG = {
-    "Outdoor equipment": ["Bimini","Outdoor shower","External table","External speakers","Teak deck","Bow sundeck","Aft sundeck","Bathing Platform","Bathing ladder"],
-    "Extra Comforts": ["Hot water","Watermaker","Air Conditioning","Fans","Heating","Electric toilet","Bed linen","Bath towels","Beach towels","Wi-Fi","USB socket","TV"],
-    "Navigation equipment": ["Dinghy","Dinghy's motor","Bow thruster","Electric windlass","Autopilot","GPS","Depth sounder","VHF","Satellite phone"],
-    "Kitchen": ["Fridge","Freezer","Oven/stovetop","BBQ grill","Microwave","Coffee machine","Ice machine","Ice box"],
-    "Leisure activities": ["Paddle board","Kayak","Snorkelling equipment","Fishing equipment","Diving equipment","Seabob","Bike","Electric scooter","Drone","Video camera"],
-    "Onboard energy": ["Generator","Power inverter","220V power outlet"],
-    "Water sports": ["Water skis","Monoski","Wakeboard","Towable Tube","Inflatable banana","Kneeboard"]
-  };
+  var EQUIPMENT_CATALOG = [
+    { key: "lyb.equip.outdoor", fallback: "Outdoor equipment", items: [
+      { key: "lyb.equip.bimini", en: "Bimini" }, { key: "lyb.equip.outdoor_shower", en: "Outdoor shower" }, { key: "lyb.equip.external_table", en: "External table" }, { key: "lyb.equip.external_speakers", en: "External speakers" }, { key: "lyb.equip.teak_deck", en: "Teak deck" }, { key: "lyb.equip.bow_sundeck", en: "Bow sundeck" }, { key: "lyb.equip.aft_sundeck", en: "Aft sundeck" }, { key: "lyb.equip.bathing_platform", en: "Bathing Platform" }, { key: "lyb.equip.bathing_ladder", en: "Bathing ladder" }
+    ]},
+    { key: "lyb.equip.comforts", fallback: "Extra Comforts", items: [
+      { key: "lyb.equip.hot_water", en: "Hot water" }, { key: "lyb.equip.watermaker", en: "Watermaker" }, { key: "lyb.equip.air_conditioning", en: "Air Conditioning" }, { key: "lyb.equip.fans", en: "Fans" }, { key: "lyb.equip.heating", en: "Heating" }, { key: "lyb.equip.electric_toilet", en: "Electric toilet" }, { key: "lyb.equip.bed_linen", en: "Bed linen" }, { key: "lyb.equip.bath_towels", en: "Bath towels" }, { key: "lyb.equip.beach_towels", en: "Beach towels" }, { key: "lyb.equip.wifi", en: "Wi-Fi" }, { key: "lyb.equip.usb_socket", en: "USB socket" }, { key: "lyb.equip.tv", en: "TV" }
+    ]},
+    { key: "lyb.equip.navigation", fallback: "Navigation equipment", items: [
+      { key: "lyb.equip.dinghy", en: "Dinghy" }, { key: "lyb.equip.dinghy_motor", en: "Dinghy's motor" }, { key: "lyb.equip.bow_thruster", en: "Bow thruster" }, { key: "lyb.equip.electric_windlass", en: "Electric windlass" }, { key: "lyb.equip.autopilot", en: "Autopilot" }, { key: "lyb.equip.gps", en: "GPS" }, { key: "lyb.equip.depth_sounder", en: "Depth sounder" }, { key: "lyb.equip.vhf", en: "VHF" }, { key: "lyb.equip.satellite_phone", en: "Satellite phone" }
+    ]},
+    { key: "lyb.equip.kitchen", fallback: "Kitchen", items: [
+      { key: "lyb.equip.fridge", en: "Fridge" }, { key: "lyb.equip.freezer", en: "Freezer" }, { key: "lyb.equip.oven", en: "Oven/stovetop" }, { key: "lyb.equip.bbq", en: "BBQ grill" }, { key: "lyb.equip.microwave", en: "Microwave" }, { key: "lyb.equip.coffee_machine", en: "Coffee machine" }, { key: "lyb.equip.ice_machine", en: "Ice machine" }, { key: "lyb.equip.ice_box", en: "Ice box" }
+    ]},
+    { key: "lyb.equip.leisure", fallback: "Leisure activities", items: [
+      { key: "lyb.equip.paddle_board", en: "Paddle board" }, { key: "lyb.equip.kayak", en: "Kayak" }, { key: "lyb.equip.snorkelling", en: "Snorkelling equipment" }, { key: "lyb.equip.fishing", en: "Fishing equipment" }, { key: "lyb.equip.diving", en: "Diving equipment" }, { key: "lyb.equip.seabob", en: "Seabob" }, { key: "lyb.equip.bike", en: "Bike" }, { key: "lyb.equip.electric_scooter", en: "Electric scooter" }, { key: "lyb.equip.drone", en: "Drone" }, { key: "lyb.equip.video_camera", en: "Video camera" }
+    ]},
+    { key: "lyb.equip.energy", fallback: "Onboard energy", items: [
+      { key: "lyb.equip.generator", en: "Generator" }, { key: "lyb.equip.power_inverter", en: "Power inverter" }, { key: "lyb.equip.power_outlet", en: "220V power outlet" }
+    ]},
+    { key: "lyb.equip.watersports", fallback: "Water sports", items: [
+      { key: "lyb.equip.water_skis", en: "Water skis" }, { key: "lyb.equip.monoski", en: "Monoski" }, { key: "lyb.equip.wakeboard", en: "Wakeboard" }, { key: "lyb.equip.towable_tube", en: "Towable Tube" }, { key: "lyb.equip.banana", en: "Inflatable banana" }, { key: "lyb.equip.kneeboard", en: "Kneeboard" }
+    ]}
+  ];
 
   // ---- Wizard nav sections config ----
   var SECTIONS = [
-    { id: "general", label: "General", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" },
-    { id: "description", label: "Description", icon: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" },
-    { id: "photos", label: "Photos", icon: "M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z M15 12.75a3 3 0 11-6 0 3 3 0 016 0z" },
-    { id: "price", label: "Price", icon: "M14.25 7.756a4.5 4.5 0 100 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { id: "booking", label: "Booking", icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" },
-    { id: "documents", label: "Documents", icon: "M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" },
-    { id: "calendar", label: "My Calendar", icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" },
-    { id: "equipment", label: "Equipment", icon: "M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.653-4.655M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653M18.36 5.64a5.068 5.068 0 00-7.16 0l-.318.318a.9.9 0 000 1.272l4.889 4.889a.9.9 0 001.272 0l.318-.318a5.068 5.068 0 000-7.16z" },
-    { id: "extras", label: "Extras", icon: "M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { id: "other", label: "Other", icon: "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
-    { id: "discounts", label: "Discounts", icon: "M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" }
+    { id: "general", label: tr("lyb.wizard.sec_general", "General"), icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" },
+    { id: "description", label: tr("lyb.wizard.sec_description", "Description"), icon: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" },
+    { id: "photos", label: tr("lyb.wizard.sec_photos", "Photos"), icon: "M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z M15 12.75a3 3 0 11-6 0 3 3 0 016 0z" },
+    { id: "price", label: tr("lyb.wizard.sec_price", "Price"), icon: "M14.25 7.756a4.5 4.5 0 100 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { id: "booking", label: tr("lyb.wizard.sec_booking", "Booking"), icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" },
+    { id: "documents", label: tr("lyb.wizard.sec_documents", "Documents"), icon: "M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" },
+    { id: "calendar", label: tr("lyb.wizard.sec_calendar", "My Calendar"), icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" },
+    { id: "equipment", label: tr("lyb.wizard.sec_equipment", "Equipment"), icon: "M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.653-4.655M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653M18.36 5.64a5.068 5.068 0 00-7.16 0l-.318.318a.9.9 0 000 1.272l4.889 4.889a.9.9 0 001.272 0l.318-.318a5.068 5.068 0 000-7.16z" },
+    { id: "extras", label: tr("lyb.wizard.sec_extras", "Extras"), icon: "M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { id: "other", label: tr("lyb.wizard.sec_other", "Other"), icon: "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+    { id: "discounts", label: tr("lyb.wizard.sec_discounts", "Discounts"), icon: "M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" }
   ];
 
   // ---- Render sidebar nav ----
@@ -884,18 +904,69 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // ---- Translate select options ----
+  function translateSelectOptions() {
+    var yesNoMap = { "yes": tr("lyb.general.yes","Yes"), "no": tr("lyb.general.no","No") };
+    ["professional", "licenceRequired", "yachtInsured", "equippedOffshore", "renovated"].forEach(function(id) {
+      var sel = document.getElementById(id);
+      if (sel) {
+        Array.from(sel.options).forEach(function(opt) {
+          if (yesNoMap[opt.value]) opt.textContent = yesNoMap[opt.value];
+        });
+      }
+    });
+    // Fuel cost options
+    var fuelSel = document.getElementById("fuelCost");
+    if (fuelSel) {
+      Array.from(fuelSel.options).forEach(function(opt) {
+        if (opt.value === "included") opt.textContent = tr("lyb.booking.fuel_included","Included");
+        else if (opt.value === "not-included") opt.textContent = tr("lyb.booking.fuel_not_included","Not included");
+        else if (opt.value === "by-arrangement") opt.textContent = tr("lyb.booking.fuel_arrangement","By arrangement");
+      });
+    }
+    // Engine type options
+    var engineSel = document.getElementById("engineType");
+    if (engineSel) {
+      Array.from(engineSel.options).forEach(function(opt) {
+        if (opt.value === "") opt.textContent = tr("lyb.other.select","Select...");
+        else if (opt.value === "inboard") opt.textContent = tr("lyb.other.inboard","Inboard");
+        else if (opt.value === "outboard") opt.textContent = tr("lyb.other.outboard","Outboard");
+        else if (opt.value === "electric") opt.textContent = tr("lyb.other.electric","Electric");
+        else if (opt.value === "none") opt.textContent = tr("lyb.other.none","None");
+      });
+    }
+    // Unavail reason options
+    var reasonSel = document.getElementById("unavail-reason");
+    if (reasonSel) {
+      Array.from(reasonSel.options).forEach(function(opt) {
+        if (opt.value === "personal") opt.textContent = tr("lyb.calendar.personal","Personal");
+        else if (opt.value === "maintenance") opt.textContent = tr("lyb.calendar.maintenance","Maintenance");
+        else if (opt.value === "booked-elsewhere") opt.textContent = tr("lyb.calendar.booked_elsewhere","Booked elsewhere");
+        else if (opt.value === "other") opt.textContent = tr("lyb.calendar.other","Other");
+      });
+    }
+    // Days before balance payment options
+    var balanceSel = document.getElementById("daysBeforeBalancePayment");
+    if (balanceSel) {
+      Array.from(balanceSel.options).forEach(function(opt) {
+        opt.textContent = opt.value + " " + tr("lyb.booking.days_label","days");
+      });
+    }
+  }
+  translateSelectOptions();
+
   // ---- Equipment rendering ----
   var eqGrid = document.getElementById("equipment-grid");
   if (eqGrid) {
-    Object.keys(EQUIPMENT_CATALOG).forEach(function (category) {
+    EQUIPMENT_CATALOG.forEach(function (cat) {
       var section = document.createElement("div");
-      section.innerHTML = '<h3 class="text-sm font-bold text-text mb-3">' + category + '</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>';
+      section.innerHTML = '<h3 class="text-sm font-bold text-text mb-3">' + tr(cat.key, cat.fallback) + '</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>';
       var grid = section.querySelector("div");
-      EQUIPMENT_CATALOG[category].forEach(function (item) {
-        var itemId = item.toLowerCase().replace(/[^a-z0-9]/g, "-");
+      cat.items.forEach(function (item) {
+        var itemId = item.en.toLowerCase().replace(/[^a-z0-9]/g, "-");
         var label = document.createElement("label");
         label.className = "flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer";
-        label.innerHTML = '<input type="checkbox" name="equipment" value="' + itemId + '" class="equip-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">' + item + '</span>';
+        label.innerHTML = '<input type="checkbox" name="equipment" value="' + itemId + '" class="equip-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text">' + tr(item.key, item.en) + '</span>';
         grid.appendChild(label);
       });
       eqGrid.appendChild(section);
@@ -969,10 +1040,10 @@ document.addEventListener("DOMContentLoaded", function () {
     ppBtn.addEventListener("click", function () {
       var row = document.createElement("div");
       row.className = "flex flex-wrap items-end gap-2 bg-white rounded-lg border border-gray-200 p-3";
-      row.innerHTML = '<div><label class="text-xs font-semibold text-text">From</label><input type="date" class="pp-start w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" /></div>' +
-        '<div><label class="text-xs font-semibold text-text">To</label><input type="date" class="pp-end w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" /></div>' +
-        '<div><label class="text-xs font-semibold text-text">Price/day</label><input type="number" class="pp-price w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="0" /></div>' +
-        '<button type="button" class="text-red-500 hover:text-red-700 text-sm font-medium" onclick="this.parentElement.remove()">Remove</button>';
+      row.innerHTML = '<div><label class="text-xs font-semibold text-text">' + tr("lyb.price.from","From") + '</label><input type="date" class="pp-start w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" /></div>' +
+        '<div><label class="text-xs font-semibold text-text">' + tr("lyb.price.to","To") + '</label><input type="date" class="pp-end w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" /></div>' +
+        '<div><label class="text-xs font-semibold text-text">' + tr("lyb.price.price_day","Price/day") + '</label><input type="number" class="pp-price w-full mt-1 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="0" /></div>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm font-medium" onclick="this.parentElement.remove()">' + tr("lyb.price.remove","Remove") + '</button>';
       ppList.appendChild(row);
     });
   }
@@ -997,8 +1068,8 @@ document.addEventListener("DOMContentLoaded", function () {
     window.__unavailPeriods.forEach(function (p, i) {
       var row = document.createElement("div");
       row.className = "flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-2";
-      row.innerHTML = '<span class="text-sm text-text">' + p.startDate + ' to ' + p.endDate + ' (' + p.reason + ')</span>' +
-        '<button type="button" class="text-red-500 hover:text-red-700 text-xs font-medium">Remove</button>';
+      row.innerHTML = '<span class="text-sm text-text">' + p.startDate + ' ' + tr("lyb.price.to","to") + ' ' + p.endDate + ' (' + p.reason + ')</span>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-xs font-medium">' + tr("lyb.price.remove","Remove") + '</button>';
       row.querySelector("button").addEventListener("click", function () { window.__unavailPeriods.splice(i, 1); renderUnavailPeriods(); });
       unavailList.appendChild(row);
     });
@@ -1012,11 +1083,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var today = new Date();
     for (var m = 0; m < 2; m++) {
       var month = new Date(today.getFullYear(), today.getMonth() + m, 1);
-      var monthName = month.toLocaleString("en", { month: "long", year: "numeric" });
+      var monthName = month.toLocaleString(lang === "el" ? "el-GR" : "en-US", { month: "long", year: "numeric" });
       var daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
       var firstDay = month.getDay() || 7; // Mon=1
       var html = '<div class="bg-white rounded-xl border border-gray-200 p-4"><h4 class="text-sm font-bold text-text mb-3 text-center">' + monthName + '</h4>';
-      html += '<div class="grid grid-cols-7 gap-1 text-center text-xs text-text-muted mb-1"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>';
+      html += '<div class="grid grid-cols-7 gap-1 text-center text-xs text-text-muted mb-1"><span>' + tr("lyb.calendar.mo","Mo") + '</span><span>' + tr("lyb.calendar.tu","Tu") + '</span><span>' + tr("lyb.calendar.we","We") + '</span><span>' + tr("lyb.calendar.th","Th") + '</span><span>' + tr("lyb.calendar.fr","Fr") + '</span><span>' + tr("lyb.calendar.sa","Sa") + '</span><span>' + tr("lyb.calendar.su","Su") + '</span></div>';
       html += '<div class="grid grid-cols-7 gap-1 text-center text-xs">';
       for (var e = 1; e < firstDay; e++) html += '<span></span>';
       for (var d = 1; d <= daysInMonth; d++) {
@@ -1042,10 +1113,10 @@ document.addEventListener("DOMContentLoaded", function () {
     addExtraBtn.addEventListener("click", function () {
       var row = document.createElement("div");
       row.className = "flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 p-3";
-      row.innerHTML = '<input type="text" placeholder="Extra name" class="extra-name flex-1 min-w-[120px] rounded-lg border border-gray-200 px-3 py-2 text-sm" />' +
+      row.innerHTML = '<input type="text" placeholder="' + tr("lyb.extras.name_ph","Extra name") + '" class="extra-name flex-1 min-w-[120px] rounded-lg border border-gray-200 px-3 py-2 text-sm" />' +
         '<div class="flex items-center"><input type="number" placeholder="0" class="extra-price w-20 rounded-l-lg border border-r-0 border-gray-200 px-3 py-2 text-sm" min="0" /><span class="inline-flex items-center h-[38px] px-2 border border-gray-200 rounded-r-lg bg-gray-50 text-xs text-text-muted">EUR/day</span></div>' +
-        '<label class="flex items-center gap-1.5 text-sm text-text"><input type="checkbox" class="extra-mandatory h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />Mandatory</label>' +
-        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">Remove</button>';
+        '<label class="flex items-center gap-1.5 text-sm text-text"><input type="checkbox" class="extra-mandatory h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />' + tr("lyb.extras.mandatory","Mandatory") + '</label>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">' + tr("lyb.price.remove","Remove") + '</button>';
       extrasList.appendChild(row);
     });
   }
@@ -1068,9 +1139,9 @@ document.addEventListener("DOMContentLoaded", function () {
     addLenBtn.addEventListener("click", function () {
       var row = document.createElement("div");
       row.className = "flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 p-3";
-      row.innerHTML = '<div class="flex items-center gap-1"><label class="text-xs text-text">Min days</label><input type="number" class="len-disc-days w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="2" value="7" /></div>' +
-        '<div class="flex items-center gap-1"><label class="text-xs text-text">Discount %</label><input type="number" class="len-disc-pct w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="1" max="100" value="10" /></div>' +
-        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">Remove</button>';
+      row.innerHTML = '<div class="flex items-center gap-1"><label class="text-xs text-text">' + tr("lyb.disc.min_days","Min days") + '</label><input type="number" class="len-disc-days w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="2" value="7" /></div>' +
+        '<div class="flex items-center gap-1"><label class="text-xs text-text">' + tr("lyb.disc.pct","Discount %") + '</label><input type="number" class="len-disc-pct w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="1" max="100" value="10" /></div>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">' + tr("lyb.price.remove","Remove") + '</button>';
       lenDiscList.appendChild(row);
     });
   }
@@ -1082,9 +1153,9 @@ document.addEventListener("DOMContentLoaded", function () {
     addCustomBtn.addEventListener("click", function () {
       var row = document.createElement("div");
       row.className = "flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 p-3";
-      row.innerHTML = '<input type="text" placeholder="Discount name" class="custom-disc-label flex-1 min-w-[120px] rounded-lg border border-gray-200 px-3 py-2 text-sm" />' +
+      row.innerHTML = '<input type="text" placeholder="' + tr("lyb.disc.name_ph","Discount name") + '" class="custom-disc-label flex-1 min-w-[120px] rounded-lg border border-gray-200 px-3 py-2 text-sm" />' +
         '<div class="flex items-center gap-1"><label class="text-xs text-text">%</label><input type="number" class="custom-disc-pct w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm" min="1" max="100" value="10" /></div>' +
-        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">Remove</button>';
+        '<button type="button" class="text-red-500 hover:text-red-700 text-sm" onclick="this.parentElement.remove()">' + tr("lyb.price.remove","Remove") + '</button>';
       customDiscList.appendChild(row);
     });
   }
@@ -1106,14 +1177,14 @@ document.addEventListener("DOMContentLoaded", function () {
     var mfr = gv("manufacturer");
     var mdl = gv("model");
     var bName = gv("boatName");
-    if (titleEl) titleEl.textContent = listingTitle || (mfr && mdl ? mfr + " " + mdl : "") || bName || "Untitled Listing";
+    if (titleEl) titleEl.textContent = listingTitle || (mfr && mdl ? mfr + " " + mdl : "") || bName || tr("lyb.preview.untitled","Untitled Listing");
 
     // --- Location ---
     var locEl = document.getElementById("preview-location");
     if (locEl) {
       var city = gv("city");
       var harbour = gv("harbour");
-      var loc = harbour && city ? city + ", " + harbour : city || "Location not set";
+      var loc = harbour && city ? city + ", " + harbour : city || tr("lyb.preview.location_not_set","Location not set");
       locEl.querySelector("span").textContent = loc;
     }
 
@@ -1127,15 +1198,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       var bookingMode = document.querySelector('input[name="bookingMode"]:checked');
       if (bookingMode && bookingMode.value === "instant") {
-        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>Instant booking</span>';
+        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>' + tr("lyb.preview.instant_booking","Instant booking") + '</span>';
       }
       var fuelVal = gv("fuelCost");
       if (fuelVal === "included") {
-        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-xs text-green-700"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Fuel included</span>';
+        tagsEl.innerHTML += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-xs text-green-700"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' + tr("lyb.preview.fuel_included","Fuel included") + '</span>';
       }
       var licence = gv("licenceRequired");
       if (licence === "no") {
-        tagsEl.innerHTML += '<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-text-muted">No licence needed</span>';
+        tagsEl.innerHTML += '<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-text-muted">' + tr("lyb.preview.no_licence","No licence needed") + '</span>';
       }
     }
 
@@ -1144,14 +1215,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (specsEl) {
       specsEl.innerHTML = "";
       var specItems = [
-        { label: "Capacity", val: gv("capacity"), unit: " people" },
-        { label: "Length", val: gv("length"), unit: " m" },
-        { label: "Width", val: gv("width"), unit: " m" },
-        { label: "Cabins", val: gv("cabins"), unit: "" },
-        { label: "Berths", val: gv("berths"), unit: "" },
-        { label: "Bathrooms", val: gv("bathrooms"), unit: "" },
-        { label: "Horsepower", val: gv("horsepower"), unit: " hp" },
-        { label: "Speed", val: gv("speed"), unit: " kn" }
+        { label: tr("lyb.preview.capacity","Capacity"), val: gv("capacity"), unit: " " + tr("lyb.preview.people","people") },
+        { label: tr("lyb.preview.length","Length"), val: gv("length"), unit: " m" },
+        { label: tr("lyb.preview.width","Width"), val: gv("width"), unit: " m" },
+        { label: tr("lyb.preview.cabins","Cabins"), val: gv("cabins"), unit: "" },
+        { label: tr("lyb.preview.berths","Berths"), val: gv("berths"), unit: "" },
+        { label: tr("lyb.preview.bathrooms","Bathrooms"), val: gv("bathrooms"), unit: "" },
+        { label: tr("lyb.preview.horsepower","Horsepower"), val: gv("horsepower"), unit: " hp" },
+        { label: tr("lyb.preview.speed","Speed"), val: gv("speed"), unit: " kn" }
       ];
       specItems.forEach(function (s) {
         if (s.val && s.val !== "0") {
@@ -1199,8 +1270,8 @@ document.addEventListener("DOMContentLoaded", function () {
           var p = row.querySelector(".extra-price");
           var m = row.querySelector(".extra-mandatory");
           if (n && n.value) {
-            var mLabel = m && m.checked ? '<span class="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">Mandatory</span>' : '<span class="text-[10px] text-text-muted">Optional</span>';
-            extrasEl.innerHTML += '<div class="flex items-center justify-between py-1"><span class="text-sm text-text">' + n.value + '</span><div class="flex items-center gap-2">' + mLabel + '<span class="text-sm font-semibold text-text">' + (p && p.value ? "€" + p.value + "/day" : "Free") + '</span></div></div>';
+            var mLabel = m && m.checked ? '<span class="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">' + tr("lyb.extras.mandatory","Mandatory") + '</span>' : '<span class="text-[10px] text-text-muted">' + tr("lyb.extras.optional","Optional") + '</span>';
+            extrasEl.innerHTML += '<div class="flex items-center justify-between py-1"><span class="text-sm text-text">' + n.value + '</span><div class="flex items-center gap-2">' + mLabel + '<span class="text-sm font-semibold text-text">' + (p && p.value ? "€" + p.value + "/day" : tr("lyb.preview.free","Free")) + '</span></div></div>';
           }
         });
       } else { extrasBlock.classList.add("hidden"); }
@@ -1215,9 +1286,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (bookingModeEl) {
       var bm = document.querySelector('input[name="bookingMode"]:checked');
       if (bm && bm.value === "instant") {
-        bookingModeEl.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>Instant booking</span>';
+        bookingModeEl.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 text-white text-xs font-semibold"><svg class="h-3 w-3 text-pink-light" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>' + tr("lyb.preview.instant_booking","Instant booking") + '</span>';
       } else {
-        bookingModeEl.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs text-text-muted">Confirmation required</span>';
+        bookingModeEl.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs text-text-muted">' + tr("lyb.preview.confirmation_required","Confirmation required") + '</span>';
       }
     }
 
@@ -1225,15 +1296,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (detailsList) {
       detailsList.innerHTML = "";
       var details = [
-        { label: "Check-in", val: gv("checkInTime") },
-        { label: "Check-out", val: gv("checkOutTime") },
-        { label: "Fuel", val: gv("fuelCost") ? gv("fuelCost").replace(/-/g, " ").replace(/^\w/, function (c) { return c.toUpperCase(); }) : "" },
-        { label: "Licence", val: gv("licenceRequired") === "yes" ? "Required" : gv("licenceRequired") === "no" ? "Not required" : "" },
-        { label: "Deposit", val: gv("securityDeposit") ? "€" + gv("securityDeposit") : "" },
-        { label: "Downpayment", val: gv("downpaymentPercentage") ? gv("downpaymentPercentage") + "%" : "" },
-        { label: "Min. days", val: gv("reservationMinDays") && gv("reservationMinDays") !== "0" ? gv("reservationMinDays") : "" },
-        { label: "Engine", val: gv("engineType") ? gv("engineType").charAt(0).toUpperCase() + gv("engineType").slice(1) : "" },
-        { label: "Year", val: gv("yearOfConstruction") && gv("yearOfConstruction") !== "0" ? gv("yearOfConstruction") : "" }
+        { label: tr("lyb.preview.checkin","Check-in"), val: gv("checkInTime") },
+        { label: tr("lyb.preview.checkout","Check-out"), val: gv("checkOutTime") },
+        { label: tr("lyb.preview.fuel","Fuel"), val: gv("fuelCost") ? gv("fuelCost").replace(/-/g, " ").replace(/^\w/, function (c) { return c.toUpperCase(); }) : "" },
+        { label: tr("lyb.preview.licence","Licence"), val: gv("licenceRequired") === "yes" ? tr("lyb.preview.licence_required","Required") : gv("licenceRequired") === "no" ? tr("lyb.preview.licence_not_required","Not required") : "" },
+        { label: tr("lyb.preview.deposit","Deposit"), val: gv("securityDeposit") ? "€" + gv("securityDeposit") : "" },
+        { label: tr("lyb.preview.downpayment","Downpayment"), val: gv("downpaymentPercentage") ? gv("downpaymentPercentage") + "%" : "" },
+        { label: tr("lyb.preview.min_days","Min. days"), val: gv("reservationMinDays") && gv("reservationMinDays") !== "0" ? gv("reservationMinDays") : "" },
+        { label: tr("lyb.preview.engine","Engine"), val: gv("engineType") ? gv("engineType").charAt(0).toUpperCase() + gv("engineType").slice(1) : "" },
+        { label: tr("lyb.preview.year","Year"), val: gv("yearOfConstruction") && gv("yearOfConstruction") !== "0" ? gv("yearOfConstruction") : "" }
       ];
       details.forEach(function (d) {
         if (d.val) {
@@ -1279,7 +1350,7 @@ document.addEventListener("DOMContentLoaded", function () {
           thumbsEl.appendChild(thumb);
         });
       } else {
-        mainImgEl.innerHTML = '<p class="text-sm text-text-muted">No photos uploaded yet</p>';
+        mainImgEl.innerHTML = '<p class="text-sm text-text-muted">' + tr("lyb.preview.no_photos","No photos uploaded yet") + '</p>';
         thumbsEl.innerHTML = "";
       }
     }
@@ -1314,6 +1385,14 @@ document.addEventListener("DOMContentLoaded", function () {
   import { onAuthStateChanged } from "firebase/auth";
   import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
   import { createBoatListing, updateBoatListing, deleteBoatListing, createEmptyDraft, updateBoatSection, uploadBoatDocument, uploadBoatPhotos, getBoatListing } from "../../lib/api";
+
+  // i18n helper — reads from window.__i18n populated by the i18n client script
+  function tr(key: string, fallback: string): string {
+    const i18n = (window as any).__i18n;
+    if (!i18n?.translations?.[key]) return fallback;
+    const lang = i18n.getLang?.() || "en";
+    return i18n.translations[key][lang] || fallback;
+  }
 
   const loading = document.getElementById("auth-loading");
   const gate = document.getElementById("auth-gate");
@@ -1398,7 +1477,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const user = auth.currentUser;
     if (!user) return;
     try {
-      addNewBtn.textContent = "Creating...";
+      addNewBtn.textContent = tr("lyb.msg.creating", "Creating...");
       (addNewBtn as HTMLButtonElement).disabled = true;
       const boatId = await createEmptyDraft(user.uid);
       editingBoatId = boatId;
@@ -1408,9 +1487,9 @@ document.addEventListener("DOMContentLoaded", function () {
       (window as any).showWizardSection("general");
     } catch (err) {
       console.error("Failed to create draft:", err);
-      alert("Failed to create draft. Please try again.");
+      alert(tr("lyb.msg.create_draft_fail", "Failed to create draft. Please try again."));
     } finally {
-      addNewBtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg> Add New Listing';
+      addNewBtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg> ' + tr("lyb.listings.add_new", "Add New Listing");
       (addNewBtn as HTMLButtonElement).disabled = false;
     }
   });
@@ -1453,13 +1532,13 @@ document.addEventListener("DOMContentLoaded", function () {
       ? `<img src="${firstImage}" alt="${name}" class="h-full w-full object-cover" loading="lazy" />`
       : `<div class="h-full w-full flex items-center justify-center"><svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/><path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
     const statusBadge = isDraft
-      ? `<div class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-xs font-semibold text-amber-800">Draft</div>`
-      : isPending ? `<div class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-100 text-xs font-semibold text-blue-800">In Review</div>`
-      : isNew ? `<div class="absolute top-3 left-3 flex items-center gap-1 text-xs font-semibold text-gray-700"><svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>New</div>` : "";
+      ? `<div class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-xs font-semibold text-amber-800">${tr("lyb.listings.status_draft", "Draft")}</div>`
+      : isPending ? `<div class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-100 text-xs font-semibold text-blue-800">${tr("lyb.listings.status_review", "In Review")}</div>`
+      : isNew ? `<div class="absolute top-3 left-3 flex items-center gap-1 text-xs font-semibold text-gray-700"><svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>${tr("lyb.listings.status_new", "New")}</div>` : "";
     const footerBadge = isDraft
-      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-[11px] font-semibold text-amber-800">Draft</span>`
-      : isPending ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-[11px] font-semibold text-blue-800">In Review</span>`
-      : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-[11px] font-semibold text-green-800">Published</span>`;
+      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-[11px] font-semibold text-amber-800">${tr("lyb.listings.status_draft", "Draft")}</span>`
+      : isPending ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-[11px] font-semibold text-blue-800">${tr("lyb.listings.status_review", "In Review")}</span>`
+      : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-[11px] font-semibold text-green-800">${tr("lyb.listings.status_published", "Published")}</span>`;
     const boatTypeTag = boatTypeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-[11px] text-text-muted">${boatTypeLabel}</span>` : "";
     if (isDraft) card.style.opacity = "0.85";
     card.innerHTML = `
@@ -1486,14 +1565,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     card.querySelector(".card-delete-btn")?.addEventListener("click", async (e) => {
       e.stopPropagation();
-      if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+      if (!confirm(tr("lyb.msg.delete_confirm", `Delete "${name}"? This cannot be undone.`).replace("{name}", name))) return;
       try {
         await deleteBoatListing(boat.id);
         allListingCards = allListingCards.filter(c => c.el !== card);
         card.remove();
         updateTabCounts();
         if (allListingCards.length === 0) { userHasListings = false; showForm(); }
-      } catch (err) { console.error("Delete failed:", err); alert("Failed to delete."); }
+      } catch (err) { console.error("Delete failed:", err); alert(tr("lyb.msg.delete_fail", "Failed to delete.")); }
     });
     return card;
   }
@@ -1537,7 +1616,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadBoatIntoWizard(boatId: string) {
     try {
       const data = await getBoatListing(boatId);
-      if (!data) { alert("Boat not found"); return; }
+      if (!data) { alert(tr("lyb.msg.boat_not_found", "Boat not found")); return; }
       editingBoatId = boatId;
       resetWizardForm();
       const setValue = (id: string, val: any) => { const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null; if (el && val != null) el.value = String(val); };
@@ -1594,7 +1673,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       showForm();
       (window as any).showWizardSection("general");
-    } catch (err) { console.error("Failed to load boat:", err); alert("Failed to load boat data."); }
+    } catch (err) { console.error("Failed to load boat:", err); alert(tr("lyb.msg.load_fail", "Failed to load boat data.")); }
   }
 
   // --- Collect section data ---
@@ -1667,7 +1746,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const bar = document.getElementById("wizard-progress");
     const text = document.getElementById("wizard-progress-text");
     if (bar) bar.style.width = pct + "%";
-    if (text) text.textContent = `${done} of ${total} sections completed`;
+    if (text) text.textContent = tr("lyb.msg.progress", `${done} of ${total} sections completed`).replace("{done}", String(done)).replace("{total}", String(total));
     // Update checkmarks
     document.querySelectorAll(".wizard-nav-btn").forEach(btn => {
       const sec = btn.getAttribute("data-section");
@@ -1680,12 +1759,12 @@ document.addEventListener("DOMContentLoaded", function () {
   let completedSectionsSet = new Set<string>();
   document.querySelectorAll(".section-save-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      if (!editingBoatId) { alert("No active draft. Please create a new listing first."); return; }
+      if (!editingBoatId) { alert(tr("lyb.msg.no_draft", "No active draft. Please create a new listing first.")); return; }
       const section = btn.getAttribute("data-section");
       if (!section) return;
       const btnEl = btn as HTMLButtonElement;
       const origText = btnEl.textContent;
-      btnEl.textContent = "Saving...";
+      btnEl.textContent = tr("lyb.msg.saving", "Saving...");
       btnEl.disabled = true;
       formSuccess?.classList.add("hidden");
       formError?.classList.add("hidden");
@@ -1698,13 +1777,13 @@ document.addEventListener("DOMContentLoaded", function () {
           const model = (document.getElementById("model") as HTMLInputElement)?.value?.trim();
           const boatName = (document.getElementById("boatName") as HTMLInputElement)?.value?.trim();
           const missing: string[] = [];
-          if (!boatType) missing.push("Type");
-          if (!harbour) missing.push("Harbour");
-          if (!manufacturer) missing.push("Manufacturer");
-          if (!model) missing.push("Model");
-          if (!boatName) missing.push("Boat Name");
+          if (!boatType) missing.push(tr("lyb.general.type", "Type"));
+          if (!harbour) missing.push(tr("lyb.general.harbour", "Harbour"));
+          if (!manufacturer) missing.push(tr("lyb.general.manufacturer", "Manufacturer"));
+          if (!model) missing.push(tr("lyb.general.model", "Model"));
+          if (!boatName) missing.push(tr("lyb.general.boat_name", "Boat Name"));
           if (missing.length > 0) {
-            throw new Error(`Please fill in the required fields: ${missing.join(", ")}`);
+            throw new Error(tr("lyb.msg.fill_required", "Please fill in the required fields:") + " " + missing.join(", "));
           }
         }
         // Validate required fields for description section
@@ -1713,18 +1792,18 @@ document.addEventListener("DOMContentLoaded", function () {
           const title = (document.getElementById("listingTitle") as HTMLInputElement)?.value?.trim();
           const desc = (document.getElementById("description") as HTMLTextAreaElement)?.value?.trim();
           const missing: string[] = [];
-          if (langs.length === 0) missing.push("at least one Language");
-          if (!title) missing.push("Title");
-          if (!desc) missing.push("Description");
+          if (langs.length === 0) missing.push(tr("lyb.desc.languages", "at least one Language"));
+          if (!title) missing.push(tr("lyb.desc.listing_title", "Title"));
+          if (!desc) missing.push(tr("lyb.desc.description", "Description"));
           if (missing.length > 0) {
-            throw new Error(`Please fill in the required fields: ${missing.join(", ")}`);
+            throw new Error(tr("lyb.msg.fill_required", "Please fill in the required fields:") + " " + missing.join(", "));
           }
         }
         if (section === "photos") {
           // Validate at least one photo
           const newFiles: File[] = ((window as any).__selectedFiles || []).filter((f: any) => f != null);
           if (newFiles.length === 0 && existingImageUrls.length === 0) {
-            throw new Error("Please upload at least one photo.");
+            throw new Error(tr("lyb.msg.upload_photo", "Please upload at least one photo."));
           }
           // Upload new photos
           if (newFiles.length > 0) {
@@ -1741,14 +1820,14 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (section === "price") {
           const price = Number((document.getElementById("pricePerDay") as HTMLInputElement)?.value);
           if (!price || price <= 0) {
-            throw new Error("Please fill in the required field: Price / day");
+            throw new Error(tr("lyb.msg.fill_price", "Please fill in the required field: Price / day"));
           }
           const data = collectSectionData(section);
           await updateBoatSection(editingBoatId, data);
         } else if (section === "documents") {
           const deposit = Number((document.getElementById("securityDeposit") as HTMLInputElement)?.value);
           if (isNaN(deposit) || (document.getElementById("securityDeposit") as HTMLInputElement)?.value === "") {
-            throw new Error("Please fill in the required field: Security deposit");
+            throw new Error(tr("lyb.msg.fill_deposit", "Please fill in the required field: Security deposit"));
           }
           const data = collectSectionData(section);
           // Upload insurance cert
@@ -1770,12 +1849,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const d = (document.getElementById("boatDraft") as HTMLInputElement)?.value;
             const l = (document.getElementById("length") as HTMLInputElement)?.value;
             const missing: string[] = [];
-            if (!hp) missing.push("Horsepower");
-            if (!w) missing.push("Width");
-            if (!d) missing.push("Draft");
-            if (!l) missing.push("Length");
+            if (!hp) missing.push(tr("lyb.other.horsepower", "Horsepower"));
+            if (!w) missing.push(tr("lyb.other.width", "Width"));
+            if (!d) missing.push(tr("lyb.other.draft", "Draft"));
+            if (!l) missing.push(tr("lyb.other.length", "Length"));
             if (missing.length > 0) {
-              throw new Error(`Please fill in the required fields: ${missing.join(", ")}`);
+              throw new Error(tr("lyb.msg.fill_required", "Please fill in the required fields:") + " " + missing.join(", "));
             }
           }
           const data = collectSectionData(section);
@@ -1787,11 +1866,11 @@ document.addEventListener("DOMContentLoaded", function () {
         updateProgress(completed);
         formSuccess?.classList.remove("hidden");
         const successMsg = formSuccess?.querySelector("p");
-        if (successMsg) successMsg.textContent = "Section saved successfully!";
+        if (successMsg) successMsg.textContent = tr("lyb.msg.section_saved", "Section saved successfully!");
       } catch (err: any) {
         console.error("Save failed:", err);
         formError?.classList.remove("hidden");
-        if (formErrorMsg) formErrorMsg.textContent = err?.message || "Failed to save. Please try again.";
+        if (formErrorMsg) formErrorMsg.textContent = err?.message || tr("lyb.msg.save_fail", "Failed to save. Please try again.");
       } finally {
         btnEl.textContent = origText;
         btnEl.disabled = false;
@@ -1805,23 +1884,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const requiredSections = ["general", "photos", "price"];
     const missing = requiredSections.filter(s => !completedSectionsSet.has(s));
     if (missing.length > 0) {
-      alert(`Please complete these sections before publishing: ${missing.join(", ")}`);
+      alert(tr("lyb.msg.complete_before_publish", "Please complete these sections before publishing:") + " " + missing.join(", "));
       return;
     }
     try {
       (publishBtn as HTMLButtonElement).disabled = true;
-      publishBtn.textContent = "Submitting...";
+      publishBtn.textContent = tr("lyb.msg.submitting", "Submitting...");
       await updateBoatSection(editingBoatId, { status: "pending" });
-      alert("Your listing has been submitted for review. It will be visible once approved by our team.");
+      alert(tr("lyb.msg.submitted", "Your listing has been submitted for review. It will be visible once approved by our team."));
       userHasListings = true;
       const user = auth.currentUser;
       if (user) { await loadUserListings(user.uid); showListings(); }
     } catch (err) {
       console.error("Publish failed:", err);
-      alert("Failed to publish. Please try again.");
+      alert(tr("lyb.msg.publish_fail", "Failed to publish. Please try again."));
     } finally {
       (publishBtn as HTMLButtonElement).disabled = false;
-      publishBtn.textContent = "Publish";
+      publishBtn.textContent = tr("lyb.wizard.publish", "Publish");
     }
   });
 
