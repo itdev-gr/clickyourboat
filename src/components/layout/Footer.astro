@@ -66,7 +66,7 @@ const columns = [
         <!-- Newsletter -->
         <form id="newsletter-form" class="space-y-3">
           <label for="newsletter-email" class="text-sm font-medium" data-i18n="footer.stay_updated">Stay updated</label>
-          <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row gap-2">
             <input
               type="email"
               id="newsletter-email"
@@ -74,11 +74,11 @@ const columns = [
               required
               placeholder="your@email.com"
               data-i18n-placeholder="footer.email_placeholder"
-              class="flex-1 rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-light"
+              class="flex-1 min-w-0 rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-light"
             />
             <button
               type="submit"
-              class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-light transition-colors focus:outline-none focus:ring-2 focus:ring-primary-light"
+              class="flex-shrink-0 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-light transition-colors focus:outline-none focus:ring-2 focus:ring-primary-light"
               data-i18n="footer.subscribe"
             >
               Subscribe
