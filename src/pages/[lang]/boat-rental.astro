@@ -64,7 +64,7 @@ const l = (href: string) => localizeHref(href, lang);
       <!-- Mobile filter toggle -->
       <button
         id="mobile-filter-btn"
-        class="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-text text-white text-sm font-semibold shadow-xl hover:bg-gray-800 transition-colors"
+        class="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[55] inline-flex items-center gap-2 px-5 py-3 rounded-full bg-text text-white text-sm font-semibold shadow-xl hover:bg-gray-800 transition-colors"
       >
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
         <span data-i18n="rental.filters_btn">Filters</span>
@@ -73,7 +73,7 @@ const l = (href: string) => localizeHref(href, lang);
       <!-- Mobile filter drawer -->
       <div
         id="mobile-filter-drawer"
-        class="lg:hidden fixed inset-0 z-50 pointer-events-none"
+        class="lg:hidden fixed inset-0 z-50 hidden"
         aria-hidden="true"
       >
         <div
@@ -407,7 +407,7 @@ const l = (href: string) => localizeHref(href, lang);
 
     function openFilterDrawer() {
       if (!filterDrawer || !filterBackdrop || !filterPanel) return;
-      filterDrawer.classList.remove("pointer-events-none");
+      filterDrawer.classList.remove("hidden");
       filterDrawer.setAttribute("aria-hidden", "false");
       filterBackdrop.classList.remove("opacity-0");
       filterBackdrop.classList.add("opacity-100");
@@ -424,7 +424,7 @@ const l = (href: string) => localizeHref(href, lang);
       filterPanel.classList.add("translate-y-full");
       document.body.style.overflow = "";
       setTimeout(function () {
-        filterDrawer.classList.add("pointer-events-none");
+        filterDrawer.classList.add("hidden");
         filterDrawer.setAttribute("aria-hidden", "true");
       }, 300);
     }
