@@ -186,6 +186,13 @@ export const translations: Record<string, Record<Lang, string>> = {
   "charter.feat_itineraries": { en: "Personalised itineraries", el: "Εξατομικευμένα δρομολόγια" },
   "charter.feat_events": { en: "Perfect for celebrations & events", el: "Ιδανικό για γιορτές & εκδηλώσεις" },
   "charter.feat_vessels": { en: "Top-of-the-line vessels", el: "Σκάφη υψηλών προδιαγραφών" },
+  "charter.spec_speed": { en: "Speed", el: "Ταχύτητα" },
+  "charter.spec_guests_small": { en: "2–8 guests", el: "2–8 επιβάτες" },
+  "charter.spec_guests_large": { en: "6–30 guests", el: "6–30 επιβάτες" },
+  "charter.spec_knots": { en: "5–15 knots", el: "5–15 κόμβοι" },
+  "charter.browse_without_licence": { en: "Browse Without Licence Charters", el: "Περιήγηση Ναυλώσεων Χωρίς Δίπλωμα" },
+  "charter.browse_luxury": { en: "Browse Luxury Charters", el: "Περιήγηση Πολυτελών Ναυλώσεων" },
+  "charter.per_day": { en: "/day", el: "/ημέρα" },
 
   // ─── Destinations Page ───
   "destinations.choose": { en: "Choose Your Destination", el: "Επίλεξε τον Προορισμό σου" },

@@ -11,25 +11,47 @@ const description =
 const charterTypes = [
   {
     name: "Without Licence",
+    nameKey: "charter.without_licence",
     slug: "without-licence",
     headline: "No licence? No problem. Just hop on and go.",
+    headlineKey: "charter.without_licence_headline",
     description:
       "Our without-licence boats are perfect for beginners and casual boaters who want to enjoy the water without the hassle of certifications. These easy-to-operate boats are available in many destinations and come with everything you need for a safe and fun day on the sea. Simply pick your boat, get a quick briefing, and set off on your own adventure.",
+    descKey: "charter.without_licence_desc",
     features: ["No boating licence required", "Easy to operate", "Quick safety briefing included", "Perfect for beginners", "Available in 400+ locations", "Ideal for day trips & coastal exploring"],
+    featureKeys: ["charter.feat_no_licence", "charter.feat_easy", "charter.feat_briefing", "charter.feat_beginners", "charter.feat_locations", "charter.feat_day_trips"],
     image: "/license_free.jpeg",
-    specs: { capacity: "2–8 guests", length: "4–7 m", speed: "5–15 knots", experience: "No experience needed" },
+    specs: [
+      { label: "Capacity", labelKey: "charter.capacity", value: "2–8 guests", valueKey: "charter.spec_guests_small" },
+      { label: "Length", labelKey: "charter.boat_length", value: "4–7 m" },
+      { label: "Speed", labelKey: "charter.spec_speed", value: "5–15 knots", valueKey: "charter.spec_knots" },
+      { label: "Experience", labelKey: "charter.experience_needed", value: "No experience needed", valueKey: "charter.no_experience" },
+    ],
     priceFrom: 80,
+    browseCta: "Browse Without Licence Charters",
+    browseKey: "charter.browse_without_licence",
   },
   {
     name: "Luxury Charter",
+    nameKey: "charter.luxury",
     slug: "luxury-charter",
     headline: "The ultimate VIP experience on the water",
+    headlineKey: "charter.luxury_headline",
     description:
       "Indulge in the finest boats, professional crews, and first-class service with our luxury charters. From sleek motor yachts to elegant sailing vessels, every detail is taken care of. Enjoy gourmet catering, premium amenities, and personalised itineraries. Whether it's a celebration, corporate event, or simply a desire for the extraordinary — luxury charters deliver an experience like no other.",
+    descKey: "charter.luxury_desc",
     features: ["Professional crew & captain", "Gourmet catering available", "Premium amenities & comfort", "Personalised itineraries", "Perfect for celebrations & events", "Top-of-the-line vessels"],
+    featureKeys: ["charter.feat_crew", "charter.feat_catering", "charter.feat_amenities", "charter.feat_itineraries", "charter.feat_events", "charter.feat_vessels"],
     image: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80&auto=format",
-    specs: { capacity: "6–30 guests", length: "12–40 m", duration: "Day trips to multi-week", experience: "Crew handles everything" },
+    specs: [
+      { label: "Capacity", labelKey: "charter.capacity", value: "6–30 guests", valueKey: "charter.spec_guests_large" },
+      { label: "Length", labelKey: "charter.boat_length", value: "12–40 m" },
+      { label: "Duration", labelKey: "charter.duration", value: "Day trips to multi-week", valueKey: "charter.day_to_multi" },
+      { label: "Experience", labelKey: "charter.experience_needed", value: "Crew handles everything", valueKey: "charter.crew_handles" },
+    ],
     priceFrom: 1500,
+    browseCta: "Browse Luxury Charters",
+    browseKey: "charter.browse_luxury",
   },
 ];
 const l = (href: string) => localizeHref(href, lang);
@@ -73,6 +95,7 @@ const l = (href: string) => localizeHref(href, lang);
           <a
             href={`#${ct.slug}`}
             class="flex-shrink-0 px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-text-muted hover:border-primary hover:text-primary transition-colors"
+            data-i18n={ct.nameKey}
           >
             {ct.name}
           </a>
@@ -99,28 +122,28 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- Content -->
           <div class:list={[i % 2 !== 0 && "lg:order-1"]}>
-            <h2 id={`${ct.slug}-heading`} class="text-3xl sm:text-4xl font-extrabold text-text mb-3">
+            <h2 id={`${ct.slug}-heading`} class="text-3xl sm:text-4xl font-extrabold text-text mb-3" data-i18n={ct.nameKey}>
               {ct.name}
             </h2>
-            <p class="text-lg text-primary font-medium mb-4">{ct.headline}</p>
-            <p class="text-text-muted leading-relaxed mb-6">{ct.description}</p>
+            <p class="text-lg text-primary font-medium mb-4" data-i18n={ct.headlineKey}>{ct.headline}</p>
+            <p class="text-text-muted leading-relaxed mb-6" data-i18n={ct.descKey}>{ct.description}</p>
 
             <!-- Specs grid -->
             <div class="grid grid-cols-2 gap-3 mb-6">
-              {Object.entries(ct.specs).map(([key, value]) => (
+              {ct.specs.map((spec) => (
                 <div class="bg-surface rounded-xl p-3.5">
-                  <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                  <p class="text-sm font-bold text-text">{value}</p>
+                  <p class="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-0.5" data-i18n={spec.labelKey}>{spec.label}</p>
+                  <p class="text-sm font-bold text-text" {...(spec.valueKey ? {"data-i18n": spec.valueKey} : {})}>{spec.value}</p>
                 </div>
               ))}
             </div>
 
             <!-- Features -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-8">
-              {ct.features.map((f) => (
+              {ct.features.map((f, fi) => (
                 <div class="flex items-center gap-2">
                   <svg class="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                  <span class="text-sm text-text-muted">{f}</span>
+                  <span class="text-sm text-text-muted" data-i18n={ct.featureKeys[fi]}>{f}</span>
                 </div>
               ))}
             </div>
@@ -130,7 +153,7 @@ const l = (href: string) => localizeHref(href, lang);
               href={l(`/boat-rental?charter=${ct.slug}`)}
               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              Browse {ct.name} Charters
+              <span data-i18n={ct.browseKey}>{ct.browseCta}</span>
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
             </a>
           </div>
@@ -153,18 +176,20 @@ const l = (href: string) => localizeHref(href, lang);
             <tr class="border-b border-gray-200 bg-gray-50">
               <th class="text-left px-5 py-4 font-semibold text-text-muted"></th>
               {charterTypes.map((ct) => (
-                <th class="text-center px-6 py-4 font-bold text-text whitespace-nowrap">{ct.name}</th>
+                <th class="text-center px-6 py-4 font-bold text-text whitespace-nowrap" data-i18n={ct.nameKey}>{ct.name}</th>
               ))}
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.capacity">Capacity</td>
-              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{ct.specs.capacity}</td>)}
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.spec_guests_small">2–8 guests</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.spec_guests_large">6–30 guests</td>
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.boat_length">Boat length</td>
-              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{"length" in ct.specs ? ct.specs.length : "—"}</td>)}
+              <td class="text-center px-6 py-3.5 text-text-muted">4–7 m</td>
+              <td class="text-center px-6 py-3.5 text-text-muted">12–40 m</td>
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.duration">Duration</td>
@@ -178,11 +203,13 @@ const l = (href: string) => localizeHref(href, lang);
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.experience_needed">Experience needed</td>
-              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 text-text-muted">{ct.specs.experience}</td>)}
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.no_experience">No experience needed</td>
+              <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.crew_handles">Crew handles everything</td>
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.from_price">From price</td>
-              {charterTypes.map((ct) => <td class="text-center px-6 py-3.5 font-bold text-text">€{ct.priceFrom}/day</td>)}
+              <td class="text-center px-6 py-3.5 font-bold text-text">€80<span data-i18n="charter.per_day">/day</span></td>
+              <td class="text-center px-6 py-3.5 font-bold text-text">€1500<span data-i18n="charter.per_day">/day</span></td>
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.best_for">Best for</td>
