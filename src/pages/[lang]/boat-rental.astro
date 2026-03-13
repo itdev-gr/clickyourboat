@@ -5,7 +5,7 @@ const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 import Sidebar from "../../components/boat-rental/Sidebar.astro";
 
-const title = "Boat Rental — Find the Perfect Boat | BoatHaven";
+const title = "Boat Rental — Find the Perfect Boat | TapYourBoat";
 const description =
   "Rent a boat from over 50,000 listings in 600+ destinations. Motorboats, sailboats, catamarans, yachts — with or without skipper. Best prices guaranteed.";
 const l = (href: string) => localizeHref(href, lang);
@@ -20,7 +20,7 @@ const l = (href: string) => localizeHref(href, lang);
       url: "https://boathaven.com/boat-rental",
       publisher: {
         "@type": "Organization",
-        name: "BoatHaven",
+        name: "TapYourBoat",
         url: "https://boathaven.com",
       },
       breadcrumb: {
@@ -37,7 +37,7 @@ const l = (href: string) => localizeHref(href, lang);
     <!-- Breadcrumb -->
     <nav class="mb-4 text-xs text-text-muted" aria-label="Breadcrumb">
       <ol id="breadcrumb-list" class="flex items-center gap-1.5">
-        <li><a href={l("/")} class="hover:text-primary transition-colors">BoatHaven</a></li>
+        <li><a href={l("/")} class="hover:text-primary transition-colors">TapYourBoat</a></li>
         <li>/</li>
         <li id="breadcrumb-current" class="text-text font-medium" data-i18n="rental.breadcrumb">Boat rental</li>
       </ol>

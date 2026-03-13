@@ -46,7 +46,7 @@ const otherArticles = allArticles.filter((a) => a.slug !== slug).slice(0, 3);
 
 const resolvedLang = getLangFromParam(lang);
 const pt = (v: { en: string; el: string } | string) => pickText(v, resolvedLang);
-const title = `${pt(article.title)} — BoatHaven Blog`;
+const title = `${pt(article.title)} — TapYourBoat Blog`;
 const description = pt(article.summary);
 const l = (href: string) => localizeHref(href, lang);
 

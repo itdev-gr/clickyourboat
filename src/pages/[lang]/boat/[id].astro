@@ -33,8 +33,8 @@ if (!boat) {
   return Astro.redirect(l("/404"));
 }
 
-const title = `${boat.title || boat.listingTitle || "Boat"} — BoatHaven`;
-const description = boat.description || boat.title || "View boat details on BoatHaven";
+const title = `${boat.title || boat.listingTitle || "Boat"} — TapYourBoat`;
+const description = boat.description || boat.title || "View boat details on TapYourBoat";
 const images = boat.images || [];
 const price = boat.price || boat.pricePerDay || 0;
 const priceUnit = boat.priceUnit || "/ day";

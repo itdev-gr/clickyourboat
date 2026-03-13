@@ -4,7 +4,7 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "Boat Types — Find the Right Boat for You | BoatHaven";
+const title = "Boat Types — Find the Right Boat for You | TapYourBoat";
 const description =
   "Explore our boat types: Catamarans, Houseboats, Motorboats, RIBs, and Sailboats. Find the perfect vessel for your next adventure on the water.";
 
@@ -80,7 +80,7 @@ const l = (href: string) => localizeHref(href, lang);
       name: "Boat Types",
       description,
       url: "https://boathaven.com/boat-types",
-      publisher: { "@type": "Organization", name: "BoatHaven" },
+      publisher: { "@type": "Organization", name: "TapYourBoat" },
     })} />
   </Fragment>
 

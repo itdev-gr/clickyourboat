@@ -4,7 +4,7 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "Charter Types — Choose Your Perfect Charter | BoatHaven";
+const title = "Charter Types — Choose Your Perfect Charter | TapYourBoat";
 const description =
   "Explore our charter types: Without Licence boats and Luxury Charters. Find the ideal charter experience for your next trip on the water.";
 
@@ -64,7 +64,7 @@ const l = (href: string) => localizeHref(href, lang);
       name: "Charter Types",
       description,
       url: "https://boathaven.com/charter-types",
-      publisher: { "@type": "Organization", name: "BoatHaven" },
+      publisher: { "@type": "Organization", name: "TapYourBoat" },
     })} />
   </Fragment>
 
@@ -205,11 +205,6 @@ const l = (href: string) => localizeHref(href, lang);
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.experience_needed">Experience needed</td>
               <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.no_experience">No experience needed</td>
               <td class="text-center px-6 py-3.5 text-text-muted" data-i18n="charter.crew_handles">Crew handles everything</td>
-            </tr>
-            <tr>
-              <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.from_price">From price</td>
-              <td class="text-center px-6 py-3.5 font-bold text-text">€80<span data-i18n="charter.per_day">/day</span></td>
-              <td class="text-center px-6 py-3.5 font-bold text-text">€1500<span data-i18n="charter.per_day">/day</span></td>
             </tr>
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="charter.best_for">Best for</td>

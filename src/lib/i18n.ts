@@ -68,7 +68,7 @@ export const translations: Record<string, Record<Lang, string>> = {
 
   // ─── Owner CTA ───
   "owner.title": { en: "Own a boat? Start earning today.", el: "Έχεις σκάφος; Ξεκίνα να κερδίζεις σήμερα." },
-  "owner.subtitle": { en: "Join thousands of boat owners who earn extra income by listing their boat on BoatHaven. It's free to list and we handle the payments.", el: "Γίνε μέλος χιλιάδων ιδιοκτητών σκαφών που κερδίζουν επιπλέον εισόδημα. Η καταχώρηση είναι δωρεάν και εμείς διαχειριζόμαστε τις πληρωμές." },
+  "owner.subtitle": { en: "Join thousands of boat owners who earn extra income by listing their boat on TapYourBoat. It's free to list and we handle the payments.", el: "Γίνε μέλος χιλιάδων ιδιοκτητών σκαφών που κερδίζουν επιπλέον εισόδημα. Η καταχώρηση είναι δωρεάν και εμείς διαχειριζόμαστε τις πληρωμές." },
   "owner.free_list": { en: "Free to list your boat", el: "Δωρεάν καταχώρηση σκάφους" },
   "owner.secure_payments": { en: "Secure payments guaranteed", el: "Εγγυημένες ασφαλείς πληρωμές" },
   "owner.insurance": { en: "Insurance coverage included", el: "Ασφαλιστική κάλυψη περιλαμβάνεται" },
@@ -84,7 +84,7 @@ export const translations: Record<string, Record<Lang, string>> = {
   "owner.estimate_btn": { en: "Estimate Earnings", el: "Υπολόγισε Κέρδη" },
 
   // ─── Trust Section ───
-  "trust.title": { en: "Why choose BoatHaven", el: "Γιατί να επιλέξεις το BoatHaven" },
+  "trust.title": { en: "Why choose TapYourBoat", el: "Γιατί να επιλέξεις το TapYourBoat" },
   "trust.subtitle": { en: "We take care of everything so you can focus on enjoying the sea", el: "Εμείς φροντίζουμε τα πάντα για να απολαύσεις τη θάλασσα" },
   "trust.secure_title": { en: "Secure Payments", el: "Ασφαλείς Πληρωμές" },
   "trust.secure_desc": { en: "All transactions are encrypted and protected. Pay safely online.", el: "Όλες οι συναλλαγές είναι κρυπτογραφημένες και προστατευμένες. Πλήρωσε με ασφάλεια online." },
@@ -134,7 +134,7 @@ export const translations: Record<string, Record<Lang, string>> = {
   "footer.tagline": { en: "Find your perfect boat experience. Thousands of boats worldwide, ready for your next adventure.", el: "Βρες την τέλεια εμπειρία σκάφους. Χιλιάδες σκάφη παγκοσμίως, έτοιμα για την επόμενη περιπέτειά σου." },
   "footer.stay_updated": { en: "Stay updated", el: "Μείνε ενημερωμένος" },
   "footer.subscribe": { en: "Subscribe", el: "Εγγραφή" },
-  "footer.rights": { en: "BoatHaven. All rights reserved.", el: "BoatHaven. Όλα τα δικαιώματα κατοχυρωμένα." },
+  "footer.rights": { en: "TapYourBoat. All rights reserved.", el: "TapYourBoat. Όλα τα δικαιώματα κατοχυρωμένα." },
   "footer.email_placeholder": { en: "your@email.com", el: "to-email@sou.gr" },
   "footer.email_error": { en: "Please enter a valid email address.", el: "Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email." },
   "footer.email_success": { en: "Thanks for subscribing!", el: "Ευχαριστούμε για την εγγραφή!" },
@@ -258,7 +258,7 @@ export const translations: Record<string, Record<Lang, string>> = {
   "auth.or": { en: "or", el: "ή" },
   "auth.continue_google": { en: "Continue with Google", el: "Συνέχεια με Google" },
   "auth.continue_facebook": { en: "Continue with Facebook", el: "Συνέχεια με Facebook" },
-  "auth.join_us": { en: "Join BoatHaven", el: "Γίνε μέλος στο BoatHaven" },
+  "auth.join_us": { en: "Join TapYourBoat", el: "Γίνε μέλος στο TapYourBoat" },
   "auth.first_name": { en: "First name", el: "Όνομα" },
   "auth.last_name": { en: "Last name", el: "Επώνυμο" },
   "auth.confirm_password": { en: "Confirm password", el: "Επιβεβαίωση κωδικού" },
@@ -295,11 +295,11 @@ export const translations: Record<string, Record<Lang, string>> = {
   "auth.placeholder_min_chars": { en: "Min. 8 characters", el: "Ελάχιστο 8 χαρακτήρες" },
   "auth.placeholder_reenter": { en: "Re-enter your password", el: "Εισάγετε ξανά τον κωδικό" },
   "auth.sidebar_title": { en: "Your next adventure starts here", el: "Η επόμενη περιπέτειά σας ξεκινάει εδώ" },
-  "auth.sidebar_desc": { en: "Join BoatHaven and get access to over 50,000 boats in 600+ destinations worldwide.", el: "Γίνετε μέλος και αποκτήστε πρόσβαση σε πάνω από 50.000 σκάφη σε 600+ προορισμούς παγκοσμίως." },
+  "auth.sidebar_desc": { en: "Join TapYourBoat and get access to over 50,000 boats in 600+ destinations worldwide.", el: "Γίνετε μέλος και αποκτήστε πρόσβαση σε πάνω από 50.000 σκάφη σε 600+ προορισμούς παγκοσμίως." },
   "auth.sidebar_boats": { en: "Boats", el: "Σκάφη" },
   "auth.sidebar_destinations": { en: "Destinations", el: "Προορισμοί" },
   "auth.sidebar_reviews": { en: "Reviews", el: "Κριτικές" },
-  "auth.sidebar_testimonial": { en: "BoatHaven made our family holiday unforgettable. The booking was seamless and the boat was perfect.", el: "Το BoatHaven έκανε τις οικογενειακές μας διακοπές αξέχαστες. Η κράτηση ήταν εύκολη και το σκάφος τέλειο." },
+  "auth.sidebar_testimonial": { en: "TapYourBoat made our family holiday unforgettable. The booking was seamless and the boat was perfect.", el: "Το TapYourBoat έκανε τις οικογενειακές μας διακοπές αξέχαστες. Η κράτηση ήταν εύκολη και το σκάφος τέλειο." },
   "auth.sidebar_testimonial_location": { en: "Sailed in Santorini", el: "Ιστιοπλοΐα στη Σαντορίνη" },
   "auth.reset_title": { en: "Reset your password", el: "Επαναφορά κωδικού" },
   "auth.reset_desc": { en: "Enter your email address and we'll send you a link to reset your password.", el: "Εισάγετε το email σας και θα σας στείλουμε σύνδεσμο επαναφοράς κωδικού." },
@@ -342,7 +342,7 @@ export const translations: Record<string, Record<Lang, string>> = {
   "how.step2_renter_title": { en: "Book & Message", el: "Κράτηση & Μήνυμα" },
   "how.step2_renter_desc": { en: "Reserve your boat instantly or send a booking request. Message the owner directly with any questions.", el: "Κράτησε το σκάφος σου αμέσως ή στείλε αίτημα. Στείλε μήνυμα στον ιδιοκτήτη για ερωτήσεις." },
   "how.step3_renter_title": { en: "Pay & Enjoy", el: "Πλήρωσε & Απόλαυσε" },
-  "how.step3_renter_desc": { en: "Pay securely through BoatHaven. Meet at the marina, get your safety briefing, and set sail!", el: "Πλήρωσε με ασφάλεια μέσω BoatHaven. Συναντήσου στη μαρίνα και αποπλεύσε!" },
+  "how.step3_renter_desc": { en: "Pay securely through TapYourBoat. Meet at the marina, get your safety briefing, and set sail!", el: "Πλήρωσε με ασφάλεια μέσω TapYourBoat. Συναντήσου στη μαρίνα και αποπλεύσε!" },
   "how.step1_owner_title": { en: "Create Your Listing", el: "Δημιούργησε Καταχώρηση" },
   "how.step1_owner_desc": { en: "Add your boat with photos, pricing, availability, and details. It's free and takes just a few minutes.", el: "Πρόσθεσε το σκάφος σου με φωτογραφίες, τιμές και διαθεσιμότητα. Είναι δωρεάν και παίρνει λίγα λεπτά." },
   "how.step2_owner_title": { en: "Manage Rentals", el: "Διαχείριση Ενοικιάσεων" },
@@ -508,7 +508,7 @@ export const translations: Record<string, Record<Lang, string>> = {
   "how.subtitle": { en: "Whether you're renting a boat or listing yours, we make it simple", el: "Είτε ενοικιάζεις σκάφος είτε καταχωρείς το δικό σου, το κάνουμε απλό" },
 
   // ─── Trust Banner ───
-  "trust_banner.title": { en: "Navigate safely with BoatHaven", el: "Πλοηγήσου με ασφάλεια με το BoatHaven" },
+  "trust_banner.title": { en: "Navigate safely with TapYourBoat", el: "Πλοηγήσου με ασφάλεια με το TapYourBoat" },
   "trust_banner.subtitle": { en: "Your safety is our priority. Every trip is backed by comprehensive protection.", el: "Η ασφάλειά σου είναι η προτεραιότητά μας. Κάθε ταξίδι καλύπτεται πλήρως." },
   "trust_banner.secure_desc_full": { en: "All transactions are encrypted and fully protected", el: "Όλες οι συναλλαγές είναι κρυπτογραφημένες και πλήρως προστατευμένες" },
   "trust_banner.verified_desc_full": { en: "Every listing is checked for quality and safety", el: "Κάθε καταχώρηση ελέγχεται για ποιότητα και ασφάλεια" },
@@ -693,7 +693,7 @@ export const translations: Record<string, Record<Lang, string>> = {
 
   // Auth gate
   "lyb.auth_gate.title": { en: "Log in to list your boat", el: "Συνδεθείτε για να καταχωρήσετε το σκάφος σας" },
-  "lyb.auth_gate.desc": { en: "You need to be logged in to list your boat on BoatHaven. Sign in or create an account to get started.", el: "Πρέπει να είστε συνδεδεμένοι για να καταχωρήσετε το σκάφος σας στο BoatHaven. Συνδεθείτε ή δημιουργήστε λογαριασμό." },
+  "lyb.auth_gate.desc": { en: "You need to be logged in to list your boat on TapYourBoat. Sign in or create an account to get started.", el: "Πρέπει να είστε συνδεδεμένοι για να καταχωρήσετε το σκάφος σας στο TapYourBoat. Συνδεθείτε ή δημιουργήστε λογαριασμό." },
   "lyb.auth_gate.login": { en: "Log in", el: "Σύνδεση" },
   "lyb.auth_gate.create": { en: "Create account", el: "Δημιουργία λογαριασμού" },
   "lyb.auth_gate.loading": { en: "Loading...", el: "Φόρτωση..." },

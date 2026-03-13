@@ -4,8 +4,8 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "Log In or Sign Up — BoatHaven";
-const description = "Log in or create your BoatHaven account to rent boats, save favourites, and start your next adventure.";
+const title = "Log In or Sign Up — TapYourBoat";
+const description = "Log in or create your TapYourBoat account to rent boats, save favourites, and start your next adventure.";
 const l = (href: string) => localizeHref(href, lang);
 ---
 <Layout lang={lang} title={title} description={description}>
@@ -22,7 +22,7 @@ const l = (href: string) => localizeHref(href, lang);
         <div class="max-w-sm mb-10">
           <h2 class="text-2xl font-bold text-white mb-3" data-i18n="auth.sidebar_title">Your next adventure starts here</h2>
           <p class="text-white/70 text-sm leading-relaxed mb-6" data-i18n="auth.sidebar_desc">
-            Join BoatHaven and get access to over 50,000 boats in 600+ destinations worldwide.
+            Join TapYourBoat and get access to over 50,000 boats in 600+ destinations worldwide.
           </p>
           <div class="flex items-center gap-6">
             <div>
@@ -43,7 +43,7 @@ const l = (href: string) => localizeHref(href, lang);
         </div>
         <blockquote class="max-w-md border-t border-white/15 pt-6">
           <p class="text-base text-white/90 font-medium leading-relaxed mb-3" data-i18n="auth.sidebar_testimonial">
-            "BoatHaven made our family holiday unforgettable. The booking was seamless and the boat was perfect."
+            "TapYourBoat made our family holiday unforgettable. The booking was seamless and the boat was perfect."
           </p>
           <footer class="flex items-center gap-3">
             <div class="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">MS</div>

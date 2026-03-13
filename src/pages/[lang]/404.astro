@@ -4,7 +4,7 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "Page Not Found — BoatHaven";
+const title = "Page Not Found — TapYourBoat";
 const description = "The page you're looking for doesn't exist.";
 const l = (href: string) => localizeHref(href, lang);
 ---

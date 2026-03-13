@@ -4,8 +4,8 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "Boat Details — BoatHaven";
-const description = "View boat details on BoatHaven";
+const title = "Boat Details — TapYourBoat";
+const description = "View boat details on TapYourBoat";
 const l = (href: string) => localizeHref(href, lang);
 ---
 <Layout lang={lang} title={title} description={description}>
@@ -159,7 +159,7 @@ const l = (href: string) => localizeHref(href, lang);
       const checkOutTime = boat.checkOutTime || "";
       const extras: any[] = boat.extras || [];
 
-      document.title = `${boatTitle} — BoatHaven`;
+      document.title = `${boatTitle} — TapYourBoat`;
 
       // ========== HEADER (breadcrumb + title) ==========
       const headerEl = document.getElementById("boat-header");

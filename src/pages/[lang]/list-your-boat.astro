@@ -4,8 +4,8 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "List Your Boat — BoatHaven";
-const description = "List your boat on BoatHaven and start earning. Reach thousands of renters in 600+ destinations worldwide.";
+const title = "List Your Boat — TapYourBoat";
+const description = "List your boat on TapYourBoat and start earning. Reach thousands of renters in 600+ destinations worldwide.";
 const l = (href: string) => localizeHref(href, lang);
 ---
 <Layout lang={lang} title={title} description={description}>
@@ -28,7 +28,7 @@ const l = (href: string) => localizeHref(href, lang);
         </div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3" data-i18n="lyb.auth_gate.title">Log in to list your boat</h1>
         <p class="text-text-muted mb-8 max-w-sm mx-auto" data-i18n="lyb.auth_gate.desc">
-          You need to be logged in to list your boat on BoatHaven. Sign in or create an account to get started.
+          You need to be logged in to list your boat on TapYourBoat. Sign in or create an account to get started.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a

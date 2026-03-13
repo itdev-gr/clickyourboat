@@ -38,7 +38,7 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      name: "BoatHaven",
+      name: "TapYourBoat",
       url: "https://boathaven.com",
       logo: "https://boathaven.com/logo.svg",
       description:
@@ -51,7 +51,7 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      name: "BoatHaven",
+      name: "TapYourBoat",
       url: "https://boathaven.com",
       potentialAction: {
         "@type": "SearchAction",
@@ -76,7 +76,7 @@ const jsonLd = {
       image: a.image,
       description: a.summary,
       datePublished: a.createdAt?.toISOString?.() ?? "",
-      publisher: { "@type": "Organization", name: "BoatHaven" },
+      publisher: { "@type": "Organization", name: "TapYourBoat" },
     })),
   ],
 };

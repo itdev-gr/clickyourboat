@@ -4,8 +4,8 @@ export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 
-const title = "Profile — BoatHaven";
-const description = "Manage your BoatHaven profile, personal information, boating experience, payment methods, and account settings.";
+const title = "Profile — TapYourBoat";
+const description = "Manage your TapYourBoat profile, personal information, boating experience, payment methods, and account settings.";
 const l = (href: string) => localizeHref(href, lang);
 ---
 <Layout lang={lang} title={title} description={description}>

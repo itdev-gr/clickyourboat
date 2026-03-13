@@ -118,7 +118,7 @@ export const mockReviews: Review[] = [
     userId: "u5",
     userName: "Elena Popov",
     rating: 5,
-    comment: "Third time booking through BoatHaven. Consistently great service and beautiful boats. My go-to platform.",
+    comment: "Third time booking through TapYourBoat. Consistently great service and beautiful boats. My go-to platform.",
     boatName: "Adriatic Star",
     location: "Dubrovnik, Croatia",
     createdAt: new Date("2025-11-05"),
@@ -184,7 +184,7 @@ export const mockArticles: Article[] = [
 <p>The Bay of Kotor is one of Europe's most dramatic fjord-like inlets. Montenegro is still relatively undiscovered, offering great value and uncrowded waters.</p>
 
 <h2>Planning Your Trip</h2>
-<p>The best sailing season across the Mediterranean runs from May to October, with July and August being the busiest months. Consider shoulder seasons for fewer crowds and better prices. BoatHaven has hundreds of boats available across all these destinations — start planning your 2026 adventure today.</p>`,
+<p>The best sailing season across the Mediterranean runs from May to October, with July and August being the busiest months. Consider shoulder seasons for fewer crowds and better prices. TapYourBoat has hundreds of boats available across all these destinations — start planning your 2026 adventure today.</p>`,
       el: `<h2>Τα Καλύτερα Νερά Ιστιοπλοΐας της Μεσογείου</h2>
 <p>Η Μεσόγειος παραμένει ο κορυφαίος προορισμός ιστιοπλοΐας στον κόσμο, προσφέροντας τον τέλειο συνδυασμό ζεστών νερών, αξιόπιστων ανέμων και αιώνων παράκτιων πόλεων. Εδώ είναι οι 10 κορυφαίοι προορισμοί για το 2026.</p>
 
@@ -276,7 +276,7 @@ export const mockArticles: Article[] = [
 <li><strong>Check cancellation policy:</strong> Look for flexible cancellation in case your plans change.</li>
 </ul>
 
-<p>Ready to set sail? Browse boats on BoatHaven and find the perfect vessel for your first maritime adventure.</p>`,
+<p>Ready to set sail? Browse boats on TapYourBoat and find the perfect vessel for your first maritime adventure.</p>`,
       el: `<h2>Η Πρώτη σας Ενοικίαση Σκάφους: Πλήρης Οδηγός</h2>
 <p>Η ενοικίαση σκάφους για πρώτη φορά μπορεί να φαίνεται τρομακτική, αλλά με τη σωστή προετοιμασία είναι πιο εύκολη από όσο νομίζετε. Αυτός ο οδηγός καλύπτει τα πάντα, από την επιλογή σκάφους μέχρι τι να πακετάρετε.</p>
 
@@ -367,7 +367,7 @@ export const mockArticles: Article[] = [
 </tbody>
 </table>
 
-<p>Whichever you choose, both offer an incredible way to explore the water. Browse catamarans and sailboats on BoatHaven to find your perfect match.</p>`,
+<p>Whichever you choose, both offer an incredible way to explore the water. Browse catamarans and sailboats on TapYourBoat to find your perfect match.</p>`,
       el: `<h2>Καταμαράν vs Ιστιοπλοϊκό: Η Απόλυτη Σύγκριση</h2>
 <p>Η επιλογή μεταξύ καταμαράν και μονόγαστρου ιστιοπλοϊκού είναι ένα από τα πιο συνηθισμένα διλήμματα. Και τα δύο έχουν πιστούς οπαδούς, και η σωστή επιλογή εξαρτάται από τις προτεραιότητές σας.</p>
 

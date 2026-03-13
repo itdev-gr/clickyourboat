@@ -9,7 +9,7 @@ const { lang } = Astro.params;
 const resolvedLang: Lang = getLangFromParam(lang);
 const p = (b: { en: string; el: string }) => pick(b, resolvedLang);
 
-const title = "Athens Boat Tours — Boat Trips From Athens Greece | BoatHaven";
+const title = "Athens Boat Tours — Boat Trips From Athens Greece | TapYourBoat";
 const description =
   "Athens, a city of ancient ruins and modern elegance, offers an unmatched maritime experience best enjoyed from the sea. Explore our Athens boat tours and trips.";
 const l = (href: string) => localizeHref(href, lang);
@@ -23,7 +23,7 @@ const l = (href: string) => localizeHref(href, lang);
       name: "Athens Boat Tours",
       description,
       url: "https://boathaven.com/destinations",
-      publisher: { "@type": "Organization", name: "BoatHaven" },
+      publisher: { "@type": "Organization", name: "TapYourBoat" },
     })} />
   </Fragment>
 
