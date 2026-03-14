@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist",
+    "public": "dist/client",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -14,6 +14,14 @@
       {
         "source": "/boat/**",
         "destination": "/boat-detail/index.html"
+      },
+      {
+        "source": "/gr/boat/**",
+        "destination": "/gr/boat-detail/index.html"
+      },
+      {
+        "source": "/en/boat/**",
+        "destination": "/en/boat-detail/index.html"
       },
       {
         "source": "**",
