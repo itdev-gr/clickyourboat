@@ -30,7 +30,8 @@ service cloud.firestore {
         || (request.auth != null && request.auth.uid == resource.data.ownerId)
         || isAdmin();
       allow create: if request.auth != null
-        && request.resource.data.status == "draft";
+        && request.resource.data.status == "draft"
+        && request.resource.data.ownerId == request.auth.uid;
       allow update, delete: if request.auth != null
         && (request.auth.uid == resource.data.ownerId || isAdmin());
     }
@@ -41,10 +42,11 @@ service cloud.firestore {
       allow write: if request.auth != null && isAdmin();
     }
 
-    // Reviews: public read, authenticated write
+    // Reviews: public read, authenticated create (must match own userId), author can edit/delete
     match /reviews/{reviewId} {
       allow read: if true;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
       allow update, delete: if request.auth != null
         && request.auth.uid == resource.data.userId;
     }
@@ -61,12 +63,13 @@ service cloud.firestore {
       allow read: if request.auth != null && isAdmin();
     }
 
-    // Orders: participants + admin
+    // Orders: participants + admin; creator must be the renter
     match /orders/{orderId} {
       allow read: if request.auth != null
         && (request.auth.uid == resource.data.renterId
             || request.auth.uid == resource.data.ownerId || isAdmin());
-      allow create: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.renterId == request.auth.uid;
       allow update: if request.auth != null
         && (request.auth.uid == resource.data.renterId
             || request.auth.uid == resource.data.ownerId
