@@ -5,6 +5,7 @@ import {
   where,
   orderBy,
   limit,
+  startAfter,
   getDocs,
   getDoc,
   addDoc,
@@ -14,14 +15,20 @@ import {
   deleteDoc,
   serverTimestamp,
   type WhereFilterOp,
+  type DocumentSnapshot,
+  type QueryConstraint,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import type { Boat, BoatListing, Destination, Review, Article, SearchParams, UserProfile } from "../types";
+import type { Boat, BoatListing, Destination, Review, Article, SearchParams, UserProfile, Order } from "../types";
 
 // --- Boats ---
-export async function searchBoats(params: SearchParams, maxResults = 20): Promise<Boat[]> {
+export async function searchBoats(
+  params: SearchParams,
+  maxResults = 20,
+  lastDoc?: DocumentSnapshot | null
+): Promise<{ boats: Boat[]; lastDoc: DocumentSnapshot | null }> {
   const boatsRef = collection(db, "boats");
-  const constraints: Parameters<typeof query>[1][] = [];
+  const constraints: QueryConstraint[] = [];
 
   // Only return published boats
   constraints.push(where("status", "==", "published"));
@@ -37,16 +44,24 @@ export async function searchBoats(params: SearchParams, maxResults = 20): Promis
   }
 
   constraints.push(orderBy("createdAt", "desc"));
+  if (lastDoc) {
+    constraints.push(startAfter(lastDoc));
+  }
   constraints.push(limit(maxResults));
 
   const q = query(boatsRef, ...constraints);
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((doc) => ({
+  const boats = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
     createdAt: doc.data().createdAt?.toDate(),
   })) as Boat[];
+
+  return {
+    boats,
+    lastDoc: snapshot.docs[snapshot.docs.length - 1] || null,
+  };
 }
 
 export async function getFeaturedBoats(count = 6): Promise<Boat[]> {
@@ -169,7 +184,7 @@ export async function isBoatFavorited(userId: string, boatId: string): Promise<b
   return snap.exists();
 }
 
-export async function getUserFavorites(userId: string): Promise<any[]> {
+export async function getUserFavorites(userId: string): Promise<Record<string, any>[]> {
   const q = query(
     collection(db, "users", userId, "favorites"),
     orderBy("addedAt", "desc")
@@ -274,11 +289,11 @@ export async function uploadBoatDocument(
   return getDownloadURL(storageRef);
 }
 
-export async function getBoatListing(boatId: string): Promise<any | null> {
+export async function getBoatListing(boatId: string): Promise<(BoatListing & { id: string }) | null> {
   const docRef = doc(db, "boats", boatId);
   const snap = await getDoc(docRef);
   if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() };
+  return { id: snap.id, ...snap.data() } as BoatListing & { id: string };
 }
 
 // --- Admin functions ---
@@ -365,7 +380,7 @@ export async function createOrder(orderData: {
   return docRef.id;
 }
 
-export async function getUserOrders(userId: string): Promise<any[]> {
+export async function getUserOrders(userId: string): Promise<Order[]> {
   const q = query(
     collection(db, "orders"),
     where("renterId", "==", userId),
@@ -379,7 +394,7 @@ export async function getUserOrders(userId: string): Promise<any[]> {
   }));
 }
 
-export async function getOwnerOrders(ownerId: string): Promise<any[]> {
+export async function getOwnerOrders(ownerId: string): Promise<Order[]> {
   const q = query(
     collection(db, "orders"),
     where("ownerId", "==", ownerId),
@@ -393,7 +408,7 @@ export async function getOwnerOrders(ownerId: string): Promise<any[]> {
   }));
 }
 
-export async function getAllOrders(): Promise<any[]> {
+export async function getAllOrders(): Promise<Order[]> {
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((d) => ({
@@ -440,7 +455,7 @@ export async function saveChargeSettings(settings: ChargeSettings): Promise<void
 
 // --- Reviews (boat-specific) ---
 
-export async function getBoatReviews(boatId: string): Promise<any[]> {
+export async function getBoatReviews(boatId: string): Promise<Review[]> {
   const q = query(
     collection(db, "reviews"),
     where("boatId", "==", boatId),

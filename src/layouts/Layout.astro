@@ -28,9 +28,9 @@ const pathname = Astro.url.pathname;
 // Strip the current lang prefix to get the base path
 const basePath = pathname.replace(new RegExp(`^/${lang}`), "") || "/";
 const altHref = `/${altLang}${basePath}`;
-const canonicalUrl = new URL(pathname, Astro.site ?? "https://boathaven.com");
-const enHref = new URL(`/en${basePath}`, Astro.site ?? "https://boathaven.com");
-const elHref = new URL(`/gr${basePath}`, Astro.site ?? "https://boathaven.com");
+const canonicalUrl = new URL(pathname, Astro.site ?? "https://tapyourboat.com");
+const enHref = new URL(`/en${basePath}`, Astro.site ?? "https://tapyourboat.com");
+const elHref = new URL(`/gr${basePath}`, Astro.site ?? "https://tapyourboat.com");
 ---
 
 <!doctype html>

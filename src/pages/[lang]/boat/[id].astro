@@ -7,7 +7,7 @@ export async function getStaticPaths() {
   const langs = ["en", "gr"];
   try {
     const { searchBoats } = await import("../../../lib/api");
-    const firestoreBoats = await searchBoats({}, 100);
+    const { boats: firestoreBoats } = await searchBoats({}, 500);
     firestoreBoats.forEach((b: any) => {
       langs.forEach((lang) => {
         paths.push({ params: { id: b.id, lang } });
@@ -20,6 +20,7 @@ export async function getStaticPaths() {
 }
 
 const { id, lang } = Astro.params;
+const l = (href: string) => localizeHref(href, lang);
 
 let boat: any = null;
 try {
@@ -38,7 +39,6 @@ const description = boat.description || boat.title || "View boat details on TapY
 const images = boat.images || [];
 const price = boat.price || boat.pricePerDay || 0;
 const priceUnit = boat.priceUnit || "/ day";
-const l = (href: string) => localizeHref(href, lang);
 ---
 
 <Layout lang={lang} title={title} description={description}>
@@ -432,6 +432,9 @@ const l = (href: string) => localizeHref(href, lang);
 </Layout>
 
 <script is:inline>
+  function getLangPrefix() {
+    return document.documentElement.dataset.langPrefix || "en";
+  }
   document.addEventListener("DOMContentLoaded", function () {
     // Gallery: click thumbnail to swap main image
     var mainImage = document.getElementById("main-image");
@@ -752,9 +755,9 @@ const l = (href: string) => localizeHref(href, lang);
   const favBtn = document.getElementById("detail-fav-btn");
   const favIcon = document.getElementById("detail-fav-icon");
   const favText = document.getElementById("detail-fav-text");
-  if (!favBtn) throw new Error("No fav btn");
+  if (!favBtn) { console.warn("Favorite button not found"); }
 
-  const boatId = favBtn.getAttribute("data-boat-id");
+  const boatId = favBtn?.getAttribute("data-boat-id");
   let currentUser: any = null;
   let isFavorited = false;
 

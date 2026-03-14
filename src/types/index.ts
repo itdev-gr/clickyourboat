@@ -49,6 +49,9 @@ export interface Extra {
   mandatory: boolean;
 }
 
+/** Firestore Timestamp or already-converted Date */
+export type FirestoreTimestamp = Date | { toDate(): Date };
+
 export interface BoatListing {
   // Existing fields
   boatType: BoatListingType;
@@ -64,9 +67,9 @@ export interface BoatListing {
   website: string;
   images: string[];
   ownerId: string;
-  createdAt: any;
+  createdAt: FirestoreTimestamp;
   status: "draft" | "pending" | "published";
-  updatedAt: any;
+  updatedAt: FirestoreTimestamp;
 
   // General
   boatName?: string;
@@ -213,8 +216,8 @@ export interface UserProfile {
   lastName: string | null;
   photoURL: string | null;
   type: "user" | "owner" | "admin";
-  createdAt: any;
-  lastLoginAt: any;
+  createdAt: FirestoreTimestamp;
+  lastLoginAt: FirestoreTimestamp;
 }
 
 export interface Order {
@@ -228,7 +231,7 @@ export interface Order {
   endDate: string;
   totalPrice: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
-  createdAt: any;
+  createdAt: FirestoreTimestamp;
 }
 
 export type BoatType = Boat["type"] | "luxury" | "party";

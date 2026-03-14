@@ -204,13 +204,13 @@ const l = (href: string) => localizeHref(href, lang);
         </div>
 
   <!-- ===== Stripe Payment Modal ===== -->
-  <div id="payment-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center">
+  <div id="payment-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
     <div id="payment-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
       <!-- Modal Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
         <div>
-          <h3 class="text-lg font-bold text-text">Secure Payment</h3>
+          <h3 id="payment-modal-title" class="text-lg font-bold text-text">Secure Payment</h3>
           <p class="text-sm text-text-muted">Complete your booking</p>
         </div>
         <button id="payment-modal-close" type="button" class="h-8 w-8 rounded-full flex items-center justify-center text-gray-400 hover:text-text hover:bg-gray-100 transition-colors">
