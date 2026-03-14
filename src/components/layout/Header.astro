@@ -13,7 +13,6 @@ const navLinks = [
   { label: "Boat Rental", href: "/boat-rental", i18n: "nav.boat_rental" },
   { label: "Charter Types", href: "/charter-types", i18n: "nav.charter_types" },
   { label: "Destinations", href: "/destinations", i18n: "nav.destinations" },
-  { label: "List Your Boat", href: "/list-your-boat", i18n: "nav.list_your_boat" },
   { label: "Blog", href: "/blog", i18n: "nav.blog" },
 ];
 
@@ -40,8 +39,8 @@ const toggleLabel = lang === "en" ? "GR" : "EN";
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
-      <a href={l("/")} class="flex items-center -ml-2 lg:-ml-32">
-        <img src="/tap-your-boat.svg" alt="Tap Your Boat" class="h-10" />
+      <a href={l("/")} class="flex items-center">
+        <img src="/tap-your-boat.svg" alt="Tap Your Boat" class="h-12" />
       </a>
 
       <!-- Desktop Navigation -->
@@ -97,7 +96,7 @@ const toggleLabel = lang === "en" ? "GR" : "EN";
       </nav>
 
       <!-- Right Actions -->
-      <div class="hidden lg:flex items-center gap-4 -mr-32">
+      <div class="hidden lg:flex items-center gap-4">
         <!-- Language Toggle (navigation link) -->
         <a
           href={altUrl}
