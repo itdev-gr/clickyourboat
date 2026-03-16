@@ -121,7 +121,7 @@ const l = (href: string) => localizeHref(href, lang);
         </div>
 
         <!-- Chat Panel -->
-        <div id="chat-panel" class="hidden md:flex flex-1 flex-col min-h-0">
+        <div id="chat-panel" class="hidden md:flex flex-1 flex-col min-h-0 min-w-0">
           <!-- No conversation selected -->
           <div id="chat-empty" class="flex-1 flex items-center justify-center">
             <div class="text-center px-6">
@@ -134,7 +134,7 @@ const l = (href: string) => localizeHref(href, lang);
           <!-- Active chat -->
           <div id="chat-active" class="hidden flex-1 flex flex-col min-h-0">
             <!-- Chat header -->
-            <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0">
+            <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0 overflow-hidden">
               <button id="chat-back-btn" class="md:hidden p-1 -ml-1 rounded-lg hover:bg-gray-100 transition-colors">
                 <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
               </button>
