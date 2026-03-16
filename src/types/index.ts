@@ -78,6 +78,8 @@ export interface BoatListing {
   languages?: string[];
   listingTitle?: string;
   description?: string;
+  listingTitle_el?: string;
+  description_el?: string;
 
   // Photos
   boatPlanImages?: string[];

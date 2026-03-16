@@ -34,8 +34,14 @@ if (!boat) {
   return Astro.redirect(l("/404"));
 }
 
-const title = `${boat.title || boat.listingTitle || "Boat"} — TapYourBoat`;
-const description = boat.description || boat.title || "View boat details on TapYourBoat";
+const displayTitle = lang === "gr"
+  ? (boat.listingTitle_el || boat.title || boat.listingTitle || "Boat")
+  : (boat.title || boat.listingTitle || "Boat");
+const displayDescription = lang === "gr"
+  ? (boat.description_el || boat.description || "")
+  : (boat.description || "");
+const title = `${displayTitle} — TapYourBoat`;
+const description = displayDescription || boat.title || "View boat details on TapYourBoat";
 const images = boat.images || [];
 const price = boat.price || boat.pricePerDay || 0;
 const priceUnit = boat.priceUnit || "/ day";
@@ -50,7 +56,7 @@ const priceUnit = boat.priceUnit || "/ day";
         <li>/</li>
         <li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">Boat Rental</a></li>
         <li>/</li>
-        <li class="text-text font-medium truncate max-w-[250px]">{boat.title || boat.listingTitle}</li>
+        <li class="text-text font-medium truncate max-w-[250px]">{displayTitle}</li>
       </ol>
     </nav>
 
@@ -63,7 +69,7 @@ const priceUnit = boat.priceUnit || "/ day";
             <img
               id="main-image"
               src={images[0]}
-              alt={boat.title || boat.listingTitle}
+              alt={displayTitle}
               class="h-full w-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
               loading="eager"
             />
@@ -74,7 +80,7 @@ const priceUnit = boat.priceUnit || "/ day";
               <div class="overflow-hidden bg-gray-100 relative">
                 <img
                   src={img}
-                  alt={`${boat.title || boat.listingTitle} - Photo ${i + 2}`}
+                  alt={`${displayTitle} - Photo ${i + 2}`}
                   class="h-full w-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300 gallery-thumb"
                   loading="lazy"
                   data-src={img}
@@ -116,7 +122,7 @@ const priceUnit = boat.priceUnit || "/ day";
         <div>
           <div class="flex items-start justify-between gap-4">
             <div>
-              <h1 class="text-2xl sm:text-3xl font-extrabold text-text">{boat.title || boat.listingTitle}</h1>
+              <h1 class="text-2xl sm:text-3xl font-extrabold text-text">{displayTitle}</h1>
               <p class="text-text-muted mt-1 flex items-center gap-1.5">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                 {boat.location || `${boat.city || ""} ${boat.harbour || ""}`.trim()}
@@ -178,7 +184,7 @@ const priceUnit = boat.priceUnit || "/ day";
         <div>
           <h2 class="text-lg font-bold text-text mb-3">About this boat</h2>
           <p class="text-text-muted leading-relaxed">
-            {boat.description || `Experience the ${boat.type || boat.boatType || "boat"} in ${boat.location || boat.city || "a beautiful location"}. Perfect for groups of up to ${boat.capacity || "several"} people.`}
+            {displayDescription || `Experience the ${boat.type || boat.boatType || "boat"} in ${boat.location || boat.city || "a beautiful location"}. Perfect for groups of up to ${boat.capacity || "several"} people.`}
           </p>
         </div>
 
@@ -393,7 +399,7 @@ const priceUnit = boat.priceUnit || "/ day";
               data-boat-id={boat.id}
               data-owner-id={boat.ownerId || ""}
               data-price={price}
-              data-boat-title={boat.title || boat.listingTitle || "Boat"}
+              data-boat-title={displayTitle}
               data-boat-image={images[0] || ""}
             >
               {boat.instantBooking ? "Book now" : "Continue Booking"}
@@ -420,7 +426,7 @@ const priceUnit = boat.priceUnit || "/ day";
               class="w-full rounded-xl border border-gray-200 px-6 py-3 text-sm font-semibold text-text hover:border-gray-400 transition-colors"
               data-owner-id={boat.ownerId || ""}
               data-boat-id={boat.id}
-              data-boat-title={boat.title || boat.listingTitle || "Boat"}
+              data-boat-title={displayTitle}
             >
               Contact owner
             </button>
