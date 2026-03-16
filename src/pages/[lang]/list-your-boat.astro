@@ -1537,7 +1537,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // --- "Back" button in wizard ---
   wizardBackBtn?.addEventListener("click", () => {
     if (userHasListings) showListings();
-    else showForm();
+    else history.back();
   });
 
   // Retry button
