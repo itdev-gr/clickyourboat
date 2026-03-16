@@ -587,11 +587,11 @@ const l = (href: string) => localizeHref(href, lang);
 
       // Price range — take first sidebar's values (desktop or mobile, whichever exists)
       var priceMin = 0;
-      var priceMax = 1200;
+      var priceMax = 5000;
       var minSlider = document.querySelector(".filter-price-min");
       var maxSlider = document.querySelector(".filter-price-max");
       if (minSlider) priceMin = parseInt(minSlider.value) || 0;
-      if (maxSlider) priceMax = parseInt(maxSlider.value) || 1200;
+      if (maxSlider) priceMax = parseInt(maxSlider.value) || 5000;
 
       // Steppers — take max value from any sidebar
       function getStepperVal(name) {
@@ -805,7 +805,7 @@ const l = (href: string) => localizeHref(href, lang);
       if (f.dateStart || f.dateEnd) count++;
       if (f.rentalType !== "all") count++;
       if (f.boatTypes.length > 0) count++;
-      if (f.priceMin > 0 || f.priceMax < 1200) count++;
+      if (f.priceMin > 0 || f.priceMax < 5000) count++;
       if (f.people > 1) count++;
       if (f.cabins > 0) count++;
       if (f.berths > 0) count++;

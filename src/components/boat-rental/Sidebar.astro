@@ -124,7 +124,7 @@ const equipmentOptions = [
           <input
             type="range"
             min="0"
-            max="1200"
+            max="5000"
             value="0"
             class="filter-price-min w-full accent-pink h-1"
           />
@@ -132,26 +132,26 @@ const equipmentOptions = [
         <div class="flex items-center gap-2 mt-3">
           <div class="flex items-center border border-gray-200 rounded-lg px-3 py-1.5 flex-1">
             <span class="text-xs text-text-muted mr-1" data-i18n="filter.min">Min</span>
-            <input type="number" class="filter-price-min-input w-full text-xs text-text bg-transparent outline-none" value="0" min="0" max="1200" />
+            <input type="number" class="filter-price-min-input w-full text-xs text-text bg-transparent outline-none" value="0" min="0" max="5000" />
           </div>
           <span class="text-text-muted text-xs">-</span>
           <div class="flex items-center border border-gray-200 rounded-lg px-3 py-1.5 flex-1">
             <span class="text-xs text-text-muted mr-1" data-i18n="filter.max">Max</span>
-            <input type="number" class="filter-price-max-input w-full text-xs text-text bg-transparent outline-none" value="1200" min="0" max="1200" />
+            <input type="number" class="filter-price-max-input w-full text-xs text-text bg-transparent outline-none" value="5000" min="0" max="5000" />
           </div>
         </div>
         <div class="flex items-center gap-3 mt-2">
           <input
             type="range"
             min="0"
-            max="1200"
-            value="1200"
+            max="5000"
+            value="5000"
             class="filter-price-max w-full accent-pink h-1"
           />
         </div>
         <div class="flex justify-between mt-1">
           <span class="filter-price-min-label text-xs text-text-muted">&euro; 0</span>
-          <span class="filter-price-max-label text-xs text-text-muted">&euro; 1200+</span>
+          <span class="filter-price-max-label text-xs text-text-muted">&euro; 5000+</span>
         </div>
       </div>
     </div>
@@ -400,7 +400,7 @@ const equipmentOptions = [
 
     function update() {
       if (minLabel) minLabel.textContent = "\u20AC " + minSlider.value;
-      if (maxLabel) maxLabel.textContent = "\u20AC " + maxSlider.value + (parseInt(maxSlider.value) >= 1200 ? "+" : "");
+      if (maxLabel) maxLabel.textContent = "\u20AC " + maxSlider.value + (parseInt(maxSlider.value) >= 5000 ? "+" : "");
       if (minInput) minInput.value = minSlider.value;
       if (maxInput) maxInput.value = maxSlider.value;
       document.dispatchEvent(new CustomEvent("filters-changed"));
@@ -487,11 +487,11 @@ const equipmentOptions = [
       });
       // Reset sliders
       document.querySelectorAll(".filter-price-min").forEach((s) => { (s as HTMLInputElement).value = "0"; });
-      document.querySelectorAll(".filter-price-max").forEach((s) => { (s as HTMLInputElement).value = "1200"; });
+      document.querySelectorAll(".filter-price-max").forEach((s) => { (s as HTMLInputElement).value = "5000"; });
       document.querySelectorAll(".filter-price-min-input").forEach((s) => { (s as HTMLInputElement).value = "0"; });
-      document.querySelectorAll(".filter-price-max-input").forEach((s) => { (s as HTMLInputElement).value = "1200"; });
+      document.querySelectorAll(".filter-price-max-input").forEach((s) => { (s as HTMLInputElement).value = "5000"; });
       document.querySelectorAll(".filter-price-min-label").forEach((l) => { l.textContent = "\u20AC 0"; });
-      document.querySelectorAll(".filter-price-max-label").forEach((l) => { l.textContent = "\u20AC 1200+"; });
+      document.querySelectorAll(".filter-price-max-label").forEach((l) => { l.textContent = "\u20AC 5000+"; });
       document.querySelectorAll(".filter-length").forEach((s) => { (s as HTMLInputElement).value = "15"; });
       document.querySelectorAll(".filter-length-label").forEach((l) => { l.textContent = "0 - 15+ m"; });
       document.querySelectorAll(".filter-engine").forEach((s) => { (s as HTMLInputElement).value = "400"; });
