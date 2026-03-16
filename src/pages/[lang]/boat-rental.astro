@@ -271,7 +271,7 @@ const l = (href: string) => localizeHref(href, lang);
     if (boat.perks.includes("free-cancel")) perksHtml += `<p class="text-xs text-green-600 flex items-center gap-1">${checkSvg} Free cancellation</p>`;
     if (boat.perks.includes("flexible-cancel")) perksHtml += `<p class="text-xs text-green-600 flex items-center gap-1">${checkSvg} Flexible cancellation</p>`;
 
-    return `<a href="/${getLangPrefix()}/boat/${escAttr(boat.id)}" class="boat-card block bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
+    return `<a href="/${getLangPrefix()}/boat-detail?id=${escAttr(boat.id)}" class="boat-card block bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
       data-boat-id="${escAttr(boat.id)}"
       data-boat-type="${escAttr(boat.type)}"
       data-price="${boat.price}"

@@ -12,7 +12,7 @@ const l = (href: string) => localizeHref(href, lang);
 const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
 ---
 
-<a href={l(`/boat/${boat.id}`)} class="boat-card block bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
+<a href={l(`/boat-detail?id=${boat.id}`)} class="boat-card block bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
   data-boat-id={boat.id}
   data-boat-type={boat.type}
   data-price={boat.price}

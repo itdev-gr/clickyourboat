@@ -105,7 +105,7 @@ const l = (href: string) => localizeHref(href, lang);
 
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     const boatIdx = pathParts.indexOf("boat");
-    const boatId = boatIdx >= 0 ? pathParts[boatIdx + 1] : null;
+    const boatId = (boatIdx >= 0 ? pathParts[boatIdx + 1] : null) || new URLSearchParams(window.location.search).get("id");
 
     if (!boatId) {
       loadingEl?.classList.add("hidden");

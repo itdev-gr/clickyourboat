@@ -378,7 +378,7 @@ const l = (href: string) => localizeHref(href, lang);
 
       // Back link
       const backLink = $("back-link") as HTMLAnchorElement;
-      if (backLink) backLink.href = `/${getLangPrefix()}/boat/${boatId}`;
+      if (backLink) backLink.href = `/${getLangPrefix()}/boat-detail?id=${boatId}`;
 
       // Show rental type if skipper available
       if (skipperAvailable) {

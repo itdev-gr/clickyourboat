@@ -450,7 +450,7 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <a href="/${lang}/boat/${booking.boatId}" class="text-sm font-semibold text-text hover:text-primary truncate">${boatTitle}</a>
+                <a href="/${lang}/boat-detail?id=${booking.boatId}" class="text-sm font-semibold text-text hover:text-primary truncate">${boatTitle}</a>
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${badgeCls}">${statusLabel}</span>
               </div>
               <p class="text-xs text-text-muted mt-0.5">${dateRange}</p>

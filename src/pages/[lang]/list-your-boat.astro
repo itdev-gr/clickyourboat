@@ -288,6 +288,7 @@ const l = (href: string) => localizeHref(href, lang);
                 </div>
               </div>
               <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4" id="photo-previews"></div>
+              <p id="photo-count" class="text-xs text-text-muted mt-2">0 / 5 photos</p>
             </div>
             <div class="mb-6">
               <p class="text-sm font-semibold text-text mb-1" data-i18n="lyb.photos.plan">Boat plan</p>
@@ -979,6 +980,32 @@ document.addEventListener("DOMContentLoaded", function () {
   var photoInput = document.getElementById("photo-input");
   var previewGrid = document.getElementById("photo-previews");
   var uploadTrigger = document.getElementById("upload-click-trigger");
+  var uploadZone = document.getElementById("upload-zone");
+  var photoCountEl = document.getElementById("photo-count");
+  var MAX_PHOTOS = 5;
+
+  function getExistingCount() {
+    return (window.__existingPreviewUrls || []).length;
+  }
+  function getNewCount() {
+    return (window.__selectedFiles || []).filter(function (f) { return f != null; }).length;
+  }
+  function getTotalCount() {
+    return getExistingCount() + getNewCount();
+  }
+  function updatePhotoCount() {
+    var total = getTotalCount();
+    if (photoCountEl) photoCountEl.textContent = total + " / " + MAX_PHOTOS + " photos";
+    if (uploadZone) {
+      if (total >= MAX_PHOTOS) {
+        uploadZone.classList.add("opacity-50", "pointer-events-none");
+      } else {
+        uploadZone.classList.remove("opacity-50", "pointer-events-none");
+      }
+    }
+  }
+  window.updatePhotoCount = updatePhotoCount;
+
   if (uploadTrigger && photoInput) {
     uploadTrigger.addEventListener("click", function () { photoInput.click(); });
   }
@@ -986,11 +1013,22 @@ document.addEventListener("DOMContentLoaded", function () {
     photoInput.addEventListener("change", function () {
       var files = photoInput.files;
       if (!files || files.length === 0) return;
-      window.__selectedFiles = [];
-      previewGrid.innerHTML = "";
-      for (var j = 0; j < files.length; j++) { window.__selectedFiles.push(files[j]); }
-      for (var i = 0; i < files.length; i++) {
-        (function (file, index) {
+      var currentTotal = getTotalCount();
+      var slotsLeft = MAX_PHOTOS - currentTotal;
+      if (slotsLeft <= 0) {
+        alert("Maximum " + MAX_PHOTOS + " photos allowed.");
+        photoInput.value = "";
+        return;
+      }
+      var filesToAdd = [];
+      for (var j = 0; j < files.length && j < slotsLeft; j++) { filesToAdd.push(files[j]); }
+      if (files.length > slotsLeft) {
+        alert("Only " + slotsLeft + " more photo(s) can be added. The rest were ignored.");
+      }
+      for (var i = 0; i < filesToAdd.length; i++) {
+        (function (file) {
+          var idx = window.__selectedFiles.length;
+          window.__selectedFiles.push(file);
           var reader = new FileReader();
           reader.onload = function (e) {
             var div = document.createElement("div");
@@ -999,11 +1037,13 @@ document.addEventListener("DOMContentLoaded", function () {
               '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-photo">' +
               '<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
             previewGrid.appendChild(div);
-            div.querySelector(".remove-photo").addEventListener("click", function () { window.__selectedFiles[index] = null; div.remove(); });
+            div.querySelector(".remove-photo").addEventListener("click", function () { window.__selectedFiles[idx] = null; div.remove(); updatePhotoCount(); });
           };
           reader.readAsDataURL(file);
-        })(files[i], i);
+        })(filesToAdd[i]);
       }
+      photoInput.value = "";
+      updatePhotoCount();
     });
   }
   // Plan photo upload
@@ -1599,6 +1639,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const lenDisc = document.getElementById("length-discounts-list"); if (lenDisc) lenDisc.innerHTML = "";
     const customDisc = document.getElementById("custom-discounts-list"); if (customDisc) customDisc.innerHTML = "";
     const photoPreview = document.getElementById("photo-previews"); if (photoPreview) photoPreview.innerHTML = "";
+    (window as any).__selectedFiles = []; (window as any).__existingPreviewUrls = []; if ((window as any).updatePhotoCount) (window as any).updatePhotoCount();
     const planPreview = document.getElementById("plan-preview"); if (planPreview) planPreview.innerHTML = "";
     // Reset discount toggles
     document.querySelectorAll(".discount-config").forEach(c => c.classList.add("hidden"));
@@ -1663,8 +1704,9 @@ document.addEventListener("DOMContentLoaded", function () {
           div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
           div.innerHTML = `<img src="${url}" alt="Photo" class="h-full w-full object-cover" /><button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-existing-photo"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
           photoPreview.appendChild(div);
-          div.querySelector(".remove-existing-photo")?.addEventListener("click", () => { existingImageUrls = existingImageUrls.filter((_, i) => i !== idx); div.remove(); });
+          div.querySelector(".remove-existing-photo")?.addEventListener("click", () => { existingImageUrls = existingImageUrls.filter((_: string, i: number) => i !== idx); (window as any).__existingPreviewUrls = [...existingImageUrls]; div.remove(); (window as any).updatePhotoCount(); });
         });
+        (window as any).updatePhotoCount();
       }
       // Section completion
       if (data.completedSections) {
