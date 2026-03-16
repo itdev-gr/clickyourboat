@@ -28,7 +28,7 @@ const boatTypes = [
 // Build the alternate URL for the language toggle
 const currentPath = Astro.url.pathname;
 const basePath = currentPath.replace(new RegExp(`^/${lang}`), "") || "/";
-const altUrl = `/${altLang}${basePath}`;
+const altUrl = `/${altLang}${basePath}${Astro.url.search}`;
 const toggleLabel = lang === "en" ? "GR" : "EN";
 ---
 
