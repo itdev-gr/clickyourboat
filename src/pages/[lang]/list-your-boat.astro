@@ -8,7 +8,7 @@ const title = "List Your Boat — TapYourBoat";
 const description = "List your boat on TapYourBoat and start earning. Reach thousands of renters in 600+ destinations worldwide.";
 const l = (href: string) => localizeHref(href, lang);
 ---
-<Layout lang={lang} title={title} description={description}>
+<Layout lang={lang} title={title} description={description} hideFooter>
   <!-- Loading state -->
   <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
@@ -121,7 +121,7 @@ const l = (href: string) => localizeHref(href, lang);
           <span id="mobile-nav-label">General</span>
           <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </button>
-        <div id="mobile-nav-drawer" class="hidden border-t border-gray-100 bg-white max-h-[60vh] overflow-y-auto" id="mobile-nav-list"></div>
+        <div id="mobile-nav-drawer" class="hidden border-t border-gray-100 bg-white max-h-[60vh] overflow-y-auto"></div>
       </div>
 
       <!-- Main content -->
@@ -279,12 +279,12 @@ const l = (href: string) => localizeHref(href, lang);
               <p class="text-sm font-semibold text-text mb-1"><span data-i18n="lyb.photos.main">Main photos</span> <span class="text-red-500">*</span></p>
               <p class="text-xs text-text-muted mb-4" data-i18n="lyb.photos.cover_hint">For the cover, choose a photo that shows the whole boat. Drag photos to reorder.</p>
               <div id="upload-zone" class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer">
-                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 pointer-events-none" />
                 <div class="pointer-events-none">
                   <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><rect x="10" y="10" width="28" height="28" rx="4" /><circle cx="20" cy="22" r="4" /><path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" /></svg>
                   <p class="text-sm font-semibold text-text mb-1" data-i18n="lyb.photos.post_here">Post your photos here</p>
                   <p class="text-xs text-text-muted" data-i18n="lyb.photos.min_size">Min 400x400px &middot; jpeg, png, gif</p>
-                  <p class="mt-3"><span class="text-sm text-primary hover:text-primary-dark underline font-medium cursor-pointer" id="upload-click-trigger" data-i18n="lyb.photos.download">Download from your device</span></p>
+                  <p class="mt-3"><span class="text-sm text-primary hover:text-primary-dark underline font-medium cursor-pointer" data-i18n="lyb.photos.download">Download from your device</span></p>
                 </div>
               </div>
               <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4" id="photo-previews"></div>
@@ -294,7 +294,7 @@ const l = (href: string) => localizeHref(href, lang);
               <p class="text-sm font-semibold text-text mb-1" data-i18n="lyb.photos.plan">Boat plan</p>
               <p class="text-xs text-text-muted mb-4" data-i18n="lyb.photos.plan_hint">Upload a plan/layout image of your boat (optional)</p>
               <div id="plan-upload-zone" class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer max-w-sm">
-                <input type="file" id="plan-photo-input" accept="image/jpeg,image/png,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <input type="file" id="plan-photo-input" accept="image/jpeg,image/png,image/gif" class="absolute inset-0 w-full h-full opacity-0 pointer-events-none" />
                 <div class="pointer-events-none">
                   <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-4l-2-2H7L5 7H5a2 2 0 00-2 2z"/></svg>
                   <p class="text-xs text-text-muted" data-i18n="lyb.photos.upload_plan">Upload boat plan</p>
@@ -374,7 +374,7 @@ const l = (href: string) => localizeHref(href, lang);
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
                 <label for="checkInTime" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.checkin">Check-in time</label>
-                <div class="relative"><select id="checkInTime" name="checkInTime" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10" id="checkInTime"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
+                <div class="relative"><select id="checkInTime" name="checkInTime" class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white pr-10"></select><svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></div>
               </div>
               <div>
                 <label for="checkOutTime" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.booking.checkout">Check-out time</label>
@@ -979,7 +979,6 @@ document.addEventListener("DOMContentLoaded", function () {
   window.__planFile = null;
   var photoInput = document.getElementById("photo-input");
   var previewGrid = document.getElementById("photo-previews");
-  var uploadTrigger = document.getElementById("upload-click-trigger");
   var uploadZone = document.getElementById("upload-zone");
   var photoCountEl = document.getElementById("photo-count");
   var MAX_PHOTOS = 5;
@@ -1006,8 +1005,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   window.updatePhotoCount = updatePhotoCount;
 
-  if (uploadTrigger && photoInput) {
-    uploadTrigger.addEventListener("click", function () { photoInput.click(); });
+  if (uploadZone && photoInput) {
+    uploadZone.addEventListener("click", function () { photoInput.click(); });
   }
   if (photoInput && previewGrid) {
     photoInput.addEventListener("change", function () {
@@ -1049,6 +1048,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Plan photo upload
   var planInput = document.getElementById("plan-photo-input");
   var planPreview = document.getElementById("plan-preview");
+  var planZone = document.getElementById("plan-upload-zone");
+  if (planZone && planInput) {
+    planZone.addEventListener("click", function () { planInput.click(); });
+  }
   if (planInput && planPreview) {
     planInput.addEventListener("change", function () {
       if (planInput.files && planInput.files[0]) {
@@ -1062,14 +1065,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ---- Drag & drop highlight ----
-  var uploadZone = document.getElementById("upload-zone");
+  // ---- Drag & drop ----
   if (uploadZone) {
     ["dragenter", "dragover"].forEach(function (evt) {
       uploadZone.addEventListener(evt, function (e) { e.preventDefault(); uploadZone.classList.add("border-primary", "bg-primary/5"); });
     });
-    ["dragleave", "drop"].forEach(function (evt) {
-      uploadZone.addEventListener(evt, function (e) { e.preventDefault(); uploadZone.classList.remove("border-primary", "bg-primary/5"); });
+    uploadZone.addEventListener("dragleave", function (e) {
+      e.preventDefault();
+      uploadZone.classList.remove("border-primary", "bg-primary/5");
+    });
+    uploadZone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      uploadZone.classList.remove("border-primary", "bg-primary/5");
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        photoInput.files = e.dataTransfer.files;
+        photoInput.dispatchEvent(new Event("change"));
+      }
     });
   }
 
