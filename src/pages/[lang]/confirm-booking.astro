@@ -13,7 +13,7 @@ const l = (href: string) => localizeHref(href, lang);
   <div id="page-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
       <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <p class="text-sm text-text-muted">Loading booking details...</p>
+      <p class="text-sm text-text-muted" data-i18n="common.loading">Loading...</p>
     </div>
   </div>
 
@@ -35,7 +35,7 @@ const l = (href: string) => localizeHref(href, lang);
         <a id="back-link" href={l("/boat-rental")} class="h-10 w-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
           <svg class="h-5 w-5 text-text" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
         </a>
-        <h1 class="text-2xl font-bold text-text">Confirm and pay</h1>
+        <h1 class="text-2xl font-bold text-text" data-i18n="confirm.title">Confirm and pay</h1>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-12">
@@ -45,20 +45,20 @@ const l = (href: string) => localizeHref(href, lang);
 
           <!-- Rental Type -->
           <section id="rental-type-section" class="hidden">
-            <h2 class="text-lg font-bold text-text mb-4">Rental type</h2>
+            <h2 class="text-lg font-bold text-text mb-4" data-i18n="confirm.rental_type">Rental type</h2>
             <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
               <label class="rental-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-primary bg-primary/5 transition-colors">
                 <input type="radio" name="rental-type" value="without-skipper" class="mt-1 accent-primary" checked />
                 <div class="flex-1">
-                  <p class="text-sm font-semibold text-text">Without skipper</p>
-                  <p class="text-xs text-text-muted mt-0.5">No license required, even if you're the skipper.</p>
+                  <p class="text-sm font-semibold text-text" data-i18n="confirm.without_skipper">Without skipper</p>
+                  <p class="text-xs text-text-muted mt-0.5" data-i18n="confirm.without_skipper_desc">No license required, even if you're the skipper.</p>
                 </div>
               </label>
               <label id="skipper-option" class="rental-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors border-t border-gray-200">
                 <input type="radio" name="rental-type" value="with-skipper" class="mt-1 accent-primary" />
                 <div class="flex-1">
-                  <p class="text-sm font-semibold text-text">With a skipper &middot; <span id="skipper-price-label" class="text-text-muted font-normal">+&euro;100/ day</span></p>
-                  <p class="text-xs text-text-muted mt-0.5">You will be accompanied by a skipper.</p>
+                  <p class="text-sm font-semibold text-text"><span data-i18n="confirm.with_skipper">With a skipper</span> &middot; <span id="skipper-price-label" class="text-text-muted font-normal">+&euro;100/ day</span></p>
+                  <p class="text-xs text-text-muted mt-0.5" data-i18n="confirm.with_skipper_desc">You will be accompanied by a skipper.</p>
                 </div>
               </label>
             </div>
@@ -295,6 +295,10 @@ const l = (href: string) => localizeHref(href, lang);
                   <span class="text-text-muted" id="price-insurance-label">Insurance</span>
                   <span class="text-text font-medium" id="price-insurance-val">&euro;0</span>
                 </div>
+                <div id="price-skipper-row" class="hidden flex justify-between">
+                  <span class="text-text-muted">Skipper</span>
+                  <span class="text-text font-medium" id="price-skipper-val">&euro;0</span>
+                </div>
                 <div id="price-weather-row" class="hidden flex justify-between">
                   <span class="text-text-muted">Weather Guarantee</span>
                   <span class="text-text font-medium" id="price-weather-val">&euro;0</span>
@@ -412,7 +416,8 @@ const l = (href: string) => localizeHref(href, lang);
       }
 
       // Dates
-      const fmtDate = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+      const dateLang = getLangPrefix() === "gr" ? "el-GR" : "en-GB";
+      const fmtDate = (d: Date) => d.toLocaleDateString(dateLang, { day: "numeric", month: "long", year: "numeric" });
       const fromEl = $("sidebar-date-from");
       const toEl = $("sidebar-date-to");
       if (fromEl) fromEl.textContent = `From ${fmtDate(startDate)}`;
@@ -421,11 +426,13 @@ const l = (href: string) => localizeHref(href, lang);
       // Price calculation state
       let insuranceCostPerDay = 0;
       let weatherCostPerDay = 0;
+      let skipperCostPerDay = 0;
 
       function recalcPrices() {
         const insuranceTot = insuranceCostPerDay * days;
         const weatherTot = weatherCostPerDay * days;
-        const subtotal = charterPrice + insuranceTot + weatherTot;
+        const skipperTot = skipperCostPerDay * days;
+        const subtotal = charterPrice + insuranceTot + weatherTot + skipperTot;
         const platformFee = Math.round(subtotal * platformFeePercent) / 100;
         const total = subtotal + serviceFee + platformFee;
 
@@ -444,6 +451,17 @@ const l = (href: string) => localizeHref(href, lang);
         } else {
           insRow?.classList.add("hidden");
           insRow?.classList.remove("flex");
+        }
+
+        const skipRow = $("price-skipper-row");
+        const skipVal = $("price-skipper-val");
+        if (skipperTot > 0) {
+          skipRow?.classList.remove("hidden");
+          skipRow?.classList.add("flex");
+          if (skipVal) skipVal.textContent = fmt(skipperTot);
+        } else {
+          skipRow?.classList.add("hidden");
+          skipRow?.classList.remove("flex");
         }
 
         const weaRow = $("price-weather-row");
@@ -503,7 +521,9 @@ const l = (href: string) => localizeHref(href, lang);
       // Radio change handlers - rental type
       document.querySelectorAll('input[name="rental-type"]').forEach(r => {
         r.addEventListener("change", () => {
+          skipperCostPerDay = (r as HTMLInputElement).value === "with-skipper" ? 100 : 0;
           highlightRadioGroup("rental-option", "rental-type");
+          recalcPrices();
         });
       });
 
@@ -603,14 +623,15 @@ const l = (href: string) => localizeHref(href, lang);
         }
 
         confirmBtn.disabled = true;
-        confirmBtn.textContent = "Preparing payment...";
+        confirmBtn.textContent = getLangPrefix() === "gr" ? "Προετοιμασία πληρωμής..." : "Preparing payment...";
 
         try {
           await initStripe();
 
           const insuranceTot = insuranceCostPerDay * days;
           const weatherTot = weatherCostPerDay * days;
-          const subtot = charterPrice + insuranceTot + weatherTot;
+          const skipperTot = skipperCostPerDay * days;
+          const subtot = charterPrice + insuranceTot + weatherTot + skipperTot;
           const platFee = Math.round(subtot * platformFeePercent) / 100;
           const totalPrice = subtot + serviceFee + platFee;
 
@@ -676,7 +697,8 @@ const l = (href: string) => localizeHref(href, lang);
             const boatImage = images[0] || "";
             const insuranceTot = insuranceCostPerDay * days;
             const weatherTot = weatherCostPerDay * days;
-            const subtot = charterPrice + insuranceTot + weatherTot;
+            const skipperTot = skipperCostPerDay * days;
+            const subtot = charterPrice + insuranceTot + weatherTot + skipperTot;
             const platFee = Math.round(subtot * platformFeePercent) / 100;
             const totalPrice = subtot + serviceFee + platFee;
 

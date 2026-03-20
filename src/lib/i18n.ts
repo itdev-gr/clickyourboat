@@ -380,8 +380,8 @@ export const translations: Record<string, Record<Lang, string>> = {
   "popular_rentals.title": { en: "Popular boat rentals by destination", el: "Δημοφιλείς ενοικιάσεις σκαφών ανά προορισμό" },
   "popular_rentals.subtitle": { en: "Find boats in the most popular sailing locations around the world", el: "Βρες σκάφη στις πιο δημοφιλείς τοποθεσίες ιστιοπλοΐας" },
 
-  "testimonials.title": { en: "What our customers say", el: "Τι λένε οι πελάτες μας" },
-  "testimonials.subtitle": { en: "Real experiences from real boaters", el: "Πραγματικές εμπειρίες από πραγματικούς ναυτικούς" },
+  "testimonials.title": { en: "Fellow sailors share their amazing experiences", el: "Ναυτικοί μοιράζονται τις καταπληκτικές τους εμπειρίες" },
+  "testimonials.subtitle": { en: "See what our community has to say about their trips", el: "Δείτε τι λέει η κοινότητά μας για τα ταξίδια τους" },
   "testimonials.overall": { en: "Overall rating", el: "Συνολική βαθμολογία" },
   "testimonials.reviews": { en: "reviews", el: "κριτικές" },
 
@@ -1055,4 +1055,27 @@ export const translations: Record<string, Record<Lang, string>> = {
   "lyb.msg.boat_not_found": { en: "Boat not found", el: "Το σκάφος δεν βρέθηκε" },
   "lyb.msg.progress": { en: "{done} of {total} sections completed", el: "{done} από {total} ενότητες ολοκληρώθηκαν" },
   "lyb.msg.save_fail": { en: "Failed to save. Please try again.", el: "Αποτυχία αποθήκευσης. Δοκιμάστε ξανά." },
+
+  // ─── Confirm Booking ───
+  "confirm.title": { en: "Confirm and pay", el: "Επιβεβαίωση και πληρωμή" },
+  "confirm.rental_type": { en: "Rental type", el: "Τύπος ενοικίασης" },
+  "confirm.without_skipper": { en: "Without skipper", el: "Χωρίς κυβερνήτη" },
+  "confirm.without_skipper_desc": { en: "No license required, even if you're the skipper.", el: "Δεν απαιτείται δίπλωμα, ακόμα κι αν είστε ο κυβερνήτης." },
+  "confirm.with_skipper": { en: "With a skipper", el: "Με κυβερνήτη" },
+  "confirm.with_skipper_desc": { en: "You will be accompanied by a skipper.", el: "Θα σας συνοδεύει κυβερνήτης." },
+
+  // ─── Testimonials (extended) ───
+  "testimonials.based_on": { en: "based on 12,400+ reviews", el: "βάσει 12.400+ κριτικών" },
+  "testimonials.date_0": { en: "September 2025", el: "Σεπτέμβριος 2025" },
+  "testimonials.date_1": { en: "August 2025", el: "Αύγουστος 2025" },
+  "testimonials.date_2": { en: "October 2025", el: "Οκτώβριος 2025" },
+  "testimonials.date_3": { en: "July 2025", el: "Ιούλιος 2025" },
+  "testimonials.comment_0": { en: "\"Absolutely incredible experience! The boat was in perfect condition and the skipper knew all the best hidden coves. We had the most magical sunset sailing experience. Will definitely book again!\"", el: "\"Απίστευτη εμπειρία! Το σκάφος ήταν σε άψογη κατάσταση και ο κυβερνήτης γνώριζε όλους τους κρυφούς κόλπους. Είχαμε την πιο μαγική εμπειρία ιστιοπλοΐας στο ηλιοβασίλεμα. Σίγουρα θα κλείσουμε ξανά!\"" },
+  "testimonials.comment_1": { en: "\"Best family holiday we've ever had. The catamaran was spacious, clean, and well-equipped. The kids absolutely loved it and the booking process through TapYourBoat was seamless.\"", el: "\"Οι καλύτερες οικογενειακές διακοπές που είχαμε ποτέ. Ο καταμαράν ήταν ευρύχωρος, καθαρός και καλά εξοπλισμένος. Τα παιδιά το λάτρεψαν και η διαδικασία κράτησης μέσω TapYourBoat ήταν πολύ εύκολη.\"" },
+  "testimonials.comment_2": { en: "\"Perfect day on the water! The motorboat was exactly as described and the owner was incredibly helpful with recommendations for where to anchor and eat along the coast.\"", el: "\"Τέλεια μέρα στη θάλασσα! Το μηχανοκίνητο σκάφος ήταν ακριβώς όπως περιγράφηκε και ο ιδιοκτήτης ήταν εξαιρετικά εξυπηρετικός με συστάσεις για αγκυροβόλια και φαγητό.\"" },
+  "testimonials.comment_3": { en: "\"We sailed along the Amalfi Coast for 3 days. Unforgettable sunsets, hidden beaches, and the most amazing food in coastal villages. TapYourBoat made everything so easy.\"", el: "\"Πλεύσαμε κατά μήκος της ακτής Αμάλφι για 3 μέρες. Αξέχαστα ηλιοβασιλέματα, κρυφές παραλίες και καταπληκτικό φαγητό σε παραθαλάσσια χωριά. Το TapYourBoat έκανε τα πάντα τόσο εύκολα.\"" },
+  "testimonials.location_0": { en: "Ibiza, Spain", el: "Ίμπιζα, Ισπανία" },
+  "testimonials.location_1": { en: "Santorini, Greece", el: "Σαντορίνη, Ελλάδα" },
+  "testimonials.location_2": { en: "Saint-Tropez, France", el: "Σαιν-Τροπέ, Γαλλία" },
+  "testimonials.location_3": { en: "Amalfi Coast, Italy", el: "Ακτή Αμάλφι, Ιταλία" },
 };

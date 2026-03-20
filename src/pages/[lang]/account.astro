@@ -13,7 +13,7 @@ const l = (href: string) => localizeHref(href, lang);
   <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
       <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <p class="text-sm text-text-muted">Loading...</p>
+      <p class="text-sm text-text-muted" data-i18n="common.loading">Loading...</p>
     </div>
   </div>
 
@@ -201,7 +201,7 @@ const l = (href: string) => localizeHref(href, lang);
                         <option value="+90">Turkey +90</option>
                         <option value="+385">Croatia +385</option>
                       </select>
-                      <input type="tel" name="phone" id="pf-phone" placeholder="Phone number" class="col-span-3 rounded-xl border border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                      <input type="tel" name="phone" id="pf-phone" placeholder="Phone number" pattern="[0-9\s\-\+\(\)]{6,20}" title="Please enter a valid phone number (digits, spaces, dashes, or parentheses)" class="col-span-3 rounded-xl border border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                     </div>
                   </div>
                   <div>
@@ -389,6 +389,8 @@ const l = (href: string) => localizeHref(href, lang);
                 <div class="flex justify-end">
                   <button type="submit" class="px-8 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Save</button>
                 </div>
+                <p id="payment-success" class="text-sm text-green-600 text-right hidden">Payment details saved successfully.</p>
+                <p id="payment-error" class="text-sm text-red-500 text-right hidden"></p>
               </form>
             </div>
 
@@ -700,7 +702,7 @@ const l = (href: string) => localizeHref(href, lang);
       setTimeout(() => document.getElementById("info-success")?.classList.add("hidden"), 3000);
     } catch (err: any) {
       const errEl = document.getElementById("info-error");
-      if (errEl) { errEl.textContent = "Failed to save: " + (err.message || "Unknown error"); errEl.classList.remove("hidden"); }
+      if (errEl) { errEl.textContent = "Failed to save your changes. Please try again."; errEl.classList.remove("hidden"); }
     }
     btn.disabled = false; btn.textContent = "Save";
   });
@@ -729,7 +731,7 @@ const l = (href: string) => localizeHref(href, lang);
       setTimeout(() => document.getElementById("exp-success")?.classList.add("hidden"), 3000);
     } catch (err: any) {
       const errEl = document.getElementById("exp-error");
-      if (errEl) { errEl.textContent = "Failed to save: " + (err.message || "Unknown error"); errEl.classList.remove("hidden"); }
+      if (errEl) { errEl.textContent = "Failed to save your changes. Please try again."; errEl.classList.remove("hidden"); }
     }
     btn.disabled = false; btn.textContent = "Save";
   });
@@ -770,10 +772,50 @@ const l = (href: string) => localizeHref(href, lang);
         if (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
           errEl.textContent = "Old password is incorrect.";
         } else {
-          errEl.textContent = "Failed: " + (err.code || err.message);
+          errEl.textContent = err.code === "auth/weak-password"
+            ? "New password is too weak. Use at least 6 characters."
+            : err.code === "auth/requires-recent-login"
+            ? "Please log out and log back in before changing your password."
+            : "Something went wrong. Please try again.";
         }
         errEl.classList.remove("hidden");
       }
+    }
+    btn.disabled = false; btn.textContent = "Save";
+  });
+
+  // Save payment info (with IBAN confirmation validation)
+  document.getElementById("payment-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return;
+    const form = e.target as HTMLFormElement;
+    const errEl = document.getElementById("payment-error");
+    const successEl = document.getElementById("payment-success");
+    errEl?.classList.add("hidden"); successEl?.classList.add("hidden");
+
+    const iban = (form.elements.namedItem("iban") as HTMLInputElement).value.trim();
+    const confirmIban = (form.elements.namedItem("confirmIban") as HTMLInputElement).value.trim();
+
+    if (iban && iban !== confirmIban) {
+      if (errEl) { errEl.textContent = "IBAN fields do not match."; errEl.classList.remove("hidden"); }
+      return;
+    }
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = "Saving...";
+    try {
+      const data: Record<string, any> = {};
+      ["paymentType","bankHolder","iban","bic"].forEach(name => {
+        const el = form.elements.namedItem(name) as HTMLInputElement;
+        if (el) data[name] = el.value;
+      });
+      data.updatedAt = serverTimestamp();
+      await setDoc(doc(db, "users", user.uid), data, { merge: true });
+      successEl?.classList.remove("hidden");
+      setTimeout(() => successEl?.classList.add("hidden"), 3000);
+    } catch (err: any) {
+      if (errEl) { errEl.textContent = "Failed to save your changes. Please try again."; errEl.classList.remove("hidden"); }
     }
     btn.disabled = false; btn.textContent = "Save";
   });

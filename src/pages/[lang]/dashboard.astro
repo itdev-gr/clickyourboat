@@ -13,7 +13,7 @@ const l = (href: string) => localizeHref(href, lang);
   <div id="auth-loading" class="min-h-[60vh] flex items-center justify-center">
     <div class="text-center">
       <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <p class="text-sm text-text-muted">Loading...</p>
+      <p class="text-sm text-text-muted" data-i18n="common.loading">Loading...</p>
     </div>
   </div>
 
@@ -191,6 +191,7 @@ const l = (href: string) => localizeHref(href, lang);
 
   // ---- Detect language from URL ----
   const lang = window.location.pathname.split("/")[1] || "en";
+  const dateLocale = lang === "el" ? "el-GR" : "en-GB";
 
   // ---- Helpers ----
   function getInitials(name: string | null): string {
@@ -208,7 +209,7 @@ const l = (href: string) => localizeHref(href, lang);
     if (hours < 24) return `${hours}h ago`;
     const days = Math.floor(hours / 24);
     if (days < 7) return `${days}d ago`;
-    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    return date.toLocaleDateString(dateLocale, { day: "numeric", month: "short" });
   }
 
   function escapeHtml(text: string): string {
@@ -373,7 +374,7 @@ const l = (href: string) => localizeHref(href, lang);
         const boatTitle = [manufacturer, model].filter(Boolean).join(" ") || "Untitled Boat";
         const location = [boat.city, boat.harbour].filter(Boolean).join(" \u2014 ") || "";
         const createdDate = boat.createdAt?.toDate
-          ? boat.createdAt.toDate().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+          ? boat.createdAt.toDate().toLocaleDateString(dateLocale, { day: "numeric", month: "short", year: "numeric" })
           : "";
 
         const boatStatus = boat.status || "published";
