@@ -79,14 +79,16 @@ export async function getFeaturedBoats(count = 6): Promise<Boat[]> {
   })) as Boat[];
 }
 
-export async function getOwnerBoats(ownerId: string, maxResults = 20): Promise<Boat[]> {
-  const q = query(
-    collection(db, "boats"),
+export async function getOwnerBoats(ownerId: string, maxResults = 20, statusFilter?: string): Promise<Boat[]> {
+  const constraints: QueryConstraint[] = [
     where("ownerId", "==", ownerId),
-    where("status", "==", "published"),
-    orderBy("createdAt", "desc"),
-    limit(maxResults)
-  );
+  ];
+  if (statusFilter) {
+    constraints.push(where("status", "==", statusFilter));
+  }
+  constraints.push(orderBy("createdAt", "desc"), limit(maxResults));
+
+  const q = query(collection(db, "boats"), ...constraints);
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -206,13 +208,23 @@ export async function subscribeNewsletter(email: string): Promise<void> {
 }
 
 // --- Boat Listings ---
-export async function uploadBoatPhotos(docId: string, files: File[]): Promise<string[]> {
+export async function uploadBoatPhotos(docId: string, files: File[], ownerId?: string): Promise<string[]> {
   const urls: string[] = [];
   for (const file of files) {
-    const storageRef = ref(storage, `boats/${docId}/${Date.now()}-${file.name}`);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    urls.push(url);
+    // Validate file size on client side before uploading (M8)
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error(`File "${file.name}" exceeds 10MB limit.`);
+    }
+    const basePath = ownerId ? `boats/${ownerId}/${docId}` : `boats/${docId}`;
+    const storageRef = ref(storage, `${basePath}/${Date.now()}-${file.name}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      urls.push(url);
+    } catch (err) {
+      console.error(`Failed to upload "${file.name}":`, err);
+      // Continue uploading remaining files (M9)
+    }
   }
   return urls;
 }
@@ -222,11 +234,15 @@ export async function createBoatListing(
   files: File[],
   ownerId?: string
 ): Promise<string> {
+  // M14: Basic input validation
+  if (!ownerId) throw new Error("ownerId is required");
+  if (data.pricePerDay !== undefined && data.pricePerDay < 0) throw new Error("Price cannot be negative");
+
   const docRef = doc(collection(db, "boats"));
-  const imageUrls = files.length > 0 ? await uploadBoatPhotos(docRef.id, files) : [];
+  const imageUrls = files.length > 0 ? await uploadBoatPhotos(docRef.id, files, ownerId) : [];
   await setDoc(docRef, {
     ...data,
-    ...(ownerId ? { ownerId } : {}),
+    ownerId,
     images: imageUrls,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -238,10 +254,11 @@ export async function updateBoatListing(
   boatId: string,
   data: Partial<Omit<BoatListing, "images" | "createdAt" | "updatedAt">>,
   newFiles: File[],
-  existingImageUrls: string[]
+  existingImageUrls: string[],
+  ownerId?: string
 ): Promise<void> {
   const docRef = doc(db, "boats", boatId);
-  const newImageUrls = newFiles.length > 0 ? await uploadBoatPhotos(boatId, newFiles) : [];
+  const newImageUrls = newFiles.length > 0 ? await uploadBoatPhotos(boatId, newFiles, ownerId) : [];
   const allImages = [...existingImageUrls, ...newImageUrls];
   await updateDoc(docRef, {
     ...data,
@@ -282,9 +299,11 @@ export async function updateBoatSection(
 export async function uploadBoatDocument(
   boatId: string,
   file: File,
-  docType: string
+  docType: string,
+  ownerId?: string
 ): Promise<string> {
-  const storageRef = ref(storage, `boats/${boatId}/documents/${docType}-${Date.now()}-${file.name}`);
+  const basePath = ownerId ? `boats/${ownerId}/${boatId}` : `boats/${boatId}`;
+  const storageRef = ref(storage, `${basePath}/documents/${docType}-${Date.now()}-${file.name}`);
   await uploadBytes(storageRef, file);
   return getDownloadURL(storageRef);
 }
@@ -303,8 +322,8 @@ export async function isUserAdmin(uid: string): Promise<boolean> {
   return snap.exists() && snap.data()?.type === "admin";
 }
 
-export async function getAllUsers(): Promise<UserProfile[]> {
-  const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+export async function getAllUsers(maxResults = 500): Promise<UserProfile[]> {
+  const q = query(collection(db, "users"), orderBy("createdAt", "desc"), limit(maxResults));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((d) => ({
     uid: d.id,
@@ -312,8 +331,8 @@ export async function getAllUsers(): Promise<UserProfile[]> {
   })) as UserProfile[];
 }
 
-export async function getAllListings(): Promise<(BoatListing & { id: string })[]> {
-  const q = query(collection(db, "boats"), orderBy("createdAt", "desc"));
+export async function getAllListings(maxResults = 500): Promise<(BoatListing & { id: string })[]> {
+  const q = query(collection(db, "boats"), orderBy("createdAt", "desc"), limit(maxResults));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((d) => ({
     id: d.id,
@@ -372,6 +391,17 @@ export async function createOrder(orderData: {
   endDate: string;
   totalPrice: number;
 }): Promise<string> {
+  // M14: Input validation
+  if (!orderData.boatId || !orderData.renterId || !orderData.ownerId) {
+    throw new Error("Missing required order fields");
+  }
+  if (orderData.totalPrice <= 0) {
+    throw new Error("Total price must be positive");
+  }
+  if (!orderData.startDate || !orderData.endDate) {
+    throw new Error("Missing date fields");
+  }
+
   const docRef = await addDoc(collection(db, "orders"), {
     ...orderData,
     status: "pending",
@@ -408,8 +438,8 @@ export async function getOwnerOrders(ownerId: string): Promise<Order[]> {
   }));
 }
 
-export async function getAllOrders(): Promise<Order[]> {
-  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+export async function getAllOrders(maxResults = 500): Promise<Order[]> {
+  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(maxResults));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((d) => ({
     id: d.id,

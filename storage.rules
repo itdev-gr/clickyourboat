@@ -1,11 +1,17 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Boat photos — authenticated users can upload, anyone can read
-    // TODO: Add owner check via Cloud Function or restructured path (e.g. /boats/{userId}/{boatId}/*)
+    // Legacy boat photos path — read-only for existing files
     match /boats/{boatId}/{allPaths=**} {
       allow read: if true;
+      allow write: if false;
+    }
+
+    // Boat photos — only the owner (identified by userId in path) can upload
+    match /boats/{userId}/{boatId}/{allPaths=**} {
+      allow read: if true;
       allow write: if request.auth != null
+                   && request.auth.uid == userId
                    && request.resource.size < 10 * 1024 * 1024
                    && (request.resource.contentType.matches('image/.*')
                        || request.resource.contentType == 'application/pdf');

@@ -42,12 +42,26 @@ service cloud.firestore {
       allow write: if request.auth != null && isAdmin();
     }
 
-    // Reviews: public read, authenticated create (must match own userId), author can edit/delete
+    // Reviews: public read, authenticated create with validation, author can edit/delete
+    // S3: Validate rating 1-5, comment length, userId matches auth
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if request.auth != null
-        && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 2000
+        && request.resource.data.boatId is string;
+      allow update: if request.auth != null
+        && request.auth.uid == resource.data.userId
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 2000;
+      allow delete: if request.auth != null
         && request.auth.uid == resource.data.userId;
     }
 
@@ -57,29 +71,42 @@ service cloud.firestore {
       allow write: if request.auth != null && isAdmin();
     }
 
-    // Subscribers: public write, admin read
+    // Subscribers: validated create, admin read
+    // M13: Require email field and limit document size to prevent spam
     match /subscribers/{subscriberId} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasOnly(["email", "createdAt"])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 5
+        && request.resource.data.email.size() < 255;
       allow read: if request.auth != null && isAdmin();
     }
 
     // Orders: participants + admin; creator must be the renter
+    // S2: Restrict update — participants can only change status, admin can change anything
     match /orders/{orderId} {
       allow read: if request.auth != null
         && (request.auth.uid == resource.data.renterId
             || request.auth.uid == resource.data.ownerId || isAdmin());
       allow create: if request.auth != null
-        && request.resource.data.renterId == request.auth.uid;
+        && request.resource.data.renterId == request.auth.uid
+        && request.resource.data.totalPrice > 0;
       allow update: if request.auth != null
-        && (request.auth.uid == resource.data.renterId
-            || request.auth.uid == resource.data.ownerId
-            || isAdmin());
+        && (isAdmin()
+            || ((request.auth.uid == resource.data.renterId
+                 || request.auth.uid == resource.data.ownerId)
+                && request.resource.data.diff(resource.data).affectedKeys()
+                    .hasOnly(["status", "updatedAt"])));
       allow delete: if isAdmin();
     }
 
-    // Settings: authenticated read, admin write
-    match /settings/{settingId} {
+    // Settings: public charges readable by authenticated users, other settings admin-only
+    // S7: Only expose the charges document publicly; internal settings are admin-only
+    match /settings/charges {
       allow read: if request.auth != null;
+      allow write: if request.auth != null && isAdmin();
+    }
+    match /settings/{settingId} {
+      allow read: if request.auth != null && isAdmin();
       allow write: if request.auth != null && isAdmin();
     }
 
