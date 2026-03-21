@@ -4,5 +4,16 @@
       "source": "/__/:path*",
       "destination": "https://clickyourboat-e7623.firebaseapp.com/__/:path*"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    }
   ]
 }
