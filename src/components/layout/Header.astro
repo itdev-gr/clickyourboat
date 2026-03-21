@@ -473,8 +473,10 @@ const toggleLabel = lang === "en" ? "GR" : "EN";
       if (totalUnread > 0) {
         badge.textContent = totalUnread > 99 ? "99+" : String(totalUnread);
         badge.classList.remove("hidden");
+        badge.classList.add("flex");
       } else {
         badge.classList.add("hidden");
+        badge.classList.remove("flex");
       }
     });
   }
