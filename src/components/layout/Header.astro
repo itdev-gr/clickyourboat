@@ -145,8 +145,8 @@ const toggleLabel = lang === "en" ? "GR" : "EN";
             <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-50">
               <a href={l("/dashboard")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.dashboard">Dashboard</a>
               <a href={l("/account")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.account">Account</a>
-              <a href={l("/messages")} class="flex items-center justify-between px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.messages">
-                <span>Messages</span>
+              <a href={l("/messages")} class="flex items-center justify-between px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors">
+                <span data-i18n="nav.messages">Messages</span>
                 <span id="dropdown-msg-badge" class="hidden h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">0</span>
               </a>
               <a href={l("/favorites")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.favorites">Favorites</a>
@@ -297,8 +297,8 @@ const toggleLabel = lang === "en" ? "GR" : "EN";
         <a href={l("/account")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.account">
           Account
         </a>
-        <a href={l("/messages")} class="flex items-center justify-between px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.messages">
-          <span>Messages</span>
+        <a href={l("/messages")} class="flex items-center justify-between px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium">
+          <span data-i18n="nav.messages">Messages</span>
           <span id="mobile-msg-badge" class="hidden h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">0</span>
         </a>
         <a href={l("/favorites")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="footer.favorites">
