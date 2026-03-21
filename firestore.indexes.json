@@ -72,6 +72,15 @@
       "collectionGroup": "orders",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "renterId", "order": "ASCENDING" },
+        { "fieldPath": "boatId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "orders",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "ownerId", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]

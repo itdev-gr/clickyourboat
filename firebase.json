@@ -22,10 +22,6 @@
         "function": "createCheckoutSession"
       },
       {
-        "source": "/boat/**",
-        "destination": "/boat-detail/index.html"
-      },
-      {
         "source": "/gr/boat/**",
         "destination": "/gr/boat-detail/index.html"
       },

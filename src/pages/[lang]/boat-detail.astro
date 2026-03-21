@@ -88,8 +88,9 @@ const l = (href: string) => localizeHref(href, lang);
     return document.documentElement.dataset.langPrefix || "en";
   }
   import { getBoatListing } from "../../lib/api";
-  import { db } from "../../lib/firebase";
-  import { doc, getDoc } from "firebase/firestore";
+  import { db, auth } from "../../lib/firebase";
+  import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+  import { onAuthStateChanged } from "firebase/auth";
 
   function esc(s: string): string {
     return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -401,11 +402,12 @@ const l = (href: string) => localizeHref(href, lang);
               <div id="owner-badges" class="flex items-center gap-2 flex-wrap mb-2"></div>
               <p id="owner-bio" class="text-sm text-text-muted mb-3"></p>
               <button id="contact-owner-btn"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
+                class="hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
                 data-owner-id="${esc(ownerId)}"
                 data-boat-id="${esc(boatId)}"
                 data-boat-title="${esc(boatTitle)}"
               >Contact owner</button>
+              <p id="contact-owner-locked" class="text-xs text-text-muted italic">Contact available after booking</p>
             </div>
           </div>
         `;
@@ -622,11 +624,12 @@ const l = (href: string) => localizeHref(href, lang);
                 <p class="text-sm font-semibold text-text mb-1">Have a question?</p>
                 <p class="text-xs text-text-muted mb-2">Contact the owner directly to ask about the boat or your trip.</p>
                 <button id="contact-owner-btn-sidebar"
-                  class="text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
+                  class="hidden text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
                   data-owner-id="${esc(ownerId)}"
                   data-boat-id="${esc(boatId)}"
                   data-boat-title="${esc(boatTitle)}"
                 >Send a message</button>
+                <p id="contact-owner-locked-sidebar" class="text-xs text-text-muted italic">Available after booking</p>
               </div>
             </div>
           </div>
@@ -749,6 +752,39 @@ const l = (href: string) => localizeHref(href, lang);
       }
       document.getElementById("contact-owner-btn")?.addEventListener("click", function() { handleContactClick(this); });
       document.getElementById("contact-owner-btn-sidebar")?.addEventListener("click", function() { handleContactClick(this); });
+
+      // Unlock contact buttons only if user has a confirmed/completed order for this boat
+      onAuthStateChanged(auth, async (user) => {
+        if (!user || !boatId) return;
+        // Owner can always contact (it's their own listing)
+        if (user.uid === ownerId) {
+          unlockContactButtons();
+          return;
+        }
+        try {
+          const q = query(
+            collection(db, "orders"),
+            where("renterId", "==", user.uid),
+            where("boatId", "==", boatId),
+            where("status", "in", ["confirmed", "completed"])
+          );
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            unlockContactButtons();
+          }
+        } catch (err) {
+          console.error("Failed to check order status for contact:", err);
+        }
+      });
+
+      function unlockContactButtons() {
+        const btn = document.getElementById("contact-owner-btn");
+        const btnSidebar = document.getElementById("contact-owner-btn-sidebar");
+        btn?.classList.remove("hidden");
+        btnSidebar?.classList.remove("hidden");
+        document.getElementById("contact-owner-locked")?.remove();
+        document.getElementById("contact-owner-locked-sidebar")?.remove();
+      }
 
       // Share button
       document.getElementById("share-btn")?.addEventListener("click", async () => {
