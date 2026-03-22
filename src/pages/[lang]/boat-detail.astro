@@ -825,6 +825,10 @@ const l = (href: string) => localizeHref(href, lang);
   import { onAuthStateChanged } from "firebase/auth";
   import { getBoatReviews } from "../../lib/api";
 
+  function getLangPrefix() {
+    return document.documentElement.dataset.langPrefix || "en";
+  }
+
   let currentUser: any = null;
 
   onAuthStateChanged(auth, (user) => {
@@ -951,6 +955,10 @@ const l = (href: string) => localizeHref(href, lang);
   import { auth, db } from "../../lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import { doc, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
+
+  function getLangPrefix() {
+    return document.documentElement.dataset.langPrefix || "en";
+  }
 
   let currentUser: any = null;
   let isFavorited = false;
