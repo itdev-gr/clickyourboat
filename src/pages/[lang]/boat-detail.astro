@@ -402,7 +402,7 @@ const l = (href: string) => localizeHref(href, lang);
               <div id="owner-badges" class="flex items-center gap-2 flex-wrap mb-2"></div>
               <p id="owner-bio" class="text-sm text-text-muted mb-3"></p>
               <button id="contact-owner-btn"
-                class="hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
+                class="hidden items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
                 data-owner-id="${esc(ownerId)}"
                 data-boat-id="${esc(boatId)}"
                 data-boat-title="${esc(boatTitle)}"
@@ -781,6 +781,7 @@ const l = (href: string) => localizeHref(href, lang);
         const btn = document.getElementById("contact-owner-btn");
         const btnSidebar = document.getElementById("contact-owner-btn-sidebar");
         btn?.classList.remove("hidden");
+        btn?.classList.add("inline-flex");
         btnSidebar?.classList.remove("hidden");
         document.getElementById("contact-owner-locked")?.remove();
         document.getElementById("contact-owner-locked-sidebar")?.remove();
