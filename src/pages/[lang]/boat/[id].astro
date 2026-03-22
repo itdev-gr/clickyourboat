@@ -418,7 +418,7 @@ const priceUnit = boat.priceUnit || "/ day";
           </div>
 
           <!-- Contact owner -->
-          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <div id="contact-owner-section" class="hidden bg-white rounded-2xl border border-gray-200 p-6">
             <h3 class="font-semibold text-text mb-3">Have questions?</h3>
             <p class="text-sm text-text-muted mb-4">Contact the owner directly to ask about the boat or trip details.</p>
             <button
@@ -571,6 +571,14 @@ const priceUnit = boat.priceUnit || "/ day";
     currentUser = user;
     if (user) {
       loadReviews(user);
+      // Show contact-owner if user has a booking for this boat
+      const orders = await getUserOrders(user.uid);
+      const hasBooking = orders.some(
+        (o: any) => o.boatId === boatId && (o.status === "confirmed" || o.status === "completed")
+      );
+      if (hasBooking) {
+        document.getElementById("contact-owner-section")?.classList.remove("hidden");
+      }
     } else {
       loadReviews(null);
     }
