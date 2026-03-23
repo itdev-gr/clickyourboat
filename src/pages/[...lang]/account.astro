@@ -761,6 +761,10 @@ const l = (href: string) => localizeHref(href, lang);
     const successEl = document.getElementById("pw-success");
     errEl?.classList.add("hidden"); successEl?.classList.add("hidden");
 
+    if (!newPw || !confirmPw) {
+      if (errEl) { errEl.textContent = "Please enter your new password in both fields."; errEl.classList.remove("hidden"); }
+      return;
+    }
     if (newPw !== confirmPw) {
       if (errEl) { errEl.textContent = "New passwords do not match."; errEl.classList.remove("hidden"); }
       return;
