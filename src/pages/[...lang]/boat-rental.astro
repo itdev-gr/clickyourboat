@@ -349,7 +349,7 @@ const l = (href: string) => localizeHref(href, lang);
       const results = await Promise.allSettled([
         getFeaturedBoats(3),
         searchBoats({}, PAGE_SIZE),
-        ownerUid ? getOwnerBoats(ownerUid) : Promise.resolve([]),
+        ownerUid ? getOwnerBoats(ownerUid, 20, "published") : Promise.resolve([]),
       ]);
 
       const featured = results[0].status === "fulfilled" ? results[0].value : [];
