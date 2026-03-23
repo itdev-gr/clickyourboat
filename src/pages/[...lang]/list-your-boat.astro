@@ -134,7 +134,7 @@ const l = (href: string) => localizeHref(href, lang);
           </button>
           <div class="flex items-center gap-2">
             <button type="button" id="wizard-preview-btn" class="px-4 py-2 rounded-lg bg-gray-800 text-white text-sm font-medium hover:bg-gray-700 transition-colors" data-i18n="lyb.wizard.preview">Preview</button>
-            <button type="button" id="wizard-publish-btn" class="px-4 py-2 rounded-lg bg-pink text-white text-sm font-medium hover:opacity-90 transition-opacity" data-i18n="lyb.wizard.publish">Publish</button>
+            <button type="button" id="wizard-save-btn" class="px-4 py-2 rounded-lg bg-pink text-white text-sm font-medium hover:opacity-90 transition-opacity" data-i18n="lyb.wizard.save">Save</button>
           </div>
         </div>
 
@@ -512,7 +512,7 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
 
             <div class="flex justify-end mt-8">
-              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="calendar">Next</button>
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="calendar" data-i18n="lyb.wizard.publish">Publish</button>
             </div>
           </div>
 
@@ -1422,7 +1422,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const formSuccess = document.getElementById("form-success");
   const formError = document.getElementById("form-error");
   const formErrorMsg = document.getElementById("form-error-msg");
-  const publishBtn = document.getElementById("wizard-publish-btn");
+  const saveBtn = document.getElementById("wizard-save-btn");
 
   let userHasListings = false;
   let editingBoatId: string | null = null;
@@ -1888,15 +1888,30 @@ document.addEventListener("DOMContentLoaded", function () {
         formSuccess?.classList.remove("hidden");
         const successMsg = formSuccess?.querySelector("p");
         if (successMsg) successMsg.textContent = tr("lyb.msg.section_saved", "Section saved successfully!");
-        // After successful save, advance to next section
+        // After successful save, advance to next section or publish on last
         const _sections = getSECTIONS();
         const currentIdx = _sections ? _sections.findIndex(function(s: any) { return s.id === section; }) : -1;
         if (currentIdx >= 0 && currentIdx < _sections.length - 1) {
+          // Not the last section — advance to next
           const nextSection = _sections[currentIdx + 1].id;
           setTimeout(function() {
             formSuccess?.classList.add("hidden");
             callShowWizardSection(nextSection);
           }, 600);
+        } else if (section === _sections[_sections.length - 1]?.id) {
+          // Last section — submit for review
+          const requiredSections = ["general", "description", "price"];
+          const missing = requiredSections.filter(function(s) { return !completedSectionsSet.has(s); });
+          if (missing.length > 0) {
+            formSuccess?.classList.add("hidden");
+            alert(tr("lyb.msg.complete_before_publish", "Please complete these sections before publishing:") + " " + missing.join(", "));
+            return;
+          }
+          await updateBoatSection(editingBoatId, { status: "pending" });
+          alert(tr("lyb.msg.submitted", "Your listing has been submitted for review. It will be visible once approved by our team."));
+          userHasListings = true;
+          const user = currentAuthUser;
+          if (user) { await loadUserListings(user.id); showListings(); }
         }
       } catch (err: any) {
         console.error("Save failed:", err);
@@ -1909,29 +1924,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // --- Publish button ---
-  publishBtn?.addEventListener("click", async () => {
-    if (!editingBoatId) return;
-    const requiredSections = ["general", "description", "price"];
-    const missing = requiredSections.filter(s => !completedSectionsSet.has(s));
-    if (missing.length > 0) {
-      alert(tr("lyb.msg.complete_before_publish", "Please complete these sections before publishing:") + " " + missing.join(", "));
-      return;
-    }
-    try {
-      (publishBtn as HTMLButtonElement).disabled = true;
-      publishBtn.textContent = tr("lyb.msg.submitting", "Submitting...");
-      await updateBoatSection(editingBoatId, { status: "pending" });
-      alert(tr("lyb.msg.submitted", "Your listing has been submitted for review. It will be visible once approved by our team."));
-      userHasListings = true;
+  // --- Save button (top bar) — saves current section as draft, no validation ---
+  saveBtn?.addEventListener("click", async () => {
+    if (!editingBoatId) {
+      // Create draft first if not editing
       const user = currentAuthUser;
-      if (user) { await loadUserListings(user.id); showListings(); }
+      if (!user) return;
+      editingBoatId = await createEmptyDraft(user.id);
+    }
+    // Find currently active section
+    const activeSectionEl = document.querySelector('.wizard-section:not(.hidden)') as HTMLElement;
+    const activeSection = activeSectionEl?.id?.replace('section-', '') || 'general';
+    try {
+      (saveBtn as HTMLButtonElement).disabled = true;
+      saveBtn!.textContent = tr("lyb.msg.saving", "Saving...");
+      const data = collectSectionData(activeSection);
+      // For description section, include existing image URLs
+      if (activeSection === "description") {
+        const existingUrls = (window as any).__existingPreviewUrls || [];
+        const newFiles: File[] = ((window as any).__selectedFiles || []).filter((f: any) => f != null);
+        if (newFiles.length > 0) {
+          const newUrls = await uploadBoatPhotos(editingBoatId, newFiles, currentAuthUser?.id);
+          data.images = [...existingUrls, ...newUrls];
+        } else {
+          data.images = existingUrls;
+        }
+      }
+      await updateBoatSection(editingBoatId, data);
+      saveBtn!.textContent = tr("lyb.msg.saved", "Saved!");
+      setTimeout(() => { if (saveBtn) saveBtn.textContent = tr("lyb.wizard.save", "Save"); }, 1500);
     } catch (err) {
-      console.error("Publish failed:", err);
-      alert(tr("lyb.msg.publish_fail", "Failed to publish. Please try again."));
+      console.error("Save failed:", err);
+      if (saveBtn) saveBtn.textContent = tr("lyb.wizard.save", "Save");
     } finally {
-      (publishBtn as HTMLButtonElement).disabled = false;
-      publishBtn.textContent = tr("lyb.wizard.publish", "Publish");
+      (saveBtn as HTMLButtonElement).disabled = false;
     }
   });
 
