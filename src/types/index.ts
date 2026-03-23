@@ -49,8 +49,8 @@ export interface Extra {
   mandatory: boolean;
 }
 
-/** Firestore Timestamp or already-converted Date */
-export type FirestoreTimestamp = Date | { toDate(): Date };
+/** Timestamp type — always a Date after Supabase migration */
+export type FirestoreTimestamp = Date;
 
 export interface BoatListing {
   // Existing fields
@@ -220,6 +220,18 @@ export interface UserProfile {
   type: "user" | "owner" | "admin";
   createdAt: FirestoreTimestamp;
   lastLoginAt: FirestoreTimestamp;
+}
+
+export interface SupabaseProfile {
+  id: string;
+  email: string;
+  display_name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  photo_url: string | null;
+  user_type: "user" | "owner" | "admin";
+  created_at: string;
+  last_login_at: string;
 }
 
 export interface Order {

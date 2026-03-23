@@ -1,8 +1,9 @@
 import { translations } from "./i18n";
 export type Lang = "en" | "el";
+export type LangParam = string | undefined;
 
-/** Convert URL prefix ("en" | "gr") to translation locale */
-export function getLangFromParam(lang: string): Lang {
+/** Convert URL prefix ("gr") to translation locale. undefined/anything else = English */
+export function getLangFromParam(lang: LangParam): Lang {
   return lang === "gr" ? "el" : "en";
 }
 
@@ -11,20 +12,20 @@ export function t(key: string, lang: Lang): string {
   return translations[key]?.[lang] ?? translations[key]?.["en"] ?? key;
 }
 
-/** Prefix an internal href with the current language */
-export function localizeHref(href: string, lang: string): string {
-  if (href.startsWith("/")) return `/${lang}${href}`;
+/** Prefix an internal href with the current language (no prefix for English) */
+export function localizeHref(href: string, lang: LangParam): string {
+  if (lang === "gr" && href.startsWith("/")) return `/gr${href}`;
   return href;
 }
 
-/** Return the opposite URL prefix */
-export function getAlternateLang(lang: string): string {
-  return lang === "en" ? "gr" : "en";
+/** Return the alternate URL prefix */
+export function getAlternateLang(lang: LangParam): string {
+  return lang === "gr" ? "" : "gr";
 }
 
 /** For getStaticPaths — generates both language variants */
 export function getLangs() {
-  return [{ params: { lang: "en" } }, { params: { lang: "gr" } }];
+  return [{ params: { lang: undefined } }, { params: { lang: "gr" } }];
 }
 
 /** Pick text from a bilingual object or plain string */

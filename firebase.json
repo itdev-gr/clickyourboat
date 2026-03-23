@@ -26,8 +26,8 @@
         "destination": "/gr/boat-detail/index.html"
       },
       {
-        "source": "/en/boat/**",
-        "destination": "/en/boat-detail/index.html"
+        "source": "/boat/**",
+        "destination": "/boat-detail/index.html"
       },
       {
         "source": "**",
