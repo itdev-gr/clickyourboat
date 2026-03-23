@@ -272,7 +272,7 @@ const l = (href: string) => localizeHref(href, lang);
               <p class="text-sm font-semibold text-text mb-1"><span data-i18n="lyb.photos.main">Main photos</span> <span class="text-red-500">*</span></p>
               <p class="text-xs text-text-muted mb-4" data-i18n="lyb.photos.cover_hint">For the cover, choose a photo that shows the whole boat. Drag photos to reorder.</p>
               <div id="upload-zone" class="relative rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer">
-                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 pointer-events-none" />
+                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/gif" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <div class="pointer-events-none">
                   <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><rect x="10" y="10" width="28" height="28" rx="4" /><circle cx="20" cy="22" r="4" /><path d="M10 34l8-8 6 6 4-4 10 10" stroke-linecap="round" stroke-linejoin="round" /></svg>
                   <p class="text-sm font-semibold text-text mb-1" data-i18n="lyb.photos.post_here">Post your photos here</p>
@@ -948,7 +948,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var previewGrid = document.getElementById("photo-previews");
   var uploadZone = document.getElementById("upload-zone");
   var photoCountEl = document.getElementById("photo-count");
-  var MAX_PHOTOS = 5;
+  var MAX_PHOTOS = 15;
 
   function getExistingCount() {
     return (window.__existingPreviewUrls || []).length;
