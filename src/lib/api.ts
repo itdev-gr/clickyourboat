@@ -197,7 +197,8 @@ export async function uploadBoatPhotos(docId: string, files: File[], ownerId?: s
       throw new Error(`File "${file.name}" exceeds 10MB limit.`);
     }
     const basePath = ownerId ? `${ownerId}/${docId}` : docId;
-    const filePath = `${basePath}/${Date.now()}-${file.name}`;
+    const safeName = file.name.replace(/[^\x20-\x7E]/g, "_").replace(/\s+/g, "_");
+    const filePath = `${basePath}/${Date.now()}-${safeName}`;
     try {
       const { error } = await supabase.storage
         .from("boat-assets")
@@ -297,7 +298,8 @@ export async function uploadBoatDocument(
   ownerId?: string
 ): Promise<string> {
   const basePath = ownerId ? `${ownerId}/${boatId}` : boatId;
-  const filePath = `${basePath}/documents/${docType}-${Date.now()}-${file.name}`;
+  const safeName = file.name.replace(/[^\x20-\x7E]/g, "_").replace(/\s+/g, "_");
+  const filePath = `${basePath}/documents/${docType}-${Date.now()}-${safeName}`;
   const { error } = await supabase.storage
     .from("boat-assets")
     .upload(filePath, file);

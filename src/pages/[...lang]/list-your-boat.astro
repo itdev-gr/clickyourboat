@@ -1828,7 +1828,7 @@ document.addEventListener("DOMContentLoaded", function () {
             throw new Error(tr("lyb.msg.upload_photo", "Please upload at least one photo."));
           }
           if (newFiles.length > 0) {
-            const newUrls = await uploadBoatPhotos(editingBoatId, newFiles);
+            const newUrls = await uploadBoatPhotos(editingBoatId, newFiles, currentAuthUser?.id);
             if (newUrls.length < newFiles.length) {
               const failed = newFiles.length - newUrls.length;
               alert(tr("lyb.msg.photo_upload_partial", `${failed} photo(s) failed to upload. The rest were saved successfully.`).replace("{count}", String(failed)));
