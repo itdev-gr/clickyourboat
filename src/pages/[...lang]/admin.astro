@@ -695,14 +695,14 @@ const l = (href: string) => localizeHref(href, lang);
 
     let html = "";
     for (const user of data) {
-      const name = escapeHtml(user.display_name || user.first_name || "Unknown");
+      const name = escapeHtml(user.displayName || user.firstName || "Unknown");
       const email = escapeHtml(user.email || "—");
-      const type = user.user_type || "user";
-      const date = formatDate(user.created_at);
-      const photo = user.photo_url;
-      const initials = getInitials(user.display_name || user.first_name);
+      const type = user.type || "user";
+      const date = formatDate(user.createdAt);
+      const photo = user.photoURL;
+      const initials = getInitials(user.displayName || user.firstName);
 
-      html += `<tr class="user-row cursor-pointer hover:bg-gray-50 transition-colors" data-search="${name.toLowerCase()} ${email.toLowerCase()}" data-uid="${user.id}">
+      html += `<tr class="user-row cursor-pointer hover:bg-gray-50 transition-colors" data-search="${name.toLowerCase()} ${email.toLowerCase()}" data-uid="${user.uid}">
         <td class="px-6 py-4">
           <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
@@ -719,18 +719,18 @@ const l = (href: string) => localizeHref(href, lang);
         <td class="px-6 py-4 text-text-muted">${date}</td>
         <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
           <div class="flex items-center justify-end gap-2">
-            <select class="user-type-select px-2 py-1.5 rounded-lg text-xs font-medium border border-gray-300 bg-white text-gray-700 cursor-pointer" data-uid="${user.id}" data-current="${type}">
+            <select class="user-type-select px-2 py-1.5 rounded-lg text-xs font-medium border border-gray-300 bg-white text-gray-700 cursor-pointer" data-uid="${user.uid}" data-current="${type}">
               <option value="user" ${type === "user" ? "selected" : ""}>User</option>
               <option value="owner" ${type === "owner" ? "selected" : ""}>Owner</option>
               <option value="admin" ${type === "admin" ? "selected" : ""}>Admin</option>
             </select>
-            <button type="button" class="user-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-uid="${user.id}" data-name="${name}" title="Delete user">
+            <button type="button" class="user-delete-btn h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-uid="${user.uid}" data-name="${name}" title="Delete user">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
             </button>
           </div>
         </td>
       </tr>
-      <tr class="user-boats-row hidden" data-boats-uid="${user.id}">
+      <tr class="user-boats-row hidden" data-boats-uid="${user.uid}">
         <td colspan="5" class="px-6 py-0">
           <div class="user-boats-content py-4 pl-14">
             <div class="user-boats-loading text-xs text-text-muted flex items-center gap-2">
@@ -757,7 +757,7 @@ const l = (href: string) => localizeHref(href, lang);
         try {
           (sel as HTMLSelectElement).disabled = true;
           await updateUserType(uid, newType);
-          const idx = allUsersData.findIndex(u => u.id === uid);
+          const idx = allUsersData.findIndex(u => u.uid === uid);
           if (idx >= 0) allUsersData[idx].type = newType;
           renderUsersTable(allUsersData);
         } catch (err) {
@@ -777,7 +777,7 @@ const l = (href: string) => localizeHref(href, lang);
         if (!confirm(`Delete user "${name}"? This will remove their profile record.`)) return;
         try {
           await adminDeleteUser(uid);
-          allUsersData = allUsersData.filter(u => u.id !== uid);
+          allUsersData = allUsersData.filter(u => u.uid !== uid);
           renderUsersTable(allUsersData);
         } catch (err) {
           console.error("Delete failed:", err);

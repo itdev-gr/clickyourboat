@@ -1384,9 +1384,9 @@ document.addEventListener("DOMContentLoaded", function () {
   import { supabase } from "../../lib/supabase";
   import { createBoatListing, updateBoatListing, deleteBoatListing, createEmptyDraft, updateBoatSection, uploadBoatDocument, uploadBoatPhotos, getBoatListing } from "../../lib/api";
 
-  // Access globals from the is:inline script
-  const SECTIONS = (window as any).SECTIONS;
-  const showWizardSection = (window as any).showWizardSection;
+  // Access globals from the is:inline script (read lazily — inline script may not have run yet)
+  function getSECTIONS() { return (window as any).SECTIONS; }
+  function callShowWizardSection(id: string) { return (window as any).showWizardSection?.(id); }
 
   let currentAuthUser: any = null;
 
@@ -1879,12 +1879,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const successMsg = formSuccess?.querySelector("p");
         if (successMsg) successMsg.textContent = tr("lyb.msg.section_saved", "Section saved successfully!");
         // After successful save, advance to next section
-        const currentIdx = SECTIONS.findIndex(function(s) { return s.id === section; });
-        if (currentIdx >= 0 && currentIdx < SECTIONS.length - 1) {
-          const nextSection = SECTIONS[currentIdx + 1].id;
+        const _sections = getSECTIONS();
+        const currentIdx = _sections ? _sections.findIndex(function(s: any) { return s.id === section; }) : -1;
+        if (currentIdx >= 0 && currentIdx < _sections.length - 1) {
+          const nextSection = _sections[currentIdx + 1].id;
           setTimeout(function() {
             formSuccess?.classList.add("hidden");
-            showWizardSection(nextSection);
+            callShowWizardSection(nextSection);
           }, 600);
         }
       } catch (err: any) {
