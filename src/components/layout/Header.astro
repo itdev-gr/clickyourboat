@@ -115,8 +115,8 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
           <span>{toggleLabel}</span>
         </a>
 
-        <!-- Logged-out actions -->
-        <div id="header-logged-out" class="flex items-center gap-4">
+        <!-- Logged-out actions (hidden until auth is configured) -->
+        <div id="header-logged-out" class="hidden flex items-center gap-4">
           <a
             href={l("/login")}
             class="text-sm font-medium text-text-muted hover:text-primary transition-colors"
@@ -280,8 +280,8 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
       </a>
 
       <hr class="my-4 border-border" />
-      <!-- Mobile logged-out -->
-      <div id="mobile-logged-out">
+      <!-- Mobile logged-out (hidden until auth is configured) -->
+      <div id="mobile-logged-out" class="hidden">
         <a href={l("/login")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.log_in">
           Log in
         </a>
