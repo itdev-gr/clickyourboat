@@ -774,7 +774,7 @@ function mapBoatToRow(data: Record<string, any>): Record<string, any> {
     if (value === undefined) continue;
     const col = map[key] || key;
     // Skip fields that shouldn't be written directly
-    if (["id", "createdAt", "updatedAt", "ownerId", "images"].includes(key)) continue;
+    if (["id", "createdAt", "updatedAt", "ownerId"].includes(key)) continue;
     row[col] = value;
   }
   return row;
