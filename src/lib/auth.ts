@@ -17,7 +17,7 @@ export async function signUpWithEmail(
         last_name: lastName,
         display_name: `${firstName} ${lastName}`.trim(),
       },
-      emailRedirectTo: `${window.location.origin}/login`,
+      emailRedirectTo: `https://tapyourboat.com/login`,
     },
   });
   if (error) throw error;
@@ -110,7 +110,7 @@ export async function signInWithGoogle(redirectTo?: string) {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: redirectTo || `${window.location.origin}/`,
+      redirectTo: redirectTo || `https://tapyourboat.com/`,
     },
   });
   if (error) throw error;
