@@ -395,6 +395,7 @@ const l = (href: string) => localizeHref(href, lang);
       // ========== OWNER ==========
       const ownerEl = document.getElementById("boat-owner");
       if (ownerEl && ownerId) {
+        ownerEl.classList.add("hidden");
         ownerEl.innerHTML = `
           <h2 class="text-lg font-bold text-text mb-4">Offered by <span id="owner-name-section">the owner</span></h2>
           <div class="flex items-start gap-4">
