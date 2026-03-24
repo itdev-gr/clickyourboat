@@ -6,7 +6,7 @@ import Layout from "../../layouts/Layout.astro";
 
 const title = "Boat Types — Find the Right Boat for You | TapYourBoat";
 const description =
-  "Explore our boat types: Catamarans, Houseboats, Motorboats, RIBs, and Sailboats. Find the perfect vessel for your next adventure on the water.";
+  "Explore our boat types: Catamarans, Motorboats, RIBs, and Sailboats. Find the perfect vessel for your next adventure on the water.";
 
 const boatTypes = [
   {
@@ -20,18 +20,6 @@ const boatTypes = [
     image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80&auto=format",
     specs: { capacity: "8–26 guests", length: "10–20 m", speed: "6–12 knots", licence: "Required or with skipper" },
     priceFrom: 500,
-  },
-  {
-    name: "Houseboats",
-    slug: "houseboat",
-    headline: "Your floating home away from home",
-    description:
-      "Houseboats combine the comforts of home with the freedom of the open water. Perfect for canals, rivers, and lakes, they offer a unique way to explore at a leisurely pace. With full kitchens, comfortable bedrooms, and living spaces, a houseboat holiday is unlike anything else.",
-    features: ["Full kitchen & bathroom", "Comfortable bedrooms", "No licence required in many areas", "Perfect for rivers & canals", "Slow-paced relaxation", "Unique holiday experience"],
-    featureKeys: ["bt.houseboat.feat1", "bt.houseboat.feat2", "bt.houseboat.feat3", "bt.houseboat.feat4", "bt.houseboat.feat5", "bt.houseboat.feat6"],
-    image: "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=800&q=80&auto=format",
-    specs: { capacity: "4–12 guests", length: "8–15 m", speed: "3–8 knots", licence: "Often not required" },
-    priceFrom: 150,
   },
   {
     name: "Motorboats",
@@ -235,7 +223,6 @@ const l = (href: string) => localizeHref(href, lang);
             <tr>
               <td class="px-5 py-3.5 font-medium text-text" data-i18n="boat_types.best_for">Best for</td>
               <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_catamarans">Families & groups</td>
-              <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_houseboats">Relaxed getaways</td>
               <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_motorboats">Day trips & exploring</td>
               <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_ribs">Adventure & water sports</td>
               <td class="text-center px-4 py-3.5 text-text-muted" data-i18n="boat_types.best_for_sailboats">Classic sailing trips</td>

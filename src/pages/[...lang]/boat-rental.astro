@@ -524,7 +524,7 @@ const l = (href: string) => localizeHref(href, lang);
     // URL param pre-filter (e.g. ?type=motor)
     var params = new URLSearchParams(window.location.search);
     var rawType = params.get("type") || "";
-    var slugAliases = { motorboat: "motor", sailboat: "sailing", rib: "motor", houseboat: "motor" };
+    var slugAliases = { motorboat: "motor", sailboat: "sailing", rib: "motor" };
     var typeParam = slugAliases[rawType] || rawType;
     var validTypes = ["sailing", "motor", "catamaran", "yacht", "luxury", "party"];
 
