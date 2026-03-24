@@ -112,7 +112,7 @@ const l = (href: string) => localizeHref(href, lang);
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 space-y-24">
     {boatTypes.map((bt, i) => (
       <section id={bt.slug} class="scroll-mt-32" aria-labelledby={`${bt.slug}-heading`}>
-        <div class:list={["grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center", i % 2 !== 0 && "lg:direction-rtl"]}>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <!-- Image -->
           <div class:list={["relative rounded-2xl overflow-hidden aspect-[4/3]", i % 2 !== 0 && "lg:order-2"]}>
             <img
