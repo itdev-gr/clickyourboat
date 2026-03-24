@@ -1,0 +1,26 @@
+# TapYourBoat
+
+> Boat rental and charter platform in Greece. Find and book boats, yachts, and sailing vessels for your next adventure.
+
+## About
+
+TapYourBoat is a boat rental marketplace connecting boat owners with travelers looking for boat charters and rentals across Greek destinations. Whether you're looking for a sailboat, motorboat, catamaran, or yacht, TapYourBoat makes it easy to find and book the perfect vessel.
+
+## Key Pages
+
+- [Homepage](https://tapyourboat.com/)
+- [Boat Rentals](https://tapyourboat.com/boat-rental)
+- [Boat Types](https://tapyourboat.com/boat-types)
+- [Charter Types](https://tapyourboat.com/charter-types)
+- [Destinations](https://tapyourboat.com/destinations)
+- [Blog](https://tapyourboat.com/blog)
+- [Contact](https://tapyourboat.com/contact)
+- [Privacy Policy](https://tapyourboat.com/privacy)
+- [Terms of Service](https://tapyourboat.com/terms)
+
+## Greek Version
+
+- [Homepage (GR)](https://tapyourboat.com/gr)
+- [Boat Rentals (GR)](https://tapyourboat.com/gr/boat-rental)
+- [Destinations (GR)](https://tapyourboat.com/gr/destinations)
+- [Blog (GR)](https://tapyourboat.com/gr/blog)
