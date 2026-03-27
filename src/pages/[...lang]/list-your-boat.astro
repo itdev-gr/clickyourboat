@@ -1365,7 +1365,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { label: tr("lyb.preview.fuel","Fuel"), val: gv("fuelCost") ? gv("fuelCost").replace(/-/g, " ").replace(/^\w/, function (c) { return c.toUpperCase(); }) : "" },
         { label: tr("lyb.preview.licence","Licence"), val: gv("licenceRequired") === "yes" ? tr("lyb.preview.licence_required","Required") : gv("licenceRequired") === "no" ? tr("lyb.preview.licence_not_required","Not required") : "" },
         { label: tr("lyb.preview.deposit","Deposit"), val: gv("securityDeposit") ? "€" + gv("securityDeposit") : "" },
-        { label: tr("lyb.preview.downpayment","Payment options"), val: (() => { try { const opts = JSON.parse(gv("downpaymentPercentage")); return opts.map((o: number) => o === 100 ? "100%" : o + "% prepayment").join(", "); } catch { return gv("downpaymentPercentage"); } })() },
+        { label: tr("lyb.preview.downpayment","Payment options"), val: (function() { try { var opts = JSON.parse(gv("downpaymentPercentage")); return opts.map(function(o) { return o === 100 ? "100%" : o + "% prepayment"; }).join(", "); } catch(e) { return gv("downpaymentPercentage"); } })() },
         { label: tr("lyb.preview.min_days","Min. days"), val: gv("reservationMinDays") && gv("reservationMinDays") !== "0" ? gv("reservationMinDays") : "" },
         { label: tr("lyb.preview.engine","Engine"), val: gv("engineType") ? gv("engineType").charAt(0).toUpperCase() + gv("engineType").slice(1) : "" },
         { label: tr("lyb.preview.year","Year"), val: gv("yearOfConstruction") && gv("yearOfConstruction") !== "0" ? gv("yearOfConstruction") : "" }
