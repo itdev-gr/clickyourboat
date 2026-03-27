@@ -1,0 +1,219 @@
+---
+import { localizeHref } from "../../lib/i18n-utils";
+
+interface Props {
+  lang?: string;
+  activePage: "dashboard" | "account" | "messages" | "my-offers" | "bookings" | "listings" | "favorites";
+}
+
+const { lang, activePage } = Astro.props;
+const l = (href: string) => localizeHref(href, lang);
+
+const active = "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-700 text-white transition-colors";
+const inactive = "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors";
+
+const navItems = [
+  { key: "dashboard", href: "/dashboard", label: "Dashboard", icon: `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>` },
+  { key: "account", href: "/account", label: "Profile", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>` },
+  { key: "messages", href: "/messages", label: "Messages", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>` },
+  { key: "my-offers", href: "/my-offers", label: "My Offers", id: "sidebar-my-offers", conditional: true, icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>` },
+  { key: "bookings", href: "/bookings", label: "Bookings", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>` },
+  { key: "listings", href: "/list-your-boat", label: "Listings", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>` },
+  { key: "payment", href: "/account", label: "Payment information", id: "sidebar-payment", conditional: true, icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>` },
+  { key: "favorites", href: "/favorites", label: "Favourites", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>` },
+];
+---
+
+<!-- ===== Desktop Sidebar ===== -->
+<aside class="hidden lg:flex flex-col w-72 bg-gray-800 text-white flex-shrink-0">
+  <div class="flex flex-col items-center pt-10 pb-6 px-6 border-b border-gray-700">
+    <div id="sidebar-avatar" class="h-24 w-24 rounded-full bg-gray-600 flex items-center justify-center text-2xl font-bold text-white mb-4 overflow-hidden">
+      <img id="sidebar-avatar-img" class="h-full w-full object-cover hidden" alt="" />
+      <span id="sidebar-avatar-initials"></span>
+    </div>
+    <h2 id="sidebar-name" class="text-lg font-bold text-center"></h2>
+  </div>
+  <nav class="flex-1 py-4 px-3 space-y-0.5">
+    {navItems.map((item) => (
+      <a
+        href={l(item.href)}
+        id={item.id}
+        class={`sidebar-link ${item.conditional ? "hidden" : ""} ${item.key === activePage ? active : (item.conditional ? inactive : inactive)}`}
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <Fragment set:html={item.icon} />
+        </svg>
+        {item.label}
+      </a>
+    ))}
+    <div class="pt-2 mt-2 border-t border-gray-700">
+      <button id="sidebar-logout-btn" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors w-full">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+        Log out
+      </button>
+    </div>
+  </nav>
+</aside>
+
+<!-- ===== Mobile Toggle Bar ===== -->
+<div class="lg:hidden bg-gray-800 border-b border-gray-700">
+  <button id="sidebar-mobile-toggle" class="flex items-center gap-2 px-4 py-3 text-white text-sm font-medium w-full" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar-drawer">
+    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+    </svg>
+    Menu
+  </button>
+</div>
+
+<!-- ===== Mobile Sidebar Drawer ===== -->
+<div id="sidebar-drawer" class="fixed inset-0 z-[60] pointer-events-none lg:hidden" aria-hidden="true">
+  <!-- Backdrop -->
+  <div id="sidebar-backdrop" class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300"></div>
+  <!-- Panel — slides from LEFT -->
+  <div id="sidebar-panel" class="absolute top-0 left-0 h-full w-72 max-w-[85vw] bg-gray-800 shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col">
+    <!-- Close header -->
+    <div class="flex items-center justify-between p-4 border-b border-gray-700">
+      <span class="text-white text-sm font-bold">Menu</span>
+      <button id="sidebar-close-btn" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors" aria-label="Close menu">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <!-- Avatar -->
+    <div class="flex flex-col items-center pt-6 pb-4 px-6 border-b border-gray-700">
+      <div id="sidebar-avatar-mobile" class="h-16 w-16 rounded-full bg-gray-600 flex items-center justify-center text-xl font-bold text-white mb-3 overflow-hidden">
+        <img id="sidebar-avatar-img-mobile" class="h-full w-full object-cover hidden" alt="" />
+        <span id="sidebar-avatar-initials-mobile"></span>
+      </div>
+      <h2 id="sidebar-name-mobile" class="text-base font-bold text-center text-white"></h2>
+    </div>
+    <!-- Nav links -->
+    <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
+      {navItems.map((item) => (
+        <a
+          href={l(item.href)}
+          id={item.id ? item.id + "-mobile" : undefined}
+          class={`sidebar-link-mobile ${item.conditional ? "hidden" : ""} ${item.key === activePage ? active : inactive}`}
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <Fragment set:html={item.icon} />
+          </svg>
+          {item.label}
+        </a>
+      ))}
+      <div class="pt-2 mt-2 border-t border-gray-700">
+        <button id="sidebar-logout-btn-mobile" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors w-full">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+          Log out
+        </button>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<script>
+  import { onAuthChange, signOutUser, getUserProfile } from "../../lib/auth";
+
+  // ---- Drawer open/close ----
+  const toggle = document.getElementById("sidebar-mobile-toggle");
+  const drawer = document.getElementById("sidebar-drawer");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  const panel = document.getElementById("sidebar-panel");
+  const closeBtn = document.getElementById("sidebar-close-btn");
+
+  function openSidebar() {
+    drawer!.classList.remove("pointer-events-none");
+    drawer!.setAttribute("aria-hidden", "false");
+    toggle!.setAttribute("aria-expanded", "true");
+    backdrop!.classList.remove("opacity-0");
+    backdrop!.classList.add("opacity-100");
+    panel!.classList.remove("-translate-x-full");
+    panel!.classList.add("translate-x-0");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSidebar() {
+    backdrop!.classList.remove("opacity-100");
+    backdrop!.classList.add("opacity-0");
+    panel!.classList.remove("translate-x-0");
+    panel!.classList.add("-translate-x-full");
+    toggle!.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+    setTimeout(() => {
+      drawer!.classList.add("pointer-events-none");
+      drawer!.setAttribute("aria-hidden", "true");
+    }, 300);
+  }
+
+  toggle?.addEventListener("click", openSidebar);
+  closeBtn?.addEventListener("click", closeSidebar);
+  backdrop?.addEventListener("click", closeSidebar);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && drawer && !drawer.classList.contains("pointer-events-none")) {
+      closeSidebar();
+    }
+  });
+
+  // ---- Populate sidebar (desktop + mobile) ----
+  function getInitials(name: string | null): string {
+    if (!name) return "?";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  const lang = document.documentElement.dataset.langPrefix || "";
+  function localPath(path: string): string {
+    return lang ? "/" + lang + path : path;
+  }
+
+  onAuthChange(async (user) => {
+    if (!user) return;
+
+    const displayName = user.user_metadata?.display_name || user.email || "User";
+    const initials = getInitials(displayName);
+
+    // Populate name & avatar in both desktop and mobile
+    ["sidebar-name", "sidebar-name-mobile"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = displayName;
+    });
+    ["sidebar-avatar-initials", "sidebar-avatar-initials-mobile"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = initials;
+    });
+    if (user.user_metadata?.avatar_url) {
+      ["sidebar-avatar-img", "sidebar-avatar-img-mobile"].forEach(id => {
+        const el = document.getElementById(id) as HTMLImageElement;
+        if (el) {
+          el.src = user.user_metadata!.avatar_url;
+          el.classList.remove("hidden");
+        }
+      });
+    }
+
+    // Show conditional links based on user profile
+    try {
+      const profile = await getUserProfile(user.id);
+      if (profile?.user_type === "owner" || profile?.user_type === "admin") {
+        ["sidebar-my-offers", "sidebar-my-offers-mobile"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.classList.remove("hidden"); el.classList.add("flex"); }
+        });
+        ["sidebar-payment", "sidebar-payment-mobile"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.classList.remove("hidden"); el.classList.add("flex"); }
+        });
+      }
+    } catch (e) {
+      // Silently fail — conditional links stay hidden
+    }
+  });
+
+  // ---- Logout buttons (desktop + mobile) ----
+  ["sidebar-logout-btn", "sidebar-logout-btn-mobile"].forEach(id => {
+    document.getElementById(id)?.addEventListener("click", async () => {
+      await signOutUser();
+      window.location.href = localPath("/");
+    });
+  });
+</script>

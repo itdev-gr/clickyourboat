@@ -3,6 +3,7 @@ import { getLangs, localizeHref } from "../../lib/i18n-utils";
 export function getStaticPaths() { return getLangs(); }
 const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
+import DashboardSidebar from "../../components/layout/DashboardSidebar.astro";
 
 const title = "Dashboard — TapYourBoat";
 const description = "Your TapYourBoat dashboard — view recent messages and your boat listings at a glance.";
@@ -38,58 +39,9 @@ const l = (href: string) => localizeHref(href, lang);
 
   <!-- Dashboard content -->
   <div id="dashboard-content" class="hidden">
-    <div class="flex min-h-[calc(100vh-64px)]">
+    <div class="flex flex-col lg:flex-row min-h-[calc(100vh-64px)]">
 
-      <!-- ===== Left Sidebar ===== -->
-      <aside class="hidden lg:flex flex-col w-72 bg-gray-800 text-white flex-shrink-0">
-        <div class="flex flex-col items-center pt-10 pb-6 px-6 border-b border-gray-700">
-          <div id="sidebar-avatar" class="h-24 w-24 rounded-full bg-gray-600 flex items-center justify-center text-2xl font-bold text-white mb-4 overflow-hidden">
-            <img id="sidebar-avatar-img" class="h-full w-full object-cover hidden" alt="" />
-            <span id="sidebar-avatar-initials"></span>
-          </div>
-          <h2 id="sidebar-name" class="text-lg font-bold text-center"></h2>
-        </div>
-        <nav class="flex-1 py-4 px-3 space-y-0.5">
-          <a href={l("/dashboard")} class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-700 text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            Dashboard
-          </a>
-          <a href={l("/account")} class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-            Profile
-          </a>
-          <a href={l("/messages")} class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
-            Messages
-          </a>
-          <a id="sidebar-my-offers" href={l("/my-offers")} class="sidebar-link hidden items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
-            My Offers
-          </a>
-          <a href={l("/bookings")} class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-            Bookings
-          </a>
-          <a href={l("/list-your-boat")} class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
-            Listings
-          </a>
-          <a id="sidebar-payment" href={l("/account")} class="sidebar-link hidden items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
-            Payment information
-          </a>
-          <a href={l("/favorites")} class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
-            Favourites
-          </a>
-          <div class="pt-2 mt-2 border-t border-gray-700">
-            <button id="sidebar-logout-btn" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors w-full">
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
-              Log out
-            </button>
-          </div>
-        </nav>
-      </aside>
+      <DashboardSidebar lang={lang} activePage="dashboard" />
 
       <!-- ===== Main Content ===== -->
       <main class="flex-1 bg-gray-50 overflow-y-auto">
@@ -183,7 +135,7 @@ const l = (href: string) => localizeHref(href, lang);
 
 <script>
   import { supabase } from "../../lib/supabase";
-  import { onAuthChange, signOutUser } from "../../lib/auth";
+  import { onAuthChange } from "../../lib/auth";
   import { getUserOrders, cancelOrder } from "../../lib/api";
 
   // ---- Detect language ----
@@ -249,30 +201,10 @@ const l = (href: string) => localizeHref(href, lang);
     gate?.classList.add("hidden");
     content?.classList.remove("hidden");
 
-    // Set sidebar info
-    const initials = getInitials(user.user_metadata?.display_name);
-    const displayName = user.user_metadata?.display_name || user.email || "User";
-    const sidebarName = $("sidebar-name");
-    const sidebarInitials = $("sidebar-avatar-initials");
-    const sidebarImg = $("sidebar-avatar-img") as HTMLImageElement;
-
-    if (sidebarName) sidebarName.textContent = displayName;
-    if (sidebarInitials) sidebarInitials.textContent = initials;
-    if (user.user_metadata?.avatar_url && sidebarImg) {
-      sidebarImg.src = user.user_metadata?.avatar_url;
-      sidebarImg.classList.remove("hidden");
-    }
-
     // Load all sections in parallel
     loadRecentMessages(user.id);
     loadYourListings(user.id);
     loadUserBookings(user.id);
-  });
-
-  // ---- Sidebar logout ----
-  $("sidebar-logout-btn")?.addEventListener("click", async () => {
-    await signOutUser();
-    window.location.href = localPath("/");
   });
 
   // ---- Recent Messages ----

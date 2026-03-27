@@ -749,22 +749,60 @@ const l = (href: string) => localizeHref(href, lang);
     tbody?.querySelectorAll(".user-type-select").forEach(sel => {
       sel.addEventListener("change", async () => {
         const uid = sel.getAttribute("data-uid")!;
-        const newType = (sel as HTMLSelectElement).value as "user" | "owner" | "admin";
+        const selectEl = sel as HTMLSelectElement;
+        const newType = selectEl.value as "user" | "owner" | "admin";
+        const oldType = sel.getAttribute("data-current")!;
         if (!confirm(`Change this user's role to "${newType}"?`)) {
-          (sel as HTMLSelectElement).value = sel.getAttribute("data-current")!;
+          selectEl.value = oldType;
           return;
         }
         try {
-          (sel as HTMLSelectElement).disabled = true;
+          selectEl.disabled = true;
+
+          // Immediately update the badge in the same row for instant feedback
+          const row = sel.closest("tr");
+          if (row) {
+            const badgeCell = row.querySelectorAll("td")[2];
+            if (badgeCell) badgeCell.innerHTML = typeBadgeHtml(newType);
+          }
+          sel.setAttribute("data-current", newType);
+
+          // Persist to database
           await updateUserType(uid, newType);
+
+          // Update local data and fully re-render table
           const idx = allUsersData.findIndex(u => u.uid === uid);
           if (idx >= 0) allUsersData[idx].type = newType;
-          renderUsersTable(allUsersData);
+          await renderUsersTable(allUsersData);
+
+          // Re-apply search filter if active
+          const searchInput = $("users-search") as HTMLInputElement;
+          if (searchInput && searchInput.value) {
+            const term = searchInput.value.toLowerCase();
+            document.querySelectorAll(".user-row").forEach(r => {
+              const search = r.getAttribute("data-search") || "";
+              (r as HTMLElement).style.display = search.includes(term) ? "" : "none";
+            });
+          }
+
+          // Brief success flash on the updated row
+          const updatedRow = tbody?.querySelector(`tr[data-uid="${uid}"]`) as HTMLElement;
+          if (updatedRow) {
+            updatedRow.classList.add("bg-green-50");
+            setTimeout(() => updatedRow.classList.remove("bg-green-50"), 1500);
+          }
         } catch (err) {
           console.error("Type change failed:", err);
           alert("Failed to update user type.");
-          (sel as HTMLSelectElement).value = sel.getAttribute("data-current")!;
-          (sel as HTMLSelectElement).disabled = false;
+          selectEl.value = oldType;
+          sel.setAttribute("data-current", oldType);
+          // Revert badge
+          const row = sel.closest("tr");
+          if (row) {
+            const badgeCell = row.querySelectorAll("td")[2];
+            if (badgeCell) badgeCell.innerHTML = typeBadgeHtml(oldType);
+          }
+          selectEl.disabled = false;
         }
       });
     });
@@ -778,7 +816,7 @@ const l = (href: string) => localizeHref(href, lang);
         try {
           await adminDeleteUser(uid);
           allUsersData = allUsersData.filter(u => u.uid !== uid);
-          renderUsersTable(allUsersData);
+          await renderUsersTable(allUsersData);
         } catch (err) {
           console.error("Delete failed:", err);
           alert("Failed to delete user.");
