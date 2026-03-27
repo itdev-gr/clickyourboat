@@ -151,7 +151,15 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
           </section>
 
-          <!-- Payment Options -->
+          <!-- Prepayment Info Banner (shown when only 30% is available) -->
+          <section id="prepayment-info-only" class="hidden">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-center gap-2">
+              <svg class="h-5 w-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+              <p class="text-sm text-blue-800">This boat requires a <strong>30% prepayment</strong>. The remaining 70% is due before your trip.</p>
+            </div>
+          </section>
+
+          <!-- Payment Options (shown when both 30% and 100% are available) -->
           <section id="payment-options-section" class="hidden">
             <h2 class="text-lg font-bold text-text mb-2">Payment options</h2>
             <p class="text-sm text-text-muted mb-3">Choose how you'd like to pay for your booking.</p>
@@ -424,18 +432,21 @@ const l = (href: string) => localizeHref(href, lang);
       const hasPrepay = paymentOptions.includes(30);
       const hasFull = paymentOptions.includes(100);
 
-      if (payOptSection && (hasPrepay || hasFull)) {
-        payOptSection.classList.remove("hidden");
-        if (hasPrepay && payOptPrepay) {
-          payOptPrepay.classList.remove("hidden");
-          (payOptPrepay.querySelector("input") as HTMLInputElement).checked = true;
-        }
-        if (hasFull && payOptFull) payOptFull.classList.remove("hidden");
-        if (hasPrepay && hasFull && payOptDivider) payOptDivider.classList.remove("hidden");
-        if (!hasPrepay && hasFull) (payOptFull!.querySelector("input") as HTMLInputElement).checked = true;
-      }
+      let selectedPaymentOption: "prepayment" | "full" = "full";
 
-      let selectedPaymentOption: "prepayment" | "full" = hasPrepay ? "prepayment" : "full";
+      if (hasPrepay && hasFull) {
+        // Both options → show radio buttons for renter to choose
+        payOptSection?.classList.remove("hidden");
+        if (payOptPrepay) { payOptPrepay.classList.remove("hidden"); (payOptPrepay.querySelector("input") as HTMLInputElement).checked = true; }
+        if (payOptFull) payOptFull.classList.remove("hidden");
+        if (payOptDivider) payOptDivider.classList.remove("hidden");
+        selectedPaymentOption = "prepayment";
+      } else if (hasPrepay && !hasFull) {
+        // Only prepayment → show info banner, no choice
+        $("prepayment-info-only")?.classList.remove("hidden");
+        selectedPaymentOption = "prepayment";
+      }
+      // Only 100% or null → no section shown, selectedPaymentOption stays "full"
 
       // Price calculation state
       let insuranceCostPerDay = 47;
