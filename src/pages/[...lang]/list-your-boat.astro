@@ -1818,7 +1818,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         return {
           pricePerDay: gn("pricePerDay"), currency: "EUR", pricePeriods: periods, reservationMinDays: gn("reservationMinDays"), reservationMaxDays: gn("reservationMaxDays"), securityDeposit: gn("securityDeposit"),
-          bookingMode: gv("bookingMode") || "confirmation", checkInTime: gv("checkInTime"), checkOutTime: gv("checkOutTime"), checkInTimeDayRental: gv("checkInTimeDayRental"), checkOutTimeDayRental: gv("checkOutTimeDayRental"), downpaymentPercentage: gv("downpaymentPercentage"), fuelCost: gv("fuelCost"), licenceRequired: gv("licenceRequired"),
+          bookingMode: gv("bookingMode") || "confirmation", checkInTime: gv("checkInTime"), checkOutTime: gv("checkOutTime"), checkInTimeDayRental: gv("checkInTimeDayRental"), checkOutTimeDayRental: gv("checkOutTimeDayRental"), downpaymentPercentage: (function() { try { return JSON.parse(gv("downpaymentPercentage")); } catch(e) { return [100]; } })(), fuelCost: gv("fuelCost"), licenceRequired: gv("licenceRequired"),
           discounts, extras
         };
       }

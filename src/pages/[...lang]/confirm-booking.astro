@@ -408,7 +408,12 @@ const l = (href: string) => localizeHref(href, lang);
       let paymentOptions: number[] = [100];
       const rawOpts = boat.downpaymentPercentage;
       if (Array.isArray(rawOpts)) paymentOptions = rawOpts;
-      else if (typeof rawOpts === "string") { try { paymentOptions = JSON.parse(rawOpts); } catch { paymentOptions = [Number(rawOpts) || 100]; } }
+      else if (typeof rawOpts === "string") {
+        try {
+          const parsed = JSON.parse(rawOpts);
+          paymentOptions = Array.isArray(parsed) ? parsed : [parsed];
+        } catch { paymentOptions = [Number(rawOpts) || 100]; }
+      }
       else if (typeof rawOpts === "number") paymentOptions = [rawOpts];
 
       // Show payment options section

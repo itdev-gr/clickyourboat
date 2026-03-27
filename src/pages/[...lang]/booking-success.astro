@@ -20,6 +20,10 @@ const l = (href: string) => localizeHref(href, lang);
       <p class="text-text-muted mb-2">Your payment was successful and your booking request has been sent to the owner.</p>
       <p class="text-text-muted mb-6 text-sm">You will receive a confirmation once the owner approves your booking.</p>
 
+      <div id="confirmation-warning" class="hidden mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left">
+        <p class="text-sm font-medium text-amber-800">Your payment was received, but automatic confirmation is still processing. Don't worry — our team will confirm your booking shortly.</p>
+      </div>
+
       <!-- Booking details parsed from URL params -->
       <div id="booking-details" class="hidden mb-8 rounded-xl border border-gray-200 bg-gray-50 p-5 text-left">
         <h2 class="text-sm font-bold text-text uppercase tracking-wide mb-3">Booking Details</h2>
@@ -71,9 +75,15 @@ const l = (href: string) => localizeHref(href, lang);
             body: JSON.stringify({ sessionId }),
           });
           const data = await res.json();
-          if (!res.ok) console.error("Order confirmation failed:", data.error);
+          if (!res.ok) {
+            console.error("Order confirmation failed:", data.error);
+            const w = document.getElementById("confirmation-warning");
+            if (w) w.classList.remove("hidden");
+          }
         } catch (err) {
           console.error("Order confirmation failed:", err);
+          const w = document.getElementById("confirmation-warning");
+          if (w) w.classList.remove("hidden");
         }
       }
 

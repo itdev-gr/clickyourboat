@@ -45,11 +45,14 @@ Deno.serve(async (req) => {
       .update({ payment_status: "succeeded", status: "confirmed" })
       .eq("checkout_session_id", sessionId)
       .select("id, boat_id, owner_id, renter_id, start_date, end_date")
-      .single();
+      .maybeSingle();
 
-    if (updateErr || !order) {
-      console.error("[confirm-order] Update failed:", updateErr);
-      return json({ error: "Order not found or update failed" }, 500);
+    if (updateErr) {
+      console.error("[confirm-order] Update error:", JSON.stringify(updateErr));
+      return json({ error: "Failed to update order" }, 500);
+    }
+    if (!order) {
+      return json({ error: "No order found for this session" }, 404);
     }
 
     return json({ success: true, orderId: order.id });

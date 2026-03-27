@@ -60,6 +60,16 @@ Deno.serve(async (req) => {
     const boatImage = boat.images?.[0] || "";
     const actualOwnerId = ownerId || boat.owner_id || "";
 
+    // --- Validate payment option against boat config ---
+    let allowedOptions: number[] = [100];
+    const rawDp = boat.downpayment_percentage;
+    if (Array.isArray(rawDp)) allowedOptions = rawDp;
+    else if (typeof rawDp === "number") allowedOptions = [rawDp];
+
+    if (paymentOption === "prepayment" && !allowedOptions.includes(30)) {
+      return json({ error: "This boat does not offer prepayment" }, 400);
+    }
+
     // --- Fetch charge settings ---
     const { data: settingsRow } = await supabase.from("settings").select("value").eq("key", "charges").maybeSingle();
     const charges = settingsRow?.value || {};
