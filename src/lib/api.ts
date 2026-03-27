@@ -788,6 +788,7 @@ function mapOrderRow(row: any): Order {
     id: row.id,
     boatId: row.boat_id,
     boatTitle: row.boat_title,
+    boatImage: row.boat_image || undefined,
     renterId: row.renter_id,
     renterName: row.renter_name,
     ownerId: row.owner_id,

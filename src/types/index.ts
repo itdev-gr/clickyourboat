@@ -238,6 +238,7 @@ export interface Order {
   id: string;
   boatId: string;
   boatTitle: string;
+  boatImage?: string;
   renterId: string;
   renterName: string;
   ownerId: string;
