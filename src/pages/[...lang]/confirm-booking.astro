@@ -151,6 +151,29 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
           </section>
 
+          <!-- Payment Options -->
+          <section id="payment-options-section" class="hidden">
+            <h2 class="text-lg font-bold text-text mb-2">Payment options</h2>
+            <p class="text-sm text-text-muted mb-3">Choose how you'd like to pay for your booking.</p>
+            <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
+              <label id="payment-opt-prepayment" class="payment-option hidden flex items-start gap-3 px-4 py-4 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="payment-option" value="prepayment" class="mt-1 accent-primary" />
+                <div>
+                  <p class="text-sm font-semibold text-text">30% Prepayment</p>
+                  <p class="text-xs text-text-muted mt-0.5">Pay 30% now, remaining 70% due before your trip.</p>
+                </div>
+              </label>
+              <div id="payment-opt-divider" class="hidden border-t border-gray-200"></div>
+              <label id="payment-opt-full" class="payment-option hidden flex items-start gap-3 px-4 py-4 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="payment-option" value="full" class="mt-1 accent-primary" />
+                <div>
+                  <p class="text-sm font-semibold text-text">100% Full payment</p>
+                  <p class="text-xs text-text-muted mt-0.5">Pay the full amount now.</p>
+                </div>
+              </label>
+            </div>
+          </section>
+
           <!-- Cancellation Conditions -->
           <section>
             <h2 class="text-lg font-bold text-text mb-2">Cancellation conditions</h2>
@@ -267,8 +290,12 @@ const l = (href: string) => localizeHref(href, lang);
                   <span class="text-text font-medium" id="price-deposit-val">&euro;0</span>
                 </div>
                 <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
-                  <span class="font-bold text-text">Total</span>
+                  <span class="font-bold text-text" id="price-total-label">Total</span>
                   <span class="font-bold text-text" id="price-total">&euro;0</span>
+                </div>
+                <div id="price-balance-row" class="hidden flex justify-between mt-1">
+                  <span class="text-text-muted text-xs">Balance due later (70%)</span>
+                  <span class="text-text-muted text-xs font-medium" id="price-balance-val">&euro;0</span>
                 </div>
               </div>
 
@@ -377,6 +404,34 @@ const l = (href: string) => localizeHref(href, lang);
       if (fromEl) fromEl.textContent = `From ${fmtDate(startDate)}`;
       if (toEl) toEl.textContent = `To ${fmtDate(endDate)}`;
 
+      // Payment options setup
+      let paymentOptions: number[] = [100];
+      const rawOpts = boat.downpaymentPercentage;
+      if (Array.isArray(rawOpts)) paymentOptions = rawOpts;
+      else if (typeof rawOpts === "string") { try { paymentOptions = JSON.parse(rawOpts); } catch { paymentOptions = [Number(rawOpts) || 100]; } }
+      else if (typeof rawOpts === "number") paymentOptions = [rawOpts];
+
+      // Show payment options section
+      const payOptSection = $("payment-options-section");
+      const payOptPrepay = $("payment-opt-prepayment");
+      const payOptFull = $("payment-opt-full");
+      const payOptDivider = $("payment-opt-divider");
+      const hasPrepay = paymentOptions.includes(30);
+      const hasFull = paymentOptions.includes(100);
+
+      if (payOptSection && (hasPrepay || hasFull)) {
+        payOptSection.classList.remove("hidden");
+        if (hasPrepay && payOptPrepay) {
+          payOptPrepay.classList.remove("hidden");
+          (payOptPrepay.querySelector("input") as HTMLInputElement).checked = true;
+        }
+        if (hasFull && payOptFull) payOptFull.classList.remove("hidden");
+        if (hasPrepay && hasFull && payOptDivider) payOptDivider.classList.remove("hidden");
+        if (!hasPrepay && hasFull) (payOptFull!.querySelector("input") as HTMLInputElement).checked = true;
+      }
+
+      let selectedPaymentOption: "prepayment" | "full" = hasPrepay ? "prepayment" : "full";
+
       // Price calculation state
       let insuranceCostPerDay = 47;
       let weatherCostPerDay = 0;
@@ -386,48 +441,40 @@ const l = (href: string) => localizeHref(href, lang);
         const insuranceTot = insuranceCostPerDay * days;
         const weatherTot = weatherCostPerDay * days;
         const skipperTot = skipperCostPerDay * days;
-        const subtotal = charterPrice + insuranceTot + weatherTot + skipperTot;
-        const platformFee = Math.round(subtotal * platformFeePercent) / 100;
-        const total = subtotal + serviceFee + platformFee + securityDeposit;
+        // Platform fee always on full charter price
+        const fullSubtotal = charterPrice + insuranceTot + weatherTot + skipperTot;
+        const platformFee = Math.round(fullSubtotal * platformFeePercent) / 100;
 
-        // Update price sidebar
-        const fmt = (n: number) => "\u20AC" + n.toLocaleString();
+        const isPrepay = selectedPaymentOption === "prepayment";
+        const charterDisplay = isPrepay ? Math.round(charterPrice * 0.3 * 100) / 100 : charterPrice;
+        const charterBalance = isPrepay ? charterPrice - charterDisplay : 0;
+        const total = charterDisplay + insuranceTot + weatherTot + skipperTot + serviceFee + platformFee + securityDeposit;
+
+        const fmt = (n: number) => "\u20AC" + n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
         const charterEl = $("price-charter");
-        if (charterEl) charterEl.textContent = fmt(charterPrice);
+        if (charterEl) charterEl.textContent = fmt(charterDisplay);
 
         const insRow = $("price-insurance-row");
         const insVal = $("price-insurance-val");
         if (insuranceTot > 0) {
-          insRow?.classList.remove("hidden");
-          insRow?.classList.add("flex");
+          insRow?.classList.remove("hidden"); insRow?.classList.add("flex");
           if (insVal) insVal.textContent = fmt(insuranceTot);
-        } else {
-          insRow?.classList.add("hidden");
-          insRow?.classList.remove("flex");
-        }
+        } else { insRow?.classList.add("hidden"); insRow?.classList.remove("flex"); }
 
         const skipRow = $("price-skipper-row");
         const skipVal = $("price-skipper-val");
         if (skipperTot > 0) {
-          skipRow?.classList.remove("hidden");
-          skipRow?.classList.add("flex");
+          skipRow?.classList.remove("hidden"); skipRow?.classList.add("flex");
           if (skipVal) skipVal.textContent = fmt(skipperTot);
-        } else {
-          skipRow?.classList.add("hidden");
-          skipRow?.classList.remove("flex");
-        }
+        } else { skipRow?.classList.add("hidden"); skipRow?.classList.remove("flex"); }
 
         const weaRow = $("price-weather-row");
         const weaVal = $("price-weather-val");
         if (weatherTot > 0) {
-          weaRow?.classList.remove("hidden");
-          weaRow?.classList.add("flex");
+          weaRow?.classList.remove("hidden"); weaRow?.classList.add("flex");
           if (weaVal) weaVal.textContent = fmt(weatherTot);
-        } else {
-          weaRow?.classList.add("hidden");
-          weaRow?.classList.remove("flex");
-        }
+        } else { weaRow?.classList.add("hidden"); weaRow?.classList.remove("flex"); }
 
         const serviceEl = $("price-service");
         if (serviceEl) serviceEl.textContent = fmt(serviceFee);
@@ -435,27 +482,29 @@ const l = (href: string) => localizeHref(href, lang);
         const platRow = $("price-platform-row");
         const platVal = $("price-platform-val");
         if (platformFee > 0) {
-          platRow?.classList.remove("hidden");
-          platRow?.classList.add("flex");
+          platRow?.classList.remove("hidden"); platRow?.classList.add("flex");
           if (platVal) platVal.textContent = fmt(platformFee);
-        } else {
-          platRow?.classList.add("hidden");
-          platRow?.classList.remove("flex");
-        }
+        } else { platRow?.classList.add("hidden"); platRow?.classList.remove("flex"); }
 
         const depRow = $("price-deposit-row");
         const depVal = $("price-deposit-val");
         if (securityDeposit > 0) {
-          depRow?.classList.remove("hidden");
-          depRow?.classList.add("flex");
+          depRow?.classList.remove("hidden"); depRow?.classList.add("flex");
           if (depVal) depVal.textContent = fmt(securityDeposit);
-        } else {
-          depRow?.classList.add("hidden");
-          depRow?.classList.remove("flex");
-        }
+        } else { depRow?.classList.add("hidden"); depRow?.classList.remove("flex"); }
 
+        // Total and balance
+        const totalLabel = $("price-total-label");
         const totalEl = $("price-total");
+        if (totalLabel) totalLabel.textContent = isPrepay ? "Pay now (30%)" : "Total";
         if (totalEl) totalEl.textContent = fmt(total);
+
+        const balRow = $("price-balance-row");
+        const balVal = $("price-balance-val");
+        if (isPrepay && charterBalance > 0) {
+          balRow?.classList.remove("hidden"); balRow?.classList.add("flex");
+          if (balVal) balVal.textContent = fmt(charterBalance);
+        } else { balRow?.classList.add("hidden"); balRow?.classList.remove("flex"); }
 
         // Confirm button
         const confirmBtnAmt = $("confirm-btn-amount");
@@ -492,6 +541,15 @@ const l = (href: string) => localizeHref(href, lang);
         });
       });
 
+      // Radio change handlers - payment option
+      document.querySelectorAll('input[name="payment-option"]').forEach(r => {
+        r.addEventListener("change", () => {
+          selectedPaymentOption = (r as HTMLInputElement).value as "prepayment" | "full";
+          highlightRadioGroup("payment-option", "payment-option");
+          recalcPrices();
+        });
+      });
+
       function highlightRadioGroup(labelClass: string, radioName: string) {
         document.querySelectorAll(`.${labelClass}`).forEach(lbl => {
           const input = lbl.querySelector(`input[name="${radioName}"]`) as HTMLInputElement;
@@ -507,6 +565,7 @@ const l = (href: string) => localizeHref(href, lang);
 
       // Initial calculation
       highlightRadioGroup("insurance-option", "insurance");
+      highlightRadioGroup("payment-option", "payment-option");
       recalcPrices();
 
       // Show page
@@ -561,6 +620,7 @@ const l = (href: string) => localizeHref(href, lang);
               insuranceType: insuranceRadio?.value || "none",
               withSkipper: skipperRadio?.value === "with-skipper",
               weatherGuarantee: weatherRadio?.value === "yes",
+              paymentOption: selectedPaymentOption,
             }),
           });
 

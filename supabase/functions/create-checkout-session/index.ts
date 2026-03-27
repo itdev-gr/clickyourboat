@@ -16,6 +16,7 @@ function json(body: Record<string, unknown>, status = 200) {
 const INSURANCE_RATES: Record<string, number> = { "multi-risk": 47, "assistance": 29, "none": 0 };
 const SKIPPER_PER_DAY = 100;
 const WEATHER_PER_DAY = 14;
+const DEFAULT_SITE_URL = "https://tapyourboat.com";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -32,11 +33,13 @@ Deno.serve(async (req) => {
       boatId, renterId, renterEmail, renterName, ownerId,
       startDate, endDate, siteUrl,
       insuranceType = "none", withSkipper = false, weatherGuarantee = false,
+      paymentOption = "full",
     } = body;
 
-    if (!boatId || !renterId || !startDate || !endDate || !siteUrl) {
+    if (!boatId || !renterId || !startDate || !endDate) {
       return json({ error: "Missing required fields" }, 400);
     }
+    const resolvedSiteUrl = siteUrl || DEFAULT_SITE_URL;
     const start = new Date(startDate);
     const end = new Date(endDate);
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
@@ -47,7 +50,7 @@ Deno.serve(async (req) => {
     // --- Fetch boat ---
     const { data: boat, error: boatErr } = await supabase
       .from("boats")
-      .select("id, price_per_day, price, security_deposit, manufacturer, model, listing_title, boat_name, images, owner_id")
+      .select("id, price_per_day, price, security_deposit, downpayment_percentage, manufacturer, model, listing_title, boat_name, images, owner_id")
       .eq("id", boatId).maybeSingle();
     if (boatErr || !boat) return json({ error: "Boat not found" }, 400);
 
@@ -68,12 +71,22 @@ Deno.serve(async (req) => {
     const insuranceTot = (INSURANCE_RATES[insuranceType] || 0) * days;
     const skipperTot = withSkipper ? SKIPPER_PER_DAY * days : 0;
     const weatherTot = weatherGuarantee ? WEATHER_PER_DAY * days : 0;
-    const subtotal = charterPrice + insuranceTot + skipperTot + weatherTot;
-    const platformFee = Math.round(subtotal * platformFeePercent) / 100;
-    const total = subtotal + serviceFee + platformFee + securityDeposit;
+    // Platform fee always on full charter price
+    const fullSubtotal = charterPrice + insuranceTot + skipperTot + weatherTot;
+    const platformFee = Math.round(fullSubtotal * platformFeePercent) / 100;
+
+    // Handle prepayment: charge 30% of charter price + full fees
+    const isPrepay = paymentOption === "prepayment";
+    const charterCharged = isPrepay ? Math.round(charterPrice * 0.3 * 100) / 100 : charterPrice;
+    const charterBalance = isPrepay ? charterPrice - charterCharged : 0;
+    const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit;
+    const fullTotal = charterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit;
     if (total <= 0) return json({ error: "Calculated total must be positive" }, 400);
 
-    const breakdown = { charterPrice, insuranceTot, skipperTot, weatherTot, serviceFee, platformFee, securityDeposit, days, pricePerDay };
+    const breakdown = {
+      charterPrice, charterCharged, charterBalance, insuranceTot, skipperTot, weatherTot,
+      serviceFee, platformFee, securityDeposit, days, pricePerDay, paymentOption, fullTotal,
+    };
 
     // --- Check availability ---
     const { data: overlapping } = await supabase.from("orders").select("id")
@@ -98,15 +111,15 @@ Deno.serve(async (req) => {
     }
 
     // --- Create Stripe Checkout Session ---
-    const cancelUrl = `${siteUrl}/confirm-booking?boatId=${boatId}&startDate=${startDate}&endDate=${endDate}`;
-    const successUrl = `${siteUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}&startDate=${startDate}&endDate=${endDate}`;
+    const cancelUrl = `${resolvedSiteUrl}/confirm-booking?boatId=${boatId}&startDate=${startDate}&endDate=${endDate}`;
+    const successUrl = `${resolvedSiteUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}&startDate=${startDate}&endDate=${endDate}`;
 
     const params = new URLSearchParams();
     params.append("mode", "payment");
     params.append("success_url", successUrl);
     params.append("cancel_url", cancelUrl);
     params.append("line_items[0][price_data][currency]", "eur");
-    params.append("line_items[0][price_data][product_data][name]", `Boat Charter: ${boatTitle}`);
+    params.append("line_items[0][price_data][product_data][name]", isPrepay ? `Boat Charter (30% Prepayment): ${boatTitle}` : `Boat Charter: ${boatTitle}`);
     params.append("line_items[0][price_data][product_data][description]", `${days} day${days > 1 ? "s" : ""} · ${startDate} to ${endDate}`);
     params.append("line_items[0][price_data][unit_amount]", String(Math.round(total * 100)));
     params.append("line_items[0][quantity]", "1");
