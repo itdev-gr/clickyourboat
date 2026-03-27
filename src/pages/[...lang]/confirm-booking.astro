@@ -203,55 +203,6 @@ const l = (href: string) => localizeHref(href, lang);
 
         </div>
 
-  <!-- ===== Stripe Payment Modal ===== -->
-  <div id="payment-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
-    <div id="payment-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-        <div>
-          <h3 id="payment-modal-title" class="text-lg font-bold text-text">Secure Payment</h3>
-          <p class="text-sm text-text-muted">Complete your booking</p>
-        </div>
-        <button id="payment-modal-close" type="button" class="h-8 w-8 rounded-full flex items-center justify-center text-gray-400 hover:text-text hover:bg-gray-100 transition-colors">
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <!-- Modal Body -->
-      <div class="px-6 py-5 space-y-5">
-        <!-- Amount Summary -->
-        <div class="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-          <span class="text-sm text-text-muted">Total amount</span>
-          <span class="text-lg font-bold text-text" id="modal-total">&euro;0</span>
-        </div>
-        <!-- Stripe Payment Element -->
-        <div>
-          <label class="block text-sm font-semibold text-text mb-2">Card details</label>
-          <div id="card-element" class="border border-gray-300 rounded-lg px-3 py-3 focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all"></div>
-          <p id="card-errors" class="text-sm text-red-600 mt-2 hidden"></p>
-        </div>
-        <!-- Pay Button -->
-        <button id="pay-btn" type="button"
-          class="w-full rounded-xl bg-primary px-6 py-3.5 text-base font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-          Pay now &middot; <span id="pay-btn-amount">&euro;0</span>
-        </button>
-        <!-- Trust badges -->
-        <div class="flex items-center justify-center gap-4 text-xs text-text-muted pt-1">
-          <div class="flex items-center gap-1">
-            <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-            SSL Encrypted
-          </div>
-          <div class="flex items-center gap-1">
-            <svg class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
-            Powered by Stripe
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
         <!-- ===== Right Sidebar ===== -->
         <div class="hidden lg:block">
           <div class="sticky top-20 space-y-4">
@@ -337,7 +288,6 @@ const l = (href: string) => localizeHref(href, lang);
   import { supabase } from "../../lib/supabase";
   import { onAuthChange } from "../../lib/auth";
   import { getBoatListing, getChargeSettings, sendBookingNotification } from "../../lib/api";
-  import { loadStripe } from "@stripe/stripe-js";
 
   const $ = (id: string) => document.getElementById(id);
 
@@ -563,11 +513,8 @@ const l = (href: string) => localizeHref(href, lang);
       $("page-loading")?.classList.add("hidden");
       $("page-content")?.classList.remove("hidden");
 
-      // Confirm button + Stripe payment modal
+      // Auth state
       let currentUser: any = null;
-      let stripeInstance: any = null;
-      let cardElement: any = null;
-      let currentClientSecret: string | null = null;
 
       onAuthChange((user) => {
         currentUser = user;
@@ -576,60 +523,7 @@ const l = (href: string) => localizeHref(href, lang);
         }
       });
 
-      // Init Stripe.js and Card Element
-      async function initStripe() {
-        if (stripeInstance) return;
-        const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY;
-        stripeInstance = await loadStripe(publishableKey);
-        const elements = stripeInstance.elements();
-        cardElement = elements.create("card", {
-          style: {
-            base: {
-              fontSize: "16px",
-              color: "#1e293b",
-              fontFamily: "system-ui, -apple-system, sans-serif",
-              "::placeholder": { color: "#94a3b8" },
-            },
-            invalid: { color: "#ef4444" },
-          },
-        });
-        cardElement.mount("#card-element");
-        cardElement.on("change", (event: any) => {
-          const errEl = $("card-errors");
-          if (event.error) {
-            if (errEl) { errEl.textContent = event.error.message; errEl.classList.remove("hidden"); }
-          } else {
-            if (errEl) errEl.classList.add("hidden");
-          }
-        });
-      }
-
-      function openPaymentModal(total: number) {
-        const fmt = (n: number) => "\u20AC" + n.toLocaleString();
-        const modalTotal = $("modal-total");
-        const payBtnAmt = $("pay-btn-amount");
-        if (modalTotal) modalTotal.textContent = fmt(total);
-        if (payBtnAmt) payBtnAmt.textContent = fmt(total);
-        $("payment-modal")?.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
-      }
-
-      function closePaymentModal() {
-        $("payment-modal")?.classList.add("hidden");
-        document.body.style.overflow = "";
-        const confirmBtn = $("confirm-btn") as HTMLButtonElement;
-        if (confirmBtn) {
-          confirmBtn.disabled = false;
-          confirmBtn.innerHTML = `Confirm and pay &middot; <span id="confirm-btn-amount">${confirmBtn.dataset.lastAmount || "\u20AC0"}</span>`;
-        }
-      }
-
-      // Close modal handlers
-      $("payment-modal-close")?.addEventListener("click", closePaymentModal);
-      $("payment-backdrop")?.addEventListener("click", closePaymentModal);
-
-      // Confirm button -> open modal + create PaymentIntent (server-side pricing)
-      let currentPaymentIntentId: string | null = null;
+      // Confirm button -> create Checkout Session and redirect to Stripe
       const confirmBtn = $("confirm-btn") as HTMLButtonElement;
       confirmBtn?.addEventListener("click", async () => {
         $("confirm-error")?.classList.add("hidden");
@@ -640,15 +534,14 @@ const l = (href: string) => localizeHref(href, lang);
         }
 
         confirmBtn.disabled = true;
-        confirmBtn.textContent = getLangPrefix() === "gr" ? "Προετοιμασία πληρωμής..." : "Preparing payment...";
+        confirmBtn.textContent = getLangPrefix() === "gr" ? "Μετάβαση στην πληρωμή..." : "Redirecting to payment...";
 
         try {
-          await initStripe();
-
-          // Get current selections
           const insuranceRadio = document.querySelector('input[name="insurance"]:checked') as HTMLInputElement;
           const skipperRadio = document.querySelector('input[name="rental-type"]:checked') as HTMLInputElement;
           const weatherRadio = document.querySelector('input[name="weather"]:checked') as HTMLInputElement;
+
+          const siteUrl = window.location.origin + (getLangPrefix() ? "/" + getLangPrefix() : "");
 
           const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/create-checkout-session`, {
             method: "POST",
@@ -664,6 +557,7 @@ const l = (href: string) => localizeHref(href, lang);
               ownerId,
               startDate: startDateStr!,
               endDate: endDateStr!,
+              siteUrl,
               insuranceType: insuranceRadio?.value || "none",
               withSkipper: skipperRadio?.value === "with-skipper",
               weatherGuarantee: weatherRadio?.value === "yes",
@@ -673,85 +567,14 @@ const l = (href: string) => localizeHref(href, lang);
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Failed to create payment");
 
-          currentClientSecret = data.clientSecret;
-          currentPaymentIntentId = data.paymentIntentId;
-          const serverTotal = data.total;
-          const fmt = (n: number) => "\u20AC" + n.toLocaleString();
-          confirmBtn.dataset.lastAmount = fmt(serverTotal);
-          openPaymentModal(serverTotal);
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
         } catch (err: any) {
           const errorText = $("confirm-error-text");
           if (errorText) errorText.textContent = err.message || "Failed to start payment.";
           $("confirm-error")?.classList.remove("hidden");
           confirmBtn.disabled = false;
           confirmBtn.textContent = "Confirm and pay";
-        }
-      });
-
-      // Pay button inside modal -> confirm payment with Stripe
-      const payBtn = $("pay-btn") as HTMLButtonElement;
-      payBtn?.addEventListener("click", async () => {
-        if (!stripeInstance || !cardElement || !currentClientSecret) return;
-
-        payBtn.disabled = true;
-        payBtn.textContent = "Processing...";
-        $("card-errors")?.classList.add("hidden");
-
-        const { error, paymentIntent } = await stripeInstance.confirmCardPayment(currentClientSecret, {
-          payment_method: { card: cardElement },
-        });
-
-        if (error) {
-          const errEl = $("card-errors");
-          if (errEl) { errEl.textContent = error.message || "Payment failed"; errEl.classList.remove("hidden"); }
-          payBtn.disabled = false;
-          payBtn.innerHTML = `<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg> Pay now &middot; <span id="pay-btn-amount">${$("modal-total")?.textContent || ""}</span>`;
-          return;
-        }
-
-        if (paymentIntent.status === "succeeded") {
-          payBtn.textContent = "Verifying payment...";
-
-          // Verify payment server-side and confirm the order
-          try {
-            const confirmRes = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/confirm-order`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
-              },
-              body: JSON.stringify({ paymentIntentId: currentPaymentIntentId }),
-            });
-            const confirmData = await confirmRes.json();
-            if (!confirmRes.ok) throw new Error(confirmData.error || "Failed to confirm order");
-
-            payBtn.textContent = "Payment successful!";
-            payBtn.classList.remove("bg-primary", "hover:bg-primary-dark");
-            payBtn.classList.add("bg-green-600");
-
-            // Send notification to owner
-            if (ownerId) {
-              try {
-                await sendBookingNotification(
-                  currentUser.id,
-                  currentUser.user_metadata?.full_name || currentUser.email || "Renter",
-                  ownerId,
-                  boatId!,
-                  boatTitle,
-                  startDateStr!,
-                  endDateStr!
-                );
-              } catch {}
-            }
-          } catch (err) {
-            console.error("Order confirmation failed:", err);
-            payBtn.textContent = "Payment received - confirming...";
-          }
-
-          // Redirect to success page
-          setTimeout(() => {
-            window.location.href = localPath(`/booking-success?boatId=${boatId}&startDate=${startDateStr}&endDate=${endDateStr}`);
-          }, 1500);
         }
       });
 

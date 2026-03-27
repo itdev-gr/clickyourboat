@@ -53,10 +53,29 @@ const l = (href: string) => localizeHref(href, lang);
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
       const startDate = params.get("startDate");
       const endDate = params.get("endDate");
+
+      // Verify payment with server if session_id is present
+      if (sessionId) {
+        try {
+          const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/confirm-order`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({ sessionId }),
+          });
+          const data = await res.json();
+          if (!res.ok) console.error("Order confirmation failed:", data.error);
+        } catch (err) {
+          console.error("Order confirmation failed:", err);
+        }
+      }
 
       if (startDate && endDate) {
         const fmt = (dateStr: string) => {

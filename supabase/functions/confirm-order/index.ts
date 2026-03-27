@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,45 +14,36 @@ function json(body: Record<string, unknown>, status = 200) {
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-  if (req.method !== "POST") {
-    return json({ error: "Method not allowed" }, 405);
-  }
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   try {
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) return json({ error: "STRIPE_SECRET_KEY is not configured" }, 500);
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-    const { paymentIntentId } = await req.json();
-    if (!paymentIntentId) {
-      return json({ error: "Missing paymentIntentId" }, 400);
-    }
+    const { sessionId } = await req.json();
+    if (!sessionId) return json({ error: "Missing sessionId" }, 400);
 
-    // --- Verify payment with Stripe ---
-    const stripeRes = await fetch(`https://api.stripe.com/v1/payment_intents/${paymentIntentId}`, {
+    // --- Verify Checkout Session with Stripe ---
+    const stripeRes = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
       headers: { "Authorization": `Bearer ${stripeKey}` },
     });
-    const pi = await stripeRes.json();
+    const session = await stripeRes.json();
     if (!stripeRes.ok) {
-      return json({ error: pi.error?.message || "Failed to verify payment" }, 500);
+      return json({ error: session.error?.message || "Failed to verify session" }, 500);
     }
 
-    if (pi.status !== "succeeded") {
-      return json({ error: `Payment not succeeded. Status: ${pi.status}` }, 400);
+    if (session.payment_status !== "paid") {
+      return json({ error: `Payment not completed. Status: ${session.payment_status}` }, 400);
     }
 
     // --- Update order ---
     const { data: order, error: updateErr } = await supabase
       .from("orders")
       .update({ payment_status: "succeeded", status: "confirmed" })
-      .eq("payment_intent_id", paymentIntentId)
+      .eq("checkout_session_id", sessionId)
       .select("id, boat_id, owner_id, renter_id, start_date, end_date")
       .single();
 
