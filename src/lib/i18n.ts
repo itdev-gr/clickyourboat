@@ -30,8 +30,8 @@ export const translations: Record<string, Record<Lang, string>> = {
   "nav.party": { en: "Party", el: "Πάρτι" },
 
   // ─── Hero Section ───
-  "hero.title_1": { en: "Find your perfect", el: "Βρες την τέλεια" },
-  "hero.title_2": { en: "boat experience", el: "εμπειρία σκάφους" },
+  "hero.title_1": { en: "Boat Rental Athens", el: "Ενοικίαση Σκάφους Αθήνα" },
+  "hero.title_2": { en: "TapYourBoat", el: "TapYourBoat" },
   "hero.subtitle": { en: "Choose from thousands of boats worldwide. Set sail on your next unforgettable adventure.", el: "Επίλεξε ανάμεσα σε χιλιάδες σκάφη παγκοσμίως. Ξεκίνα το επόμενο αξέχαστο ταξίδι σου." },
 
   // ─── Search Form ───
