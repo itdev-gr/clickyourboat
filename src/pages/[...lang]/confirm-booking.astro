@@ -336,7 +336,7 @@ const l = (href: string) => localizeHref(href, lang);
   function localPath(path: string): string { const p = getLangPrefix(); return p ? "/" + p + path : path; }
   import { supabase } from "../../lib/supabase";
   import { onAuthChange } from "../../lib/auth";
-  import { getBoatListing, getChargeSettings, createOrder, sendBookingNotification } from "../../lib/api";
+  import { getBoatListing, getChargeSettings, sendBookingNotification } from "../../lib/api";
   import { loadStripe } from "@stripe/stripe-js";
 
   const $ = (id: string) => document.getElementById(id);
@@ -628,7 +628,8 @@ const l = (href: string) => localizeHref(href, lang);
       $("payment-modal-close")?.addEventListener("click", closePaymentModal);
       $("payment-backdrop")?.addEventListener("click", closePaymentModal);
 
-      // Confirm button -> open modal + create PaymentIntent
+      // Confirm button -> open modal + create PaymentIntent (server-side pricing)
+      let currentPaymentIntentId: string | null = null;
       const confirmBtn = $("confirm-btn") as HTMLButtonElement;
       confirmBtn?.addEventListener("click", async () => {
         $("confirm-error")?.classList.add("hidden");
@@ -644,12 +645,10 @@ const l = (href: string) => localizeHref(href, lang);
         try {
           await initStripe();
 
-          const insuranceTot = insuranceCostPerDay * days;
-          const weatherTot = weatherCostPerDay * days;
-          const skipperTot = skipperCostPerDay * days;
-          const subtot = charterPrice + insuranceTot + weatherTot + skipperTot;
-          const platFee = Math.round(subtot * platformFeePercent) / 100;
-          const totalPrice = subtot + serviceFee + platFee + securityDeposit;
+          // Get current selections
+          const insuranceRadio = document.querySelector('input[name="insurance"]:checked') as HTMLInputElement;
+          const skipperRadio = document.querySelector('input[name="rental-type"]:checked') as HTMLInputElement;
+          const weatherRadio = document.querySelector('input[name="weather"]:checked') as HTMLInputElement;
 
           const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/create-checkout-session`, {
             method: "POST",
@@ -659,13 +658,15 @@ const l = (href: string) => localizeHref(href, lang);
             },
             body: JSON.stringify({
               boatId: boatId!,
-              boatTitle,
-              renterId: currentUser.uid,
+              renterId: currentUser.id,
               renterEmail: currentUser.email || "",
+              renterName: currentUser.user_metadata?.full_name || currentUser.email || "Renter",
               ownerId,
               startDate: startDateStr!,
               endDate: endDateStr!,
-              totalPrice,
+              insuranceType: insuranceRadio?.value || "none",
+              withSkipper: skipperRadio?.value === "with-skipper",
+              weatherGuarantee: weatherRadio?.value === "yes",
             }),
           });
 
@@ -673,9 +674,11 @@ const l = (href: string) => localizeHref(href, lang);
           if (!res.ok) throw new Error(data.error || "Failed to create payment");
 
           currentClientSecret = data.clientSecret;
+          currentPaymentIntentId = data.paymentIntentId;
+          const serverTotal = data.total;
           const fmt = (n: number) => "\u20AC" + n.toLocaleString();
-          confirmBtn.dataset.lastAmount = fmt(totalPrice);
-          openPaymentModal(totalPrice);
+          confirmBtn.dataset.lastAmount = fmt(serverTotal);
+          openPaymentModal(serverTotal);
         } catch (err: any) {
           const errorText = $("confirm-error-text");
           if (errorText) errorText.textContent = err.message || "Failed to start payment.";
@@ -707,37 +710,31 @@ const l = (href: string) => localizeHref(href, lang);
         }
 
         if (paymentIntent.status === "succeeded") {
-          payBtn.textContent = "Payment successful!";
-          payBtn.classList.remove("bg-primary", "hover:bg-primary-dark");
-          payBtn.classList.add("bg-green-600");
+          payBtn.textContent = "Verifying payment...";
 
-          // Create order in Supabase
+          // Verify payment server-side and confirm the order
           try {
-            const boatImage = images[0] || "";
-            const insuranceTot = insuranceCostPerDay * days;
-            const weatherTot = weatherCostPerDay * days;
-            const skipperTot = skipperCostPerDay * days;
-            const subtot = charterPrice + insuranceTot + weatherTot + skipperTot;
-            const platFee = Math.round(subtot * platformFeePercent) / 100;
-            const totalPrice = subtot + serviceFee + platFee + securityDeposit;
-
-            await createOrder({
-              boatId: boatId!,
-              boatTitle,
-              boatImage,
-              renterId: currentUser.uid,
-              renterName: currentUser.displayName || currentUser.email || "Renter",
-              ownerId,
-              startDate: startDateStr!,
-              endDate: endDateStr!,
-              totalPrice,
+            const confirmRes = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/confirm-order`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({ paymentIntentId: currentPaymentIntentId }),
             });
+            const confirmData = await confirmRes.json();
+            if (!confirmRes.ok) throw new Error(confirmData.error || "Failed to confirm order");
 
+            payBtn.textContent = "Payment successful!";
+            payBtn.classList.remove("bg-primary", "hover:bg-primary-dark");
+            payBtn.classList.add("bg-green-600");
+
+            // Send notification to owner
             if (ownerId) {
               try {
                 await sendBookingNotification(
-                  currentUser.uid,
-                  currentUser.displayName || currentUser.email || "Renter",
+                  currentUser.id,
+                  currentUser.user_metadata?.full_name || currentUser.email || "Renter",
                   ownerId,
                   boatId!,
                   boatTitle,
@@ -747,7 +744,8 @@ const l = (href: string) => localizeHref(href, lang);
               } catch {}
             }
           } catch (err) {
-            console.error("Order creation failed:", err);
+            console.error("Order confirmation failed:", err);
+            payBtn.textContent = "Payment received - confirming...";
           }
 
           // Redirect to success page
