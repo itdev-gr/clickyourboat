@@ -748,7 +748,7 @@ const priceUnit = boat.priceUnit || "/ day";
       await createReview({
         boatId,
         userId: currentUser.id,
-        userName: currentUser.displayName || currentUser.email || "Anonymous",
+        userName: currentUser.user_metadata?.display_name || currentUser.email || "Anonymous",
         rating: selectedRating,
         comment,
       });

@@ -97,8 +97,7 @@ export interface BoatListing {
   checkOutTime?: string;
   checkInTimeDayRental?: string;
   checkOutTimeDayRental?: string;
-  downpaymentPercentage?: number;
-  daysBeforeBalancePayment?: number;
+  downpaymentPercentage?: number | number[] | string;
   fuelCost?: FuelCost;
   licenceRequired?: "yes" | "no";
 

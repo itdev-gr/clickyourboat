@@ -934,7 +934,7 @@ const l = (href: string) => localizeHref(href, lang);
         window.location.href = localPath("/login?redirect=" + encodeURIComponent(window.location.pathname));
         return;
       }
-      if (ownerId && currentUser.uid === ownerId) { showError("You cannot book your own boat."); return; }
+      if (ownerId && currentUser.id === ownerId) { showError("You cannot book your own boat."); return; }
       if (!ownerId) { showError("This boat is not available for booking."); return; }
 
       const startVal = startInput?.value;
