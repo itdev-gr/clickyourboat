@@ -963,10 +963,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Payment option checkboxes → sync hidden field
     document.querySelectorAll(".payment-option-cb").forEach(function(cb) {
       cb.addEventListener("change", function() {
-        var opts: number[] = [];
-        document.querySelectorAll(".payment-option-cb:checked").forEach(function(c: any) { opts.push(Number(c.value)); });
-        if (opts.length === 0) { (cb as HTMLInputElement).checked = true; opts.push(Number((cb as HTMLInputElement).value)); }
-        var hidden = document.getElementById("downpaymentPercentage") as HTMLInputElement;
+        var opts = [];
+        document.querySelectorAll(".payment-option-cb:checked").forEach(function(c) { opts.push(Number(c.value)); });
+        if (opts.length === 0) { cb.checked = true; opts.push(Number(cb.value)); }
+        var hidden = document.getElementById("downpaymentPercentage");
         if (hidden) hidden.value = JSON.stringify(opts);
       });
     });
