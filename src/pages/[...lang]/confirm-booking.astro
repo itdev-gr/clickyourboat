@@ -373,7 +373,7 @@ const l = (href: string) => localizeHref(href, lang);
       const ownerId = boat.ownerId || "";
       const skipperAvailable = boat.skipperAvailable || boat.skipper === "both" || boat.skipper === "with-skipper" || false;
       const year = boat.year || boat.yearOfConstruction || 0;
-      const securityDeposit = boat.securityDeposit || 0;
+      const securityDeposit = Number(boat.securityDeposit) || 0;
 
       const startDate = new Date(startDateStr!);
       const endDate = new Date(endDateStr!);
@@ -651,9 +651,12 @@ const l = (href: string) => localizeHref(href, lang);
           const platFee = Math.round(subtot * platformFeePercent) / 100;
           const totalPrice = subtot + serviceFee + platFee + securityDeposit;
 
-          const res = await fetch("/api/create-checkout-session", {
+          const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/create-checkout-session`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+            },
             body: JSON.stringify({
               boatId: boatId!,
               boatTitle,
@@ -708,7 +711,7 @@ const l = (href: string) => localizeHref(href, lang);
           payBtn.classList.remove("bg-primary", "hover:bg-primary-dark");
           payBtn.classList.add("bg-green-600");
 
-          // Create order in Firestore
+          // Create order in Supabase
           try {
             const boatImage = images[0] || "";
             const insuranceTot = insuranceCostPerDay * days;

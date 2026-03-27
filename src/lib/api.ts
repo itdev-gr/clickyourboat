@@ -376,8 +376,9 @@ export async function updateListingStatus(boatId: string, status: string): Promi
 }
 
 export async function updateUserType(uid: string, type: "user" | "owner" | "admin"): Promise<void> {
-  const { error } = await supabase.from("profiles").update({ user_type: type }).eq("id", uid);
+  const { data, error } = await supabase.from("profiles").update({ user_type: type }).eq("id", uid).select("id");
   if (error) throw error;
+  if (!data || data.length === 0) throw new Error("Update failed — insufficient permissions");
 }
 
 export async function promoteToOwnerIfNeeded(boatId: string): Promise<void> {
@@ -385,7 +386,9 @@ export async function promoteToOwnerIfNeeded(boatId: string): Promise<void> {
   if (!boat?.owner_id) return;
   const { data: profile } = await supabase.from("profiles").select("user_type").eq("id", boat.owner_id).maybeSingle();
   if (profile?.user_type === "user") {
-    await supabase.from("profiles").update({ user_type: "owner" }).eq("id", boat.owner_id);
+    const { data, error } = await supabase.from("profiles").update({ user_type: "owner" }).eq("id", boat.owner_id).select("id");
+    if (error) throw error;
+    if (!data || data.length === 0) throw new Error("Failed to promote user to owner — insufficient permissions");
   }
 }
 
