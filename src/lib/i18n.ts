@@ -361,8 +361,6 @@ export const translations: Record<string, Record<Lang, string>> = {
   "boat_types.boats": { en: "boats", el: "σκάφη" },
   "boat_types.yachts": { en: "Yachts", el: "Γιοτ" },
   "boat_types.ribs": { en: "RIBs", el: "Φουσκωτά" },
-  "boat_types.jet_skis": { en: "Jet Skis", el: "Jet Ski" },
-  "boat_types.gulets": { en: "Gulets", el: "Γκουλέτ" },
   "boat_types.no_license": { en: "No license boats", el: "Σκάφη χωρίς δίπλωμα" },
 
   "popular_dest.title": { en: "Popular destinations for boat rental", el: "Δημοφιλείς προορισμοί ενοικίασης σκαφών" },
@@ -457,7 +455,6 @@ export const translations: Record<string, Record<Lang, string>> = {
   "rental_hero.catamaran": { en: "Catamaran", el: "Καταμαράν" },
   "rental_hero.yacht": { en: "Yacht", el: "Γιοτ" },
   "rental_hero.rib": { en: "RIB", el: "Φουσκωτό" },
-  "rental_hero.jet_ski": { en: "Jet Ski", el: "Jet Ski" },
   "rental_hero.search": { en: "Search", el: "Αναζήτηση" },
   "rental_hero.popular": { en: "Popular:", el: "Δημοφιλή:" },
 
@@ -732,8 +729,6 @@ export const translations: Record<string, Record<Lang, string>> = {
   "lyb.general.sailboat": { en: "Sailboat", el: "Ιστιοπλοϊκό" },
   "lyb.general.rib": { en: "RIB", el: "Φουσκωτό" },
   "lyb.general.catamaran": { en: "Catamaran", el: "Καταμαράν" },
-  "lyb.general.jetski": { en: "Jet ski", el: "Jet ski" },
-  "lyb.general.gulet": { en: "Gulet", el: "Γκουλέτ" },
   "lyb.general.without_licence": { en: "Boat without<br/>licence", el: "Σκάφος χωρίς<br/>δίπλωμα" },
   "lyb.general.yacht": { en: "Yacht", el: "Γιοτ" },
   "lyb.general.city": { en: "City", el: "Πόλη" },

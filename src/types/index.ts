@@ -18,7 +18,7 @@ export interface Boat {
   createdAt: Date;
 }
 
-export type BoatListingType = "motorboat" | "sailboat" | "rib" | "catamaran" | "jetski" | "gulet" | "without-licence" | "yacht";
+export type BoatListingType = "motorboat" | "sailboat" | "rib" | "catamaran" | "without-licence" | "yacht";
 export type SkipperOption = "with-skipper" | "without-skipper" | "both";
 export type EngineType = "inboard" | "outboard" | "electric" | "none";
 export type BookingMode = "instant" | "confirmation";
