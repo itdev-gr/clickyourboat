@@ -79,7 +79,7 @@ const l = (href: string) => localizeHref(href, lang);
             <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
               <!-- Multi-risk -->
               <label class="insurance-option flex items-start gap-3 px-4 py-4 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors relative">
-                <input type="radio" name="insurance" value="multi-risk" class="mt-1 accent-primary" />
+                <input type="radio" name="insurance" value="multi-risk" class="mt-1 accent-primary" checked />
                 <div class="flex-1">
                   <div class="flex items-center gap-2 mb-1">
                     <p class="text-sm font-semibold text-text">Multi-risk</p>
@@ -118,7 +118,7 @@ const l = (href: string) => localizeHref(href, lang);
 
               <!-- No insurance -->
               <label class="insurance-option flex items-center gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
-                <input type="radio" name="insurance" value="none" class="accent-primary" checked />
+                <input type="radio" name="insurance" value="none" class="accent-primary" />
                 <p class="text-sm text-text-muted">I don't want to be insured</p>
               </label>
             </div>
@@ -311,6 +311,10 @@ const l = (href: string) => localizeHref(href, lang);
                   <span class="text-text-muted">Platform Fee</span>
                   <span class="text-text font-medium" id="price-platform-val">&euro;0</span>
                 </div>
+                <div id="price-deposit-row" class="hidden flex justify-between">
+                  <span class="text-text-muted">Security Deposit</span>
+                  <span class="text-text font-medium" id="price-deposit-val">&euro;0</span>
+                </div>
                 <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
                   <span class="font-bold text-text">Total</span>
                   <span class="font-bold text-text" id="price-total">&euro;0</span>
@@ -369,6 +373,7 @@ const l = (href: string) => localizeHref(href, lang);
       const ownerId = boat.ownerId || "";
       const skipperAvailable = boat.skipperAvailable || boat.skipper === "both" || boat.skipper === "with-skipper" || false;
       const year = boat.year || boat.yearOfConstruction || 0;
+      const securityDeposit = boat.securityDeposit || 0;
 
       const startDate = new Date(startDateStr!);
       const endDate = new Date(endDateStr!);
@@ -423,7 +428,7 @@ const l = (href: string) => localizeHref(href, lang);
       if (toEl) toEl.textContent = `To ${fmtDate(endDate)}`;
 
       // Price calculation state
-      let insuranceCostPerDay = 0;
+      let insuranceCostPerDay = 47;
       let weatherCostPerDay = 0;
       let skipperCostPerDay = 0;
 
@@ -433,7 +438,7 @@ const l = (href: string) => localizeHref(href, lang);
         const skipperTot = skipperCostPerDay * days;
         const subtotal = charterPrice + insuranceTot + weatherTot + skipperTot;
         const platformFee = Math.round(subtotal * platformFeePercent) / 100;
-        const total = subtotal + serviceFee + platformFee;
+        const total = subtotal + serviceFee + platformFee + securityDeposit;
 
         // Update price sidebar
         const fmt = (n: number) => "\u20AC" + n.toLocaleString();
@@ -488,6 +493,17 @@ const l = (href: string) => localizeHref(href, lang);
           platRow?.classList.remove("flex");
         }
 
+        const depRow = $("price-deposit-row");
+        const depVal = $("price-deposit-val");
+        if (securityDeposit > 0) {
+          depRow?.classList.remove("hidden");
+          depRow?.classList.add("flex");
+          if (depVal) depVal.textContent = fmt(securityDeposit);
+        } else {
+          depRow?.classList.add("hidden");
+          depRow?.classList.remove("flex");
+        }
+
         const totalEl = $("price-total");
         if (totalEl) totalEl.textContent = fmt(total);
 
@@ -540,6 +556,7 @@ const l = (href: string) => localizeHref(href, lang);
       }
 
       // Initial calculation
+      highlightRadioGroup("insurance-option", "insurance");
       recalcPrices();
 
       // Show page
@@ -632,7 +649,7 @@ const l = (href: string) => localizeHref(href, lang);
           const skipperTot = skipperCostPerDay * days;
           const subtot = charterPrice + insuranceTot + weatherTot + skipperTot;
           const platFee = Math.round(subtot * platformFeePercent) / 100;
-          const totalPrice = subtot + serviceFee + platFee;
+          const totalPrice = subtot + serviceFee + platFee + securityDeposit;
 
           const res = await fetch("/api/create-checkout-session", {
             method: "POST",
@@ -699,7 +716,7 @@ const l = (href: string) => localizeHref(href, lang);
             const skipperTot = skipperCostPerDay * days;
             const subtot = charterPrice + insuranceTot + weatherTot + skipperTot;
             const platFee = Math.round(subtot * platformFeePercent) / 100;
-            const totalPrice = subtot + serviceFee + platFee;
+            const totalPrice = subtot + serviceFee + platFee + securityDeposit;
 
             await createOrder({
               boatId: boatId!,
