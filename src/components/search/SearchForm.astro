@@ -1,13 +1,13 @@
 ---
 // This wraps the interactive search island
 interface Props { lang?: string; }
-const { lang = "en" } = Astro.props;
+const { lang } = Astro.props;
 ---
 
 <div id="search-form-container">
   <form
     id="search-form"
-    action={`/${lang}/boat-rental`}
+    action={lang ? `/${lang}/boat-rental` : `/boat-rental`}
     method="get"
     class="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end max-w-5xl"
     role="search"
