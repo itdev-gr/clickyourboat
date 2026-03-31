@@ -661,6 +661,7 @@ function mapBoatRow(row: any): Boat {
     pricePerDay: row.price_per_day || row.price || 0,
     type: row.boat_type || row.type || "motor",
     skipperAvailable: row.skipper_available || false,
+    halfDayRental: row.half_day_rental || false,
     rating: row.rating || 0,
     reviewCount: row.review_count || 0,
     images: row.images || [],
@@ -768,6 +769,7 @@ function mapBoatToRow(data: Record<string, any>): Record<string, any> {
     crewMembers: "crew_members", tenderHorsepower: "tender_horsepower",
     equippedOffshore: "equipped_offshore",
     skipperAvailable: "skipper_available",
+    halfDayRental: "half_day_rental",
     reviewCount: "review_count",
   };
 

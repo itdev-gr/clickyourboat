@@ -203,7 +203,7 @@ const l = (href: string) => localizeHref(href, lang);
     id: string; type: string; location: string; rating: number; reviewCount: number;
     title: string; images: string[]; tags: {icon:string;label:string}[]; specs: string;
     perks: string[]; price: number; priceUnit: string; instantBooking: boolean;
-    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; capacity: number; cabins: number;
+    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; halfDayRental: boolean; capacity: number; cabins: number;
     berths: number; length: number; enginePower: number; year: number;
     superOwner: boolean; idealFor: string[]; equipment: string[]; ownerId: string;
   }
@@ -230,6 +230,7 @@ const l = (href: string) => localizeHref(href, lang);
       priceUnit: b.priceUnit || "/ day",
       instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
       skipperAvailable: b.skipperAvailable || false,
+      halfDayRental: b.halfDayRental || false,
       discountOffer: b.discountOffer || false,
       isNew: b.isNew || false,
       capacity: b.capacity || 0,
@@ -299,6 +300,7 @@ const l = (href: string) => localizeHref(href, lang);
       data-equipment="${escAttr(boat.equipment.join(","))}"
       data-location="${escAttr(boat.location.toLowerCase())}"
       data-has-skipper="${hasSkipper}"
+      data-half-day-rental="${boat.halfDayRental}"
       data-no-licence="${noLicence}"
       data-listing-type="${listingType}"
       data-owner-id="${escAttr(boat.ownerId)}"
@@ -597,6 +599,11 @@ const l = (href: string) => localizeHref(href, lang);
         rentalType = r.value;
       });
 
+      // Half day rental
+      var halfDayRental = false;
+      var halfDayCb = document.querySelector(".filter-half-day:checked") as HTMLInputElement;
+      if (halfDayCb) halfDayRental = true;
+
       // Listing type tab (rentals vs experiences)
       var listingType = "rentals";
       var activeTab = document.querySelector('.sidebar-tab.border-pink');
@@ -669,6 +676,7 @@ const l = (href: string) => localizeHref(href, lang);
         dateStart: dateStart,
         dateEnd: dateEnd,
         rentalType: rentalType,
+        halfDayRental: halfDayRental,
         listingType: listingType,
         priceMin: priceMin,
         priceMax: priceMax,
@@ -718,6 +726,9 @@ const l = (href: string) => localizeHref(href, lang);
       if (filters.rentalType === "with-skipper" && !cardHasSkipper) return false;
       if (filters.rentalType === "without-skipper" && cardHasSkipper) return false;
       if (filters.rentalType === "no-licence" && !cardNoLicence) return false;
+
+      // Half day rental filter
+      if (filters.halfDayRental && card.getAttribute("data-half-day-rental") !== "true") return false;
 
       // Boat type filter
       if (filters.boatTypes.length > 0 && filters.boatTypes.indexOf(type) === -1) return false;

@@ -100,6 +100,12 @@ const equipmentOptions = [
             <span class="text-sm text-text group-hover:text-text" data-i18n="filter.no_licence">No licence required</span>
           </label>
         </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="checkbox" id="filter-half-day" class="filter-half-day h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+            <span class="text-sm text-text group-hover:text-text" data-i18n="filter.half_day">Half day rental</span>
+          </label>
+        </div>
       </div>
     </div>
 
@@ -387,6 +393,13 @@ const equipmentOptions = [
     });
   });
 
+  // Half day rental checkbox
+  document.querySelectorAll(".filter-half-day").forEach((cb) => {
+    cb.addEventListener("change", () => {
+      document.dispatchEvent(new CustomEvent("filters-changed"));
+    });
+  });
+
   // Price range sliders + inputs
   function syncPriceFilters(sidebar: Element) {
     const minSlider = sidebar.querySelector(".filter-price-min") as HTMLInputElement;
@@ -505,6 +518,10 @@ const equipmentOptions = [
       // Reset rental type
       document.querySelectorAll(".filter-rental-type").forEach((r) => {
         (r as HTMLInputElement).checked = (r as HTMLInputElement).value === "all";
+      });
+      // Reset half day rental
+      document.querySelectorAll(".filter-half-day").forEach((cb) => {
+        (cb as HTMLInputElement).checked = false;
       });
 
       document.dispatchEvent(new CustomEvent("filters-changed"));
