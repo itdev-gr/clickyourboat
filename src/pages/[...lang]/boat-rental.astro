@@ -215,9 +215,13 @@ const l = (href: string) => localizeHref(href, lang);
       location: typeof b.location === "object" ? `${b.location.city}, ${b.location.country}` : (b.location || b.city || ""),
       rating: b.rating || 0,
       reviewCount: b.reviewCount || 0,
-      title: getLangPrefix() === "gr"
-        ? (b.listingTitle_el || b.title || b.listingTitle || b.boatName || "Boat")
-        : (b.title || b.listingTitle || b.boatName || "Boat"),
+      title: (() => {
+        const parts = [b.manufacturer, b.model].filter(Boolean);
+        if (b.boatName) parts.push(b.boatName);
+        if (parts.length > 0) return parts.join(" ");
+        if (getLangPrefix() === "gr") return b.listingTitle_el || b.title || b.listingTitle || "Boat";
+        return b.title || b.listingTitle || "Boat";
+      })(),
       images: b.images || [],
       tags: b.tags || [],
       specs: b.specs || "",
