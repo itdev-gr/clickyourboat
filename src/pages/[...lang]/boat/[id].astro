@@ -34,9 +34,13 @@ if (!boat) {
   return Astro.redirect(l("/404"));
 }
 
-const displayTitle = lang === "gr"
-  ? (boat.listingTitle_el || boat.title || boat.listingTitle || "Boat")
-  : (boat.title || boat.listingTitle || "Boat");
+const displayTitle = (() => {
+  const parts = [boat.manufacturer, boat.model].filter(Boolean);
+  if (boat.boatName) parts.push(boat.boatName);
+  if (parts.length > 0) return parts.join(" ");
+  if (lang === "gr") return boat.listingTitle_el || boat.title || boat.listingTitle || "Boat";
+  return boat.title || boat.listingTitle || "Boat";
+})();
 const displayDescription = lang === "gr"
   ? (boat.description_el || boat.description || "")
   : (boat.description || "");

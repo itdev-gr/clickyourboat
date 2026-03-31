@@ -129,7 +129,12 @@ const l = (href: string) => localizeHref(href, lang);
       const images: string[] = boat.images || [];
       const price = boat.price || boat.pricePerDay || 0;
       const priceUnit = boat.priceUnit || "/ day";
-      const boatTitle = boat.listingTitle || boat.title || boat.boatName || [boat.manufacturer, boat.model].filter(Boolean).join(" ") || "Boat";
+      const boatTitle = (() => {
+        const parts = [boat.manufacturer, boat.model].filter(Boolean);
+        if (boat.boatName) parts.push(boat.boatName);
+        if (parts.length > 0) return parts.join(" ");
+        return boat.listingTitle || boat.title || boat.boatName || "Boat";
+      })();
       const boatType = boat.boatType || boat.type || "";
       const boatTypeLabel = boatType ? boatType.charAt(0).toUpperCase() + boatType.slice(1) : "";
       const city = boat.city || (typeof boat.location === "object" ? boat.location?.city : "") || "";
