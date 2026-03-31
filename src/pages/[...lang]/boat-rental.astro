@@ -203,7 +203,7 @@ const l = (href: string) => localizeHref(href, lang);
     id: string; type: string; location: string; rating: number; reviewCount: number;
     title: string; images: string[]; tags: {icon:string;label:string}[]; specs: string;
     perks: string[]; price: number; priceUnit: string; instantBooking: boolean;
-    discountOffer: boolean; isNew: boolean; capacity: number; cabins: number;
+    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; capacity: number; cabins: number;
     berths: number; length: number; enginePower: number; year: number;
     superOwner: boolean; idealFor: string[]; equipment: string[]; ownerId: string;
   }
@@ -229,6 +229,7 @@ const l = (href: string) => localizeHref(href, lang);
       price: b.price || b.pricePerDay || 0,
       priceUnit: b.priceUnit || "/ day",
       instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
+      skipperAvailable: b.skipperAvailable || false,
       discountOffer: b.discountOffer || false,
       isNew: b.isNew || false,
       capacity: b.capacity || 0,
@@ -248,7 +249,7 @@ const l = (href: string) => localizeHref(href, lang);
 
   function renderBoatCard(boat: MappedBoat): string {
     const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
-    const hasSkipper = boat.tags.some(t => t.icon === "skipper");
+    const hasSkipper = boat.skipperAvailable;
     const noLicence = boat.tags.some(t => t.icon === "no-licence");
     const listingType = boat.priceUnit === "/ day" ? "rental" : "experience";
 
