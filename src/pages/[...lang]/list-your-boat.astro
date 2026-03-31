@@ -260,13 +260,13 @@ const l = (href: string) => localizeHref(href, lang);
               </div>
             </div>
             <div class="mb-6">
-              <label for="listingTitle" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.listing_title">Title of the listing</span> <span class="text-red-500">*</span></label>
-              <input type="text" id="listingTitle" name="listingTitle" placeholder="e.g. Beautiful sailing yacht in Athens" data-i18n-placeholder="lyb.desc.listing_title_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              <label for="listingTitle" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.listing_title">Title of the listing</span></label>
+              <input type="text" id="listingTitle" name="listingTitle" placeholder="e.g. Beautiful sailing yacht in Athens" data-i18n-placeholder="lyb.desc.listing_title_ph" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <div class="lg:col-span-2">
-                <label for="description" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.description">Description</span> <span class="text-red-500">*</span></label>
-                <textarea id="description" name="description" rows="8" placeholder="Describe your boat, the experience you offer, what makes it special..." data-i18n-placeholder="lyb.desc.description_ph" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"></textarea>
+                <label for="description" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.description">Description</span></label>
+                <textarea id="description" name="description" rows="8" placeholder="Describe your boat, the experience you offer, what makes it special..." data-i18n-placeholder="lyb.desc.description_ph" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"></textarea>
               </div>
               <div class="bg-blue-50 border border-blue-200/60 rounded-xl p-4 h-fit">
                 <h3 class="text-sm font-bold text-blue-900 mb-2" data-i18n="lyb.desc.tips_title">Writing tips</h3>
@@ -309,13 +309,6 @@ const l = (href: string) => localizeHref(href, lang);
                   <label for="pricePerDay" class="text-sm font-semibold text-text whitespace-nowrap"><span data-i18n="lyb.price.per_day">Price / day</span> <span class="text-red-500">*</span></label>
                   <div class="flex items-center flex-1">
                     <input type="number" id="pricePerDay" name="pricePerDay" min="0" step="1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
-                    <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3 max-w-xs">
-                  <label for="securityDeposit" class="text-sm font-semibold text-text whitespace-nowrap"><span data-i18n="lyb.docs.deposit">Security deposit</span> <span class="text-red-500">*</span></label>
-                  <div class="flex items-center flex-1">
-                    <input type="number" id="securityDeposit" name="securityDeposit" min="0" step="1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
                     <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
                   </div>
                 </div>
@@ -494,10 +487,23 @@ const l = (href: string) => localizeHref(href, lang);
             <div id="unavail-periods-list" class="space-y-2 mb-6"></div>
             <h3 class="text-sm font-bold text-text mb-3" data-i18n="lyb.calendar.view">Calendar View</h3>
             <div id="calendar-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6"></div>
-            <!-- Documents & Insurance -->
+            <div class="flex justify-end mt-8">
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="calendar" data-i18n="lyb.wizard.publish">Publish</button>
+            </div>
+          </div>
+
+          <!-- ===== Section 6: Insurance & Documents ===== -->
+          <div id="wizard-section-insurance" class="wizard-section hidden">
+            <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.insurance.title">Insurance</h2>
             <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-              <h3 class="text-sm font-bold text-text mb-4" data-i18n="lyb.docs.title">Documents &amp; Insurance</h3>
               <div class="space-y-6">
+                <div class="flex items-center gap-3 max-w-xs">
+                  <label for="securityDeposit" class="text-sm font-semibold text-text whitespace-nowrap"><span data-i18n="lyb.docs.deposit">Security deposit</span> <span class="text-red-500">*</span></label>
+                  <div class="flex items-center flex-1">
+                    <input type="number" id="securityDeposit" name="securityDeposit" min="0" step="1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                    <span class="inline-flex items-center h-[46px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">EUR</span>
+                  </div>
+                </div>
                 <div>
                   <label class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.docs.insurance_cert">Certificate of insurance</label>
                   <div class="relative rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-primary/50 transition-colors cursor-pointer max-w-sm">
@@ -522,9 +528,8 @@ const l = (href: string) => localizeHref(href, lang);
                 </div>
               </div>
             </div>
-
             <div class="flex justify-end mt-8">
-              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="calendar" data-i18n="lyb.wizard.publish">Publish</button>
+              <button type="button" class="section-save-btn px-8 py-3 rounded-full bg-pink text-white text-sm font-bold hover:opacity-90 transition-opacity" data-section="insurance" data-i18n="lyb.wizard.save_continue">Save &amp; continue</button>
             </div>
           </div>
 
@@ -552,8 +557,8 @@ const l = (href: string) => localizeHref(href, lang);
                   <div class="flex items-center max-w-[180px]"><input type="number" id="width" name="width" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
                 </div>
                 <div>
-                  <label for="boatDraft" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.draft">Draft</span> <span class="text-red-500">*</span></label>
-                  <div class="flex items-center max-w-[180px]"><input type="number" id="boatDraft" name="draft" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
+                  <label for="length" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.length">Length</span> <span class="text-red-500">*</span></label>
+                  <div class="flex items-center max-w-[180px]"><input type="number" id="length" name="length" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
                 </div>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
@@ -602,8 +607,8 @@ const l = (href: string) => localizeHref(href, lang);
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label for="length" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.length">Length</span> <span class="text-red-500">*</span></label>
-                  <div class="flex items-center max-w-[180px]"><input type="number" id="length" name="length" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
+                  <label for="boatDraft" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.other.draft">Draft</span> <span class="text-red-500">*</span></label>
+                  <div class="flex items-center max-w-[180px]"><input type="number" id="boatDraft" name="draft" min="0" step="0.1" required class="w-full rounded-l-xl border border-r-0 border-gray-200 px-4 py-3.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" /><span class="inline-flex items-center h-[50px] px-3 border border-gray-200 rounded-r-xl bg-gray-50 text-sm text-text-muted font-medium">m</span></div>
                 </div>
                 <div>
                   <label for="cabins" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.other.cabins">Cabins</label>
@@ -772,7 +777,8 @@ document.addEventListener("DOMContentLoaded", function () {
     { id: "equipment", label: tr("lyb.wizard.sec_equipment", "Equipment"), icon: "M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.653-4.655M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653M18.36 5.64a5.068 5.068 0 00-7.16 0l-.318.318a.9.9 0 000 1.272l4.889 4.889a.9.9 0 001.272 0l.318-.318a5.068 5.068 0 000-7.16z" },
     { id: "description", label: tr("lyb.wizard.sec_description", "Description"), icon: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" },
     { id: "price", label: tr("lyb.wizard.sec_price", "Price"), icon: "M14.25 7.756a4.5 4.5 0 100 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { id: "calendar", label: tr("lyb.wizard.sec_calendar", "My Calendar"), icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" }
+    { id: "calendar", label: tr("lyb.wizard.sec_calendar", "My Calendar"), icon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" },
+    { id: "insurance", label: tr("lyb.wizard.sec_insurance", "Insurance"), icon: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" }
   ];
   window.SECTIONS = SECTIONS;
 
@@ -1817,12 +1823,13 @@ document.addEventListener("DOMContentLoaded", function () {
           if (n) extras.push({ name: n, pricePerDay: p, mandatory: m });
         });
         return {
-          pricePerDay: gn("pricePerDay"), currency: "EUR", pricePeriods: periods, reservationMinDays: gn("reservationMinDays"), reservationMaxDays: gn("reservationMaxDays"), securityDeposit: gn("securityDeposit"),
+          pricePerDay: gn("pricePerDay"), currency: "EUR", pricePeriods: periods, reservationMinDays: gn("reservationMinDays"), reservationMaxDays: gn("reservationMaxDays"),
           bookingMode: gv("bookingMode") || "confirmation", checkInTime: gv("checkInTime"), checkOutTime: gv("checkOutTime"), checkInTimeDayRental: gv("checkInTimeDayRental"), checkOutTimeDayRental: gv("checkOutTimeDayRental"), downpaymentPercentage: (function() { try { return JSON.parse(gv("downpaymentPercentage")); } catch(e) { return [100]; } })(), fuelCost: gv("fuelCost"), licenceRequired: gv("licenceRequired"),
           discounts, extras
         };
       }
-      case "calendar": return { unavailabilityPeriods: (window as any).__unavailPeriods || [], yachtInsured: gv("yachtInsured") };
+      case "calendar": return { unavailabilityPeriods: (window as any).__unavailPeriods || [] };
+      case "insurance": return { securityDeposit: gn("securityDeposit"), yachtInsured: gv("yachtInsured") };
       case "equipment": {
         const eq: string[] = []; document.querySelectorAll("input.equip-cb:checked").forEach((cb: any) => eq.push(cb.value));
         return { equipment: eq, engineType: gv("engineType"), horsepower: gn("horsepower"), width: gn("width"), draft: gn("boatDraft"), equippedOffshore: gv("equippedOffshore"), crewMembers: gn("crewMembers"), tenderHorsepower: gn("tenderHorsepower"), yearOfConstruction: gn("yearOfConstruction"), renovated: gv("renovated"), fuel: gn("fuelConsumption"), speed: gn("speed"), capacity: gn("capacity"), length: gn("length"), cabins: gn("cabins"), berths: gn("berths"), bathrooms: gn("bathrooms") };
@@ -1833,7 +1840,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // --- Progress tracking ---
   function updateProgress(completedSections: string[]) {
-    const total = 5;
+    const total = 6;
     const done = completedSections.length;
     const pct = Math.round((done / total) * 100);
     const bar = document.getElementById("wizard-progress");
@@ -1894,12 +1901,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Validate required fields for description section
         if (section === "description") {
           const langs = document.querySelectorAll("input.lang-cb:checked");
-          const title = (document.getElementById("listingTitle") as HTMLInputElement)?.value?.trim();
-          const desc = (document.getElementById("description") as HTMLTextAreaElement)?.value?.trim();
           const missing: string[] = [];
           if (langs.length === 0) missing.push(tr("lyb.desc.languages", "at least one Language"));
-          if (!title) missing.push(tr("lyb.desc.listing_title", "Title"));
-          if (!desc) missing.push(tr("lyb.desc.description", "Description"));
           if (missing.length > 0) {
             throw new Error(tr("lyb.msg.fill_required", "Please fill in the required fields:") + " " + missing.join(", "));
           }
@@ -1924,13 +1927,13 @@ document.addEventListener("DOMContentLoaded", function () {
           if (!price || price <= 0) {
             throw new Error(tr("lyb.msg.fill_price", "Please fill in the required field: Price / day"));
           }
+          const data = collectSectionData(section);
+          await updateBoatSection(editingBoatId, data);
+        } else if (section === "insurance") {
           const deposit = Number((document.getElementById("securityDeposit") as HTMLInputElement)?.value);
           if (isNaN(deposit) || (document.getElementById("securityDeposit") as HTMLInputElement)?.value === "") {
             throw new Error(tr("lyb.msg.fill_deposit", "Please fill in the required field: Security deposit"));
           }
-          const data = collectSectionData(section);
-          await updateBoatSection(editingBoatId, data);
-        } else if (section === "calendar") {
           const data = collectSectionData(section);
           // Upload insurance cert
           const insuranceInput = document.getElementById("insurance-cert-input") as HTMLInputElement;
@@ -1942,6 +1945,9 @@ document.addEventListener("DOMContentLoaded", function () {
           if (ownershipInput?.files?.[0]) {
             data.ownershipCertificateUrl = await uploadBoatDocument(editingBoatId, ownershipInput.files[0], "ownership");
           }
+          await updateBoatSection(editingBoatId, data);
+        } else if (section === "calendar") {
+          const data = collectSectionData(section);
           await updateBoatSection(editingBoatId, data);
         } else {
           // Validate required fields for other/technical section
