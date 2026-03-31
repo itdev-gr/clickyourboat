@@ -169,28 +169,28 @@ const l = (href: string) => localizeHref(href, lang);
             <h2 class="text-xl font-bold text-text mb-6" data-i18n="lyb.general.title">General Information</h2>
             <div class="mb-8">
               <label class="block text-sm font-semibold text-text mb-4"><span data-i18n="lyb.general.type">Type</span> <span class="text-red-500">*</span></label>
-              <div class="flex flex-wrap gap-3" id="boat-type-grid">
-                <button type="button" data-type="motorboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-3" id="boat-type-grid">
+                <button type="button" data-type="motorboat" class="boat-type-btn flex flex-col items-center justify-center h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 30c0 0 6-6 18-6s18 6 18 6" stroke-linecap="round"/><path d="M14 24l8-10h8l-4 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   <span class="text-xs font-medium text-text" data-i18n="lyb.general.motorboat">Motorboat</span>
                 </button>
-                <button type="button" data-type="sailboat" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <button type="button" data-type="sailboat" class="boat-type-btn flex flex-col items-center justify-center h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M24 8v24" stroke-linecap="round"/><path d="M24 8L14 30h20L24 8z" stroke-linejoin="round"/><path d="M8 34c0 0 6-4 16-4s16 4 16 4" stroke-linecap="round"/></svg>
                   <span class="text-xs font-medium text-text" data-i18n="lyb.general.sailboat">Sailboat</span>
                 </button>
-                <button type="button" data-type="rib" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <button type="button" data-type="rib" class="boat-type-btn flex flex-col items-center justify-center h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 28c2-4 8-6 18-6s16 2 18 6" stroke-linecap="round"/><path d="M16 22l4-6h8l4 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 32h32" stroke-linecap="round"/></svg>
                   <span class="text-xs font-medium text-text" data-i18n="lyb.general.rib">RIB</span>
                 </button>
-                <button type="button" data-type="catamaran" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <button type="button" data-type="catamaran" class="boat-type-btn flex flex-col items-center justify-center h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M10 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 32l4-14h6l-2 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 28h32" stroke-linecap="round"/><path d="M12 32h24" stroke-linecap="round"/></svg>
                   <span class="text-xs font-medium text-text" data-i18n="lyb.general.catamaran">Catamaran</span>
                 </button>
-                <button type="button" data-type="without-licence" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <button type="button" data-type="without-licence" class="boat-type-btn flex flex-col items-center justify-center h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M8 30c2-4 8-6 16-6s14 2 16 6" stroke-linecap="round"/><path d="M18 24l4-8h4l4 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 34h28" stroke-linecap="round"/></svg>
                   <span class="text-xs font-medium text-text leading-tight text-center" data-i18n-html="lyb.general.without_licence">Boat without<br/>licence</span>
                 </button>
-                <button type="button" data-type="yacht" class="boat-type-btn flex flex-col items-center justify-center w-[120px] h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                <button type="button" data-type="yacht" class="boat-type-btn flex flex-col items-center justify-center h-[110px] rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
                   <svg class="h-10 w-10 text-gray-500 mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor" stroke-width="1.5"><path d="M6 32c2-6 10-10 18-10s14 4 18 10" stroke-linecap="round"/><path d="M24 22V10" stroke-linecap="round"/><path d="M24 10l10 8H24" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 36h32" stroke-linecap="round"/></svg>
                   <span class="text-xs font-medium text-text" data-i18n="lyb.general.yacht">Yacht</span>
                 </button>
