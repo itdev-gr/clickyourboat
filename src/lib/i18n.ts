@@ -731,7 +731,7 @@ export const translations: Record<string, Record<Lang, string>> = {
   "lyb.general.catamaran": { en: "Catamaran", el: "Καταμαράν" },
   "lyb.general.without_licence": { en: "Boat without<br/>licence", el: "Σκάφος χωρίς<br/>δίπλωμα" },
   "lyb.general.yacht": { en: "Yacht", el: "Γιοτ" },
-  "lyb.general.city": { en: "City", el: "Πόλη" },
+  "lyb.general.city": { en: "City / Island", el: "Πόλη / Νησί" },
   "lyb.general.harbour": { en: "Harbour", el: "Λιμάνι" },
   "lyb.general.harbour_ph": { en: "Enter harbour name", el: "Εισάγετε όνομα λιμανιού" },
   "lyb.general.professional": { en: "Are you a professional?", el: "Είστε επαγγελματίας;" },
