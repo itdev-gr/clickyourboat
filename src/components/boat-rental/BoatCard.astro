@@ -29,8 +29,9 @@ const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
   data-ideal-for={boat.idealFor.join(",")}
   data-equipment={boat.equipment.join(",")}
   data-location={boat.location.toLowerCase()}
-  data-has-skipper={boat.tags.some(t => t.icon === "skipper")}
-  data-no-licence={boat.tags.some(t => t.icon === "no-licence")}
+  data-has-skipper={boat.skipperAvailable || false}
+  data-no-licence={boat.type === "without-licence"}
+  data-half-day-rental={boat.halfDayRental || false}
   data-listing-type={boat.priceUnit === "/ day" ? "rental" : "experience"}
   data-owner-id={boat.ownerId || ""}
 >

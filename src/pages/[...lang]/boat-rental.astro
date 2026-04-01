@@ -251,7 +251,7 @@ const l = (href: string) => localizeHref(href, lang);
   function renderBoatCard(boat: MappedBoat): string {
     const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
     const hasSkipper = boat.skipperAvailable;
-    const noLicence = boat.tags.some(t => t.icon === "no-licence");
+    const noLicence = boat.type === "without-licence";
     const listingType = boat.priceUnit === "/ day" ? "rental" : "experience";
 
     let imageHtml = mainImage

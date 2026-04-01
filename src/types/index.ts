@@ -252,7 +252,7 @@ export type BoatType = Boat["type"] | "luxury" | "party";
 
 export interface BoatCardListing {
   id: string;
-  type: "motor" | "sailing" | "catamaran" | "yacht" | "luxury" | "party";
+  type: "motor" | "sailing" | "catamaran" | "yacht" | "luxury" | "party" | "motorboat" | "sailboat" | "rib" | "without-licence";
   location: string;
   rating: number;
   reviewCount: number;
@@ -266,6 +266,8 @@ export interface BoatCardListing {
   instantBooking: boolean;
   discountOffer: boolean;
   isNew: boolean;
+  skipperAvailable: boolean;
+  halfDayRental: boolean;
   capacity: number;
   cabins: number;
   berths: number;
