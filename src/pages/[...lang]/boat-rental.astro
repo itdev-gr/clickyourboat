@@ -601,7 +601,7 @@ const l = (href: string) => localizeHref(href, lang);
 
       // Half day rental
       var halfDayRental = false;
-      var halfDayCb = document.querySelector(".filter-half-day:checked") as HTMLInputElement;
+      var halfDayCb = document.querySelector(".filter-half-day:checked");
       if (halfDayCb) halfDayRental = true;
 
       // Listing type tab (rentals vs experiences)
