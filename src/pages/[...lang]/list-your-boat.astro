@@ -1080,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var div = document.createElement("div");
             div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
             div.innerHTML = '<img src="' + e.target.result + '" alt="Boat photo" class="h-full w-full object-cover" />' +
-              '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-photo">' +
+              '<button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center remove-photo">' +
               '<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
             previewGrid.appendChild(div);
             div.querySelector(".remove-photo").addEventListener("click", function () { window.__selectedFiles[idx] = null; div.remove(); updatePhotoCount(); });
@@ -1774,7 +1774,7 @@ document.addEventListener("DOMContentLoaded", function () {
         existingImageUrls.forEach((url: string, idx: number) => {
           const div = document.createElement("div");
           div.className = "relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white group";
-          div.innerHTML = `<img src="${url}" alt="Photo" class="h-full w-full object-cover" /><button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity remove-existing-photo"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
+          div.innerHTML = `<img src="${url}" alt="Photo" class="h-full w-full object-cover" /><button type="button" class="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center remove-existing-photo"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
           photoPreview.appendChild(div);
           div.querySelector(".remove-existing-photo")?.addEventListener("click", () => { existingImageUrls = existingImageUrls.filter((_: string, i: number) => i !== idx); (window as any).__existingPreviewUrls = [...existingImageUrls]; div.remove(); (window as any).updatePhotoCount(); });
         });
