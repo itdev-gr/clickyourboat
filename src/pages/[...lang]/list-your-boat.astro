@@ -1693,6 +1693,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Hide banners
     formSuccess?.classList.add("hidden");
     formError?.classList.add("hidden");
+    // Re-apply default check-in/check-out times
+    var ciReset = document.getElementById("checkInTime") as HTMLSelectElement; if (ciReset) ciReset.value = "09:00";
+    var coReset = document.getElementById("checkOutTime") as HTMLSelectElement; if (coReset) coReset.value = "18:00";
   }
 
   // --- Load existing boat into wizard ---
