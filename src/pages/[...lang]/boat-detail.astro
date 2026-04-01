@@ -140,7 +140,7 @@ const l = (href: string) => localizeHref(href, lang);
       const city = boat.city || (typeof boat.location === "object" ? boat.location?.city : "") || "";
       const harbour = boat.harbour || "";
       const country = typeof boat.location === "object" ? boat.location?.country || "" : "";
-      const locationStr = [city, harbour].filter(Boolean).join(", ") || [city, country].filter(Boolean).join(", ") || "Location not specified";
+      const locationStr = city || country || "Location not specified";
       const capacity = boat.capacity || 0;
       const enginePower = boat.enginePower || boat.horsepower || 0;
       const boatLength = boat.length || 0;
