@@ -19,7 +19,7 @@ export interface Boat {
 }
 
 export type BoatListingType = "motorboat" | "sailboat" | "rib" | "catamaran" | "without-licence" | "yacht";
-export type SkipperOption = "with-skipper" | "without-skipper" | "both";
+export type SkipperOption = "with-skipper" | "bareboat" | "both";
 export type EngineType = "inboard" | "outboard" | "electric" | "none";
 export type BookingMode = "instant" | "confirmation";
 export type FuelCost = "included" | "not-included" | "by-arrangement";
@@ -61,6 +61,7 @@ export interface BoatListing {
   manufacturer: string;
   model: string;
   skipper: SkipperOption;
+  skipperPricePerDay?: number;
   capacity: number;
   length: number;
   company: string;

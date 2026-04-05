@@ -203,7 +203,7 @@ const l = (href: string) => localizeHref(href, lang);
     id: string; type: string; location: string; rating: number; reviewCount: number;
     title: string; images: string[]; tags: {icon:string;label:string}[]; specs: string;
     perks: string[]; price: number; priceUnit: string; instantBooking: boolean;
-    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; halfDayRental: boolean; capacity: number; cabins: number;
+    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; skipper: string; halfDayRental: boolean; capacity: number; cabins: number;
     berths: number; length: number; enginePower: number; year: number;
     superOwner: boolean; idealFor: string[]; equipment: string[]; ownerId: string;
   }
@@ -230,6 +230,7 @@ const l = (href: string) => localizeHref(href, lang);
       priceUnit: b.priceUnit || "/ day",
       instantBooking: b.instantBooking || b.bookingMode === "instant" || false,
       skipperAvailable: b.skipperAvailable || false,
+      skipper: b.skipper || (b.skipperAvailable ? "with-skipper" : "bareboat"),
       halfDayRental: b.halfDayRental || false,
       discountOffer: b.discountOffer || false,
       isNew: b.isNew || false,
@@ -251,6 +252,7 @@ const l = (href: string) => localizeHref(href, lang);
   function renderBoatCard(boat: MappedBoat): string {
     const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
     const hasSkipper = boat.skipperAvailable;
+    const skipperMode = boat.skipper || (hasSkipper ? "with-skipper" : "bareboat");
     const noLicence = boat.type === "without-licence";
     const listingType = boat.priceUnit === "/ day" ? "rental" : "experience";
 
@@ -300,6 +302,7 @@ const l = (href: string) => localizeHref(href, lang);
       data-equipment="${escAttr(boat.equipment.join(","))}"
       data-location="${escAttr(boat.location.toLowerCase())}"
       data-has-skipper="${hasSkipper}"
+      data-skipper="${skipperMode}"
       data-half-day-rental="${boat.halfDayRental}"
       data-no-licence="${noLicence}"
       data-listing-type="${listingType}"
@@ -723,8 +726,9 @@ const l = (href: string) => localizeHref(href, lang);
       if (filters.locationSearch && cardLocation.indexOf(filters.locationSearch) === -1) return false;
 
       // Rental type filter
-      if (filters.rentalType === "with-skipper" && !cardHasSkipper) return false;
-      if (filters.rentalType === "without-skipper" && cardHasSkipper) return false;
+      var cardSkipper = card.getAttribute("data-skipper") || "bareboat";
+      if (filters.rentalType === "with-skipper" && cardSkipper !== "with-skipper" && cardSkipper !== "both") return false;
+      if (filters.rentalType === "without-skipper" && cardSkipper !== "bareboat" && cardSkipper !== "both") return false;
       if (filters.rentalType === "no-licence" && !cardNoLicence) return false;
 
       // Half day rental filter

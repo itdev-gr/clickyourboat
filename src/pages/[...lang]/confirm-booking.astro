@@ -356,7 +356,10 @@ const l = (href: string) => localizeHref(href, lang);
       const locationStr = [city, harbour].filter(Boolean).join(", ") || "Location not specified";
       const images: string[] = boat.images || [];
       const ownerId = boat.ownerId || "";
-      const skipperAvailable = boat.skipperAvailable || boat.skipper === "both" || boat.skipper === "with-skipper" || false;
+      const skipperValue = boat.skipper || (boat.skipperAvailable ? "with-skipper" : "bareboat");
+      const skipperPricePerDay = Number(boat.skipperPricePerDay) || 0;
+      const showSkipperChoice = skipperValue === "both";
+      const forceSkipper = skipperValue === "with-skipper";
       const year = boat.year || boat.yearOfConstruction || 0;
       const securityDeposit = Number(boat.securityDeposit) || 0;
 
@@ -374,9 +377,21 @@ const l = (href: string) => localizeHref(href, lang);
       const backLink = $("back-link") as HTMLAnchorElement;
       if (backLink) backLink.href = localPath(`/boat-detail?id=${boatId}`);
 
-      // Show rental type if skipper available
-      if (skipperAvailable) {
+      // Show rental type section based on skipper mode
+      if (showSkipperChoice) {
         $("rental-type-section")?.classList.remove("hidden");
+      } else if (forceSkipper) {
+        // Force skipper — show section but pre-select and disable
+        $("rental-type-section")?.classList.remove("hidden");
+        const skipperRadio = document.querySelector('input[name="rental-type"][value="with-skipper"]') as HTMLInputElement;
+        const bareboatRadio = document.querySelector('input[name="rental-type"][value="without-skipper"]') as HTMLInputElement;
+        if (skipperRadio) { skipperRadio.checked = true; skipperRadio.dispatchEvent(new Event("change")); }
+        if (bareboatRadio) { bareboatRadio.closest("label")?.classList.add("hidden"); }
+      }
+      // Update skipper price label
+      const skipperLabel = $("skipper-price-label");
+      if (skipperLabel && skipperPricePerDay > 0) {
+        skipperLabel.textContent = `+€${skipperPricePerDay}/ day`;
       }
 
       // Sidebar: boat info
@@ -451,7 +466,7 @@ const l = (href: string) => localizeHref(href, lang);
       // Price calculation state
       let insuranceCostPerDay = 47;
       let weatherCostPerDay = 0;
-      let skipperCostPerDay = 0;
+      let skipperCostPerDay = forceSkipper ? skipperPricePerDay : 0;
 
       function recalcPrices() {
         const insuranceTot = insuranceCostPerDay * days;
@@ -551,7 +566,7 @@ const l = (href: string) => localizeHref(href, lang);
       // Radio change handlers - rental type
       document.querySelectorAll('input[name="rental-type"]').forEach(r => {
         r.addEventListener("change", () => {
-          skipperCostPerDay = (r as HTMLInputElement).value === "with-skipper" ? 100 : 0;
+          skipperCostPerDay = (r as HTMLInputElement).value === "with-skipper" ? skipperPricePerDay : 0;
           highlightRadioGroup("rental-option", "rental-type");
           recalcPrices();
         });

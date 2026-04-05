@@ -14,7 +14,6 @@ function json(body: Record<string, unknown>, status = 200) {
 }
 
 const INSURANCE_RATES: Record<string, number> = { "multi-risk": 47, "assistance": 29, "none": 0 };
-const SKIPPER_PER_DAY = 100;
 const WEATHER_PER_DAY = 14;
 const DEFAULT_SITE_URL = "https://tapyourboat.com";
 
@@ -50,7 +49,7 @@ Deno.serve(async (req) => {
     // --- Fetch boat ---
     const { data: boat, error: boatErr } = await supabase
       .from("boats")
-      .select("id, price_per_day, price, security_deposit, downpayment_percentage, manufacturer, model, listing_title, boat_name, images, owner_id")
+      .select("id, price_per_day, price, security_deposit, downpayment_percentage, manufacturer, model, listing_title, boat_name, images, owner_id, skipper_price_per_day")
       .eq("id", boatId).maybeSingle();
     if (boatErr || !boat) return json({ error: "Boat not found" }, 400);
 
@@ -59,6 +58,7 @@ Deno.serve(async (req) => {
     const boatTitle = boat.listing_title || boat.boat_name || [boat.manufacturer, boat.model].filter(Boolean).join(" ") || "Boat";
     const boatImage = boat.images?.[0] || "";
     const actualOwnerId = ownerId || boat.owner_id || "";
+    const skipperPricePerDay = Number(boat.skipper_price_per_day || 0);
 
     // --- Validate payment option against boat config ---
     let allowedOptions: number[] = [100];
@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
     // --- Compute price ---
     const charterPrice = days * pricePerDay;
     const insuranceTot = (INSURANCE_RATES[insuranceType] || 0) * days;
-    const skipperTot = withSkipper ? SKIPPER_PER_DAY * days : 0;
+    const skipperTot = withSkipper ? skipperPricePerDay * days : 0;
     const weatherTot = weatherGuarantee ? WEATHER_PER_DAY * days : 0;
     // Platform fee always on full charter price
     const fullSubtotal = charterPrice + insuranceTot + skipperTot + weatherTot;

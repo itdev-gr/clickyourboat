@@ -76,7 +76,7 @@ export const mockReviews: Review[] = [
     rating: 5,
     comment: "Absolutely incredible experience! The boat was in perfect condition and the skipper was so knowledgeable about the best spots.",
     boatName: "Sea Breeze 42",
-    location: "Ibiza, Spain",
+    location: "Mykonos, Greece",
     createdAt: new Date("2025-09-15"),
   },
   {
@@ -98,7 +98,7 @@ export const mockReviews: Review[] = [
     rating: 4,
     comment: "Beautiful catamaran, well-maintained. The only thing was pickup was a bit late, but otherwise perfect.",
     boatName: "Cat Paradise",
-    location: "Côte d'Azur, France",
+    location: "Corfu, Greece",
     createdAt: new Date("2025-10-01"),
   },
   {
@@ -107,9 +107,9 @@ export const mockReviews: Review[] = [
     userId: "u4",
     userName: "Marco Rossi",
     rating: 5,
-    comment: "We sailed along the Amalfi coast for 3 days. Unforgettable sunsets and hidden beaches. Highly recommend!",
+    comment: "We sailed along the Cretan coast for 3 days. Unforgettable sunsets and hidden beaches. Highly recommend!",
     boatName: "Bella Vista",
-    location: "Amalfi, Italy",
+    location: "Crete, Greece",
     createdAt: new Date("2025-07-10"),
   },
   {
@@ -120,7 +120,7 @@ export const mockReviews: Review[] = [
     rating: 5,
     comment: "Third time booking through TapYourBoat. Consistently great service and beautiful boats. My go-to platform.",
     boatName: "Adriatic Star",
-    location: "Dubrovnik, Croatia",
+    location: "Rhodes, Greece",
     createdAt: new Date("2025-11-05"),
   },
   {

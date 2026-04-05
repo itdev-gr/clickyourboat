@@ -690,6 +690,7 @@ function mapRowToBoatListingFields(row: any): Partial<BoatListing> {
     manufacturer: row.manufacturer,
     model: row.model,
     skipper: row.skipper,
+    skipperPricePerDay: row.skipper_price_per_day,
     capacity: row.capacity,
     length: row.length,
     width: row.width,
@@ -769,6 +770,7 @@ function mapBoatToRow(data: Record<string, any>): Record<string, any> {
     crewMembers: "crew_members", tenderHorsepower: "tender_horsepower",
     equippedOffshore: "equipped_offshore",
     skipperAvailable: "skipper_available",
+    skipperPricePerDay: "skipper_price_per_day",
     halfDayRental: "half_day_rental",
     reviewCount: "review_count",
   };

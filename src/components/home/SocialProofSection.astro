@@ -41,7 +41,6 @@ function renderStars(rating: number): string {
             </div>
             <div>
               <p class="font-semibold text-sm text-text">{review.userName}</p>
-              <p class="text-xs text-text-muted">{review.location}</p>
             </div>
           </div>
           <div class="flex items-center gap-0.5 mb-3" set:html={renderStars(review.rating)} />
