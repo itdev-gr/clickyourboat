@@ -215,8 +215,8 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <label for="city" class="block text-sm font-semibold text-text mb-2" data-i18n="lyb.general.city">City / Island</label>
-                <input type="text" id="city" name="city" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <label for="city" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.general.city">City / Island</span> <span class="text-red-500">*</span></label>
+                <input type="text" id="city" name="city" required class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div>
                 <label for="harbour" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.general.harbour">Harbour</span> <span class="text-red-500">*</span></label>
@@ -1721,6 +1721,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Re-apply default check-in/check-out times
     var ciReset = document.getElementById("checkInTime") as HTMLSelectElement; if (ciReset) ciReset.value = "09:00";
     var coReset = document.getElementById("checkOutTime") as HTMLSelectElement; if (coReset) coReset.value = "18:00";
+    var fuelReset = document.getElementById("fuelCost") as HTMLSelectElement; if (fuelReset) fuelReset.value = "not-included";
   }
 
   // --- Load existing boat into wizard ---
@@ -1922,12 +1923,14 @@ document.addEventListener("DOMContentLoaded", function () {
         // Validate required fields for general section
         if (section === "general") {
           const boatType = (document.getElementById("boat-type-input") as HTMLInputElement)?.value;
+          const city = (document.getElementById("city") as HTMLInputElement)?.value?.trim();
           const harbour = (document.getElementById("harbour") as HTMLInputElement)?.value?.trim();
           const manufacturer = (document.getElementById("manufacturer") as HTMLInputElement)?.value?.trim();
           const model = (document.getElementById("model") as HTMLInputElement)?.value?.trim();
           const boatName = (document.getElementById("boatName") as HTMLInputElement)?.value?.trim();
           const missing: string[] = [];
           if (!boatType) missing.push(tr("lyb.general.type", "Type"));
+          if (!city) missing.push(tr("lyb.general.city", "City / Island"));
           if (!harbour) missing.push(tr("lyb.general.harbour", "Harbour"));
           if (!manufacturer) missing.push(tr("lyb.general.manufacturer", "Manufacturer"));
           if (!model) missing.push(tr("lyb.general.model", "Model"));
