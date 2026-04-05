@@ -64,11 +64,13 @@ const l = (href: string) => localizeHref(href, lang);
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: "Boat Types",
-      description,
-      url: "https://tapyourboat.com/boat-types",
-      publisher: { "@type": "Organization", name: "TapYourBoat" },
+      "@graph": [
+        { "@type": "WebPage", name: "Boat Types", description, url: "https://tapyourboat.com/boat-types", publisher: { "@type": "Organization", name: "TapYourBoat" } },
+        { "@type": "BreadcrumbList", itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://tapyourboat.com/" },
+          { "@type": "ListItem", position: 2, name: "Boat Types", item: "https://tapyourboat.com/boat-types" },
+        ]},
+      ],
     })} />
   </Fragment>
 

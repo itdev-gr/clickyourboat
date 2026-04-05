@@ -6,6 +6,26 @@
 
 TapYourBoat is a boat rental marketplace connecting boat owners with travelers looking for boat charters and rentals across Greek destinations. Whether you're looking for a sailboat, motorboat, catamaran, or yacht, TapYourBoat makes it easy to find and book the perfect vessel.
 
+## Boat Types Available
+
+- Motorboats
+- Sailboats
+- Catamarans
+- RIBs (Rigid Inflatable Boats)
+- Yachts
+- Boats without licence required
+
+## Charter Options
+
+- Bareboat (self-skippered)
+- With professional skipper
+- Day trips and multi-day charters
+- Half-day rentals available on select boats
+
+## Service Area
+
+Greece — including Athens, Mykonos, Santorini, Corfu, Crete, Rhodes, and other Greek islands and coastal destinations.
+
 ## Key Pages
 
 - [Homepage](https://tapyourboat.com/)
@@ -24,3 +44,7 @@ TapYourBoat is a boat rental marketplace connecting boat owners with travelers l
 - [Boat Rentals (GR)](https://tapyourboat.com/gr/boat-rental)
 - [Destinations (GR)](https://tapyourboat.com/gr/destinations)
 - [Blog (GR)](https://tapyourboat.com/gr/blog)
+
+## Detailed Information
+
+For comprehensive details about TapYourBoat services, see [llms-full.txt](https://tapyourboat.com/llms-full.txt).

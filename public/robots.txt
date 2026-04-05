@@ -11,6 +11,9 @@ Disallow: /favorites
 Disallow: /messages
 Disallow: /my-offers
 Disallow: /list-your-boat
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
 
 # AI Crawlers - explicitly allowed
 User-agent: GPTBot

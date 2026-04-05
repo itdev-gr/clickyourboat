@@ -171,6 +171,28 @@ const l = (href: string) => localizeHref(href, lang);
 
       document.title = `${boatTitle} — TapYourBoat`;
 
+      // ========== INJECT STRUCTURED DATA ==========
+      const productSchema = {
+        "@context": "https://schema.org",
+        "@graph": [
+          { "@type": "Product", name: boatTitle, description: description || `Rent the ${boatTypeLabel || "boat"} ${boatTitle} in ${locationStr}.`, image: images[0] || "", brand: { "@type": "Brand", name: boat.manufacturer || "TapYourBoat" }, offers: { "@type": "Offer", price: price, priceCurrency: "EUR", availability: "https://schema.org/InStock", url: window.location.href } },
+          { "@type": "BreadcrumbList", itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://tapyourboat.com/" },
+            { "@type": "ListItem", position: 2, name: "Boat Rental", item: "https://tapyourboat.com/boat-rental" },
+            { "@type": "ListItem", position: 3, name: boatTitle, item: window.location.href },
+          ]},
+          { "@type": "FAQPage", mainEntity: [
+            { "@type": "Question", name: "What happens in the case of bad weather?", acceptedAnswer: { "@type": "Answer", text: "If bad weather prevents the trip, the owner will work with you to reschedule or provide a refund according to the cancellation policy." } },
+            { "@type": "Question", name: "Is fuel included in the charter price?", acceptedAnswer: { "@type": "Answer", text: fuelCost === "included" ? "Yes, fuel costs are included in the rental price." : "Fuel costs are typically not included and are the responsibility of the renter unless stated otherwise." } },
+            { "@type": "Question", name: "Do I need a licence to rent this boat?", acceptedAnswer: { "@type": "Answer", text: licenceRequired === "yes" ? "Yes, a valid boating licence is required." : "No licence is required for this boat." } },
+          ]},
+        ],
+      };
+      const ldScript = document.createElement("script");
+      ldScript.type = "application/ld+json";
+      ldScript.textContent = JSON.stringify(productSchema);
+      document.head.appendChild(ldScript);
+
       // ========== HEADER (breadcrumb + title) ==========
       const headerEl = document.getElementById("boat-header");
       if (headerEl) {

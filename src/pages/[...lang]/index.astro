@@ -80,11 +80,24 @@ const jsonLd = {
     })),
   ],
 };
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    { "@type": "Question", name: "How does booking work?", acceptedAnswer: { "@type": "Answer", text: "Browse our selection of boats, choose your dates and destination, and book instantly. You'll receive a confirmation email with all the details. The boat owner will contact you before your trip to arrange the handover." } },
+    { "@type": "Question", name: "Do I need a license?", acceptedAnswer: { "@type": "Answer", text: "License requirements depend on the destination and boat type. Many locations offer boats that don't require a license, and you can always book with a professional skipper. Check the specific listing for requirements." } },
+    { "@type": "Question", name: "What's included in the rental?", acceptedAnswer: { "@type": "Answer", text: "Each listing specifies what's included. Typically, the boat, safety equipment, and basic amenities are provided. Fuel, food, and port fees are usually extra. Some listings include a skipper, while others offer it as an add-on." } },
+    { "@type": "Question", name: "What is the cancellation policy?", acceptedAnswer: { "@type": "Answer", text: "Our standard cancellation policy offers a full refund if cancelled 30 days before the trip, 50% refund for 15-30 days, and no refund within 15 days. Some owners offer flexible cancellation — look for the 'Flexible' badge on listings." } },
+  ],
+};
 const l = (href: string) => localizeHref(href, lang);
+const title = "Boat Rental Greece — Rent a Boat Online | TapYourBoat";
+const description = "Rent boats in Greece. Sailboats, motorboats, catamarans & yachts with or without skipper. Book online at TapYourBoat.";
 ---
-<Layout lang={lang}>
+<Layout lang={lang} title={title} description={description}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </Fragment>
 
   <HeroSection lang={lang} />

@@ -54,9 +54,23 @@ const readTime = resolvedLang === "el" ? "λεπτά ανάγνωση" : "min re
 const contentText = pt(article.content) || "";
 const wordCount = contentText.replace(/<[^>]*>/g, "").split(/\s+/).length;
 const minutes = Math.max(1, Math.round(wordCount / 200));
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Article", headline: pt(article.title), description: pt(article.summary), image: article.image, datePublished: article.createdAt?.toISOString?.() ?? "", author: { "@type": "Organization", name: "TapYourBoat" }, publisher: { "@type": "Organization", name: "TapYourBoat", logo: { "@type": "ImageObject", url: "https://tapyourboat.com/logo.svg" } }, mainEntityOfPage: { "@type": "WebPage", "@id": `https://tapyourboat.com/blog/${slug}` } },
+    { "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://tapyourboat.com/" },
+      { "@type": "ListItem", position: 2, name: "Blog", item: "https://tapyourboat.com/blog" },
+      { "@type": "ListItem", position: 3, name: pt(article.title), item: `https://tapyourboat.com/blog/${slug}` },
+    ]},
+  ],
+};
 ---
 
 <Layout lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  </Fragment>
   <!-- Hero with image background -->
   <div class="relative">
     <div class="absolute inset-0 h-[480px] bg-gradient-to-b from-slate-900/60 to-slate-900/20 z-10"></div>

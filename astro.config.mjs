@@ -22,6 +22,9 @@ export default defineConfig({
         !page.includes('/messages') &&
         !page.includes('/my-offers') &&
         !page.includes('/list-your-boat') &&
+        !page.includes('/login') &&
+        !page.includes('/signup') &&
+        !page.includes('/forgot-password') &&
         !page.includes('/404'),
       i18n: {
         defaultLocale: 'en',
