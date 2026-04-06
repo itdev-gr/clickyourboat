@@ -79,6 +79,9 @@ const l = (href: string) => localizeHref(href, lang);
 
   const $ = (id: string) => document.getElementById(id);
 
+  function getLangPrefix(): string { return document.documentElement.dataset.langPrefix || ""; }
+  function localPath(path: string): string { const p = getLangPrefix(); return p ? "/" + p + path : path; }
+
   function escapeHtml(text: string): string {
     const div = document.createElement("div");
     div.textContent = text;
@@ -148,7 +151,7 @@ const l = (href: string) => localizeHref(href, lang);
 
         html += `
           <div class="favorite-card bg-white rounded-xl border border-gray-200/80 overflow-hidden hover:shadow-lg transition-shadow duration-200 group" data-boat-id="${escapeHtml(boatId)}">
-            <a href={l("/boat-detail?id=${escapeHtml(boatId)}")} class="block">
+            <a href="${localPath("/boat-detail?id=" + escapeHtml(boatId))}" class="block">
               <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
                 ${image
                   ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" class="h-full w-full object-cover" loading="lazy" />`

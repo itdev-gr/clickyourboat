@@ -225,10 +225,10 @@ const l = (href: string) => localizeHref(href, lang);
         headerEl.innerHTML = `
           <nav class="mb-3 text-sm text-text-muted" aria-label="Breadcrumb">
             <ol class="flex items-center gap-1.5 flex-wrap">
-              <li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">Boat rental</a></li>
+              <li><a href="${localPath("/boat-rental")}" class="hover:text-primary transition-colors">Boat rental</a></li>
               <li class="text-gray-300">&gt;</li>
-              ${city ? `<li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">Boat rental ${esc(city)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
-              ${boatTypeLabel ? `<li><a href={l("/boat-rental")} class="hover:text-primary transition-colors">${esc(boatTypeLabel)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
+              ${city ? `<li><a href="${localPath("/boat-rental")}" class="hover:text-primary transition-colors">Boat rental ${esc(city)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
+              ${boatTypeLabel ? `<li><a href="${localPath("/boat-rental")}" class="hover:text-primary transition-colors">${esc(boatTypeLabel)}</a></li><li class="text-gray-300">&gt;</li>` : ""}
               <li class="text-text font-medium truncate max-w-[300px]">${esc(boatTitle)}</li>
             </ol>
           </nav>
