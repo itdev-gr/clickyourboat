@@ -804,8 +804,8 @@ const l = (href: string) => localizeHref(href, lang);
         const end = (document.getElementById(prefix + "booking-end") as HTMLInputElement)?.value;
         const summary = document.getElementById(prefix + "price-summary");
         if (!start || !end || !summary) return;
-        const days = Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24));
-        if (days <= 0) { summary.classList.add("hidden"); return; }
+        const days = Math.max(1, Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24)));
+        if (new Date(end) < new Date(start)) { summary.classList.add("hidden"); return; }
         const total = days * price;
         const daysEl = document.getElementById(prefix + "booking-days");
         const subtotalEl = document.getElementById(prefix + "booking-subtotal");
@@ -1048,7 +1048,7 @@ const l = (href: string) => localizeHref(href, lang);
 
         const startDate = new Date(startVal);
         const endDate = new Date(endVal);
-        if (endDate <= startDate) { showErr("End date must be after start date."); return; }
+        if (endDate < startDate) { showErr("End date cannot be before start date."); return; }
 
         const params = new URLSearchParams({
           boatId,

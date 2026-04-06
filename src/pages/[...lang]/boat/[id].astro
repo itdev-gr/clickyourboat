@@ -506,9 +506,9 @@ const priceUnit = boat.priceUnit || "/ day";
       var startDate = new Date(start);
       var endDate = new Date(end);
       var diffMs = endDate.getTime() - startDate.getTime();
-      var days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      var days = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 
-      if (days <= 0) {
+      if (endDate < startDate) {
         summary.classList.add("hidden");
         return;
       }
@@ -628,8 +628,8 @@ const priceUnit = boat.priceUnit || "/ day";
 
     const startDate = new Date(startVal);
     const endDate = new Date(endVal);
-    if (endDate <= startDate) {
-      showError("End date must be after start date.");
+    if (endDate < startDate) {
+      showError("End date cannot be before start date.");
       return;
     }
 
