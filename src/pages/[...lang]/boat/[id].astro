@@ -49,6 +49,8 @@ const description = displayDescription || boat.title || "View boat details on Ta
 const images = boat.images || [];
 const price = boat.price || boat.pricePerDay || 0;
 const priceUnit = boat.priceUnit || "/ day";
+const halfDayRental = boat.halfDayRental || false;
+const pricePerHalfDay = Number(boat.pricePerHalfDay) || 0;
 ---
 
 <Layout lang={lang} title={title} description={description}>
@@ -358,11 +360,17 @@ const priceUnit = boat.priceUnit || "/ day";
         <div class="sticky top-24 space-y-4">
           <!-- Price card -->
           <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <div class="flex items-baseline gap-1 mb-6">
+            <div class="flex items-baseline gap-1 mb-1">
               <span class="text-sm text-text-muted">From</span>
               <span class="text-3xl font-extrabold text-text">&euro;{price.toLocaleString()}</span>
               {priceUnit && <span class="text-text-muted">{priceUnit}</span>}
             </div>
+            {halfDayRental && pricePerHalfDay > 0 ? (
+              <div class="flex items-baseline gap-1 mb-5">
+                <span class="text-base font-bold text-text-muted">&euro;{pricePerHalfDay.toLocaleString()}</span>
+                <span class="text-xs text-text-muted">/ half day</span>
+              </div>
+            ) : <div class="mb-5"></div>}
 
             <!-- Date selection -->
             <div class="space-y-3 mb-4">
@@ -405,6 +413,8 @@ const priceUnit = boat.priceUnit || "/ day";
               data-price={price}
               data-boat-title={displayTitle}
               data-boat-image={images[0] || ""}
+              data-half-day-rental={halfDayRental}
+              data-price-per-half-day={pricePerHalfDay}
             >
               {boat.instantBooking ? "Book now" : "Continue Booking"}
             </button>
@@ -639,6 +649,10 @@ const priceUnit = boat.priceUnit || "/ day";
       startDate: startVal,
       endDate: endVal,
     });
+    if (bookBtn?.getAttribute("data-half-day-rental") === "true" && Number(bookBtn?.getAttribute("data-price-per-half-day")) > 0) {
+      params.set("halfDayAvailable", "true");
+      params.set("halfDayPrice", bookBtn!.getAttribute("data-price-per-half-day")!);
+    }
     window.location.href = localPath("/confirm-booking?" + params.toString());
   });
 

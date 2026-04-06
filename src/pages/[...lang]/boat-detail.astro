@@ -181,6 +181,8 @@ const l = (href: string) => localizeHref(href, lang);
       const checkInTime = boat.checkInTime || "";
       const checkOutTime = boat.checkOutTime || "";
       const extras: any[] = boat.extras || [];
+      const halfDayRental = boat.halfDayRental || false;
+      const pricePerHalfDay = Number(boat.pricePerHalfDay) || 0;
 
       document.title = `${boatTitle} — TapYourBoat`;
 
@@ -629,10 +631,11 @@ const l = (href: string) => localizeHref(href, lang);
 
         const bookingFormHtml = `
           <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <div class="flex items-baseline gap-1 mb-5">
+            <div class="flex items-baseline gap-1 mb-1">
               <span class="text-2xl font-extrabold text-text">&euro;${price.toLocaleString()}</span>
               <span class="text-sm text-text-muted">${esc(priceUnit)}</span>
             </div>
+            ${halfDayRental && pricePerHalfDay ? `<div class="flex items-baseline gap-1 mb-5"><span class="text-base font-bold text-text-muted">&euro;${pricePerHalfDay.toLocaleString()}</span><span class="text-xs text-text-muted">/ half day</span></div>` : `<div class="mb-4"></div>`}
 
             <div class="grid grid-cols-2 gap-2 mb-3">
               <div>
@@ -665,6 +668,8 @@ const l = (href: string) => localizeHref(href, lang);
               data-price="${price}"
               data-boat-title="${esc(boatTitle)}"
               data-boat-image="${esc(images[0] || "")}"
+              data-half-day-rental="${halfDayRental}"
+              data-price-per-half-day="${pricePerHalfDay}"
             >${instantBooking ? "Book now" : "Continue Booking"}</button>
             <p class="text-xs text-text-muted text-center mt-2">You won't be charged yet</p>
 
@@ -715,7 +720,7 @@ const l = (href: string) => localizeHref(href, lang);
       const mobilePrice = document.getElementById("mobile-price");
       const mobilePriceUnit = document.getElementById("mobile-price-unit");
       if (mobilePrice) mobilePrice.textContent = "\u20AC" + price.toLocaleString();
-      if (mobilePriceUnit) mobilePriceUnit.textContent = priceUnit;
+      if (mobilePriceUnit) mobilePriceUnit.textContent = halfDayRental && pricePerHalfDay ? priceUnit + " · \u20AC" + pricePerHalfDay.toLocaleString() + " / half day" : priceUnit;
 
       // Show content
       contentEl?.classList.remove("hidden");
@@ -1055,6 +1060,12 @@ const l = (href: string) => localizeHref(href, lang);
           startDate: startVal,
           endDate: endVal,
         });
+        const halfDay = btn.getAttribute("data-half-day-rental") === "true";
+        const halfDayPrice = btn.getAttribute("data-price-per-half-day") || "0";
+        if (halfDay && Number(halfDayPrice) > 0) {
+          params.set("halfDayAvailable", "true");
+          params.set("halfDayPrice", halfDayPrice);
+        }
         window.location.href = localPath("/confirm-booking?" + params.toString());
       });
     }

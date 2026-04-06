@@ -64,6 +64,29 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
           </section>
 
+          <!-- Duration Type (half day / full day) -->
+          <section id="duration-type-section" class="hidden">
+            <h2 class="text-lg font-bold text-text mb-2">Duration</h2>
+            <p class="text-sm text-text-muted mb-3">Choose between a full day or half day rental.</p>
+            <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden">
+              <label class="duration-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-primary bg-primary/5 transition-colors">
+                <input type="radio" name="duration-type" value="full-day" class="mt-1 accent-primary" checked />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">Full day</p>
+                  <p class="text-sm text-text-muted mt-0.5" id="duration-fullday-price"></p>
+                </div>
+              </label>
+              <div class="border-t border-gray-200"></div>
+              <label class="duration-option flex items-start gap-3 px-4 py-3.5 cursor-pointer border-2 border-transparent hover:bg-gray-50 transition-colors">
+                <input type="radio" name="duration-type" value="half-day" class="mt-1 accent-primary" />
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-text">Half day</p>
+                  <p class="text-sm text-text-muted mt-0.5" id="duration-halfday-price"></p>
+                </div>
+              </label>
+            </div>
+          </section>
+
           <!-- Cruise Insurance -->
           <section>
             <div class="flex items-center justify-between mb-2">
@@ -331,6 +354,8 @@ const l = (href: string) => localizeHref(href, lang);
   const boatId = params.get("boatId");
   const startDateStr = params.get("startDate");
   const endDateStr = params.get("endDate");
+  const halfDayAvailable = params.get("halfDayAvailable") === "true";
+  const halfDayPriceParam = Number(params.get("halfDayPrice")) || 0;
 
   if (!boatId || !startDateStr || !endDateStr) {
     $("page-loading")?.classList.add("hidden");
@@ -366,7 +391,10 @@ const l = (href: string) => localizeHref(href, lang);
       const startDate = new Date(startDateStr!);
       const endDate = new Date(endDateStr!);
       const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
-      const charterPrice = days * price;
+      const halfDayPrice = halfDayPriceParam || Number(boat.pricePerHalfDay) || 0;
+      const showDurationChoice = days === 1 && halfDayAvailable && halfDayPrice > 0;
+      let isHalfDay = false;
+      let charterPrice = days * price;
 
       // Load charge settings from Firebase
       const charges = await getChargeSettings();
@@ -463,22 +491,32 @@ const l = (href: string) => localizeHref(href, lang);
       }
       // Only 100% or null → no section shown, selectedPaymentOption stays "full"
 
+      // Duration type (half day / full day)
+      if (showDurationChoice) {
+        $("duration-type-section")?.classList.remove("hidden");
+        const fullPriceLabel = $("duration-fullday-price");
+        const halfPriceLabel = $("duration-halfday-price");
+        if (fullPriceLabel) fullPriceLabel.textContent = "\u20AC" + price.toLocaleString() + " / day";
+        if (halfPriceLabel) halfPriceLabel.textContent = "\u20AC" + halfDayPrice.toLocaleString() + " / half day";
+      }
+
       // Price calculation state
       let insuranceCostPerDay = 47;
       let weatherCostPerDay = 0;
       let skipperCostPerDay = forceSkipper ? skipperPricePerDay : 0;
 
       function recalcPrices() {
+        const effectiveCharterPrice = isHalfDay ? halfDayPrice : charterPrice;
         const insuranceTot = insuranceCostPerDay * days;
         const weatherTot = weatherCostPerDay * days;
         const skipperTot = skipperCostPerDay * days;
         // Platform fee always on full charter price
-        const fullSubtotal = charterPrice + insuranceTot + weatherTot + skipperTot;
+        const fullSubtotal = effectiveCharterPrice + insuranceTot + weatherTot + skipperTot;
         const platformFee = Math.round(fullSubtotal * platformFeePercent) / 100;
 
         const isPrepay = selectedPaymentOption === "prepayment";
-        const charterDisplay = isPrepay ? Math.round(charterPrice * 0.3 * 100) / 100 : charterPrice;
-        const charterBalance = isPrepay ? charterPrice - charterDisplay : 0;
+        const charterDisplay = isPrepay ? Math.round(effectiveCharterPrice * 0.3 * 100) / 100 : effectiveCharterPrice;
+        const charterBalance = isPrepay ? effectiveCharterPrice - charterDisplay : 0;
         const total = charterDisplay + insuranceTot + weatherTot + skipperTot + serviceFee + platformFee + securityDeposit;
 
         const fmt = (n: number) => "\u20AC" + n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -563,6 +601,15 @@ const l = (href: string) => localizeHref(href, lang);
         });
       });
 
+      // Radio change handlers - duration type
+      document.querySelectorAll('input[name="duration-type"]').forEach(r => {
+        r.addEventListener("change", () => {
+          isHalfDay = (r as HTMLInputElement).value === "half-day";
+          highlightRadioGroup("duration-option", "duration-type");
+          recalcPrices();
+        });
+      });
+
       // Radio change handlers - rental type
       document.querySelectorAll('input[name="rental-type"]').forEach(r => {
         r.addEventListener("change", () => {
@@ -597,6 +644,7 @@ const l = (href: string) => localizeHref(href, lang);
       // Initial calculation
       highlightRadioGroup("insurance-option", "insurance");
       highlightRadioGroup("payment-option", "payment-option");
+      if (showDurationChoice) highlightRadioGroup("duration-option", "duration-type");
       recalcPrices();
 
       // Show page
@@ -652,6 +700,7 @@ const l = (href: string) => localizeHref(href, lang);
               withSkipper: skipperRadio?.value === "with-skipper",
               weatherGuarantee: weatherRadio?.value === "yes",
               paymentOption: selectedPaymentOption,
+              isHalfDay,
             }),
           });
 

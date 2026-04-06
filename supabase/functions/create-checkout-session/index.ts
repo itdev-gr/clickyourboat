@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
       boatId, renterId, renterEmail, renterName, ownerId,
       startDate, endDate, siteUrl,
       insuranceType = "none", withSkipper = false, weatherGuarantee = false,
-      paymentOption = "full",
+      paymentOption = "full", isHalfDay = false,
     } = body;
 
     if (!boatId || !renterId || !startDate || !endDate) {
@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     const resolvedSiteUrl = siteUrl || DEFAULT_SITE_URL;
     const start = new Date(startDate);
     const end = new Date(endDate);
-    if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
       return json({ error: "Invalid dates" }, 400);
     }
     const days = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     // --- Fetch boat ---
     const { data: boat, error: boatErr } = await supabase
       .from("boats")
-      .select("id, price_per_day, price, security_deposit, downpayment_percentage, manufacturer, model, listing_title, boat_name, images, owner_id, skipper_price_per_day")
+      .select("id, price_per_day, price, security_deposit, downpayment_percentage, manufacturer, model, listing_title, boat_name, images, owner_id, skipper_price_per_day, half_day_rental, price_per_half_day")
       .eq("id", boatId).maybeSingle();
     if (boatErr || !boat) return json({ error: "Boat not found" }, 400);
 
@@ -77,7 +77,9 @@ Deno.serve(async (req) => {
     const platformFeePercent = Number(charges.platformFeePercent || 0);
 
     // --- Compute price ---
-    const charterPrice = days * pricePerDay;
+    const useHalfDay = isHalfDay && days === 1 && boat.half_day_rental && Number(boat.price_per_half_day) > 0;
+    const effectivePricePerDay = useHalfDay ? Number(boat.price_per_half_day) : pricePerDay;
+    const charterPrice = useHalfDay ? effectivePricePerDay : days * pricePerDay;
     const insuranceTot = (INSURANCE_RATES[insuranceType] || 0) * days;
     const skipperTot = withSkipper ? skipperPricePerDay * days : 0;
     const weatherTot = weatherGuarantee ? WEATHER_PER_DAY * days : 0;
@@ -95,7 +97,7 @@ Deno.serve(async (req) => {
 
     const breakdown = {
       charterPrice, charterCharged, charterBalance, insuranceTot, skipperTot, weatherTot,
-      serviceFee, platformFee, securityDeposit, days, pricePerDay, paymentOption, fullTotal,
+      serviceFee, platformFee, securityDeposit, days, pricePerDay, paymentOption, fullTotal, isHalfDay: useHalfDay,
     };
 
     // --- Check availability ---
@@ -130,7 +132,7 @@ Deno.serve(async (req) => {
     params.append("cancel_url", cancelUrl);
     params.append("line_items[0][price_data][currency]", "eur");
     params.append("line_items[0][price_data][product_data][name]", isPrepay ? `Boat Charter (30% Prepayment): ${boatTitle}` : `Boat Charter: ${boatTitle}`);
-    params.append("line_items[0][price_data][product_data][description]", `${days} day${days > 1 ? "s" : ""} · ${startDate} to ${endDate}`);
+    params.append("line_items[0][price_data][product_data][description]", useHalfDay ? `Half day · ${startDate}` : `${days} day${days > 1 ? "s" : ""} · ${startDate} to ${endDate}`);
     params.append("line_items[0][price_data][unit_amount]", String(Math.round(total * 100)));
     params.append("line_items[0][quantity]", "1");
     if (renterEmail) params.append("customer_email", renterEmail);
