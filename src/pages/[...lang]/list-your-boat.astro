@@ -960,10 +960,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // ---- Half-day price toggle ----
   var halfDaySel = document.getElementById("halfDayRental");
   var halfDayPriceWrap = document.getElementById("halfDayPriceWrapper");
-  var halfDayPriceInput = document.getElementById("pricePerHalfDay") as HTMLInputElement;
+  var halfDayPriceInput = document.getElementById("pricePerHalfDay");
   function toggleHalfDayPrice() {
     if (!halfDaySel || !halfDayPriceWrap) return;
-    if ((halfDaySel as HTMLSelectElement).value === "yes") {
+    if (halfDaySel.value === "yes") {
       halfDayPriceWrap.classList.remove("hidden");
       if (halfDayPriceInput) halfDayPriceInput.required = true;
     } else {
