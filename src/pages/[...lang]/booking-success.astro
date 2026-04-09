@@ -62,6 +62,7 @@ const l = (href: string) => localizeHref(href, lang);
       const sessionId = params.get("session_id");
       const startDate = params.get("startDate");
       const endDate = params.get("endDate");
+      const isHalfDay = params.get("isHalfDay") === "true";
 
       // Verify payment with server if session_id is present
       if (sessionId) {
@@ -104,7 +105,7 @@ const l = (href: string) => localizeHref(href, lang);
 
         if (detailStart) detailStart.textContent = fmt(startDate);
         if (detailEnd) detailEnd.textContent = fmt(endDate);
-        if (detailDuration) detailDuration.textContent = diffDays === 1 ? "1 day" : `${diffDays} days`;
+        if (detailDuration) detailDuration.textContent = isHalfDay ? "Half day" : diffDays <= 1 ? "1 day" : `${diffDays} days`;
         if (wrapper) wrapper.classList.remove("hidden");
       }
     });

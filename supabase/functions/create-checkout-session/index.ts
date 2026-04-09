@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
     const cancelUrl = existingOrderId
       ? `${resolvedSiteUrl}/pay-booking?orderId=${existingOrderId}`
       : `${resolvedSiteUrl}/confirm-booking?boatId=${boatId}&startDate=${startDate}&endDate=${endDate}`;
-    const successUrl = `${resolvedSiteUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}&startDate=${startDate}&endDate=${endDate}`;
+    const successUrl = `${resolvedSiteUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}&startDate=${startDate}&endDate=${endDate}${useHalfDay ? "&isHalfDay=true" : ""}`;
 
     const params = new URLSearchParams();
     params.append("mode", "payment");
