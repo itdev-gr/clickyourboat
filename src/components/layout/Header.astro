@@ -154,6 +154,10 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
                 <span id="dropdown-msg-badge" class="hidden h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">0</span>
               </a>
               <a href={l("/favorites")} class="block px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="footer.favorites">Favorites</a>
+              <a href={l("/my-offers")} id="my-requests-link" class="hidden items-center justify-between px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.my_offers">
+                <span>My Requests</span>
+                <span id="dropdown-requests-badge" class="hidden h-5 min-w-[20px] px-1.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">0</span>
+              </a>
               <a href={l("/list-your-boat")} id="my-listings-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.my_listings">My Listings</a>
               <a href={l("/admin")} id="admin-panel-link" class="hidden px-4 py-2.5 text-sm text-text hover:bg-surface transition-colors" data-i18n="nav.admin_panel">Admin Panel</a>
               <hr class="my-1 border-gray-100" />
@@ -307,6 +311,10 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
         </a>
         <a href={l("/favorites")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="footer.favorites">
           Favorites
+        </a>
+        <a href={l("/my-offers")} id="mobile-my-requests-link" class="hidden items-center justify-between px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.my_offers">
+          <span>My Requests</span>
+          <span id="mobile-requests-badge" class="hidden h-5 min-w-[20px] px-1.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">0</span>
         </a>
         <a href={l("/list-your-boat")} id="mobile-my-listings-link" class="hidden px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.my_listings">
           My Listings
@@ -523,6 +531,10 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
             document.getElementById("my-listings-link")?.classList.add("block");
             document.getElementById("mobile-my-listings-link")?.classList.remove("hidden");
             document.getElementById("mobile-my-listings-link")?.classList.add("block");
+            document.getElementById("my-requests-link")?.classList.remove("hidden");
+            document.getElementById("my-requests-link")?.classList.add("flex");
+            document.getElementById("mobile-my-requests-link")?.classList.remove("hidden");
+            document.getElementById("mobile-my-requests-link")?.classList.add("flex");
           }
           if (userType === "admin") {
             document.getElementById("admin-panel-link")?.classList.remove("hidden");
@@ -563,6 +575,23 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
         if (requestCount) totalNotifications += requestCount;
 
         updateBadges(totalNotifications);
+
+        // Update individual request badges in dropdown/mobile
+        const reqBadges = [
+          document.getElementById("dropdown-requests-badge"),
+          document.getElementById("mobile-requests-badge"),
+        ];
+        reqBadges.forEach(badge => {
+          if (!badge) return;
+          if (requestCount && requestCount > 0) {
+            badge.textContent = String(requestCount);
+            badge.classList.remove("hidden");
+            badge.classList.add("flex");
+          } else {
+            badge.classList.add("hidden");
+            badge.classList.remove("flex");
+          }
+        });
       } catch (e) {
         updateBadges(0);
       }
