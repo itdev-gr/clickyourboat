@@ -29,6 +29,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const {
+      orderId: existingOrderId,
       boatId, renterId, renterEmail, renterName, ownerId,
       startDate, endDate, siteUrl,
       insuranceType = "none", withSkipper = false, weatherGuarantee = false,
@@ -100,30 +101,46 @@ Deno.serve(async (req) => {
       serviceFee, platformFee, securityDeposit, days, pricePerDay, paymentOption, fullTotal, isHalfDay: useHalfDay,
     };
 
-    // --- Check availability ---
-    const { data: overlapping } = await supabase.from("orders").select("id")
-      .eq("boat_id", boatId).neq("status", "cancelled")
-      .lt("start_date", endDate).gt("end_date", startDate).limit(1);
-    if (overlapping && overlapping.length > 0) {
-      return json({ error: "Boat is not available for the selected dates" }, 409);
-    }
+    let order: { id: string };
 
-    // --- Insert pending order ---
-    const { data: order, error: orderErr } = await supabase.from("orders").insert({
-      boat_id: boatId, boat_title: boatTitle, boat_image: boatImage,
-      renter_id: renterId, renter_name: renterName || "",
-      owner_id: actualOwnerId, start_date: startDate, end_date: endDate,
-      total_price: total, status: "pending", payment_status: "pending",
-      insurance_type: insuranceType, skipper_included: withSkipper,
-      weather_guarantee: weatherGuarantee, price_breakdown: breakdown,
-    }).select("id").single();
-    if (orderErr || !order) {
-      console.error("[Order] Insert failed:", JSON.stringify(orderErr));
-      return json({ error: "Failed to create order" }, 500);
+    if (existingOrderId) {
+      // --- Resume existing accepted order ---
+      const { data: existingOrder, error: existingErr } = await supabase.from("orders")
+        .select("id, status").eq("id", existingOrderId).maybeSingle();
+      if (existingErr || !existingOrder) return json({ error: "Order not found" }, 400);
+      if (existingOrder.status !== "accepted") return json({ error: "Order is not ready for payment" }, 400);
+      // Update status to pending (payment in progress)
+      await supabase.from("orders").update({ status: "pending", payment_status: "pending", price_breakdown: breakdown }).eq("id", existingOrderId);
+      order = { id: existingOrderId };
+    } else {
+      // --- Check availability ---
+      const { data: overlapping } = await supabase.from("orders").select("id")
+        .eq("boat_id", boatId).neq("status", "cancelled")
+        .lt("start_date", endDate).gt("end_date", startDate).limit(1);
+      if (overlapping && overlapping.length > 0) {
+        return json({ error: "Boat is not available for the selected dates" }, 409);
+      }
+
+      // --- Insert pending order ---
+      const { data: newOrder, error: orderErr } = await supabase.from("orders").insert({
+        boat_id: boatId, boat_title: boatTitle, boat_image: boatImage,
+        renter_id: renterId, renter_name: renterName || "",
+        owner_id: actualOwnerId, start_date: startDate, end_date: endDate,
+        total_price: total, status: "pending", payment_status: "pending",
+        insurance_type: insuranceType, skipper_included: withSkipper,
+        weather_guarantee: weatherGuarantee, price_breakdown: breakdown,
+      }).select("id").single();
+      if (orderErr || !newOrder) {
+        console.error("[Order] Insert failed:", JSON.stringify(orderErr));
+        return json({ error: "Failed to create order" }, 500);
+      }
+      order = newOrder;
     }
 
     // --- Create Stripe Checkout Session ---
-    const cancelUrl = `${resolvedSiteUrl}/confirm-booking?boatId=${boatId}&startDate=${startDate}&endDate=${endDate}`;
+    const cancelUrl = existingOrderId
+      ? `${resolvedSiteUrl}/pay-booking?orderId=${existingOrderId}`
+      : `${resolvedSiteUrl}/confirm-booking?boatId=${boatId}&startDate=${startDate}&endDate=${endDate}`;
     const successUrl = `${resolvedSiteUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}&startDate=${startDate}&endDate=${endDate}`;
 
     const params = new URLSearchParams();
@@ -152,7 +169,12 @@ Deno.serve(async (req) => {
     const session = await stripeRes.json();
     if (!stripeRes.ok) {
       console.error("[Stripe] Error:", JSON.stringify(session));
-      await supabase.from("orders").delete().eq("id", order.id);
+      if (existingOrderId) {
+        // Reset to accepted so renter can try again
+        await supabase.from("orders").update({ status: "accepted" }).eq("id", order.id);
+      } else {
+        await supabase.from("orders").delete().eq("id", order.id);
+      }
       return json({ error: session.error?.message || "Failed to create checkout session" }, 500);
     }
 

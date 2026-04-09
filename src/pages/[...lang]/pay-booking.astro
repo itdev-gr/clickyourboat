@@ -1,0 +1,222 @@
+---
+import { getLangs, localizeHref } from "../../lib/i18n-utils";
+export function getStaticPaths() { return getLangs(); }
+const { lang } = Astro.params;
+import Layout from "../../layouts/Layout.astro";
+
+const title = "Complete Payment — TapYourBoat";
+const description = "Complete payment for your accepted booking request.";
+const l = (href: string) => localizeHref(href, lang);
+---
+<Layout lang={lang} title={title} description={description}>
+  <div id="page-loading" class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm text-text-muted">Loading booking details...</p>
+    </div>
+  </div>
+
+  <div id="page-error" class="hidden min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <p class="text-lg font-bold text-text mb-2">Something went wrong</p>
+      <p class="text-sm text-text-muted mb-4">We couldn't load your booking details.</p>
+      <a href={l("/bookings")} class="inline-flex items-center px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">Back to bookings</a>
+    </div>
+  </div>
+
+  <div id="page-content" class="hidden py-8">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6">
+      <div class="text-center mb-8">
+        <div class="mx-auto mb-4 h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
+          <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        </div>
+        <h1 class="text-2xl font-bold text-text mb-2">Your booking has been accepted!</h1>
+        <p class="text-text-muted">Complete the payment to confirm your reservation.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <h2 class="text-lg font-bold text-text mb-4">Booking summary</h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-text-muted">Boat</span><span class="text-text font-medium" id="summary-boat"></span></div>
+          <div class="flex justify-between"><span class="text-text-muted">Dates</span><span class="text-text font-medium" id="summary-dates"></span></div>
+          <div class="flex justify-between"><span class="text-text-muted">Charter price</span><span class="text-text font-medium" id="summary-charter"></span></div>
+          <div id="summary-insurance-row" class="hidden flex justify-between"><span class="text-text-muted" id="summary-insurance-label">Insurance</span><span class="text-text font-medium" id="summary-insurance"></span></div>
+          <div id="summary-skipper-row" class="hidden flex justify-between"><span class="text-text-muted">Skipper</span><span class="text-text font-medium" id="summary-skipper"></span></div>
+          <div id="summary-weather-row" class="hidden flex justify-between"><span class="text-text-muted">Weather Guarantee</span><span class="text-text font-medium" id="summary-weather"></span></div>
+          <div class="flex justify-between"><span class="text-text-muted">Service Fee</span><span class="text-text font-medium" id="summary-service"></span></div>
+          <div id="summary-platform-row" class="hidden flex justify-between"><span class="text-text-muted">Platform Fee</span><span class="text-text font-medium" id="summary-platform"></span></div>
+          <div id="summary-deposit-row" class="hidden flex justify-between"><span class="text-text-muted">Security Deposit</span><span class="text-text font-medium" id="summary-deposit"></span></div>
+          <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
+            <span class="font-bold text-text" id="summary-total-label">Total</span>
+            <span class="font-bold text-text text-lg" id="summary-total">&euro;0</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="pay-btn"
+        class="w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Pay now &middot; <span id="pay-btn-amount">&euro;0</span>
+      </button>
+
+      <div id="pay-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+        <p class="text-sm text-red-800 font-medium" id="pay-error-text">Something went wrong</p>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  function getLangPrefix() { return document.documentElement.dataset.langPrefix || ""; }
+  function localPath(path: string): string { const p = getLangPrefix(); return p ? "/" + p + path : path; }
+  import { supabase } from "../../lib/supabase";
+  import { onAuthChange } from "../../lib/auth";
+
+  const $ = (id: string) => document.getElementById(id);
+
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("orderId");
+
+  if (!orderId) {
+    $("page-loading")?.classList.add("hidden");
+    $("page-error")?.classList.remove("hidden");
+  } else {
+    init();
+  }
+
+  async function init() {
+    try {
+      const { data: order, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("id", orderId!)
+        .maybeSingle();
+      if (error || !order) throw new Error("Order not found");
+      if (order.status !== "accepted") {
+        throw new Error("This booking is not ready for payment");
+      }
+
+      const breakdown = order.price_breakdown || {};
+      const fmt = (n: number) => "\u20AC" + n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+      const boatEl = $("summary-boat");
+      if (boatEl) boatEl.textContent = order.boat_title || "Boat";
+      const datesEl = $("summary-dates");
+      if (datesEl) datesEl.textContent = `${order.start_date} — ${order.end_date}`;
+
+      const charterEl = $("summary-charter");
+      if (charterEl) charterEl.textContent = fmt(breakdown.charterCharged || breakdown.charterPrice || 0);
+
+      if (breakdown.insuranceTot > 0) {
+        $("summary-insurance-row")?.classList.remove("hidden");
+        $("summary-insurance-row")?.classList.add("flex");
+        const insEl = $("summary-insurance");
+        if (insEl) insEl.textContent = fmt(breakdown.insuranceTot);
+      }
+      if (breakdown.skipperTot > 0) {
+        $("summary-skipper-row")?.classList.remove("hidden");
+        $("summary-skipper-row")?.classList.add("flex");
+        const skipEl = $("summary-skipper");
+        if (skipEl) skipEl.textContent = fmt(breakdown.skipperTot);
+      }
+      if (breakdown.weatherTot > 0) {
+        $("summary-weather-row")?.classList.remove("hidden");
+        $("summary-weather-row")?.classList.add("flex");
+        const weaEl = $("summary-weather");
+        if (weaEl) weaEl.textContent = fmt(breakdown.weatherTot);
+      }
+      const serviceEl = $("summary-service");
+      if (serviceEl) serviceEl.textContent = fmt(breakdown.serviceFee || 0);
+      if (breakdown.platformFee > 0) {
+        $("summary-platform-row")?.classList.remove("hidden");
+        $("summary-platform-row")?.classList.add("flex");
+        const platEl = $("summary-platform");
+        if (platEl) platEl.textContent = fmt(breakdown.platformFee);
+      }
+      if (breakdown.securityDeposit > 0) {
+        $("summary-deposit-row")?.classList.remove("hidden");
+        $("summary-deposit-row")?.classList.add("flex");
+        const depEl = $("summary-deposit");
+        if (depEl) depEl.textContent = fmt(breakdown.securityDeposit);
+      }
+
+      const total = order.total_price || 0;
+      const isPrepay = breakdown.paymentOption === "prepayment";
+      const totalLabel = $("summary-total-label");
+      if (totalLabel) totalLabel.textContent = isPrepay ? "Pay now (30%)" : "Total";
+      const totalEl = $("summary-total");
+      if (totalEl) totalEl.textContent = fmt(total);
+      const btnAmt = $("pay-btn-amount");
+      if (btnAmt) btnAmt.textContent = fmt(total);
+
+      $("page-loading")?.classList.add("hidden");
+      $("page-content")?.classList.remove("hidden");
+
+      // Auth
+      let currentUser: any = null;
+      onAuthChange((user) => {
+        currentUser = user;
+        if (!user) {
+          window.location.href = localPath("/login?redirect=") + encodeURIComponent(window.location.href);
+        }
+      });
+
+      // Pay button
+      const payBtn = $("pay-btn") as HTMLButtonElement;
+      payBtn?.addEventListener("click", async () => {
+        $("pay-error")?.classList.add("hidden");
+        if (!currentUser) {
+          window.location.href = localPath("/login?redirect=") + encodeURIComponent(window.location.href);
+          return;
+        }
+
+        payBtn.disabled = true;
+        payBtn.textContent = "Redirecting to payment...";
+
+        try {
+          const siteUrl = window.location.origin + (getLangPrefix() ? "/" + getLangPrefix() : "");
+
+          const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/create-checkout-session`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              orderId: orderId!,
+              boatId: order.boat_id,
+              renterId: currentUser.id,
+              renterEmail: currentUser.email || "",
+              renterName: currentUser.user_metadata?.full_name || currentUser.email || "Renter",
+              ownerId: order.owner_id,
+              startDate: order.start_date,
+              endDate: order.end_date,
+              siteUrl,
+              insuranceType: order.insurance_type || "none",
+              withSkipper: order.skipper_included || false,
+              weatherGuarantee: order.weather_guarantee || false,
+              paymentOption: breakdown.paymentOption || "full",
+              isHalfDay: breakdown.isHalfDay || false,
+            }),
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Failed to create payment");
+
+          window.location.href = data.url;
+        } catch (err: any) {
+          const errorText = $("pay-error-text");
+          if (errorText) errorText.textContent = err.message || "Failed to start payment.";
+          $("pay-error")?.classList.remove("hidden");
+          payBtn.disabled = false;
+          payBtn.textContent = "Pay now";
+        }
+      });
+
+    } catch (err: any) {
+      console.error("[PayBooking] Error:", err);
+      $("page-loading")?.classList.add("hidden");
+      $("page-error")?.classList.remove("hidden");
+    }
+  }
+</script>

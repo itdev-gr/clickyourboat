@@ -245,8 +245,14 @@ export interface Order {
   startDate: string;
   endDate: string;
   totalPrice: number;
-  status: "pending" | "confirmed" | "cancelled" | "completed";
+  status: "requested" | "accepted" | "pending" | "confirmed" | "cancelled" | "completed";
   createdAt: FirestoreTimestamp;
+  renterMessage?: string;
+  insuranceType?: string;
+  skipperIncluded?: boolean;
+  weatherGuarantee?: boolean;
+  priceBreakdown?: Record<string, any>;
+  paymentOption?: string;
 }
 
 export type BoatType = Boat["type"] | "luxury" | "party";

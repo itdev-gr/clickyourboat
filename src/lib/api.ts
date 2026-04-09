@@ -482,6 +482,137 @@ export async function cancelOrder(orderId: string): Promise<void> {
   await updateOrderStatus(orderId, "cancelled");
 }
 
+export async function createBookingRequest(data: {
+  boatId: string;
+  boatTitle: string;
+  boatImage?: string;
+  renterId: string;
+  renterName: string;
+  ownerId: string;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+  insuranceType: string;
+  skipperIncluded: boolean;
+  weatherGuarantee: boolean;
+  paymentOption: string;
+  priceBreakdown: Record<string, any>;
+  renterMessage?: string;
+  isHalfDay?: boolean;
+}): Promise<string> {
+  const { data: order, error } = await supabase
+    .from("orders")
+    .insert({
+      boat_id: data.boatId,
+      boat_title: data.boatTitle,
+      boat_image: data.boatImage || null,
+      renter_id: data.renterId,
+      renter_name: data.renterName,
+      owner_id: data.ownerId,
+      start_date: data.startDate,
+      end_date: data.endDate,
+      total_price: data.totalPrice,
+      status: "requested",
+      payment_status: "pending",
+      insurance_type: data.insuranceType,
+      skipper_included: data.skipperIncluded,
+      weather_guarantee: data.weatherGuarantee,
+      price_breakdown: data.priceBreakdown,
+      renter_message: data.renterMessage || null,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return order.id;
+}
+
+export async function acceptBookingRequest(
+  orderId: string,
+  renterId: string,
+  ownerId: string,
+  boatId: string,
+  boatTitle: string
+): Promise<void> {
+  await updateOrderStatus(orderId, "accepted");
+
+  // Notify renter via message
+  const messageText = `Great news! Your booking request for "${boatTitle}" has been accepted. Please complete your payment to confirm the booking.`;
+  const now = new Date().toISOString();
+
+  // Find existing conversation
+  const { data: convs } = await supabase
+    .from("conversations")
+    .select("*")
+    .contains("participants", [renterId]);
+
+  let conversationId: string | null = null;
+  if (convs) {
+    for (const c of convs) {
+      if ((c.participants as string[])?.includes(ownerId)) {
+        conversationId = c.id;
+        break;
+      }
+    }
+  }
+
+  if (conversationId) {
+    await supabase.from("conversations").update({
+      last_message: { text: messageText, senderId: ownerId, timestamp: now },
+      updated_at: now,
+    }).eq("id", conversationId);
+
+    await supabase.from("messages").insert({
+      conversation_id: conversationId,
+      text: messageText,
+      sender_id: ownerId,
+      sender_name: "Owner",
+      read_by: [ownerId],
+    });
+  }
+}
+
+export async function declineBookingRequest(
+  orderId: string,
+  renterId: string,
+  ownerId: string,
+  boatTitle: string
+): Promise<void> {
+  await updateOrderStatus(orderId, "cancelled");
+
+  const messageText = `Unfortunately, your booking request for "${boatTitle}" has been declined.`;
+  const now = new Date().toISOString();
+
+  const { data: convs } = await supabase
+    .from("conversations")
+    .select("*")
+    .contains("participants", [renterId]);
+
+  let conversationId: string | null = null;
+  if (convs) {
+    for (const c of convs) {
+      if ((c.participants as string[])?.includes(ownerId)) {
+        conversationId = c.id;
+        break;
+      }
+    }
+  }
+
+  if (conversationId) {
+    await supabase.from("conversations").update({
+      last_message: { text: messageText, senderId: ownerId, timestamp: now },
+      updated_at: now,
+    }).eq("id", conversationId);
+
+    await supabase.from("messages").insert({
+      conversation_id: conversationId,
+      text: messageText,
+      sender_id: ownerId,
+      sender_name: "Owner",
+      read_by: [ownerId],
+    });
+  }
+}
+
 // --- Charges / Platform Settings ---
 
 export interface ChargeSettings {
@@ -568,7 +699,8 @@ export async function sendBookingNotification(
   boatId: string,
   boatTitle: string,
   startDate: string,
-  endDate: string
+  endDate: string,
+  customMessage?: string
 ): Promise<void> {
   // Find existing conversation between renter and owner
   const { data: convs } = await supabase
@@ -586,7 +718,10 @@ export async function sendBookingNotification(
     }
   }
 
-  const messageText = `Hi! I've just booked "${boatTitle}" from ${startDate} to ${endDate}. Looking forward to the trip!`;
+  const defaultMsg = `Hi! I'd like to book "${boatTitle}" from ${startDate} to ${endDate}.`;
+  const messageText = customMessage
+    ? `${customMessage}\n\n📅 Booking request: "${boatTitle}" from ${startDate} to ${endDate}`
+    : defaultMsg;
   const now = new Date().toISOString();
 
   if (!conversationId) {
@@ -803,6 +938,12 @@ function mapOrderRow(row: any): Order {
     totalPrice: row.total_price,
     status: row.status,
     createdAt: row.created_at ? new Date(row.created_at) : new Date(),
+    renterMessage: row.renter_message || undefined,
+    insuranceType: row.insurance_type || undefined,
+    skipperIncluded: row.skipper_included || false,
+    weatherGuarantee: row.weather_guarantee || false,
+    priceBreakdown: row.price_breakdown || undefined,
+    paymentOption: row.price_breakdown?.paymentOption || undefined,
   };
 }
 

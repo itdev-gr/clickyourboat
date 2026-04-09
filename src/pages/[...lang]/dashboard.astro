@@ -360,17 +360,27 @@ const l = (href: string) => localizeHref(href, lang);
       }
 
       const statusStyles: Record<string, string> = {
-        pending: "bg-blue-100 text-blue-800",
+        requested: "bg-blue-100 text-blue-800",
+        accepted: "bg-amber-100 text-amber-800",
+        pending: "bg-yellow-100 text-yellow-800",
         confirmed: "bg-green-100 text-green-800",
         cancelled: "bg-gray-100 text-gray-600",
         completed: "bg-emerald-100 text-emerald-800",
+      };
+      const statusLabels: Record<string, string> = {
+        requested: "Requested",
+        accepted: "Accepted — Pay now",
+        pending: "Payment processing",
+        confirmed: "Confirmed",
+        cancelled: "Cancelled",
+        completed: "Completed",
       };
 
       let html = "";
       for (const booking of bookings) {
         const status = booking.status || "pending";
         const badgeCls = statusStyles[status] || "bg-gray-100 text-gray-800";
-        const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+        const statusLabel = statusLabels[status] || status.charAt(0).toUpperCase() + status.slice(1);
         const boatTitle = escapeHtml(booking.boatTitle || "Untitled Boat");
         const thumb = booking.boatImage;
         const dateRange = `${booking.startDate || "?"} \u2014 ${booking.endDate || "?"}`;
@@ -389,7 +399,8 @@ const l = (href: string) => localizeHref(href, lang);
               <p class="text-xs text-text-muted mt-0.5">${dateRange}</p>
               ${price ? `<p class="text-xs font-medium text-text mt-0.5">${price}</p>` : ""}
             </div>
-            ${status === "pending" ? `<button type="button" class="cancel-booking-btn flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition-colors" data-id="${booking.id}">Cancel</button>` : ""}
+            ${status === "accepted" ? `<a href="${localPath("/pay-booking?orderId=" + booking.id)}" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-dark transition-colors">Pay now</a>` : ""}
+            ${status === "requested" || status === "pending" ? `<button type="button" class="cancel-booking-btn flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition-colors" data-id="${booking.id}">Cancel</button>` : ""}
           </div>
         `;
       }

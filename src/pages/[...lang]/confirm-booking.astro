@@ -205,6 +205,16 @@ const l = (href: string) => localizeHref(href, lang);
             </div>
           </section>
 
+          <!-- Message to Owner -->
+          <section>
+            <h2 class="text-lg font-bold text-text mb-2">Message to owner</h2>
+            <p class="text-sm text-text-muted mb-3">Introduce yourself and share any details about your trip.</p>
+            <textarea id="renter-message" rows="4" maxlength="1000"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              placeholder="Hi! I'm interested in renting your boat for a family trip..."></textarea>
+            <p class="text-xs text-text-muted mt-1 text-right"><span id="msg-char-count">0</span>/1000</p>
+          </section>
+
           <!-- Cancellation Conditions -->
           <section>
             <h2 class="text-lg font-bold text-text mb-2">Cancellation conditions</h2>
@@ -241,13 +251,13 @@ const l = (href: string) => localizeHref(href, lang);
               By selecting the button below, you unconditionally agree to the
               <a href={l("/terms")} class="underline hover:text-text">Terms &amp; Conditions</a>,
               <a href={l("/terms")} class="underline hover:text-text">Cancellation conditions</a>,
-              <a href={l("/terms")} class="underline hover:text-text">Insurance conditions</a>. You also agree to pay the total amount of the reservation.
+              <a href={l("/terms")} class="underline hover:text-text">Insurance conditions</a>. You agree to pay the total amount if the owner accepts your request.
             </p>
 
             <button id="confirm-btn"
               class="w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Confirm and pay &middot; <span id="confirm-btn-amount">&euro;0</span>
+              Send booking request &middot; <span id="confirm-btn-amount">&euro;0</span>
             </button>
 
             <div id="confirm-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -345,7 +355,7 @@ const l = (href: string) => localizeHref(href, lang);
   function localPath(path: string): string { const p = getLangPrefix(); return p ? "/" + p + path : path; }
   import { supabase } from "../../lib/supabase";
   import { onAuthChange } from "../../lib/auth";
-  import { getBoatListing, getChargeSettings, sendBookingNotification } from "../../lib/api";
+  import { getBoatListing, getChargeSettings, sendBookingNotification, createBookingRequest } from "../../lib/api";
 
   const $ = (id: string) => document.getElementById(id);
 
@@ -661,7 +671,14 @@ const l = (href: string) => localizeHref(href, lang);
         }
       });
 
-      // Confirm button -> create Checkout Session and redirect to Stripe
+      // Message character counter
+      const msgTextarea = $("renter-message") as HTMLTextAreaElement;
+      const msgCounter = $("msg-char-count");
+      msgTextarea?.addEventListener("input", () => {
+        if (msgCounter) msgCounter.textContent = String(msgTextarea.value.length);
+      });
+
+      // Confirm button -> create booking request (no payment yet)
       const confirmBtn = $("confirm-btn") as HTMLButtonElement;
       confirmBtn?.addEventListener("click", async () => {
         $("confirm-error")?.classList.add("hidden");
@@ -672,49 +689,81 @@ const l = (href: string) => localizeHref(href, lang);
         }
 
         confirmBtn.disabled = true;
-        confirmBtn.textContent = getLangPrefix() === "gr" ? "Μετάβαση στην πληρωμή..." : "Redirecting to payment...";
+        confirmBtn.textContent = getLangPrefix() === "gr" ? "Αποστολή αιτήματος..." : "Sending request...";
 
         try {
           const insuranceRadio = document.querySelector('input[name="insurance"]:checked') as HTMLInputElement;
           const skipperRadio = document.querySelector('input[name="rental-type"]:checked') as HTMLInputElement;
           const weatherRadio = document.querySelector('input[name="weather"]:checked') as HTMLInputElement;
 
-          const siteUrl = window.location.origin + (getLangPrefix() ? "/" + getLangPrefix() : "");
+          const insuranceType = insuranceRadio?.value || "none";
+          const withSkipper = skipperRadio?.value === "with-skipper";
+          const weatherGuarantee = weatherRadio?.value === "yes";
+          const renterMessage = msgTextarea?.value?.trim() || "";
+          const renterName = currentUser.user_metadata?.full_name || currentUser.email || "Renter";
 
-          const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/create-checkout-session`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              boatId: boatId!,
-              renterId: currentUser.id,
-              renterEmail: currentUser.email || "",
-              renterName: currentUser.user_metadata?.full_name || currentUser.email || "Renter",
-              ownerId,
-              startDate: startDateStr!,
-              endDate: endDateStr!,
-              siteUrl,
-              insuranceType: insuranceRadio?.value || "none",
-              withSkipper: skipperRadio?.value === "with-skipper",
-              weatherGuarantee: weatherRadio?.value === "yes",
-              paymentOption: selectedPaymentOption,
-              isHalfDay,
-            }),
+          // Calculate the effective charter price for the breakdown
+          const effectiveCharterPrice = isHalfDay ? halfDayPrice : charterPrice;
+          const insuranceTot = (insuranceType === "multi-risk" ? 47 : insuranceType === "assistance" ? 29 : 0) * days;
+          const skipperTot = withSkipper ? skipperPricePerDay * days : 0;
+          const weatherTot = weatherGuarantee ? 14 * days : 0;
+          const fullSubtotal = effectiveCharterPrice + insuranceTot + skipperTot + weatherTot;
+          const platformFee = Math.round(fullSubtotal * platformFeePercent) / 100;
+          const isPrepay = selectedPaymentOption === "prepayment";
+          const charterCharged = isPrepay ? Math.round(effectiveCharterPrice * 0.3 * 100) / 100 : effectiveCharterPrice;
+          const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit;
+
+          const breakdown = {
+            charterPrice: effectiveCharterPrice,
+            charterCharged,
+            charterBalance: isPrepay ? effectiveCharterPrice - charterCharged : 0,
+            insuranceTot, skipperTot, weatherTot,
+            serviceFee, platformFee, securityDeposit,
+            days, pricePerDay: price, paymentOption: selectedPaymentOption,
+            fullTotal: effectiveCharterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit,
+            isHalfDay,
+          };
+
+          // Create booking request (no Stripe yet)
+          const orderId = await createBookingRequest({
+            boatId: boatId!,
+            boatTitle,
+            boatImage: images[0] || undefined,
+            renterId: currentUser.id,
+            renterName,
+            ownerId,
+            startDate: startDateStr!,
+            endDate: endDateStr!,
+            totalPrice: total,
+            insuranceType,
+            skipperIncluded: withSkipper,
+            weatherGuarantee,
+            paymentOption: selectedPaymentOption,
+            priceBreakdown: breakdown,
+            renterMessage: renterMessage || undefined,
+            isHalfDay,
           });
 
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Failed to create payment");
+          // Send notification message to owner
+          await sendBookingNotification(
+            currentUser.id,
+            renterName,
+            ownerId,
+            boatId!,
+            boatTitle,
+            startDateStr!,
+            endDateStr!,
+            renterMessage || undefined
+          );
 
-          // Redirect to Stripe Checkout
-          window.location.href = data.url;
+          // Redirect to bookings page with success
+          window.location.href = localPath("/bookings?request=sent");
         } catch (err: any) {
           const errorText = $("confirm-error-text");
-          if (errorText) errorText.textContent = err.message || "Failed to start payment.";
+          if (errorText) errorText.textContent = err.message || "Failed to send booking request.";
           $("confirm-error")?.classList.remove("hidden");
           confirmBtn.disabled = false;
-          confirmBtn.textContent = "Confirm and pay";
+          confirmBtn.textContent = "Send booking request";
         }
       });
 
