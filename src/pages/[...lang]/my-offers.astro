@@ -55,7 +55,7 @@ const l = (href: string) => localizeHref(href, lang);
             <button type="button" data-tab="all" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-primary text-white">All</button>
             <button type="button" data-tab="requested" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">New Requests</button>
             <button type="button" data-tab="accepted" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Accepted</button>
-            <button type="button" data-tab="confirmed" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Confirmed</button>
+            <button type="button" data-tab="paid_all" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Paid</button>
             <button type="button" data-tab="completed" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Completed</button>
             <button type="button" data-tab="cancelled" class="offer-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Declined</button>
           </div>
@@ -158,7 +158,9 @@ const l = (href: string) => localizeHref(href, lang);
 
     const filtered = currentFilter === "all"
       ? allOffers
-      : allOffers.filter(b => b.status === currentFilter);
+      : currentFilter === "paid_all"
+        ? allOffers.filter(b => b.status === "paid" || b.status === "partially_paid" || b.status === "confirmed")
+        : allOffers.filter(b => b.status === currentFilter);
 
     if (allOffers.length === 0) {
       emptyEl?.classList.remove("hidden");
@@ -269,7 +271,7 @@ const l = (href: string) => localizeHref(href, lang);
                     Decline
                   </button>
                 ` : ""}
-                ${status === "confirmed" ? `
+                ${status === "paid" || status === "partially_paid" || status === "confirmed" ? `
                   <button type="button" class="complete-offer-btn inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                     data-id="${escapeHtml(booking.id)}"
                   >
