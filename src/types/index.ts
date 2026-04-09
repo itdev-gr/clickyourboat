@@ -245,7 +245,7 @@ export interface Order {
   startDate: string;
   endDate: string;
   totalPrice: number;
-  status: "requested" | "accepted" | "pending" | "confirmed" | "cancelled" | "completed";
+  status: "requested" | "accepted" | "pending" | "paid" | "partially_paid" | "confirmed" | "cancelled" | "completed";
   createdAt: FirestoreTimestamp;
   renterMessage?: string;
   insuranceType?: string;

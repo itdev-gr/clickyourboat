@@ -39,12 +39,23 @@ Deno.serve(async (req) => {
       return json({ error: `Payment not completed. Status: ${session.payment_status}` }, 400);
     }
 
+    // --- Fetch order to determine payment type ---
+    const { data: existingOrder } = await supabase
+      .from("orders")
+      .select("id, price_breakdown, boat_title, owner_id, renter_id")
+      .eq("checkout_session_id", sessionId)
+      .maybeSingle();
+
+    const breakdown = existingOrder?.price_breakdown || {};
+    const isPrepay = breakdown.paymentOption === "prepayment";
+    const newStatus = isPrepay ? "partially_paid" : "paid";
+
     // --- Update order ---
     const { data: order, error: updateErr } = await supabase
       .from("orders")
-      .update({ payment_status: "succeeded", status: "confirmed" })
+      .update({ payment_status: "succeeded", status: newStatus })
       .eq("checkout_session_id", sessionId)
-      .select("id, boat_id, owner_id, renter_id, start_date, end_date")
+      .select("id, boat_id, boat_title, owner_id, renter_id, start_date, end_date")
       .maybeSingle();
 
     if (updateErr) {
@@ -53,6 +64,51 @@ Deno.serve(async (req) => {
     }
     if (!order) {
       return json({ error: "No order found for this session" }, 404);
+    }
+
+    // --- Notify owner via messaging ---
+    try {
+      const boatTitle = order.boat_title || "your boat";
+      const messageText = isPrepay
+        ? `30% prepayment received for "${boatTitle}". The remaining 70% balance is due before the trip.`
+        : `Payment completed! Booking for "${boatTitle}" is now confirmed.`;
+
+      // Find existing conversation
+      const { data: convs } = await supabase
+        .from("conversations")
+        .select("id, participants, unread_count")
+        .contains("participants", [order.renter_id]);
+
+      let conversationId: string | null = null;
+      if (convs) {
+        for (const c of convs) {
+          if ((c.participants as string[])?.includes(order.owner_id)) {
+            conversationId = c.id;
+
+            // Update conversation with notification
+            const uc = (c.unread_count as Record<string, number>) || {};
+            const ownerUnread = (uc[order.owner_id] || 0) + 1;
+            const now = new Date().toISOString();
+            await supabase.from("conversations").update({
+              last_message: { text: messageText, senderId: order.renter_id, timestamp: now },
+              updated_at: now,
+              unread_count: { ...uc, [order.owner_id]: ownerUnread },
+            }).eq("id", conversationId);
+
+            await supabase.from("messages").insert({
+              conversation_id: conversationId,
+              text: messageText,
+              sender_id: order.renter_id,
+              sender_name: "Renter",
+              read_by: [order.renter_id],
+            });
+            break;
+          }
+        }
+      }
+    } catch (notifErr) {
+      console.error("[confirm-order] Notification error:", notifErr);
+      // Don't fail the order confirmation if notification fails
     }
 
     return json({ success: true, orderId: order.id });
