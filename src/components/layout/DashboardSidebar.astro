@@ -16,7 +16,7 @@ const navItems = [
   { key: "dashboard", href: "/dashboard", label: "Dashboard", icon: `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>` },
   { key: "account", href: "/account", label: "Profile", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>` },
   { key: "messages", href: "/messages", label: "Messages", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>` },
-  { key: "my-offers", href: "/my-offers", label: "My Offers", id: "sidebar-my-offers", conditional: true, icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>` },
+  { key: "my-offers", href: "/my-offers", label: "My Requests", id: "sidebar-my-offers", conditional: true, icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>` },
   { key: "bookings", href: "/bookings", label: "Bookings", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>` },
   { key: "listings", href: "/list-your-boat", label: "Listings", icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>` },
   { key: "payment", href: "/account", label: "Payment information", id: "sidebar-payment", conditional: true, icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>` },
@@ -38,12 +38,14 @@ const navItems = [
       <a
         href={l(item.href)}
         id={item.id}
-        class={`sidebar-link ${item.conditional ? "hidden" : ""} ${item.key === activePage ? active : (item.conditional ? inactive : inactive)}`}
+        class={`sidebar-link relative ${item.conditional ? "hidden" : ""} ${item.key === activePage ? active : (item.conditional ? inactive : inactive)}`}
       >
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <Fragment set:html={item.icon} />
         </svg>
         {item.label}
+        {item.key === "my-offers" && <span id="sidebar-requests-badge" class="hidden ml-auto inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-red-500 text-[11px] font-bold text-white"></span>}
+        {item.key === "messages" && <span id="sidebar-messages-badge" class="hidden ml-auto inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-blue-500 text-[11px] font-bold text-white"></span>}
       </a>
     ))}
     <div class="pt-2 mt-2 border-t border-gray-700">
@@ -94,12 +96,14 @@ const navItems = [
         <a
           href={l(item.href)}
           id={item.id ? item.id + "-mobile" : undefined}
-          class={`sidebar-link-mobile ${item.conditional ? "hidden" : ""} ${item.key === activePage ? active : inactive}`}
+          class={`sidebar-link-mobile relative ${item.conditional ? "hidden" : ""} ${item.key === activePage ? active : inactive}`}
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <Fragment set:html={item.icon} />
           </svg>
           {item.label}
+          {item.key === "my-offers" && <span id="sidebar-requests-badge-mobile" class="hidden ml-auto inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-red-500 text-[11px] font-bold text-white"></span>}
+          {item.key === "messages" && <span id="sidebar-messages-badge-mobile" class="hidden ml-auto inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-blue-500 text-[11px] font-bold text-white"></span>}
         </a>
       ))}
       <div class="pt-2 mt-2 border-t border-gray-700">
@@ -114,6 +118,7 @@ const navItems = [
 
 <script>
   import { onAuthChange, signOutUser, getUserProfile } from "../../lib/auth";
+  import { supabase } from "../../lib/supabase";
 
   // ---- Drawer open/close ----
   const toggle = document.getElementById("sidebar-mobile-toggle");
@@ -166,6 +171,19 @@ const navItems = [
     return lang ? "/" + lang + path : path;
   }
 
+  function updateBadge(id: string, count: number) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (count > 0) {
+      el.textContent = String(count);
+      el.classList.remove("hidden");
+      el.classList.add("inline-flex");
+    } else {
+      el.classList.add("hidden");
+      el.classList.remove("inline-flex");
+    }
+  }
+
   onAuthChange(async (user) => {
     if (!user) return;
 
@@ -194,7 +212,8 @@ const navItems = [
     // Show conditional links based on user profile
     try {
       const profile = await getUserProfile(user.id);
-      if (profile?.user_type === "owner" || profile?.user_type === "admin") {
+      const isOwner = profile?.user_type === "owner" || profile?.user_type === "admin";
+      if (isOwner) {
         ["sidebar-my-offers", "sidebar-my-offers-mobile"].forEach(id => {
           const el = document.getElementById(id);
           if (el) { el.classList.remove("hidden"); el.classList.add("flex"); }
@@ -203,7 +222,33 @@ const navItems = [
           const el = document.getElementById(id);
           if (el) { el.classList.remove("hidden"); el.classList.add("flex"); }
         });
+
+        // Fetch pending request count for badge
+        const { count: requestCount, error: reqErr } = await supabase
+          .from("orders")
+          .select("id", { count: "exact", head: true })
+          .eq("owner_id", user.id)
+          .eq("status", "requested");
+        if (!reqErr) {
+          updateBadge("sidebar-requests-badge", requestCount || 0);
+          updateBadge("sidebar-requests-badge-mobile", requestCount || 0);
+        }
       }
+
+      // Fetch unread message count for badge
+      const { data: convs } = await supabase
+        .from("conversations")
+        .select("unread_count")
+        .contains("participants", [user.id]);
+      let totalUnread = 0;
+      if (convs) {
+        for (const c of convs) {
+          const uc = c.unread_count as Record<string, number> | null;
+          if (uc && uc[user.id]) totalUnread += uc[user.id];
+        }
+      }
+      updateBadge("sidebar-messages-badge", totalUnread);
+      updateBadge("sidebar-messages-badge-mobile", totalUnread);
     } catch (e) {
       // Silently fail — conditional links stay hidden
     }

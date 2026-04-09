@@ -5,7 +5,7 @@ const { lang } = Astro.params;
 import Layout from "../../layouts/Layout.astro";
 import DashboardSidebar from "../../components/layout/DashboardSidebar.astro";
 
-const title = "My Offers — TapYourBoat";
+const title = "My Requests — TapYourBoat";
 const description = "View and manage booking requests from renters for your boats.";
 const l = (href: string) => localizeHref(href, lang);
 ---
@@ -47,7 +47,7 @@ const l = (href: string) => localizeHref(href, lang);
       <main class="flex-1 bg-gray-50 overflow-y-auto">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          <h1 class="text-2xl font-bold text-text mb-2">My Offers</h1>
+          <h1 class="text-2xl font-bold text-text mb-2">My Requests</h1>
           <p class="text-sm text-text-muted mb-6">Booking requests from renters for your boats.</p>
 
           <!-- Filter tabs -->
