@@ -203,7 +203,7 @@ const l = (href: string) => localizeHref(href, lang);
     id: string; type: string; location: string; rating: number; reviewCount: number;
     title: string; images: string[]; tags: {icon:string;label:string}[]; specs: string;
     perks: string[]; price: number; priceUnit: string; instantBooking: boolean;
-    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; skipper: string; halfDayRental: boolean; capacity: number; cabins: number;
+    discountOffer: boolean; isNew: boolean; skipperAvailable: boolean; skipper: string; halfDayRental: boolean; pricePerHalfDay: number; capacity: number; cabins: number;
     berths: number; length: number; enginePower: number; year: number;
     superOwner: boolean; idealFor: string[]; equipment: string[]; ownerId: string;
   }
@@ -337,9 +337,12 @@ const l = (href: string) => localizeHref(href, lang);
         <div class="flex items-end justify-between border-t border-gray-100 pt-3">
           <div class="space-y-0.5">${perksHtml}</div>
           <div class="text-right">
-            <span class="text-[11px] text-text-muted">From</span>
-            <span class="text-base font-bold text-text ml-1">&euro;${boat.price.toLocaleString()}</span>
-            ${boat.priceUnit ? `<span class="text-xs text-text-muted"> ${escHtml(boat.priceUnit)}</span>` : ""}
+            <div>
+              <span class="text-[11px] text-text-muted">From</span>
+              <span class="text-base font-bold text-text ml-1">&euro;${boat.price.toLocaleString()}</span>
+              ${boat.priceUnit ? `<span class="text-xs text-text-muted"> ${escHtml(boat.priceUnit)}</span>` : ""}
+            </div>
+            ${boat.halfDayRental && boat.pricePerHalfDay && boat.pricePerHalfDay > 0 ? `<div class="text-xs text-text-muted mt-0.5">&euro;${boat.pricePerHalfDay.toLocaleString()} / half day</div>` : ""}
           </div>
         </div>
       </div>

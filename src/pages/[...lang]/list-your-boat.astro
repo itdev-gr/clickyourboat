@@ -269,10 +269,7 @@ const l = (href: string) => localizeHref(href, lang);
                 <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="languages" value="sv" class="lang-cb h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" /><span class="text-sm text-text" data-i18n="lyb.desc.svenska">Svenska</span></label>
               </div>
             </div>
-            <div class="mb-6">
-              <label for="listingTitle" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.listing_title">Title of the listing</span></label>
-              <input type="text" id="listingTitle" name="listingTitle" placeholder="e.g. Beautiful sailing yacht in Athens" data-i18n-placeholder="lyb.desc.listing_title_ph" class="w-full rounded-xl border border-gray-200 px-4 py-3.5 text-sm text-text placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
-            </div>
+            <input type="hidden" id="listingTitle" name="listingTitle" value="" />
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <div class="lg:col-span-2">
                 <label for="description" class="block text-sm font-semibold text-text mb-2"><span data-i18n="lyb.desc.description">Description</span></label>
