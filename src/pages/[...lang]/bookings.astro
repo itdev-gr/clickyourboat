@@ -54,7 +54,8 @@ const l = (href: string) => localizeHref(href, lang);
           <div class="flex gap-2 mb-6 flex-wrap">
             <button type="button" data-tab="all" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-primary text-white">All</button>
             <button type="button" data-tab="requested" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Requested</button>
-            <button type="button" data-tab="accepted" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Accepted</button>
+            <button type="button" data-tab="waiting_payment" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Waiting payment</button>
+            <button type="button" data-tab="paid" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Paid</button>
             <button type="button" data-tab="confirmed" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Confirmed</button>
             <button type="button" data-tab="completed" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Completed</button>
             <button type="button" data-tab="cancelled" class="booking-tab px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Cancelled</button>
@@ -121,7 +122,7 @@ const l = (href: string) => localizeHref(href, lang);
 
   const statusStyles: Record<string, { bg: string; text: string; label: string }> = {
     requested: { bg: "bg-blue-100", text: "text-blue-800", label: "Requested" },
-    accepted: { bg: "bg-amber-100", text: "text-amber-800", label: "Accepted — Pay now" },
+    accepted: { bg: "bg-amber-100", text: "text-amber-800", label: "Waiting payment" },
     pending: { bg: "bg-yellow-100", text: "text-yellow-800", label: "Payment processing" },
     paid: { bg: "bg-green-100", text: "text-green-800", label: "Paid" },
     partially_paid: { bg: "bg-amber-100", text: "text-amber-800", label: "Partially paid (30%)" },
@@ -159,7 +160,11 @@ const l = (href: string) => localizeHref(href, lang);
 
     const filtered = currentFilter === "all"
       ? allBookings
-      : allBookings.filter(b => b.status === currentFilter);
+      : currentFilter === "waiting_payment"
+        ? allBookings.filter(b => b.status === "accepted" || b.status === "pending")
+        : currentFilter === "paid"
+          ? allBookings.filter(b => b.status === "paid" || b.status === "partially_paid")
+          : allBookings.filter(b => b.status === currentFilter);
 
     if (allBookings.length === 0) {
       emptyEl?.classList.remove("hidden");
