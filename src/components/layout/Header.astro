@@ -450,6 +450,7 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
 <!-- Header auth state — Supabase module -->
 <script>
   import { onAuthChange, signOutUser, getUserProfile } from "../../lib/auth";
+  import { supabase } from "../../lib/supabase";
 
   function getInitials(name: string | null): string {
     if (!name) return "?";
@@ -537,8 +538,34 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
         // silently ignore — user just won't see role-based links
       }
 
-      // TODO: Re-implement unread message badge with Supabase Realtime after Firestore migration
-      updateBadges(0);
+      // Fetch unread messages + pending requests for notification badge
+      try {
+        let totalNotifications = 0;
+
+        // Unread messages
+        const { data: convs } = await supabase
+          .from("conversations")
+          .select("unread_count")
+          .contains("participants", [user.id]);
+        if (convs) {
+          for (const c of convs) {
+            const uc = c.unread_count as Record<string, number> | null;
+            if (uc && uc[user.id]) totalNotifications += uc[user.id];
+          }
+        }
+
+        // Pending booking requests (for owners)
+        const { count: requestCount } = await supabase
+          .from("orders")
+          .select("id", { count: "exact", head: true })
+          .eq("owner_id", user.id)
+          .eq("status", "requested");
+        if (requestCount) totalNotifications += requestCount;
+
+        updateBadges(totalNotifications);
+      } catch (e) {
+        updateBadges(0);
+      }
     } else {
       updateBadges(0);
       loggedOut?.classList.remove("hidden");
