@@ -275,6 +275,7 @@ export interface BoatCardListing {
   isNew: boolean;
   skipperAvailable: boolean;
   halfDayRental: boolean;
+  pricePerHalfDay?: number;
   capacity: number;
   cabins: number;
   berths: number;

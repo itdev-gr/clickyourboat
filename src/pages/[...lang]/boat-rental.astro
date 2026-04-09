@@ -232,6 +232,7 @@ const l = (href: string) => localizeHref(href, lang);
       skipperAvailable: b.skipperAvailable || false,
       skipper: b.skipper || (b.skipperAvailable ? "with-skipper" : "bareboat"),
       halfDayRental: b.halfDayRental || false,
+      pricePerHalfDay: Number(b.pricePerHalfDay) || 0,
       discountOffer: b.discountOffer || false,
       isNew: b.isNew || false,
       capacity: b.capacity || 0,

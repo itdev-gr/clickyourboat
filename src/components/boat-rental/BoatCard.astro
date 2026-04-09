@@ -170,9 +170,16 @@ const mainImage = boat.images && boat.images.length > 0 ? boat.images[0] : "";
         )}
       </div>
       <div class="text-right">
-        <span class="text-[11px] text-text-muted" data-i18n="card.from">From</span>
-        <span class="text-base font-bold text-text ml-1">€{boat.price.toLocaleString()}</span>
-        {boat.priceUnit && <span class="text-xs text-text-muted"> {boat.priceUnit}</span>}
+        <div>
+          <span class="text-[11px] text-text-muted" data-i18n="card.from">From</span>
+          <span class="text-base font-bold text-text ml-1">€{boat.price.toLocaleString()}</span>
+          {boat.priceUnit && <span class="text-xs text-text-muted"> {boat.priceUnit}</span>}
+        </div>
+        {boat.halfDayRental && boat.pricePerHalfDay && boat.pricePerHalfDay > 0 && (
+          <div class="text-xs text-text-muted mt-0.5">
+            €{boat.pricePerHalfDay.toLocaleString()} / half day
+          </div>
+        )}
       </div>
     </div>
   </div>
