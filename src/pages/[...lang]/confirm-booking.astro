@@ -145,6 +145,17 @@ const l = (href: string) => localizeHref(href, lang);
                 <p class="text-sm text-text-muted">I don't want to be insured</p>
               </label>
             </div>
+
+            <!-- Security Deposit Info -->
+            <div id="deposit-info" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+              <div class="flex items-start gap-3">
+                <svg class="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                <div>
+                  <p class="text-sm font-semibold text-amber-900">Security Deposit: <span id="deposit-amount">&euro;0</span></p>
+                  <p class="text-xs text-amber-800 mt-1">This amount is required before the pick-up of the boat and is fully refundable after the trip, provided no damages occur.</p>
+                </div>
+              </div>
+            </div>
           </section>
 
           <!-- Weather Guarantee -->
@@ -326,10 +337,6 @@ const l = (href: string) => localizeHref(href, lang);
                   <span class="text-text-muted">Platform Fee</span>
                   <span class="text-text font-medium" id="price-platform-val">&euro;0</span>
                 </div>
-                <div id="price-deposit-row" class="hidden flex justify-between">
-                  <span class="text-text-muted">Security Deposit</span>
-                  <span class="text-text font-medium" id="price-deposit-val">&euro;0</span>
-                </div>
                 <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
                   <span class="font-bold text-text" id="price-total-label">Total</span>
                   <span class="font-bold text-text" id="price-total">&euro;0</span>
@@ -501,6 +508,14 @@ const l = (href: string) => localizeHref(href, lang);
       }
       // Only 100% or null → no section shown, selectedPaymentOption stays "full"
 
+      // Security deposit info (shown in insurance section)
+      if (securityDeposit > 0) {
+        const depositInfo = $("deposit-info");
+        const depositAmt = $("deposit-amount");
+        if (depositInfo) depositInfo.classList.remove("hidden");
+        if (depositAmt) depositAmt.textContent = "\u20AC" + securityDeposit.toLocaleString();
+      }
+
       // Duration type (half day / full day)
       if (showDurationChoice) {
         $("duration-type-section")?.classList.remove("hidden");
@@ -527,7 +542,7 @@ const l = (href: string) => localizeHref(href, lang);
         const isPrepay = selectedPaymentOption === "prepayment";
         const charterDisplay = isPrepay ? Math.round(effectiveCharterPrice * 0.3 * 100) / 100 : effectiveCharterPrice;
         const charterBalance = isPrepay ? effectiveCharterPrice - charterDisplay : 0;
-        const total = charterDisplay + insuranceTot + weatherTot + skipperTot + serviceFee + platformFee + securityDeposit;
+        const total = charterDisplay + insuranceTot + weatherTot + skipperTot + serviceFee + platformFee;
 
         const fmt = (n: number) => "\u20AC" + n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
@@ -564,13 +579,6 @@ const l = (href: string) => localizeHref(href, lang);
           platRow?.classList.remove("hidden"); platRow?.classList.add("flex");
           if (platVal) platVal.textContent = fmt(platformFee);
         } else { platRow?.classList.add("hidden"); platRow?.classList.remove("flex"); }
-
-        const depRow = $("price-deposit-row");
-        const depVal = $("price-deposit-val");
-        if (securityDeposit > 0) {
-          depRow?.classList.remove("hidden"); depRow?.classList.add("flex");
-          if (depVal) depVal.textContent = fmt(securityDeposit);
-        } else { depRow?.classList.add("hidden"); depRow?.classList.remove("flex"); }
 
         // Total and balance
         const totalLabel = $("price-total-label");
@@ -711,7 +719,7 @@ const l = (href: string) => localizeHref(href, lang);
           const platformFee = Math.round(fullSubtotal * platformFeePercent) / 100;
           const isPrepay = selectedPaymentOption === "prepayment";
           const charterCharged = isPrepay ? Math.round(effectiveCharterPrice * 0.3 * 100) / 100 : effectiveCharterPrice;
-          const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit;
+          const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee;
 
           const breakdown = {
             charterPrice: effectiveCharterPrice,
@@ -720,7 +728,7 @@ const l = (href: string) => localizeHref(href, lang);
             insuranceTot, skipperTot, weatherTot,
             serviceFee, platformFee, securityDeposit,
             days, pricePerDay: price, paymentOption: selectedPaymentOption,
-            fullTotal: effectiveCharterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit,
+            fullTotal: effectiveCharterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee,
             isHalfDay,
           };
 

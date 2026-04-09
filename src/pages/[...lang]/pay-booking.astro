@@ -45,7 +45,6 @@ const l = (href: string) => localizeHref(href, lang);
           <div id="summary-weather-row" class="hidden flex justify-between"><span class="text-text-muted">Weather Guarantee</span><span class="text-text font-medium" id="summary-weather"></span></div>
           <div class="flex justify-between"><span class="text-text-muted">Service Fee</span><span class="text-text font-medium" id="summary-service"></span></div>
           <div id="summary-platform-row" class="hidden flex justify-between"><span class="text-text-muted">Platform Fee</span><span class="text-text font-medium" id="summary-platform"></span></div>
-          <div id="summary-deposit-row" class="hidden flex justify-between"><span class="text-text-muted">Security Deposit</span><span class="text-text font-medium" id="summary-deposit"></span></div>
           <div class="border-t border-gray-200 pt-2 mt-2 flex justify-between">
             <span class="font-bold text-text" id="summary-total-label">Total</span>
             <span class="font-bold text-text text-lg" id="summary-total">&euro;0</span>
@@ -132,12 +131,6 @@ const l = (href: string) => localizeHref(href, lang);
         $("summary-platform-row")?.classList.add("flex");
         const platEl = $("summary-platform");
         if (platEl) platEl.textContent = fmt(breakdown.platformFee);
-      }
-      if (breakdown.securityDeposit > 0) {
-        $("summary-deposit-row")?.classList.remove("hidden");
-        $("summary-deposit-row")?.classList.add("flex");
-        const depEl = $("summary-deposit");
-        if (depEl) depEl.textContent = fmt(breakdown.securityDeposit);
       }
 
       const total = order.total_price || 0;

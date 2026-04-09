@@ -92,8 +92,8 @@ Deno.serve(async (req) => {
     const isPrepay = paymentOption === "prepayment";
     const charterCharged = isPrepay ? Math.round(charterPrice * 0.3 * 100) / 100 : charterPrice;
     const charterBalance = isPrepay ? charterPrice - charterCharged : 0;
-    const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit;
-    const fullTotal = charterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee + securityDeposit;
+    const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee;
+    const fullTotal = charterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee;
     if (total <= 0) return json({ error: "Calculated total must be positive" }, 400);
 
     const breakdown = {
