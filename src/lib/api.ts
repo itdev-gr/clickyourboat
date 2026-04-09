@@ -500,6 +500,14 @@ export async function createBookingRequest(data: {
   renterMessage?: string;
   isHalfDay?: boolean;
 }): Promise<string> {
+  // Check availability
+  const { data: overlapping } = await supabase.from("orders").select("id")
+    .eq("boat_id", data.boatId).neq("status", "cancelled")
+    .lt("start_date", data.endDate).gt("end_date", data.startDate).limit(1);
+  if (overlapping && overlapping.length > 0) {
+    throw new Error("Boat is not available for the selected dates");
+  }
+
   const { data: order, error } = await supabase
     .from("orders")
     .insert({
@@ -526,6 +534,100 @@ export async function createBookingRequest(data: {
   return order.id;
 }
 
+async function findOrCreateConversation(
+  senderId: string,
+  recipientId: string,
+  boatId?: string,
+  boatTitle?: string
+): Promise<string> {
+  // Find existing conversation
+  const { data: convs } = await supabase
+    .from("conversations")
+    .select("*")
+    .contains("participants", [senderId]);
+
+  if (convs) {
+    for (const c of convs) {
+      if ((c.participants as string[])?.includes(recipientId)) {
+        return c.id;
+      }
+    }
+  }
+
+  // Create new conversation
+  const { data: senderProfile } = await supabase
+    .from("profiles")
+    .select("display_name, photo_url, first_name, last_name")
+    .eq("id", senderId)
+    .maybeSingle();
+  const { data: recipientProfile } = await supabase
+    .from("profiles")
+    .select("display_name, photo_url, first_name, last_name")
+    .eq("id", recipientId)
+    .maybeSingle();
+
+  const now = new Date().toISOString();
+  const { data: newConv, error: convErr } = await supabase
+    .from("conversations")
+    .insert({
+      participants: [senderId, recipientId],
+      participant_details: {
+        [senderId]: {
+          displayName: senderProfile?.display_name || "",
+          photoURL: senderProfile?.photo_url || null,
+          firstName: senderProfile?.first_name || "",
+          lastName: senderProfile?.last_name || "",
+        },
+        [recipientId]: {
+          displayName: recipientProfile?.display_name || "",
+          photoURL: recipientProfile?.photo_url || null,
+          firstName: recipientProfile?.first_name || "",
+          lastName: recipientProfile?.last_name || "",
+        },
+      },
+      last_message: { text: "", senderId, timestamp: now },
+      ...(boatId ? { boat_id: boatId, boat_title: boatTitle || "" } : {}),
+      unread_count: { [senderId]: 0, [recipientId]: 0 },
+    })
+    .select("id")
+    .single();
+  if (convErr) throw convErr;
+  return newConv.id;
+}
+
+async function sendConversationMessage(
+  conversationId: string,
+  senderId: string,
+  senderName: string,
+  recipientId: string,
+  messageText: string
+): Promise<void> {
+  const now = new Date().toISOString();
+
+  // Get current unread count
+  const { data: conv } = await supabase
+    .from("conversations")
+    .select("unread_count")
+    .eq("id", conversationId)
+    .maybeSingle();
+  const currentUnread = (conv?.unread_count as Record<string, number>) || {};
+  const recipientUnread = (currentUnread[recipientId] || 0) + 1;
+
+  await supabase.from("conversations").update({
+    last_message: { text: messageText, senderId, timestamp: now },
+    updated_at: now,
+    unread_count: { ...currentUnread, [recipientId]: recipientUnread },
+  }).eq("id", conversationId);
+
+  await supabase.from("messages").insert({
+    conversation_id: conversationId,
+    text: messageText,
+    sender_id: senderId,
+    sender_name: senderName,
+    read_by: [senderId],
+  });
+}
+
 export async function acceptBookingRequest(
   orderId: string,
   renterId: string,
@@ -535,40 +637,9 @@ export async function acceptBookingRequest(
 ): Promise<void> {
   await updateOrderStatus(orderId, "accepted");
 
-  // Notify renter via message
   const messageText = `Great news! Your booking request for "${boatTitle}" has been accepted. Please complete your payment to confirm the booking.`;
-  const now = new Date().toISOString();
-
-  // Find existing conversation
-  const { data: convs } = await supabase
-    .from("conversations")
-    .select("*")
-    .contains("participants", [renterId]);
-
-  let conversationId: string | null = null;
-  if (convs) {
-    for (const c of convs) {
-      if ((c.participants as string[])?.includes(ownerId)) {
-        conversationId = c.id;
-        break;
-      }
-    }
-  }
-
-  if (conversationId) {
-    await supabase.from("conversations").update({
-      last_message: { text: messageText, senderId: ownerId, timestamp: now },
-      updated_at: now,
-    }).eq("id", conversationId);
-
-    await supabase.from("messages").insert({
-      conversation_id: conversationId,
-      text: messageText,
-      sender_id: ownerId,
-      sender_name: "Owner",
-      read_by: [ownerId],
-    });
-  }
+  const conversationId = await findOrCreateConversation(ownerId, renterId, boatId, boatTitle);
+  await sendConversationMessage(conversationId, ownerId, "Owner", renterId, messageText);
 }
 
 export async function declineBookingRequest(
@@ -580,37 +651,8 @@ export async function declineBookingRequest(
   await updateOrderStatus(orderId, "cancelled");
 
   const messageText = `Unfortunately, your booking request for "${boatTitle}" has been declined.`;
-  const now = new Date().toISOString();
-
-  const { data: convs } = await supabase
-    .from("conversations")
-    .select("*")
-    .contains("participants", [renterId]);
-
-  let conversationId: string | null = null;
-  if (convs) {
-    for (const c of convs) {
-      if ((c.participants as string[])?.includes(ownerId)) {
-        conversationId = c.id;
-        break;
-      }
-    }
-  }
-
-  if (conversationId) {
-    await supabase.from("conversations").update({
-      last_message: { text: messageText, senderId: ownerId, timestamp: now },
-      updated_at: now,
-    }).eq("id", conversationId);
-
-    await supabase.from("messages").insert({
-      conversation_id: conversationId,
-      text: messageText,
-      sender_id: ownerId,
-      sender_name: "Owner",
-      read_by: [ownerId],
-    });
-  }
+  const conversationId = await findOrCreateConversation(ownerId, renterId);
+  await sendConversationMessage(conversationId, ownerId, "Owner", renterId, messageText);
 }
 
 // --- Charges / Platform Settings ---
