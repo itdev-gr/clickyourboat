@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { sendNotificationEmail } from "./email";
 import type { Boat, BoatListing, Destination, Review, Article, SearchParams, UserProfile, Order } from "../types";
 
 // --- Boats ---
@@ -373,6 +374,19 @@ export async function getListingsByStatus(status: string): Promise<(BoatListing 
 export async function updateListingStatus(boatId: string, status: string): Promise<void> {
   const { error } = await supabase.from("boats").update({ status }).eq("id", boatId);
   if (error) throw error;
+
+  if (status === "published") {
+    const { data: boat } = await supabase
+      .from("boats")
+      .select("owner_id, listing_title, boat_name")
+      .eq("id", boatId)
+      .maybeSingle();
+    if (boat?.owner_id) {
+      sendNotificationEmail("boat_approved", boat.owner_id, {
+        boat_title: boat.listing_title || boat.boat_name || "your boat",
+      });
+    }
+  }
 }
 
 export async function updateUserType(uid: string, type: "user" | "owner" | "admin"): Promise<void> {
@@ -531,6 +545,14 @@ export async function createBookingRequest(data: {
     .select("id")
     .single();
   if (error) throw error;
+
+  sendNotificationEmail("booking_request", data.ownerId, {
+    boat_title: data.boatTitle,
+    renter_name: data.renterName,
+    start_date: data.startDate,
+    end_date: data.endDate,
+  });
+
   return order.id;
 }
 
@@ -823,6 +845,11 @@ export async function sendBookingNotification(
     sender_id: renterId,
     sender_name: renterName,
     read_by: [renterId],
+  });
+
+  sendNotificationEmail("new_message", ownerId, {
+    sender_name: renterName,
+    preview: messageText,
   });
 }
 

@@ -111,6 +111,31 @@ Deno.serve(async (req) => {
       // Don't fail the order confirmation if notification fails
     }
 
+    // --- Send payment-received email to renter (fire-and-forget) ---
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const amount = (session.amount_total ?? 0) / 100;
+      await fetch(`${supabaseUrl}/functions/v1/send-email`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${serviceKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "payment_received",
+          recipient_id: order.renter_id,
+          data: {
+            boat_title: order.boat_title || "your booking",
+            amount,
+            is_prepay: isPrepay,
+          },
+        }),
+      });
+    } catch (emailErr) {
+      console.error("[confirm-order] Email error:", emailErr);
+    }
+
     return json({ success: true, orderId: order.id });
   } catch (err) {
     console.error("[confirm-order] Error:", err);

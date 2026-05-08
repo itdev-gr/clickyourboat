@@ -55,6 +55,7 @@ const l = (href: string) => localizeHref(href, lang);
             <button class="profile-tab pb-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-text whitespace-nowrap transition-colors" data-section="experience">Boating experience level</button>
             <button class="profile-tab pb-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-text whitespace-nowrap transition-colors" data-section="payment">Payment methods</button>
             <button class="profile-tab pb-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-text whitespace-nowrap transition-colors" data-section="password">Password</button>
+            <button class="profile-tab pb-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-text whitespace-nowrap transition-colors" data-section="notifications">Notifications</button>
           </div>
 
           <!-- ===== SECTION: Personal Information ===== -->
@@ -439,26 +440,55 @@ const l = (href: string) => localizeHref(href, lang);
               </form>
             </div>
 
-            <!-- Settings -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 mb-8">
-              <h2 class="text-lg font-bold text-text mb-6">Settings</h2>
-              <form id="settings-form" class="space-y-5">
-                <label class="flex items-center gap-2.5 cursor-pointer">
-                  <input type="checkbox" name="smsNotifications" id="pf-smsNotifications" class="h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
-                  <span class="text-sm text-text">Receive a text when you have a new message</span>
-                </label>
-                <div class="flex justify-end">
-                  <button type="submit" class="px-8 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Save</button>
-                </div>
-              </form>
-            </div>
-
             <!-- Delete account -->
             <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 mb-8">
               <h2 class="text-lg font-bold text-text mb-4">Delete my account</h2>
               <div class="flex justify-end">
                 <button id="delete-account-btn" class="px-6 py-2.5 rounded-xl border border-gray-300 text-sm font-medium text-text hover:border-red-400 hover:text-red-600 transition-colors">Delete</button>
               </div>
+            </div>
+          </div>
+
+          <!-- ===== SECTION: Notifications ===== -->
+          <div id="section-notifications" class="hidden">
+            <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 mb-8">
+              <h2 class="text-lg font-bold text-text mb-2">Email notifications</h2>
+              <p class="text-sm text-text-muted mb-6">Choose which emails you'd like to receive from TapYourBoat.</p>
+              <form id="notifications-form" class="space-y-4">
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input type="checkbox" name="emailNewMessage" id="pf-emailNewMessage" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+                  <span class="flex-1">
+                    <span class="block text-sm font-medium text-text">New message</span>
+                    <span class="block text-xs text-text-muted">Get an email when someone sends you a new message.</span>
+                  </span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input type="checkbox" name="emailBoatApproved" id="pf-emailBoatApproved" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+                  <span class="flex-1">
+                    <span class="block text-sm font-medium text-text">Boat approved</span>
+                    <span class="block text-xs text-text-muted">Get an email when one of your listings is approved and goes live.</span>
+                  </span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input type="checkbox" name="emailBookingRequest" id="pf-emailBookingRequest" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+                  <span class="flex-1">
+                    <span class="block text-sm font-medium text-text">Booking request</span>
+                    <span class="block text-xs text-text-muted">Get an email when someone requests to book one of your boats.</span>
+                  </span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input type="checkbox" name="emailPaymentReceived" id="pf-emailPaymentReceived" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+                  <span class="flex-1">
+                    <span class="block text-sm font-medium text-text">Payment received</span>
+                    <span class="block text-xs text-text-muted">Get an email when a payment for your booking is confirmed.</span>
+                  </span>
+                </label>
+                <div class="flex justify-end pt-2">
+                  <button type="submit" class="px-8 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Save</button>
+                </div>
+                <p id="notif-success" class="text-sm text-green-600 text-right hidden">Notification preferences saved.</p>
+                <p id="notif-error" class="text-sm text-red-500 text-right hidden"></p>
+              </form>
             </div>
           </div>
 
@@ -473,7 +503,7 @@ const l = (href: string) => localizeHref(href, lang);
   document.addEventListener("DOMContentLoaded", function () {
     // Tab switching
     var tabs = document.querySelectorAll(".profile-tab");
-    var sections = ["information", "experience", "payment", "password"];
+    var sections = ["information", "experience", "payment", "password", "notifications"];
 
     function showSection(name) {
       sections.forEach(function (s) {
@@ -610,10 +640,17 @@ const l = (href: string) => localizeHref(href, lang);
           const cb = document.querySelector(`input[name="sailingExp"][value="${v}"]`) as HTMLInputElement;
           if (cb) cb.checked = true;
         });
-        if (data.sms_notifications) {
-          const cb = document.getElementById("pf-smsNotifications") as HTMLInputElement;
-          if (cb) cb.checked = true;
-        }
+        // Email notification preferences (default to true if undefined)
+        const notifMap: Record<string, boolean> = {
+          "pf-emailNewMessage": data.email_new_message !== false,
+          "pf-emailBoatApproved": data.email_boat_approved !== false,
+          "pf-emailBookingRequest": data.email_booking_request !== false,
+          "pf-emailPaymentReceived": data.email_payment_received !== false,
+        };
+        Object.entries(notifMap).forEach(([id, val]) => {
+          const cb = document.getElementById(id) as HTMLInputElement;
+          if (cb) cb.checked = val;
+        });
       }
     } catch (err) {
       console.error("[Profile] Error loading user data:", err);
@@ -791,6 +828,36 @@ const l = (href: string) => localizeHref(href, lang);
       setTimeout(() => successEl?.classList.add("hidden"), 3000);
     } catch (err: any) {
       if (errEl) { errEl.textContent = "Failed to save your changes. Please try again."; errEl.classList.remove("hidden"); }
+    }
+    btn.disabled = false; btn.textContent = "Save";
+  });
+
+  // Save notification preferences
+  document.getElementById("notifications-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = currentAuthUser;
+    if (!user) return;
+    const form = e.target as HTMLFormElement;
+    const errEl = document.getElementById("notif-error");
+    const successEl = document.getElementById("notif-success");
+    errEl?.classList.add("hidden"); successEl?.classList.add("hidden");
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = "Saving...";
+    try {
+      const data = {
+        email_new_message: (form.elements.namedItem("emailNewMessage") as HTMLInputElement).checked,
+        email_boat_approved: (form.elements.namedItem("emailBoatApproved") as HTMLInputElement).checked,
+        email_booking_request: (form.elements.namedItem("emailBookingRequest") as HTMLInputElement).checked,
+        email_payment_received: (form.elements.namedItem("emailPaymentReceived") as HTMLInputElement).checked,
+        updated_at: new Date().toISOString(),
+      };
+      const { error: updateError } = await supabase.from("profiles").update(data).eq("id", user.id);
+      if (updateError) throw updateError;
+      successEl?.classList.remove("hidden");
+      setTimeout(() => successEl?.classList.add("hidden"), 3000);
+    } catch (err: any) {
+      if (errEl) { errEl.textContent = "Failed to save your preferences. Please try again."; errEl.classList.remove("hidden"); }
     }
     btn.disabled = false; btn.textContent = "Save";
   });

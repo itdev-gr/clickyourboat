@@ -127,6 +127,7 @@ const l = (href: string) => localizeHref(href, lang);
 <script>
   import { supabase } from "../../lib/supabase";
   import { onAuthChange } from "../../lib/auth";
+  import { sendNotificationEmail } from "../../lib/email";
   import type { RealtimeChannel } from "@supabase/supabase-js";
 
   // ---- Helpers ----
@@ -661,6 +662,14 @@ const l = (href: string) => localizeHref(href, lang);
           unread_count: currentUnread
         })
         .eq("id", currentConvId);
+
+      if (otherId) {
+        const senderName = conv?.participant_details?.[currentUid]?.displayName || "Someone";
+        sendNotificationEmail("new_message", otherId, {
+          sender_name: senderName,
+          preview: text,
+        });
+      }
     } catch (err) {
       console.error("[Messages] Error sending message:", err);
     }

@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { sendNotificationEmail } from "./email";
 import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 // ---- Sign Up (email/password) ----
@@ -21,6 +22,9 @@ export async function signUpWithEmail(
     },
   });
   if (error) throw error;
+  if (data.user?.id) {
+    sendNotificationEmail("welcome", data.user.id);
+  }
   return data;
 }
 
