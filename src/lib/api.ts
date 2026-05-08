@@ -494,11 +494,33 @@ export async function getAllOrders(maxResults = 500): Promise<Order[]> {
 }
 
 export async function updateOrderStatus(orderId: string, status: string): Promise<void> {
+  // Look up renter + previous status before updating, so we only fire the
+  // review email on a real transition into "completed" (not repeated saves).
+  let prevStatus: string | null = null;
+  let renterId: string | null = null;
+  let boatTitle: string | null = null;
+  if (status === "completed") {
+    const { data: order } = await supabase
+      .from("orders")
+      .select("status, renter_id, boat_title")
+      .eq("id", orderId)
+      .maybeSingle();
+    prevStatus = order?.status || null;
+    renterId = order?.renter_id || null;
+    boatTitle = order?.boat_title || null;
+  }
+
   const { error } = await supabase
     .from("orders")
     .update({ status, updated_at: new Date().toISOString() })
     .eq("id", orderId);
   if (error) throw error;
+
+  if (status === "completed" && renterId && prevStatus !== "completed") {
+    sendNotificationEmail("review_request", renterId, {
+      boat_title: boatTitle || "your trip",
+    });
+  }
 }
 
 export async function cancelOrder(orderId: string): Promise<void> {

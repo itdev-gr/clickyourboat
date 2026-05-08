@@ -483,6 +483,13 @@ const l = (href: string) => localizeHref(href, lang);
                     <span class="block text-xs text-text-muted">Get an email when a payment for your booking is confirmed.</span>
                   </span>
                 </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input type="checkbox" name="emailReviewRequest" id="pf-emailReviewRequest" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-pink focus:ring-pink" />
+                  <span class="flex-1">
+                    <span class="block text-sm font-medium text-text">Review request</span>
+                    <span class="block text-xs text-text-muted">Get an email after your trip ends inviting you to leave a review.</span>
+                  </span>
+                </label>
                 <div class="flex justify-end pt-2">
                   <button type="submit" class="px-8 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Save</button>
                 </div>
@@ -646,6 +653,7 @@ const l = (href: string) => localizeHref(href, lang);
           "pf-emailBoatApproved": data.email_boat_approved !== false,
           "pf-emailBookingRequest": data.email_booking_request !== false,
           "pf-emailPaymentReceived": data.email_payment_received !== false,
+          "pf-emailReviewRequest": data.email_review_request !== false,
         };
         Object.entries(notifMap).forEach(([id, val]) => {
           const cb = document.getElementById(id) as HTMLInputElement;
@@ -850,6 +858,7 @@ const l = (href: string) => localizeHref(href, lang);
         email_boat_approved: (form.elements.namedItem("emailBoatApproved") as HTMLInputElement).checked,
         email_booking_request: (form.elements.namedItem("emailBookingRequest") as HTMLInputElement).checked,
         email_payment_received: (form.elements.namedItem("emailPaymentReceived") as HTMLInputElement).checked,
+        email_review_request: (form.elements.namedItem("emailReviewRequest") as HTMLInputElement).checked,
         updated_at: new Date().toISOString(),
       };
       const { error: updateError } = await supabase.from("profiles").update(data).eq("id", user.id);

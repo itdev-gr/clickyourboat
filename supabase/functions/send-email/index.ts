@@ -18,17 +18,20 @@ type EmailType =
   | "new_message"
   | "boat_approved"
   | "booking_request"
-  | "payment_received";
+  | "payment_received"
+  | "review_request";
 
 const PREF_COLUMN: Record<Exclude<EmailType, "welcome">, string> = {
   new_message: "email_new_message",
   boat_approved: "email_boat_approved",
   booking_request: "email_booking_request",
   payment_received: "email_payment_received",
+  review_request: "email_review_request",
 };
 
 const BRAND = "TapYourBoat";
 const SITE_URL = Deno.env.get("PUBLIC_SITE_URL") || "https://tapyourboat.com";
+const REVIEW_URL = Deno.env.get("REVIEW_URL") || "https://g.page/r/CWsrGVxqBcwAEBE/review";
 
 function escapeHtml(s: string): string {
   return String(s ?? "")
@@ -140,6 +143,18 @@ function buildEmail(
       return {
         subject: headline.replace(/<[^>]+>/g, ""),
         html: layout(headline, body, { label: "View booking", url: `${SITE_URL}/bookings` }),
+      };
+    }
+    case "review_request": {
+      const boatTitle = data.boat_title || "your trip";
+      return {
+        subject: `Πώς ήταν η εμπειρία σας με το ${boatTitle};`,
+        html: layout(
+          `Ευχαριστούμε που επιλέξατε ${BRAND}!`,
+          `<p>Ελπίζουμε να απολαύσατε την εμπειρία σας με <strong>${escapeHtml(boatTitle)}</strong>.</p>
+           <p>Η επιχείρηση <strong>Boat Rental Athens TapYourBoat</strong> θα εκτιμούσε τα σχόλιά σας. Δημοσιεύστε μια κριτική στο προφίλ μας — μας βοηθάει πολύ.</p>`,
+          { label: "Αφήστε μια κριτική", url: REVIEW_URL }
+        ),
       };
     }
   }
