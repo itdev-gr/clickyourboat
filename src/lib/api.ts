@@ -30,6 +30,15 @@ export async function searchBoats(
   return { boats, lastCreatedAt: last };
 }
 
+export async function getPublishedBoatCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from("boats")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "published");
+  if (error) return 0;
+  return count || 0;
+}
+
 export async function getFeaturedBoats(count = 6): Promise<Boat[]> {
   const { data, error } = await supabase
     .from("boats")

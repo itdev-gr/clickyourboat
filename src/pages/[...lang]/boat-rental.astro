@@ -159,7 +159,7 @@ const l = (href: string) => localizeHref(href, lang);
 
 <!-- Client-side boat loading -->
 <script>
-  import { searchBoats, getOwnerBoats } from "../../lib/api";
+  import { searchBoats, getOwnerBoats, getPublishedBoatCount } from "../../lib/api";
   import { onAuthChange } from "../../lib/auth";
 
   // Pagination state
@@ -443,6 +443,12 @@ const l = (href: string) => localizeHref(href, lang);
   loadBoats();
   onAuthChange((user) => {
     if (user) loadBoats(user.id);
+  });
+
+  // Show the real registered-boat count in the heading (independent of pagination/filters)
+  getPublishedBoatCount().then((n) => {
+    const h = document.getElementById("all-boats-heading");
+    if (h && n > 0) h.textContent = `${n} ${n === 1 ? "boat" : "boats"} available`;
   });
 </script>
 
