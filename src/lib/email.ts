@@ -5,7 +5,8 @@ export type EmailType =
   | "new_message"
   | "boat_approved"
   | "booking_request"
-  | "payment_received";
+  | "payment_received"
+  | "review_request";
 
 // Fire-and-forget. Email failures must never block user flows or surface to the UI.
 export async function sendNotificationEmail(
