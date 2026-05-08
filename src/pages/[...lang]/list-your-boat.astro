@@ -2012,12 +2012,12 @@ document.addEventListener("DOMContentLoaded", function () {
           // Upload insurance cert
           const insuranceInput = document.getElementById("insurance-cert-input") as HTMLInputElement;
           if (insuranceInput?.files?.[0]) {
-            data.insuranceCertificateUrl = await uploadBoatDocument(editingBoatId, insuranceInput.files[0], "insurance");
+            data.insuranceCertificateUrl = await uploadBoatDocument(editingBoatId, insuranceInput.files[0], "insurance", currentAuthUser?.id);
           }
           // Upload ownership cert
           const ownershipInput = document.getElementById("ownership-cert-input") as HTMLInputElement;
           if (ownershipInput?.files?.[0]) {
-            data.ownershipCertificateUrl = await uploadBoatDocument(editingBoatId, ownershipInput.files[0], "ownership");
+            data.ownershipCertificateUrl = await uploadBoatDocument(editingBoatId, ownershipInput.files[0], "ownership", currentAuthUser?.id);
           }
           await updateBoatSection(editingBoatId, data);
         } else if (section === "calendar") {
