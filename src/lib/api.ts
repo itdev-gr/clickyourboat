@@ -329,6 +329,16 @@ export async function getBoatListing(boatId: string): Promise<(BoatListing & { i
   return mapRowToBoatListing(data);
 }
 
+export async function getBoatFullRow(boatId: string): Promise<Record<string, any> | null> {
+  const { data, error } = await supabase
+    .from("boats")
+    .select("*")
+    .eq("id", boatId)
+    .maybeSingle();
+  if (error) throw error;
+  return data ?? null;
+}
+
 // --- Admin functions ---
 
 export async function isUserAdmin(uid: string): Promise<boolean> {
