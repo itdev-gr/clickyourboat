@@ -771,13 +771,8 @@ const l = (href: string) => localizeHref(href, lang);
       var allSection = document.getElementById("all-boats-section");
       var noResults = document.getElementById("no-results");
       var noResultsText = document.getElementById("no-results-text");
-      var allHeading = document.getElementById("all-boats-heading");
 
       if (allSection) allSection.style.display = allBoatsVisible > 0 ? "" : "none";
-
-      if (allHeading) {
-        allHeading.textContent = allBoatsVisible + (allBoatsVisible === 1 ? " boat" : " boats") + " available";
-      }
 
       if (noResults) {
         if (totalVisible === 0) {
