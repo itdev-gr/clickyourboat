@@ -212,10 +212,10 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
 
   <!-- Panel -->
   <div
-    class="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-out"
+    class="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-out flex flex-col"
     id="drawer-panel"
   >
-    <div class="flex items-center justify-between p-4 border-b border-border">
+    <div class="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
       <img src="/tap-your-boat.svg" alt="Tap Your Boat" class="h-8" />
       <button
         class="p-2 rounded-lg text-text-muted hover:bg-surface transition-colors"
@@ -228,7 +228,7 @@ const toggleLabel = lang === "gr" ? "EN" : "GR";
       </button>
     </div>
 
-    <nav class="p-4 space-y-1" aria-label="Mobile navigation">
+    <nav class="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-1" aria-label="Mobile navigation">
       <a href={l("/boat-rental")} class="block px-4 py-3 rounded-lg text-text hover:bg-surface transition-colors font-medium" data-i18n="nav.boat_rental">Boat Rental</a>
 
       <!-- Mobile Boat Types expandable -->
