@@ -426,8 +426,11 @@ export async function promoteToOwnerIfNeeded(boatId: string): Promise<void> {
 }
 
 export async function adminDeleteUser(uid: string): Promise<void> {
-  const { error } = await supabase.from("profiles").delete().eq("id", uid);
-  if (error) throw error;
+  const { data, error } = await supabase.functions.invoke("admin-delete-user", {
+    body: { uid },
+  });
+  if (error) throw new Error(error.message || "Delete failed");
+  if (data && (data as any).error) throw new Error((data as any).error);
 }
 
 // --- Orders ---
