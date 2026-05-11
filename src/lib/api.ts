@@ -301,12 +301,17 @@ export async function updateBoatSection(
   if (error) throw error;
 }
 
+export const BOAT_DOCUMENT_MAX_BYTES = 25 * 1024 * 1024;
+
 export async function uploadBoatDocument(
   boatId: string,
   file: File,
   docType: string,
   ownerId?: string
 ): Promise<string> {
+  if (file.size > BOAT_DOCUMENT_MAX_BYTES) {
+    throw new Error(`File "${file.name}" exceeds the 25MB limit.`);
+  }
   const basePath = ownerId ? `${ownerId}/${boatId}` : boatId;
   const safeName = file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
   const filePath = `${basePath}/documents/${docType}-${Date.now()}-${safeName}`;
