@@ -72,9 +72,10 @@ const l = (href: string) => localizeHref(href, lang);
                 <p class="text-sm font-medium text-text">Change your photo</p>
                 <p class="text-xs text-text-muted">Minimum size: 260px x 260px</p>
                 <label class="mt-3 w-full max-w-sm cursor-pointer">
-                  <span class="block w-full text-center px-6 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Select an image</span>
+                  <span id="avatar-upload-label" class="block w-full text-center px-6 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Select an image</span>
                   <input type="file" accept="image/*" class="hidden" id="avatar-upload" />
                 </label>
+                <p id="avatar-error" class="mt-2 text-xs text-red-500 hidden"></p>
               </div>
 
               <!-- Form fields -->
@@ -356,25 +357,31 @@ const l = (href: string) => localizeHref(href, lang);
                   <div>
                     <label class="block text-sm font-medium text-text mb-1.5">Certificate of incorporation</label>
                     <input type="file" name="certIncorporation" class="w-full text-sm text-text file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-200 file:text-sm file:font-medium file:bg-white file:text-text hover:file:bg-gray-50" />
+                    <p id="files-status-certIncorporation" class="mt-1 text-xs text-green-600 hidden"></p>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-text mb-1.5">Identity Document (passport, ID card, driving licence, etc.)</label>
                     <input type="file" name="identityDoc" class="w-full text-sm text-text file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-200 file:text-sm file:font-medium file:bg-white file:text-text hover:file:bg-gray-50" />
+                    <p id="files-status-identityDoc" class="mt-1 text-xs text-green-600 hidden"></p>
                   </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-text mb-1.5">IBAN</label>
                     <input type="file" name="ibanDoc" class="w-full text-sm text-text file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-200 file:text-sm file:font-medium file:bg-white file:text-text hover:file:bg-gray-50" />
+                    <p id="files-status-ibanDoc" class="mt-1 text-xs text-green-600 hidden"></p>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-text mb-1.5">Certificate of Ownership</label>
                     <input type="file" name="certOwnership" class="w-full text-sm text-text file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-200 file:text-sm file:font-medium file:bg-white file:text-text hover:file:bg-gray-50" />
+                    <p id="files-status-certOwnership" class="mt-1 text-xs text-green-600 hidden"></p>
                   </div>
                 </div>
                 <div class="flex justify-end">
                   <button type="submit" class="px-8 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Save</button>
                 </div>
+                <p id="files-success" class="text-sm text-green-600 text-right hidden">Documents uploaded successfully.</p>
+                <p id="files-error" class="text-sm text-red-500 text-right hidden"></p>
               </form>
             </div>
 
@@ -407,6 +414,8 @@ const l = (href: string) => localizeHref(href, lang);
                 <div class="flex justify-end">
                   <button type="submit" class="px-8 py-3 rounded-xl bg-pink text-white text-sm font-bold hover:bg-pink/90 transition-colors">Save</button>
                 </div>
+                <p id="payment-settings-success" class="text-sm text-green-600 text-right hidden">Payment settings saved.</p>
+                <p id="payment-settings-error" class="text-sm text-red-500 text-right hidden"></p>
               </form>
             </div>
           </div>
@@ -580,8 +589,10 @@ const l = (href: string) => localizeHref(href, lang);
 
     if (profileInitials) profileInitials.textContent = initials;
 
-    if (user.user_metadata?.avatar_url) {
-      if (profileImg) { profileImg.src = user.user_metadata.avatar_url; profileImg.classList.remove("hidden"); }
+    // Avatar: prefer profiles.photo_url (set via avatar upload), fall back to legacy user_metadata.avatar_url
+    const initialAvatarUrl = user.user_metadata?.avatar_url || null;
+    if (initialAvatarUrl) {
+      if (profileImg) { profileImg.src = initialAvatarUrl; profileImg.classList.remove("hidden"); }
     }
 
     // Pre-fill email
@@ -658,6 +669,24 @@ const l = (href: string) => localizeHref(href, lang);
         Object.entries(notifMap).forEach(([id, val]) => {
           const cb = document.getElementById(id) as HTMLInputElement;
           if (cb) cb.checked = val;
+        });
+        // Avatar from profiles.photo_url (overrides user_metadata fallback above)
+        if (data.photo_url) {
+          if (profileImg) { profileImg.src = data.photo_url; profileImg.classList.remove("hidden"); }
+        }
+        // Company-file upload status indicators
+        const fileSlots: Record<string, string | null> = {
+          certIncorporation: data.cert_incorporation_url,
+          identityDoc: data.identity_doc_url,
+          ibanDoc: data.iban_doc_url,
+          certOwnership: data.cert_ownership_url,
+        };
+        Object.entries(fileSlots).forEach(([slot, url]) => {
+          const el = document.getElementById(`files-status-${slot}`);
+          if (el && url) {
+            el.textContent = "Uploaded — select a new file to replace it.";
+            el.classList.remove("hidden");
+          }
         });
       }
     } catch (err) {
@@ -869,6 +898,181 @@ const l = (href: string) => localizeHref(href, lang);
       if (errEl) { errEl.textContent = "Failed to save your preferences. Please try again."; errEl.classList.remove("hidden"); }
     }
     btn.disabled = false; btn.textContent = "Save";
+  });
+
+  // Save payment settings (downpayment %, balance days)
+  document.getElementById("payment-settings-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = currentAuthUser;
+    if (!user) return;
+    const form = e.target as HTMLFormElement;
+    const errEl = document.getElementById("payment-settings-error");
+    const successEl = document.getElementById("payment-settings-success");
+    errEl?.classList.add("hidden"); successEl?.classList.add("hidden");
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = "Saving...";
+    try {
+      const dp = (form.elements.namedItem("downpayment") as HTMLSelectElement).value;
+      const bd = (form.elements.namedItem("balanceDays") as HTMLSelectElement).value;
+      const data: Record<string, any> = {
+        downpayment: dp === "" ? null : parseInt(dp, 10),
+        balance_days: bd === "" ? null : parseInt(bd, 10),
+        updated_at: new Date().toISOString(),
+      };
+      const { error: updateError } = await supabase.from("profiles").update(data).eq("id", user.id);
+      if (updateError) throw updateError;
+      successEl?.classList.remove("hidden");
+      setTimeout(() => successEl?.classList.add("hidden"), 3000);
+    } catch (err: any) {
+      if (errEl) { errEl.textContent = "Failed to save your changes. Please try again."; errEl.classList.remove("hidden"); }
+    }
+    btn.disabled = false; btn.textContent = "Save";
+  });
+
+  // Upload company files to private storage and persist URLs to profiles.
+  // Each slot maps to a column on profiles; missing files leave the existing value untouched.
+  const COMPANY_FILE_SLOTS: Array<{ field: string; column: string }> = [
+    { field: "certIncorporation", column: "cert_incorporation_url" },
+    { field: "identityDoc",       column: "identity_doc_url" },
+    { field: "ibanDoc",           column: "iban_doc_url" },
+    { field: "certOwnership",     column: "cert_ownership_url" },
+  ];
+  const COMPANY_FILE_MAX_BYTES = 25 * 1024 * 1024;
+
+  function safeFilename(name: string): string {
+    return name.replace(/[^A-Za-z0-9._-]+/g, "_");
+  }
+
+  document.getElementById("files-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = currentAuthUser;
+    if (!user) return;
+    const form = e.target as HTMLFormElement;
+    const errEl = document.getElementById("files-error");
+    const successEl = document.getElementById("files-success");
+    errEl?.classList.add("hidden"); successEl?.classList.add("hidden");
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = "Uploading...";
+    try {
+      const updates: Record<string, any> = {};
+      const statusUpdates: Array<{ slot: string }> = [];
+      for (const { field, column } of COMPANY_FILE_SLOTS) {
+        const input = form.elements.namedItem(field) as HTMLInputElement;
+        const file = input?.files?.[0];
+        if (!file) continue;
+        if (file.size > COMPANY_FILE_MAX_BYTES) {
+          throw new Error(`"${file.name}" exceeds the 25MB limit.`);
+        }
+        const ts = Date.now();
+        const safe = safeFilename(file.name);
+        const path = `${user.id}/${field}-${ts}-${safe}`;
+        const { error: upErr } = await supabase.storage.from("user-documents").upload(path, file);
+        if (upErr) throw upErr;
+        updates[column] = path;
+        statusUpdates.push({ slot: field });
+      }
+      if (Object.keys(updates).length === 0) {
+        throw new Error("Please select at least one file to upload.");
+      }
+      updates.updated_at = new Date().toISOString();
+      const { error: updErr } = await supabase.from("profiles").update(updates).eq("id", user.id);
+      if (updErr) throw updErr;
+      // Update the per-slot indicators and reset the file inputs
+      statusUpdates.forEach(({ slot }) => {
+        const ind = document.getElementById(`files-status-${slot}`);
+        if (ind) { ind.textContent = "Uploaded — select a new file to replace it."; ind.classList.remove("hidden"); }
+        const input = form.elements.namedItem(slot) as HTMLInputElement;
+        if (input) input.value = "";
+      });
+      successEl?.classList.remove("hidden");
+      setTimeout(() => successEl?.classList.add("hidden"), 3000);
+    } catch (err: any) {
+      if (errEl) { errEl.textContent = err?.message || "Failed to upload your documents. Please try again."; errEl.classList.remove("hidden"); }
+    }
+    btn.disabled = false; btn.textContent = "Save";
+  });
+
+  // Avatar upload: image -> public 'avatars' bucket, URL saved to profiles.photo_url
+  const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
+  document.getElementById("avatar-upload")?.addEventListener("change", async (e) => {
+    const user = currentAuthUser;
+    if (!user) return;
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    const errEl = document.getElementById("avatar-error");
+    const labelEl = document.getElementById("avatar-upload-label");
+    errEl?.classList.add("hidden");
+    if (!file.type.startsWith("image/")) {
+      if (errEl) { errEl.textContent = "Please choose an image file."; errEl.classList.remove("hidden"); }
+      input.value = "";
+      return;
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      if (errEl) { errEl.textContent = "Image must be 5MB or smaller."; errEl.classList.remove("hidden"); }
+      input.value = "";
+      return;
+    }
+    const originalLabel = labelEl?.textContent || "Select an image";
+    if (labelEl) labelEl.textContent = "Uploading...";
+    try {
+      const ts = Date.now();
+      const safe = safeFilename(file.name);
+      const path = `${user.id}/${ts}-${safe}`;
+      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file);
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+      const publicUrl = urlData.publicUrl;
+      const { error: updErr } = await supabase.from("profiles")
+        .update({ photo_url: publicUrl, updated_at: new Date().toISOString() })
+        .eq("id", user.id);
+      if (updErr) throw updErr;
+      const profileImg = document.getElementById("profile-avatar-img") as HTMLImageElement;
+      if (profileImg) { profileImg.src = publicUrl; profileImg.classList.remove("hidden"); }
+    } catch (err: any) {
+      if (errEl) { errEl.textContent = err?.message || "Failed to upload your photo. Please try again."; errEl.classList.remove("hidden"); }
+    }
+    if (labelEl) labelEl.textContent = originalLabel;
+    input.value = "";
+  });
+
+  // Delete account: confirm, call edge function, sign out, redirect home
+  document.getElementById("delete-account-btn")?.addEventListener("click", async () => {
+    const user = currentAuthUser;
+    if (!user) return;
+    const confirmed = window.confirm(
+      "This permanently deletes your account, your boat listings, your messages, and your favorites. This cannot be undone. Continue?"
+    );
+    if (!confirmed) return;
+    const btn = document.getElementById("delete-account-btn") as HTMLButtonElement;
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = "Deleting...";
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("You're not signed in.");
+      const supabaseUrl = (import.meta.env.PUBLIC_SUPABASE_URL as string) || "";
+      const res = await fetch(`${supabaseUrl}/functions/v1/delete-user`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(`Server returned ${res.status}: ${body || "Unknown error"}`);
+      }
+      await supabase.auth.signOut();
+      window.location.href = localPath("/");
+    } catch (err: any) {
+      window.alert(err?.message || "Failed to delete your account. Please try again.");
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
   });
 
 </script>
