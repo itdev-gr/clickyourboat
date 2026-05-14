@@ -1061,4 +1061,22 @@ export const translations: Record<string, Record<Lang, string>> = {
   "testimonials.location_1": { en: "Santorini, Greece", el: "Σαντορίνη, Ελλάδα" },
   "testimonials.location_2": { en: "Saint-Tropez, France", el: "Σαιν-Τροπέ, Γαλλία" },
   "testimonials.location_3": { en: "Amalfi Coast, Italy", el: "Ακτή Αμάλφι, Ιταλία" },
+
+  // ─── Account Page (new save handlers) ───
+  "account.files.upload_status": { en: "Uploaded — select a new file to replace it.", el: "Έχει ανέβει — επίλεξε νέο αρχείο για αντικατάσταση." },
+  "account.files.success": { en: "Documents uploaded successfully.", el: "Τα έγγραφα ανέβηκαν με επιτυχία." },
+  "account.files.error": { en: "Failed to upload your documents. Please try again.", el: "Αποτυχία ανεβάσματος εγγράφων. Δοκιμάστε ξανά." },
+  "account.files.too_large": { en: "\"{name}\" exceeds the 25MB limit.", el: "Το \"{name}\" υπερβαίνει το όριο 25MB." },
+  "account.files.none_selected": { en: "Please select at least one file to upload.", el: "Επίλεξε τουλάχιστον ένα αρχείο για ανέβασμα." },
+  "account.payment_settings.success": { en: "Payment settings saved.", el: "Οι ρυθμίσεις πληρωμής αποθηκεύτηκαν." },
+  "account.payment_settings.error": { en: "Failed to save your changes. Please try again.", el: "Αποτυχία αποθήκευσης. Δοκιμάστε ξανά." },
+  "account.avatar.not_image": { en: "Please choose an image file.", el: "Επίλεξε αρχείο εικόνας." },
+  "account.avatar.too_large": { en: "Image must be 5MB or smaller.", el: "Η εικόνα πρέπει να είναι 5MB ή μικρότερη." },
+  "account.avatar.error": { en: "Failed to upload your photo. Please try again.", el: "Αποτυχία ανεβάσματος φωτογραφίας. Δοκιμάστε ξανά." },
+  "account.avatar.uploading": { en: "Uploading...", el: "Ανέβασμα..." },
+  "account.avatar.select_image": { en: "Select an image", el: "Επίλεξε εικόνα" },
+  "account.delete.confirm": { en: "This permanently deletes your account, your boat listings, your messages, and your favorites. This cannot be undone. Continue?", el: "Αυτό θα διαγράψει οριστικά τον λογαριασμό σου, τις καταχωρήσεις σκαφών σου, τα μηνύματά σου και τα αγαπημένα σου. Δεν αναιρείται. Συνέχεια;" },
+  "account.delete.deleting": { en: "Deleting...", el: "Διαγραφή..." },
+  "account.delete.not_signed_in": { en: "You're not signed in.", el: "Δεν είσαι συνδεδεμένος." },
+  "account.delete.failed": { en: "Failed to delete your account. Please try again.", el: "Αποτυχία διαγραφής λογαριασμού. Δοκιμάστε ξανά." },
 };

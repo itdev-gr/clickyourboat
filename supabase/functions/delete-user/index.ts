@@ -39,6 +39,28 @@ Deno.serve(async (req) => {
 
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
+  // Best-effort: scrub the user's storage objects from owner-prefixed buckets
+  // BEFORE deleting the auth row. Storage doesn't cascade from auth.users, so
+  // doing this after the delete would leave orphan files.
+  const storageWarnings: string[] = [];
+  for (const bucket of ["avatars", "user-documents"]) {
+    try {
+      const { data: objects, error: listErr } = await admin.storage
+        .from(bucket)
+        .list(callerId, { limit: 1000 });
+      if (listErr) {
+        storageWarnings.push(`${bucket}: list failed: ${listErr.message}`);
+        continue;
+      }
+      if (!objects || objects.length === 0) continue;
+      const paths = objects.map((o) => `${callerId}/${o.name}`);
+      const { error: rmErr } = await admin.storage.from(bucket).remove(paths);
+      if (rmErr) storageWarnings.push(`${bucket}: remove failed: ${rmErr.message}`);
+    } catch (e) {
+      storageWarnings.push(`${bucket}: ${(e as Error).message}`);
+    }
+  }
+
   // Deleting the auth user cascades to profiles (FK ON DELETE CASCADE),
   // which cascades to boats / favorites / messages, etc.
   const { error: delAuthErr } = await admin.auth.admin.deleteUser(callerId);
@@ -46,5 +68,5 @@ Deno.serve(async (req) => {
     return json({ error: `Account deletion failed: ${delAuthErr.message}` }, 500);
   }
 
-  return json({ ok: true, uid: callerId });
+  return json({ ok: true, uid: callerId, storageWarnings });
 });
