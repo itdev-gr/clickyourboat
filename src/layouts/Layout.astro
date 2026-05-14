@@ -179,5 +179,153 @@ const elHref = new URL(`/gr${basePath}${Astro.url.search}`, Astro.site ?? "https
       <slot />
     </main>
     {!hideFooter && <div class="flex-shrink-0"><Footer lang={lang} /></div>}
+
+    <!-- Make the third-party WhatsApp widget draggable -->
+    <script is:inline>
+      (function () {
+        const STORAGE_KEY = "tyb_whatsapp_pos";
+        const DRAG_THRESHOLD = 5;
+        const EDGE_PAD = 16;
+
+        function readSaved() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return null;
+            const v = JSON.parse(raw);
+            if (typeof v?.left === "number" && typeof v?.top === "number") return v;
+          } catch (_) {}
+          return null;
+        }
+
+        function writeSaved(pos) {
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pos)); } catch (_) {}
+        }
+
+        function clamp(pos, w, h) {
+          const maxL = Math.max(0, window.innerWidth - w);
+          const maxT = Math.max(0, window.innerHeight - h);
+          return {
+            left: Math.min(maxL, Math.max(0, pos.left)),
+            top: Math.min(maxT, Math.max(0, pos.top)),
+          };
+        }
+
+        function attach(host) {
+          const root = host.shadowRoot;
+          if (!root) return false;
+          const container = root.querySelector('[id^="button-tool-widget-"]');
+          const button = container && container.querySelector("button");
+          if (!container || !button) return false;
+
+          const rect = container.getBoundingClientRect();
+          const w = rect.width;
+          const h = rect.height;
+
+          const initial = readSaved() ?? {
+            left: window.innerWidth - w - EDGE_PAD,
+            top: window.innerHeight - h - EDGE_PAD,
+          };
+          const start = clamp(initial, w, h);
+          container.style.right = "auto";
+          container.style.bottom = "auto";
+          container.style.left = start.left + "px";
+          container.style.top = start.top + "px";
+
+          button.style.touchAction = "none";
+
+          let state = null;
+          let suppressNextClick = false;
+
+          button.addEventListener("click", (e) => {
+            if (suppressNextClick) {
+              e.preventDefault();
+              e.stopPropagation();
+              suppressNextClick = false;
+            }
+          }, true);
+
+          button.addEventListener("pointerdown", (e) => {
+            const r = container.getBoundingClientRect();
+            state = {
+              startX: e.clientX,
+              startY: e.clientY,
+              originLeft: r.left,
+              originTop: r.top,
+              pointerId: e.pointerId,
+              dragging: false,
+            };
+            try { button.setPointerCapture(e.pointerId); } catch (_) {}
+          });
+
+          button.addEventListener("pointermove", (e) => {
+            if (!state || e.pointerId !== state.pointerId) return;
+            const dx = e.clientX - state.startX;
+            const dy = e.clientY - state.startY;
+            if (!state.dragging && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+              state.dragging = true;
+            }
+            if (state.dragging) {
+              e.preventDefault();
+              const next = clamp(
+                { left: state.originLeft + dx, top: state.originTop + dy },
+                w, h
+              );
+              container.style.left = next.left + "px";
+              container.style.top = next.top + "px";
+            }
+          });
+
+          function end(e) {
+            if (!state || e.pointerId !== state.pointerId) return;
+            try { button.releasePointerCapture(state.pointerId); } catch (_) {}
+            if (state.dragging) {
+              suppressNextClick = true;
+              const r = container.getBoundingClientRect();
+              writeSaved({ left: r.left, top: r.top });
+            }
+            state = null;
+          }
+          button.addEventListener("pointerup", end);
+          button.addEventListener("pointercancel", end);
+
+          let resizeRaf = 0;
+          window.addEventListener("resize", () => {
+            if (resizeRaf) return;
+            resizeRaf = requestAnimationFrame(() => {
+              resizeRaf = 0;
+              const r = container.getBoundingClientRect();
+              const next = clamp({ left: r.left, top: r.top }, r.width, r.height);
+              container.style.left = next.left + "px";
+              container.style.top = next.top + "px";
+            });
+          });
+
+          return true;
+        }
+
+        function tryAttach() {
+          const host = document.querySelector("button-tool-widget");
+          if (!host) return false;
+          // Shadow root may not be populated yet — retry on next frame if attach fails.
+          if (attach(host)) return true;
+          requestAnimationFrame(() => attach(host));
+          return true;
+        }
+
+        function init() {
+          if (tryAttach()) return;
+          const obs = new MutationObserver(() => {
+            if (tryAttach()) obs.disconnect();
+          });
+          obs.observe(document.body, { childList: true, subtree: true });
+        }
+
+        if (window.customElements && customElements.whenDefined) {
+          customElements.whenDefined("button-tool-widget").then(init).catch(() => init());
+        } else {
+          init();
+        }
+      })();
+    </script>
   </body>
 </html>
