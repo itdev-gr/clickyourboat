@@ -1912,4 +1912,50 @@ const l = (href: string) => localizeHref(href, lang);
     }
   }
 
+  async function atmSaveFlag() {
+    if (!atmCurrentConvId) return;
+    const selected = document.querySelector<HTMLInputElement>(".atm-flag-radio:checked");
+    if (!selected) {
+      atmEls.saveStatus.textContent = "Select a flag state first";
+      atmEls.saveStatus.className = "text-sm text-red-600";
+      atmEls.saveStatus.classList.remove("hidden");
+      return;
+    }
+    const state = selected.value as AdminFlagState;
+    const note = atmEls.note.value;
+    atmEls.saveBtn.disabled = true;
+    atmEls.saveStatus.textContent = "Saving…";
+    atmEls.saveStatus.className = "text-sm text-text-muted";
+    atmEls.saveStatus.classList.remove("hidden");
+    try {
+      await setConversationFlag(atmCurrentConvId, state, note);
+      atmEls.saveStatus.textContent = "Saved ✓";
+      atmEls.saveStatus.className = "text-sm text-green-600";
+      // Update row in-memory + rerender table
+      const idx = adminMsgState.rows.findIndex((r) => r.id === atmCurrentConvId);
+      if (idx >= 0) {
+        adminMsgState.rows[idx] = {
+          ...adminMsgState.rows[idx],
+          flagState: state,
+          flagNote: note.trim() || null,
+          flagUpdatedAt: new Date().toISOString(),
+        };
+        amRenderRows();
+      }
+      // Refresh sidebar/top badge (flagged count may have changed)
+      refreshAdminMsgBadge();
+      // Auto-close after a beat
+      setTimeout(() => {
+        atmClose();
+      }, 600);
+    } catch (err: any) {
+      atmEls.saveStatus.textContent = err?.message || "Save failed";
+      atmEls.saveStatus.className = "text-sm text-red-600";
+    } finally {
+      atmEls.saveBtn.disabled = false;
+    }
+  }
+
+  atmEls.saveBtn.addEventListener("click", atmSaveFlag);
+
 </script>
