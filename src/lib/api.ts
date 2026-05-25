@@ -497,6 +497,73 @@ export async function getAdminConversations(params: {
   return { rows, total };
 }
 
+export interface AdminThreadMessage {
+  id: string;
+  text: string;
+  senderId: string;
+  senderName: string;
+  timestamp: string;
+  readBy: string[];
+}
+
+export async function getAdminMessagesForConversation(
+  conversationId: string
+): Promise<AdminThreadMessage[]> {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("id, text, sender_id, sender_name, timestamp, read_by")
+    .eq("conversation_id", conversationId)
+    .order("timestamp", { ascending: true });
+  if (error) throw error;
+  return (data || []).map((m: any) => ({
+    id: m.id,
+    text: m.text,
+    senderId: m.sender_id,
+    senderName: m.sender_name || "",
+    timestamp: m.timestamp,
+    readBy: Array.isArray(m.read_by) ? m.read_by : [],
+  }));
+}
+
+export async function setConversationFlag(
+  conversationId: string,
+  state: AdminFlagState,
+  note: string | null
+): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("conversation_admin_flags")
+    .upsert({
+      conversation_id: conversationId,
+      state,
+      note: note && note.trim().length > 0 ? note.trim() : null,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "conversation_id" });
+  if (error) throw error;
+}
+
+export async function getAdminFlaggedCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from("conversation_admin_flags")
+    .select("conversation_id", { count: "exact", head: true })
+    .eq("state", "flagged");
+  if (error) throw error;
+  return count || 0;
+}
+
+export async function getProfileDisplayName(userId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("display_name, first_name, last_name")
+    .eq("id", userId)
+    .maybeSingle();
+  if (!data) return null;
+  return data.display_name || [data.first_name, data.last_name].filter(Boolean).join(" ") || null;
+}
+
 // --- Orders ---
 
 export async function createOrder(orderData: {
