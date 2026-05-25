@@ -438,6 +438,65 @@ export async function adminDeleteUser(uid: string): Promise<void> {
   if (data && (data as any).error) throw new Error((data as any).error);
 }
 
+// --- Admin Conversations (read-only + flag annotations) ---
+
+export type AdminFlagState = "open" | "flagged" | "reviewed";
+
+export interface AdminConversationRow {
+  id: string;
+  participants: string[];
+  participantDetails: Record<string, {
+    displayName: string;
+    photoURL: string | null;
+    firstName: string;
+    lastName: string;
+  }>;
+  boatId: string | null;
+  boatTitle: string | null;
+  lastMessage: { text: string; senderId: string; timestamp: string } | null;
+  updatedAt: string;
+  flagState: AdminFlagState;
+  flagNote: string | null;
+  flagUpdatedAt: string | null;
+}
+
+export async function getAdminConversations(params: {
+  flagState?: AdminFlagState | "all";
+  participantQuery?: string;
+  contentQuery?: string;
+  limit?: number;
+  offset?: number;
+} = {}): Promise<{ rows: AdminConversationRow[]; total: number }> {
+  const state = params.flagState && params.flagState !== "all" ? params.flagState : null;
+  const participant = params.participantQuery?.trim() || null;
+  const content = params.contentQuery?.trim() || null;
+
+  const { data, error } = await supabase.rpc("search_admin_conversations", {
+    p_flag_state: state,
+    p_participant_query: participant,
+    p_content_query: content,
+    p_limit: params.limit ?? 50,
+    p_offset: params.offset ?? 0,
+  });
+  if (error) throw error;
+
+  const rows: AdminConversationRow[] = (data || []).map((r: any) => ({
+    id: r.id,
+    participants: r.participants || [],
+    participantDetails: r.participant_details || {},
+    boatId: r.boat_id || null,
+    boatTitle: r.boat_title || null,
+    lastMessage: r.last_message || null,
+    updatedAt: r.updated_at,
+    flagState: (r.flag_state || "open") as AdminFlagState,
+    flagNote: r.flag_note || null,
+    flagUpdatedAt: r.flag_updated_at || null,
+  }));
+
+  const total = data && data.length > 0 ? Number(data[0].total_count) : 0;
+  return { rows, total };
+}
+
 // --- Orders ---
 
 export async function createOrder(orderData: {
