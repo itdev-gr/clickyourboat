@@ -453,7 +453,10 @@ const l = (href: string) => localizeHref(href, lang);
     isUserAdmin, getAllUsers, getAllListings, getListingsByStatus,
     updateListingStatus, updateUserType, adminDeleteUser, deleteBoatListing,
     getAllOrders, updateOrderStatus, promoteToOwnerIfNeeded,
-    getChargeSettings, saveChargeSettings, getBoatFullRow
+    getChargeSettings, saveChargeSettings, getBoatFullRow,
+    getAdminConversations, getAdminMessagesForConversation,
+    setConversationFlag, getAdminFlaggedCount, getProfileDisplayName,
+    type AdminConversationRow, type AdminFlagState, type AdminThreadMessage,
   } from "../../lib/api";
 
   const lang = document.documentElement.dataset.langPrefix || "";
@@ -1496,4 +1499,176 @@ const l = (href: string) => localizeHref(href, lang);
     const inside = me.clientX >= rect.left && me.clientX <= rect.right && me.clientY >= rect.top && me.clientY <= rect.bottom;
     if (!inside) dlg.close();
   });
+
+  // ============================================================
+  // Admin Messages tab — read-only conversation viewer + flagging
+  // ============================================================
+
+  const adminMsgState = {
+    page: 0,
+    pageSize: 50,
+    total: 0,
+    flagState: "all" as AdminFlagState | "all",
+    participantQuery: "",
+    contentQuery: "",
+    rows: [] as AdminConversationRow[],
+    loading: false,
+    initialized: false,
+  };
+
+  const amEls = {
+    loading: $("adminmsg-loading") as HTMLElement,
+    error: $("adminmsg-error") as HTMLElement,
+    empty: $("adminmsg-empty") as HTMLElement,
+    wrap: $("adminmsg-table-wrap") as HTMLElement,
+    tbody: $("adminmsg-tbody") as HTMLElement,
+    pagination: $("adminmsg-pagination") as HTMLElement,
+    pageInfo: $("adminmsg-pagination-info") as HTMLElement,
+    pageIndicator: $("adminmsg-page-indicator") as HTMLElement,
+    prevBtn: $("adminmsg-prev-btn") as HTMLButtonElement,
+    nextBtn: $("adminmsg-next-btn") as HTMLButtonElement,
+    participantInput: $("adminmsg-participant-input") as HTMLInputElement,
+    stateFilter: $("adminmsg-state-filter") as HTMLSelectElement,
+    contentInput: $("adminmsg-content-input") as HTMLInputElement,
+    refreshBtn: $("adminmsg-refresh-btn") as HTMLButtonElement,
+    sidebarBadge: $("sidebar-messages-count") as HTMLElement,
+    topBadge: $("top-messages-count") as HTMLElement,
+  };
+
+  function amSetLoading(loading: boolean) {
+    adminMsgState.loading = loading;
+    amEls.loading.classList.toggle("hidden", !loading);
+  }
+
+  function amSetError(msg: string | null) {
+    if (msg) {
+      amEls.error.textContent = msg;
+      amEls.error.classList.remove("hidden");
+    } else {
+      amEls.error.classList.add("hidden");
+    }
+  }
+
+  function amOtherParticipantLabel(row: AdminConversationRow): string {
+    const names = row.participants.map((pid) => {
+      const d = row.participantDetails?.[pid];
+      if (!d) return "Deleted user";
+      const name = d.displayName || [d.firstName, d.lastName].filter(Boolean).join(" ").trim();
+      return name || "Deleted user";
+    });
+    return names.join(" ↔ ");
+  }
+
+  function amFlagBadgeHtml(state: AdminFlagState): string {
+    if (state === "flagged") {
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-100 text-red-800">⚑ Flagged</span>`;
+    }
+    if (state === "reviewed") {
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-green-100 text-green-800">✓ Reviewed</span>`;
+    }
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-700">Open</span>`;
+  }
+
+  function amTruncate(s: string | null | undefined, max: number): string {
+    if (!s) return "";
+    return s.length > max ? s.slice(0, max - 1) + "…" : s;
+  }
+
+  function amRenderRows() {
+    amEls.tbody.innerHTML = "";
+    for (const row of adminMsgState.rows) {
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-gray-50 cursor-pointer";
+      tr.dataset.convId = row.id;
+      tr.innerHTML = `
+        <td class="px-6 py-3 text-text">${escapeHtml(amOtherParticipantLabel(row))}</td>
+        <td class="px-6 py-3 text-text-muted">${row.boatTitle ? escapeHtml(amTruncate(row.boatTitle, 30)) : "—"}</td>
+        <td class="px-6 py-3 text-text-muted">${escapeHtml(amTruncate(row.lastMessage?.text || "", 60))}</td>
+        <td class="px-6 py-3 text-text-muted whitespace-nowrap">${formatDate(row.updatedAt)}</td>
+        <td class="px-6 py-3">${amFlagBadgeHtml(row.flagState)}</td>
+      `;
+      amEls.tbody.appendChild(tr);
+    }
+  }
+
+  function amRenderPagination() {
+    const start = adminMsgState.page * adminMsgState.pageSize + 1;
+    const end = Math.min(start + adminMsgState.rows.length - 1, adminMsgState.total);
+    amEls.pageInfo.textContent = `Showing ${start}–${end} of ${adminMsgState.total}`;
+    const totalPages = Math.max(1, Math.ceil(adminMsgState.total / adminMsgState.pageSize));
+    amEls.pageIndicator.textContent = `Page ${adminMsgState.page + 1} of ${totalPages}`;
+    amEls.prevBtn.disabled = adminMsgState.page <= 0;
+    amEls.nextBtn.disabled = adminMsgState.page + 1 >= totalPages;
+  }
+
+  async function loadAdminMessages() {
+    if (adminMsgState.loading) return;
+    amSetError(null);
+    amSetLoading(true);
+    amEls.empty.classList.add("hidden");
+    amEls.wrap.classList.add("hidden");
+    amEls.pagination.classList.add("hidden");
+    try {
+      const { rows, total } = await getAdminConversations({
+        flagState: adminMsgState.flagState,
+        participantQuery: adminMsgState.participantQuery || undefined,
+        contentQuery: adminMsgState.contentQuery || undefined,
+        limit: adminMsgState.pageSize,
+        offset: adminMsgState.page * adminMsgState.pageSize,
+      });
+      adminMsgState.rows = rows;
+      adminMsgState.total = total;
+      amSetLoading(false);
+      if (rows.length === 0) {
+        amEls.empty.classList.remove("hidden");
+        return;
+      }
+      amEls.wrap.classList.remove("hidden");
+      amEls.pagination.classList.remove("hidden");
+      amRenderRows();
+      amRenderPagination();
+    } catch (err: any) {
+      amSetLoading(false);
+      amSetError(err?.message || "Failed to load conversations");
+    }
+  }
+
+  async function refreshAdminMsgBadge() {
+    try {
+      const count = await getAdminFlaggedCount();
+      if (count > 0) {
+        amEls.sidebarBadge.textContent = String(count);
+        amEls.sidebarBadge.classList.remove("hidden");
+        amEls.topBadge.textContent = String(count);
+        amEls.topBadge.classList.remove("hidden");
+      } else {
+        amEls.sidebarBadge.classList.add("hidden");
+        amEls.topBadge.classList.add("hidden");
+      }
+    } catch {
+      // Badge is non-critical — fail silently
+    }
+  }
+
+  function ensureAdminMessagesInit() {
+    if (adminMsgState.initialized) return;
+    adminMsgState.initialized = true;
+
+    amEls.refreshBtn.addEventListener("click", () => {
+      adminMsgState.page = 0;
+      loadAdminMessages();
+      refreshAdminMsgBadge();
+    });
+
+    loadAdminMessages();
+    refreshAdminMsgBadge();
+  }
+
+  document.querySelectorAll('[data-sidebar-tab="messages"], [data-admin-tab="messages"]').forEach((btn) => {
+    btn.addEventListener("click", () => ensureAdminMessagesInit());
+  });
+
+  // Refresh the badge once on page load (without forcing tab init)
+  refreshAdminMsgBadge();
+
 </script>
