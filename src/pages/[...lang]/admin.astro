@@ -1826,12 +1826,90 @@ const l = (href: string) => localizeHref(href, lang);
     atmCurrentConvId = convId;
     atmEls.title.textContent = amOtherParticipantLabel(row);
     atmEls.subtitle.textContent = row.boatTitle ? `Boat: ${row.boatTitle}` : "Direct message (no boat)";
+
+    // Pre-populate flag controls from row
+    document.querySelectorAll<HTMLInputElement>(".atm-flag-radio").forEach((r) => {
+      r.checked = r.value === row.flagState;
+    });
+    atmEls.note.value = row.flagNote || "";
+
     atmEls.loading.classList.remove("hidden");
     atmEls.empty.classList.add("hidden");
     atmEls.error.classList.add("hidden");
     atmEls.messages.innerHTML = "";
     if (!atmEls.dialog.open) atmEls.dialog.showModal();
-    // Message + flag loading lives in Task 9
+
+    // Load messages
+    try {
+      const msgs = await getAdminMessagesForConversation(convId);
+      atmEls.loading.classList.add("hidden");
+      if (msgs.length === 0) {
+        atmEls.empty.classList.remove("hidden");
+      } else {
+        atmRenderMessages(msgs, row);
+      }
+    } catch (err: any) {
+      atmEls.loading.classList.add("hidden");
+      atmEls.error.textContent = err?.message || "Failed to load messages";
+      atmEls.error.classList.remove("hidden");
+    }
+
+    // Load "Last updated by" line
+    await atmRenderMeta(row);
+  }
+
+  function atmRenderMessages(msgs: AdminThreadMessage[], row: AdminConversationRow) {
+    atmEls.messages.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    for (const m of msgs) {
+      const senderDetails = row.participantDetails?.[m.senderId];
+      const senderName = senderDetails?.displayName
+        || [senderDetails?.firstName, senderDetails?.lastName].filter(Boolean).join(" ").trim()
+        || m.senderName
+        || "Unknown";
+      const time = m.timestamp ? new Date(m.timestamp).toLocaleString(dateLang, {
+        day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
+      }) : "";
+      const div = document.createElement("div");
+      div.className = "bg-white border border-gray-200 rounded-lg px-3 py-2";
+      div.innerHTML = `
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-semibold text-text">${escapeHtml(senderName)}</span>
+          <span class="text-[11px] text-gray-400">${escapeHtml(time)}</span>
+        </div>
+        <div class="text-sm text-text whitespace-pre-wrap break-words">${escapeHtml(m.text || "")}</div>
+      `;
+      frag.appendChild(div);
+    }
+    atmEls.messages.appendChild(frag);
+    // Scroll to bottom (most recent)
+    atmEls.messages.parentElement!.scrollTop = atmEls.messages.parentElement!.scrollHeight;
+  }
+
+  async function atmRenderMeta(row: AdminConversationRow) {
+    if (!row.flagUpdatedAt) {
+      atmEls.meta.textContent = "Not yet annotated.";
+      return;
+    }
+    const when = formatDate(row.flagUpdatedAt);
+    try {
+      const { data } = await supabase
+        .from("conversation_admin_flags")
+        .select("updated_by")
+        .eq("conversation_id", row.id)
+        .maybeSingle();
+      const adminId = (data as any)?.updated_by as string | null | undefined;
+      if (adminId) {
+        const name = await getProfileDisplayName(adminId);
+        atmEls.meta.textContent = name
+          ? `Last updated by ${name} on ${when}`
+          : `Last updated on ${when}`;
+      } else {
+        atmEls.meta.textContent = `Last updated on ${when}`;
+      }
+    } catch {
+      atmEls.meta.textContent = `Last updated on ${when}`;
+    }
   }
 
 </script>
