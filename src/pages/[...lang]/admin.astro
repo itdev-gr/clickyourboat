@@ -1504,6 +1504,14 @@ const l = (href: string) => localizeHref(href, lang);
   // Admin Messages tab — read-only conversation viewer + flagging
   // ============================================================
 
+  function amDebounce<T extends (...args: any[]) => any>(fn: T, ms: number): T {
+    let t: ReturnType<typeof setTimeout> | null = null;
+    return ((...args: any[]) => {
+      if (t) clearTimeout(t);
+      t = setTimeout(() => fn(...args), ms);
+    }) as T;
+  }
+
   const adminMsgState = {
     page: 0,
     pageSize: 50,
@@ -1654,10 +1662,46 @@ const l = (href: string) => localizeHref(href, lang);
     if (adminMsgState.initialized) return;
     adminMsgState.initialized = true;
 
+    const debouncedReload = amDebounce(() => {
+      adminMsgState.page = 0;
+      loadAdminMessages();
+    }, 300);
+
+    amEls.participantInput.addEventListener("input", () => {
+      adminMsgState.participantQuery = amEls.participantInput.value;
+      debouncedReload();
+    });
+
+    amEls.contentInput.addEventListener("input", () => {
+      adminMsgState.contentQuery = amEls.contentInput.value;
+      debouncedReload();
+    });
+
+    amEls.stateFilter.addEventListener("change", () => {
+      adminMsgState.flagState = amEls.stateFilter.value as AdminFlagState | "all";
+      adminMsgState.page = 0;
+      loadAdminMessages();
+    });
+
     amEls.refreshBtn.addEventListener("click", () => {
       adminMsgState.page = 0;
       loadAdminMessages();
       refreshAdminMsgBadge();
+    });
+
+    amEls.prevBtn.addEventListener("click", () => {
+      if (adminMsgState.page > 0) {
+        adminMsgState.page -= 1;
+        loadAdminMessages();
+      }
+    });
+
+    amEls.nextBtn.addEventListener("click", () => {
+      const totalPages = Math.max(1, Math.ceil(adminMsgState.total / adminMsgState.pageSize));
+      if (adminMsgState.page + 1 < totalPages) {
+        adminMsgState.page += 1;
+        loadAdminMessages();
+      }
     });
 
     loadAdminMessages();
