@@ -369,6 +369,8 @@ export async function getAllUsers(maxResults = 500): Promise<UserProfile[]> {
     firstName: d.first_name,
     lastName: d.last_name,
     photoURL: d.photo_url,
+    phone: d.phone ?? null,
+    phoneCountry: d.phone_country ?? null,
     type: d.user_type,
     createdAt: d.created_at ? new Date(d.created_at) : new Date(),
     lastLoginAt: d.last_login_at ? new Date(d.last_login_at) : new Date(),

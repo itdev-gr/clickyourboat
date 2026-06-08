@@ -205,7 +205,7 @@ const l = (href: string) => localizeHref(href, lang);
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h2 class="text-lg font-bold text-text">All Users</h2>
-                <input type="text" id="users-search" placeholder="Search by name or email..." class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64" />
+                <input type="text" id="users-search" placeholder="Search by name, email or phone..." class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64" />
               </div>
               <div id="users-loading" class="flex items-center justify-center py-12">
                 <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -219,6 +219,7 @@ const l = (href: string) => localizeHref(href, lang);
                     <tr>
                       <th class="px-6 py-3 font-semibold text-gray-600">User</th>
                       <th class="px-6 py-3 font-semibold text-gray-600">Email</th>
+                      <th class="px-6 py-3 font-semibold text-gray-600">Phone</th>
                       <th class="px-6 py-3 font-semibold text-gray-600">Type</th>
                       <th class="px-6 py-3 font-semibold text-gray-600">Joined</th>
                       <th class="px-6 py-3 font-semibold text-gray-600 text-right">Actions</th>
@@ -851,8 +852,10 @@ const l = (href: string) => localizeHref(href, lang);
       const date = formatDate(user.createdAt);
       const photo = user.photoURL;
       const initials = getInitials(user.displayName || user.firstName);
+      const phoneRaw = [user.phoneCountry, user.phone].filter(Boolean).join(" ").trim();
+      const phone = phoneRaw ? escapeHtml(phoneRaw) : "—";
 
-      html += `<tr class="user-row cursor-pointer hover:bg-gray-50 transition-colors" data-search="${name.toLowerCase()} ${email.toLowerCase()}" data-uid="${user.uid}">
+      html += `<tr class="user-row cursor-pointer hover:bg-gray-50 transition-colors" data-search="${name.toLowerCase()} ${email.toLowerCase()} ${phoneRaw.toLowerCase()}" data-uid="${user.uid}">
         <td class="px-6 py-4">
           <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0 overflow-hidden">
@@ -865,6 +868,7 @@ const l = (href: string) => localizeHref(href, lang);
           </div>
         </td>
         <td class="px-6 py-4 text-text-muted">${email}</td>
+        <td class="px-6 py-4 text-text-muted whitespace-nowrap">${phone}</td>
         <td class="px-6 py-4">${typeBadgeHtml(type)}</td>
         <td class="px-6 py-4 text-text-muted">${date}</td>
         <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
@@ -881,7 +885,7 @@ const l = (href: string) => localizeHref(href, lang);
         </td>
       </tr>
       <tr class="user-boats-row hidden" data-boats-uid="${user.uid}">
-        <td colspan="5" class="px-6 py-0">
+        <td colspan="6" class="px-6 py-0">
           <div class="user-boats-content py-4 pl-14">
             <div class="user-boats-loading text-xs text-text-muted flex items-center gap-2">
               <div class="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -912,7 +916,7 @@ const l = (href: string) => localizeHref(href, lang);
           // Immediately update the badge in the same row for instant feedback
           const row = sel.closest("tr");
           if (row) {
-            const badgeCell = row.querySelectorAll("td")[2];
+            const badgeCell = row.querySelectorAll("td")[3];
             if (badgeCell) badgeCell.innerHTML = typeBadgeHtml(newType);
           }
           sel.setAttribute("data-current", newType);

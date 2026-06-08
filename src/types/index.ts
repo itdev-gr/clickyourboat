@@ -217,6 +217,8 @@ export interface UserProfile {
   firstName: string | null;
   lastName: string | null;
   photoURL: string | null;
+  phone: string | null;
+  phoneCountry: string | null;
   type: "user" | "owner" | "admin";
   createdAt: FirestoreTimestamp;
   lastLoginAt: FirestoreTimestamp;
