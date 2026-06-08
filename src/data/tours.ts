@@ -30,7 +30,7 @@ export const tours: Tour[] = [
   {
     name: { en: "ARSIDA, PATROKLOS & SOUNIO: Half Day Tour", el: "ΑΡΣΙΔΑ, ΠΑΤΡΟΚΛΟΣ & ΣΟΥΝΙΟ: Ημιημερήσια Βόλτα" },
     slug: "arsida-patroklos-sounio",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/ARSIDA-PATROKLOS-SOUNIO-Half-Day-Tour-compressed.jpg",
+    image: "/images/tours/arsida-patroklos-sounio.jpg",
     description: { en: "Explore three iconic spots, Arsida, Patroklos, and Sounio, on this half-day journey with crystal-clear waters and coastal views.", el: "Εξερεύνησε τρία εμβληματικά μέρη — Αρσίδα, Πάτροκλο και Σούνιο — σε αυτή την ημιημερήσια βόλτα με κρυστάλλινα νερά και θέα στην ακτογραμμή." },
     duration: { en: "5 hours", el: "5 ώρες" },
     durationType: "half-day",
@@ -101,7 +101,7 @@ export const tours: Tour[] = [
   {
     name: { en: "HYDRA & POROS: Full Day Tour", el: "ΥΔΡΑ & ΠΟΡΟΣ: Ολοήμερη Βόλτα" },
     slug: "hydra-poros",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/HYDRA-POROS-Full-Day-Tour-compressed-1.jpg",
+    image: "/images/tours/hydra-poros.jpg",
     description: { en: "Sail through vibrant history with picturesque landscapes, quaint villages, and crystal waters.", el: "Πλεύσε μέσα σε ζωντανή ιστορία με γραφικά τοπία, παραδοσιακά χωριά και κρυστάλλινα νερά." },
     duration: { en: "8-10 hours", el: "8-10 ώρες" },
     durationType: "full-day",
@@ -179,7 +179,7 @@ export const tours: Tour[] = [
   {
     name: { en: "ATHENIAN RIVIERA & FLEVES", el: "ΑΘΗΝΑΪΚΗ ΡΙΒΙΕΡΑ & ΦΛΕΒΕΣ" },
     slug: "athenian-riviera-fleves",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/HYDRA-POROS-Full-Day-Tour-compressed.jpg",
+    image: "/images/tours/athenian-riviera-fleves.jpg",
     description: { en: "Cruise along the Athenian Riviera to Fleves Island with sandy beaches and seaside charm.", el: "Κρουαζιέρα κατά μήκος της Αθηναϊκής Ριβιέρας στο νησί Φλέβες με αμμώδεις παραλίες και παραθαλάσσια γοητεία." },
     duration: { en: "6-7 hours", el: "6-7 ώρες" },
     durationType: "full-day",
@@ -255,7 +255,7 @@ export const tours: Tour[] = [
   {
     name: { en: "AIGINA ISLAND Boat Tour", el: "Βόλτα με Σκάφος στην ΑΙΓΙΝΑ" },
     slug: "aigina-island",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/AIGINA-ISLAND-compressed.jpg",
+    image: "/images/tours/aigina-island.jpg",
     description: { en: "Sail to Aigina Island, famous for ancient sites and charming villages, perfect for sightseeing and sunbathing.", el: "Πλεύσε στην Αίγινα, φημισμένη για αρχαίους χώρους και γοητευτικά χωριά, ιδανική για επίσκεψη αξιοθέατων και ηλιοθεραπεία." },
     duration: { en: "8-10 hours", el: "8-10 ώρες" },
     durationType: "full-day",
@@ -333,7 +333,7 @@ export const tours: Tour[] = [
   {
     name: { en: "AGISTRI ISLAND ESCAPE: A Serene Boat Tour Adventure", el: "ΑΓΚΙΣΤΡΙ: Μια Γαλήνια Περιπέτεια με Σκάφος" },
     slug: "agistri-island-escape",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/AGISTRI-ISLAND-ESCAPE-A-Serene-Boat-Tour-Adventure-compressed.jpg",
+    image: "/images/tours/agistri-island-escape.jpg",
     description: { en: "Discover Agistri's hidden beauty, turquoise waters, and tranquil beaches ideal for serenity seekers.", el: "Ανακάλυψε την κρυφή ομορφιά του Αγκιστρίου, τα τιρκουάζ νερά και τις ήρεμες παραλίες, ιδανικές για όσους αναζητούν γαλήνη." },
     duration: { en: "7-8 hours", el: "7-8 ώρες" },
     durationType: "full-day",
@@ -410,7 +410,7 @@ export const tours: Tour[] = [
   {
     name: { en: "KEA ISLAND BOAT TOUR: Discover the Hidden Gem of the Cyclades", el: "ΒΟΛΤΑ ΜΕ ΣΚΑΦΟΣ ΣΤΗΝ ΚΕΑ: Ανακαλύψτε το Κρυμμένο Διαμάντι των Κυκλάδων" },
     slug: "kea-island",
-    image: "https://boat4all.gr/wp-content/uploads/2025/07/IMG_7878-750x540.jpg",
+    image: "/images/tours/kea-island.jpg",
     description: { en: "Sail to Kea, a Cycladic treasure with pristine beaches and traditional charm for adventurers.", el: "Πλεύσε στην Κέα, ένα κυκλαδίτικο στολίδι με παρθένες παραλίες και παραδοσιακή γοητεία για τολμηρούς ταξιδιώτες." },
     duration: { en: "10-12 hours", el: "10-12 ώρες" },
     durationType: "full-day",
@@ -494,7 +494,7 @@ export const tours: Tour[] = [
   {
     name: { en: "Honeymoon Bliss Boat Tour", el: "Ρομαντική Βόλτα με Σκάφος" },
     slug: "honeymoon-bliss",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/Honeymoon-Bliss-Tour-compressed.jpg",
+    image: "/images/tours/honeymoon-bliss.jpg",
     description: { en: "Celebrate love with romantic cruise through magical waters, intimate settings, beautiful sunsets.", el: "Γιόρτασε τον έρωτα με ρομαντική κρουαζιέρα σε μαγικά νερά, ιδιωτικό σκηνικό και υπέροχα ηλιοβασιλέματα." },
     duration: { en: "6-8 hours", el: "6-8 ώρες" },
     durationType: "full-day",
@@ -573,7 +573,7 @@ export const tours: Tour[] = [
   {
     name: { en: "Historical Explorer Boat Tour", el: "Ιστορική Εξερεύνηση με Σκάφος" },
     slug: "historical-explorer",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/Historical-Explorer-Tour-compressed.jpg",
+    image: "/images/tours/historical-explorer.jpg",
     description: { en: "Embark on journey through ancient past, exploring historic ruins and coastal sites.", el: "Ξεκίνα ένα ταξίδι στο αρχαίο παρελθόν, εξερευνώντας ιστορικά ερείπια και παράκτιους χώρους." },
     duration: { en: "7-8 hours", el: "7-8 ώρες" },
     durationType: "full-day",
@@ -656,7 +656,7 @@ export const tours: Tour[] = [
   {
     name: { en: "Bachelor/Bachelorette Party Cruise", el: "Κρουαζιέρα Bachelor/Bachelorette" },
     slug: "bachelor-bachelorette",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/Bachelorette-Party-Cruise-compressed.jpg",
+    image: "/images/tours/bachelor-bachelorette.jpg",
     description: { en: "Celebrate in style with private boat party surrounded by stunning seascapes for bride/groom-to-be.", el: "Γιόρτασε με στυλ σε ιδιωτικό πάρτι σκάφους με εκπληκτική θέα στη θάλασσα για τον/την μελλόνυμφο/η." },
     duration: { en: "6-8 hours", el: "6-8 ώρες" },
     durationType: "full-day",
@@ -742,7 +742,7 @@ export const tours: Tour[] = [
   {
     name: { en: "Family Adventure Boat Tour", el: "Οικογενειακή Περιπέτεια με Σκάφος" },
     slug: "family-adventure",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/Family-Adventure-Tour-compressed.jpg",
+    image: "/images/tours/family-adventure.jpg",
     description: { en: "Enjoy fun-filled day on water perfect for families with activities, swimming for all ages.", el: "Απόλαυσε μια ημέρα γεμάτη διασκέδαση στη θάλασσα, ιδανική για οικογένειες με δραστηριότητες για όλες τις ηλικίες." },
     duration: { en: "6-7 hours", el: "6-7 ώρες" },
     durationType: "full-day",
@@ -826,7 +826,7 @@ export const tours: Tour[] = [
   {
     name: { en: "A Thrilling Launch from Athens to Aegina's Charms", el: "Συναρπαστικό Ταξίδι από την Αθήνα στη Γοητεία της Αίγινας" },
     slug: "athens-to-aegina",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/A-Thrilling-Launch-from-Athens-to-Aeginas-Charms-compressed.jpg",
+    image: "/images/tours/athens-to-aegina.jpg",
     description: { en: "Journey from Athens to Aegina discovering local delights and beaches blending adventure with relaxation.", el: "Ταξίδι από την Αθήνα στην Αίγινα ανακαλύπτοντας τοπικές γεύσεις και παραλίες, συνδυάζοντας περιπέτεια με χαλάρωση." },
     duration: { en: "8-9 hours", el: "8-9 ώρες" },
     durationType: "full-day",
@@ -909,7 +909,7 @@ export const tours: Tour[] = [
   {
     name: { en: "Art and Culture Boat Tour", el: "Βόλτα Τέχνης & Πολιτισμού με Σκάφος" },
     slug: "art-and-culture",
-    image: "https://boat4all.gr/wp-content/uploads/2024/10/Art-and-Culture-Tour-compressed.jpg",
+    image: "/images/tours/art-and-culture.jpg",
     description: { en: "Delve into Greece's artistic heritage visiting coastal galleries and unique artistic hubs.", el: "Βουτήξε στην καλλιτεχνική κληρονομιά της Ελλάδας επισκεπτόμενος παράκτιες γκαλερί και μοναδικά καλλιτεχνικά κέντρα." },
     duration: { en: "7-8 hours", el: "7-8 ώρες" },
     durationType: "full-day",
