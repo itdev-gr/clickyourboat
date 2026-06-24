@@ -855,7 +855,7 @@ const l = (href: string) => localizeHref(href, lang);
             .select("id")
             .eq("renter_id", user.id)
             .eq("boat_id", boatId)
-            .in("status", ["confirmed", "completed"])
+            .in("status", ["paid", "partially_paid", "confirmed", "completed"])
             .limit(1);
           if (orderData && orderData.length > 0) {
             unlockContactButtons();

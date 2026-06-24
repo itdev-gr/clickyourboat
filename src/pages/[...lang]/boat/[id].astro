@@ -595,7 +595,7 @@ const pricePerHalfDay = Number(boat.pricePerHalfDay) || 0;
       // Show contact-owner if user has a booking for this boat
       const orders = await getUserOrders(user.id);
       const hasBooking = orders.some(
-        (o: any) => o.boatId === boatId && (o.status === "confirmed" || o.status === "completed")
+        (o: any) => o.boatId === boatId && ["paid", "partially_paid", "confirmed", "completed"].includes(o.status)
       );
       if (hasBooking) {
         document.getElementById("contact-owner-section")?.classList.remove("hidden");
@@ -714,7 +714,7 @@ const pricePerHalfDay = Number(boat.pricePerHalfDay) || 0;
           getUserOrders(user.id),
         ]);
         const hasBooking = userOrders.some(
-          (o: any) => o.boatId === boatId && (o.status === "confirmed" || o.status === "completed")
+          (o: any) => o.boatId === boatId && ["paid", "partially_paid", "confirmed", "completed"].includes(o.status)
         );
         if (hasBooking && !hasReviewed) {
           formWrap.classList.remove("hidden");
