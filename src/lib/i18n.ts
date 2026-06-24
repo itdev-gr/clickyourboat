@@ -57,6 +57,14 @@ export const translations: Record<string, Record<Lang, string>> = {
   "dest.view_all": { en: "View all tours", el: "Δες όλα τα ταξίδια" },
   "dest.explore_now": { en: "Explore Now", el: "Εξερεύνησε Τώρα" },
 
+  // ─── Boats For Rent Section (Home) ───
+  "boats_rent.title": { en: "Boats for rent", el: "Σκάφη προς ενοικίαση" },
+  "boats_rent.subtitle": { en: "RIBs, motorboats and luxury yachts, handpicked and ready for your day on the Aegean.", el: "Φουσκωτά, ταχύπλοα και πολυτελή σκάφη, επιλεγμένα και έτοιμα για τη μέρα σας στο Αιγαίο." },
+  "boats_rent.see_details": { en: "See details", el: "Δες λεπτομέρειες" },
+  "boats_rent.view_all": { en: "View all boats", el: "Δες όλα τα σκάφη" },
+  "boats_rent.guests": { en: "guests", el: "άτομα" },
+  "boats_rent.day": { en: "day", el: "ημέρα" },
+
   // ─── Categories Section ───
   "cat.title": { en: "Browse by category", el: "Αναζήτηση ανά κατηγορία" },
   "cat.sailing": { en: "Sailing", el: "Ιστιοπλοΐα" },
