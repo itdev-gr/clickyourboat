@@ -34,6 +34,7 @@ Deno.serve(async (req) => {
       startDate, endDate, siteUrl,
       insuranceType = "none", withSkipper = false, weatherGuarantee = false,
       paymentOption = "full", isHalfDay = false,
+      renterMessage = "",
     } = body;
 
     if (!boatId || !renterId || !startDate || !endDate) {
@@ -129,6 +130,7 @@ Deno.serve(async (req) => {
         total_price: total, status: "pending", payment_status: "pending",
         insurance_type: insuranceType, skipper_included: withSkipper,
         weather_guarantee: weatherGuarantee, price_breakdown: breakdown,
+        renter_message: renterMessage || null,
       }).select("id").single();
       if (orderErr || !newOrder) {
         console.error("[Order] Insert failed:", JSON.stringify(orderErr));
