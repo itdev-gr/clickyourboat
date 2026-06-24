@@ -17,8 +17,8 @@ const l = (href: string) => localizeHref(href, lang);
         </svg>
       </div>
       <h1 class="text-2xl sm:text-3xl font-extrabold text-text mb-3">Booking confirmed!</h1>
-      <p class="text-text-muted mb-2">Your payment was successful and your booking request has been sent to the owner.</p>
-      <p class="text-text-muted mb-6 text-sm">You will receive a confirmation once the owner approves your booking.</p>
+      <p class="text-text-muted mb-2">Your payment was successful and your booking is <strong>confirmed</strong>.</p>
+      <p class="text-text-muted mb-6 text-sm">You can now message the owner to arrange the details of your trip.</p>
 
       <div id="confirmation-warning" class="hidden mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left">
         <p class="text-sm font-medium text-amber-800">Your payment was received, but automatic confirmation is still processing. Don't worry — our team will confirm your booking shortly.</p>
@@ -44,6 +44,10 @@ const l = (href: string) => localizeHref(href, lang);
       </div>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a id="message-owner-cta" href="#" class="hidden items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">
+          <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 3v-3z"/></svg>
+          Message owner
+        </a>
         <a href={l("/bookings")} class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-colors">
           <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
           View my bookings
@@ -80,6 +84,28 @@ const l = (href: string) => localizeHref(href, lang);
             console.error("Order confirmation failed:", data.error);
             const w = document.getElementById("confirmation-warning");
             if (w) w.classList.remove("hidden");
+          } else if (data.orderId) {
+            const { supabase } = await import("../../lib/supabase");
+            const { data: order } = await supabase
+              .from("orders")
+              .select("owner_id, boat_id, boat_title")
+              .eq("id", data.orderId)
+              .maybeSingle();
+            if (order?.owner_id) {
+              const prefix = document.documentElement.dataset.langPrefix || "";
+              const base = prefix ? "/" + prefix : "";
+              const qs = new URLSearchParams({
+                with: order.owner_id,
+                boatId: order.boat_id || "",
+                boatTitle: order.boat_title || "",
+              });
+              const cta = document.getElementById("message-owner-cta") as HTMLAnchorElement | null;
+              if (cta) {
+                cta.href = `${base}/messages?` + qs.toString();
+                cta.classList.remove("hidden");
+                cta.classList.add("inline-flex");
+              }
+            }
           }
         } catch (err) {
           console.error("Order confirmation failed:", err);
