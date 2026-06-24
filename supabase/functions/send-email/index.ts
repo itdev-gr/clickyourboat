@@ -18,6 +18,7 @@ type EmailType =
   | "new_message"
   | "boat_approved"
   | "booking_request"
+  | "new_booking_owner"
   | "payment_received"
   | "review_request";
 
@@ -25,6 +26,7 @@ const PREF_COLUMN: Record<Exclude<EmailType, "welcome">, string> = {
   new_message: "email_new_message",
   boat_approved: "email_boat_approved",
   booking_request: "email_booking_request",
+  new_booking_owner: "email_booking_request",
   payment_received: "email_payment_received",
   review_request: "email_review_request",
 };
@@ -125,6 +127,25 @@ function buildEmail(
           `<p><strong>${escapeHtml(renterName)}</strong> would like to book <strong>${escapeHtml(boatTitle)}</strong> for <strong>${escapeHtml(dateRange)}</strong>.</p>
            <p>Review the request and accept or decline it from your bookings page.</p>`,
           { label: "Review booking", url: `${SITE_URL}/bookings` }
+        ),
+      };
+    }
+    case "new_booking_owner": {
+      const boatTitle = data.boat_title || "your boat";
+      const renterName = data.renter_name || "A traveler";
+      const startDate = data.start_date || "";
+      const endDate = data.end_date || "";
+      const dateRange = startDate && endDate ? `${startDate} to ${endDate}` : "the booked dates";
+      const isPrepay = !!data.is_prepay;
+      return {
+        subject: `New confirmed booking for ${boatTitle}`,
+        html: layout(
+          `You have a new booking!`,
+          `<p>Good news, ${escapeHtml(name)}! <strong>${escapeHtml(renterName)}</strong> has just
+             booked and ${isPrepay ? "paid a deposit for" : "paid for"} <strong>${escapeHtml(boatTitle)}</strong>
+             for <strong>${escapeHtml(dateRange)}</strong>.</p>
+           <p>The booking is confirmed. Message the renter to arrange handover details.</p>`,
+          { label: "Open conversation", url: `${SITE_URL}/messages` }
         ),
       };
     }
