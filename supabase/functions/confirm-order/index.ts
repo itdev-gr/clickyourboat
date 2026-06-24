@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
       .from("orders")
       .update({ payment_status: "succeeded", status: newStatus })
       .eq("checkout_session_id", sessionId)
-      .select("id, boat_id, boat_title, owner_id, renter_id, start_date, end_date")
+      .select("id, boat_id, boat_title, owner_id, renter_id, renter_name, start_date, end_date, renter_message")
       .maybeSingle();
 
     if (updateErr) {
@@ -66,49 +66,116 @@ Deno.serve(async (req) => {
       return json({ error: "No order found for this session" }, 404);
     }
 
-    // --- Notify owner via messaging ---
+    // --- Establish contact with the owner (find-or-create conversation) ---
     try {
       const boatTitle = order.boat_title || "your boat";
-      const messageText = isPrepay
-        ? `30% prepayment received for "${boatTitle}". The remaining 70% balance is due before the trip.`
-        : `Payment completed! Booking for "${boatTitle}" is now confirmed.`;
+      const renterMsg = (order.renter_message || "").trim();
+      const dateRange = `${order.start_date} to ${order.end_date}`;
+      const messageText = renterMsg
+        ? renterMsg
+        : (isPrepay
+            ? `Hi! I've just booked "${boatTitle}" for ${dateRange} and paid the deposit. Looking forward to it!`
+            : `Hi! I've just booked and paid for "${boatTitle}" for ${dateRange}. Looking forward to it!`);
+      const now = new Date().toISOString();
 
-      // Find existing conversation
+      // Find an existing conversation between the two participants
       const { data: convs } = await supabase
         .from("conversations")
         .select("id, participants, unread_count")
         .contains("participants", [order.renter_id]);
 
       let conversationId: string | null = null;
+      let unread: Record<string, number> = {};
       if (convs) {
         for (const c of convs) {
           if ((c.participants as string[])?.includes(order.owner_id)) {
             conversationId = c.id;
-
-            // Update conversation with notification
-            const uc = (c.unread_count as Record<string, number>) || {};
-            const ownerUnread = (uc[order.owner_id] || 0) + 1;
-            const now = new Date().toISOString();
-            await supabase.from("conversations").update({
-              last_message: { text: messageText, senderId: order.renter_id, timestamp: now },
-              updated_at: now,
-              unread_count: { ...uc, [order.owner_id]: ownerUnread },
-            }).eq("id", conversationId);
-
-            await supabase.from("messages").insert({
-              conversation_id: conversationId,
-              text: messageText,
-              sender_id: order.renter_id,
-              sender_name: "Renter",
-              read_by: [order.renter_id],
-            });
+            unread = (c.unread_count as Record<string, number>) || {};
             break;
           }
         }
       }
+
+      // Create one if none exists (pay-first: usually the first contact)
+      if (!conversationId) {
+        const { data: renterProfile } = await supabase
+          .from("profiles").select("display_name, photo_url, first_name, last_name")
+          .eq("id", order.renter_id).maybeSingle();
+        const { data: ownerProfile } = await supabase
+          .from("profiles").select("display_name, photo_url, first_name, last_name")
+          .eq("id", order.owner_id).maybeSingle();
+
+        const { data: newConv, error: convErr } = await supabase
+          .from("conversations")
+          .insert({
+            participants: [order.renter_id, order.owner_id],
+            participant_details: {
+              [order.renter_id]: {
+                displayName: renterProfile?.display_name || order.renter_name || "",
+                photoURL: renterProfile?.photo_url || null,
+                firstName: renterProfile?.first_name || "",
+                lastName: renterProfile?.last_name || "",
+              },
+              [order.owner_id]: {
+                displayName: ownerProfile?.display_name || "",
+                photoURL: ownerProfile?.photo_url || null,
+                firstName: ownerProfile?.first_name || "",
+                lastName: ownerProfile?.last_name || "",
+              },
+            },
+            last_message: { text: "", senderId: order.renter_id, timestamp: now },
+            boat_id: order.boat_id,
+            boat_title: boatTitle,
+            unread_count: { [order.renter_id]: 0, [order.owner_id]: 0 },
+          })
+          .select("id")
+          .single();
+        if (convErr) throw convErr;
+        conversationId = newConv.id;
+        unread = { [order.renter_id]: 0, [order.owner_id]: 0 };
+      }
+
+      // Post the opening message from the renter and bump the owner's unread count
+      const ownerUnread = (unread[order.owner_id] || 0) + 1;
+      await supabase.from("conversations").update({
+        last_message: { text: messageText, senderId: order.renter_id, timestamp: now },
+        updated_at: now,
+        unread_count: { ...unread, [order.owner_id]: ownerUnread },
+      }).eq("id", conversationId);
+
+      await supabase.from("messages").insert({
+        conversation_id: conversationId,
+        text: messageText,
+        sender_id: order.renter_id,
+        sender_name: order.renter_name || "Renter",
+        read_by: [order.renter_id],
+      });
     } catch (notifErr) {
-      console.error("[confirm-order] Notification error:", notifErr);
-      // Don't fail the order confirmation if notification fails
+      console.error("[confirm-order] Conversation error:", notifErr);
+      // Don't fail the order confirmation if messaging fails
+    }
+
+    // --- Email the owner about the new confirmed booking (fire-and-forget) ---
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      await fetch(`${supabaseUrl}/functions/v1/send-email`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${serviceKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "new_booking_owner",
+          recipient_id: order.owner_id,
+          data: {
+            boat_title: order.boat_title || "your boat",
+            renter_name: order.renter_name || "A traveler",
+            start_date: order.start_date,
+            end_date: order.end_date,
+            is_prepay: isPrepay,
+          },
+        }),
+      });
+    } catch (emailErr) {
+      console.error("[confirm-order] Owner email error:", emailErr);
     }
 
     // --- Send payment-received email to renter (fire-and-forget) ---
