@@ -268,7 +268,7 @@ const l = (href: string) => localizeHref(href, lang);
             <button id="confirm-btn"
               class="w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Send booking request &middot; <span id="confirm-btn-amount">&euro;0</span>
+              Continue to payment &middot; <span id="confirm-btn-amount">&euro;0</span>
             </button>
 
             <div id="confirm-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -362,7 +362,7 @@ const l = (href: string) => localizeHref(href, lang);
   function localPath(path: string): string { const p = getLangPrefix(); return p ? "/" + p + path : path; }
   import { supabase } from "../../lib/supabase";
   import { onAuthChange } from "../../lib/auth";
-  import { getBoatListing, getChargeSettings, sendBookingNotification, createBookingRequest } from "../../lib/api";
+  import { getBoatListing, getChargeSettings } from "../../lib/api";
 
   const $ = (id: string) => document.getElementById(id);
 
@@ -697,7 +697,7 @@ const l = (href: string) => localizeHref(href, lang);
         }
 
         confirmBtn.disabled = true;
-        confirmBtn.textContent = getLangPrefix() === "gr" ? "Αποστολή αιτήματος..." : "Sending request...";
+        confirmBtn.textContent = getLangPrefix() === "gr" ? "Μετάβαση στην πληρωμή..." : "Redirecting to payment...";
 
         try {
           const insuranceRadio = document.querySelector('input[name="insurance"]:checked') as HTMLInputElement;
@@ -709,69 +709,42 @@ const l = (href: string) => localizeHref(href, lang);
           const weatherGuarantee = weatherRadio?.value === "yes";
           const renterMessage = msgTextarea?.value?.trim() || "";
           const renterName = currentUser.user_metadata?.full_name || currentUser.email || "Renter";
+          const siteUrl = window.location.origin + (getLangPrefix() ? "/" + getLangPrefix() : "");
 
-          // Calculate the effective charter price for the breakdown
-          const effectiveCharterPrice = isHalfDay ? halfDayPrice : charterPrice;
-          const insuranceTot = (insuranceType === "multi-risk" ? 47 : insuranceType === "assistance" ? 29 : 0) * days;
-          const skipperTot = withSkipper ? skipperPricePerDay * days : 0;
-          const weatherTot = weatherGuarantee ? 14 * days : 0;
-          const fullSubtotal = effectiveCharterPrice + insuranceTot + skipperTot + weatherTot;
-          const platformFee = Math.round(fullSubtotal * platformFeePercent) / 100;
-          const isPrepay = selectedPaymentOption === "prepayment";
-          const charterCharged = isPrepay ? Math.round(effectiveCharterPrice * 0.3 * 100) / 100 : effectiveCharterPrice;
-          const total = charterCharged + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee;
-
-          const breakdown = {
-            charterPrice: effectiveCharterPrice,
-            charterCharged,
-            charterBalance: isPrepay ? effectiveCharterPrice - charterCharged : 0,
-            insuranceTot, skipperTot, weatherTot,
-            serviceFee, platformFee, securityDeposit,
-            days, pricePerDay: price, paymentOption: selectedPaymentOption,
-            fullTotal: effectiveCharterPrice + insuranceTot + skipperTot + weatherTot + serviceFee + platformFee,
-            isHalfDay,
-          };
-
-          // Create booking request (no Stripe yet)
-          const orderId = await createBookingRequest({
-            boatId: boatId!,
-            boatTitle,
-            boatImage: images[0] || undefined,
-            renterId: currentUser.id,
-            renterName,
-            ownerId,
-            startDate: startDateStr!,
-            endDate: endDateStr!,
-            totalPrice: total,
-            insuranceType,
-            skipperIncluded: withSkipper,
-            weatherGuarantee,
-            paymentOption: selectedPaymentOption,
-            priceBreakdown: breakdown,
-            renterMessage: renterMessage || undefined,
-            isHalfDay,
+          const res = await fetch(`${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/create-checkout-session`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              boatId: boatId!,
+              renterId: currentUser.id,
+              renterEmail: currentUser.email || "",
+              renterName,
+              ownerId,
+              startDate: startDateStr!,
+              endDate: endDateStr!,
+              siteUrl,
+              insuranceType,
+              withSkipper,
+              weatherGuarantee,
+              paymentOption: selectedPaymentOption,
+              isHalfDay,
+              renterMessage,
+            }),
           });
 
-          // Send notification message to owner
-          await sendBookingNotification(
-            currentUser.id,
-            renterName,
-            ownerId,
-            boatId!,
-            boatTitle,
-            startDateStr!,
-            endDateStr!,
-            renterMessage || undefined
-          );
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Failed to start payment");
 
-          // Redirect to bookings page with success
-          window.location.href = localPath("/bookings?request=sent");
+          window.location.href = data.url;
         } catch (err: any) {
           const errorText = $("confirm-error-text");
-          if (errorText) errorText.textContent = err.message || "Failed to send booking request.";
+          if (errorText) errorText.textContent = err.message || "Failed to start payment.";
           $("confirm-error")?.classList.remove("hidden");
           confirmBtn.disabled = false;
-          confirmBtn.textContent = "Send booking request";
+          confirmBtn.textContent = getLangPrefix() === "gr" ? "Συνέχεια στην πληρωμή" : "Continue to payment";
         }
       });
 
